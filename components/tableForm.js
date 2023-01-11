@@ -22,7 +22,7 @@ import SearchIcon from "@mui/icons-material/Search";
 function TableForm(props) {
   const data = props.data
 
-  const [searchData, setSearchData] = useState();
+  const [searchData, setSearchData] = useState(data);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [complaintData, setComplaintData] = useState([]);
@@ -42,10 +42,8 @@ function TableForm(props) {
   const requestSearchItem = (searchedVal) => {
     const filteredRows = searchData.filter((row) => {
       let searchDesc =
-        row.complaint_no +
-        row.created_date +
-        row.complaint_topic +
-        row.complaint_status;
+        row.fname +
+        row.lname ;
       return searchDesc
         .toLowerCase()
         .includes(searchedVal.target.value.toLowerCase());
@@ -85,14 +83,14 @@ function TableForm(props) {
       <Grid
         style={{
           marginTop: "20px",
-          borderRadius: "20px",
-          boxShadow: "1px 1px 5px #bdbdbd",
+          // borderRadius: "20px",
+          // boxShadow: "1px 1px 5px #bdbdbd",
         }}
       >
         <Table>
-          <TableHead>
+          <TableHead sx={{ bgcolor: '#41A3E3' }}>
             <TableRow>
-              <TableCell>Dessert (100g serving)</TableCell>
+              <TableCell>Dessert </TableCell>
               <TableCell>Calories</TableCell>
               <TableCell>Fat&nbsp;(g)</TableCell>
               <TableCell>Carbs&nbsp;(g)</TableCell>
@@ -104,12 +102,12 @@ function TableForm(props) {
             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((item) => (
               <>
-                <TableBody>
+                <TableBody sx={{ bgcolor: '#eee' }}>
                   <TableRow>
                     <TableCell>{item.fname}</TableCell>
                     <TableCell>{item.lname}</TableCell>
-                    <TableCell>{item.fname1}</TableCell>
-                    <TableCell>{item.lname1}</TableCell>
+                    <TableCell>{item.fname}</TableCell>
+                    <TableCell>{item.lname}</TableCell>
                     <TableCell>{item.fname}</TableCell>
                   </TableRow>
                 </TableBody>
