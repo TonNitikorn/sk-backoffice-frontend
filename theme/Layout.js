@@ -9,7 +9,9 @@ import {
   ListItemIcon,
   ListItemText,
   Menu,
-  MenuItem
+  MenuItem,
+  Grid,
+  Button
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
@@ -35,6 +37,7 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import Link from "next/link";
 import Logout from "@mui/icons-material/Logout";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 //  function drawer
 const drawerWidth = 250;
@@ -152,33 +155,33 @@ function Layout({ children, page }) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            อั่งเปา
-          </Typography>
-
-          <Menu
-            anchorEl={anchorEl}
-            id="account-menu"
-            open={openAcc}
-            onClose={handleCloseAcc}
-            onClick={handleCloseAcc}
-            transformOrigin={{ horizontal: "right", vertical: "top" }}
-            anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-          >
-            <MenuItem
-              onClick={async () => {
-                await dispatch(signOut());
-                localStorage.clear();
-                router.push("/auth/login");
-              }}
+          <Grid container justifyContent="space-between">
+            <Typography variant="h6" component="div">
+              อั่งเปา
+            </Typography>
+            <Button
+              onClick={handleClickAcc}
+              variant="contained"
+              size="small"
+              sx={{ ml: 2, bgcolor: "#eee" }}
+              aria-controls={open ? "account-menu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? "true" : undefined}
             >
-              <ListItemIcon>
-                <Logout fontSize="small" />
-              </ListItemIcon>
-              ออกจากระบบ
-            </MenuItem>
-
-            {/* <MenuItem
+              <AccountCircleIcon sx={{ width: 35, height: 35, mr: 2 }} />
+              <Typography>asdasd</Typography>
+              <ArrowDropDownIcon />
+            </Button>
+            <Menu
+              anchorEl={anchorEl}
+              id="account-menu"
+              open={openAcc}
+              onClose={handleCloseAcc}
+              onClick={handleCloseAcc}
+              transformOrigin={{ horizontal: "right", vertical: "top" }}
+              anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+            >
+              <MenuItem
                 onClick={async () => {
                   await dispatch(signOut());
                   localStorage.clear();
@@ -189,8 +192,14 @@ function Layout({ children, page }) {
                   <Logout fontSize="small" />
                 </ListItemIcon>
                 ออกจากระบบ
-              </MenuItem> */}
-          </Menu>
+              </MenuItem>
+
+
+            </Menu>
+          </Grid>
+
+
+
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent"

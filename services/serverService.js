@@ -11,22 +11,34 @@ export const signIn = async (user) => {
       method: "post",
       url: `${hostname}/auth/login`,
       data: {
-        "tel": user.tel,
+        "username": user.username,
         "password": user.password
       }
     });
-    localStorage.setItem("access_token", res.data.accesstoken);
+    localStorage.setItem("access_token", res.data.access_token);
     return res.data;
 
 
   } catch (error) {
-    console.log(error);
-    // Swal.fire({
-    //   position: "center",
-    //   icon: "error",
-    //   title: error.response.data.error.message,
-    //   showConfirmButton: false,
-    //   timer: 4000,
-    // });
+    console.log(error.response.data.error);
+    if (error.response.data.error.message === "รหัสผ่านไม่ถูกต้อง") {
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: error.response.data.error.message,
+        showConfirmButton: false,
+        timer: 4000,
+      });
+    }
+    if (error.response.data.error.message === "Username หรือ Password ไม่ถูกต้อง") {
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: error.response.data.error.message,
+        showConfirmButton: false,
+        timer: 4000,
+      });
+    }
+
   }
 };
