@@ -100,21 +100,24 @@ function bankAccount() {
       resData.map((item) => {
         item.no = no++;
         item.birthdate = moment(item.birthdate).format("DD-MM-YYYY")
+
       });
+      
+      
       setBank(resData);
 
 
 
     } catch (error) {
       console.log(error);
-      // if (
-      //   error.response.data.error.status_code === 401 &&
-      //   error.response.data.error.message === "Unauthorized"
-      // ) {
-      //   dispatch(signOut());
-      //   localStorage.clear();
-      //   router.push("/auth/login");
-      // }
+      if (
+        error.response.data.error.status_code === 401 &&
+        error.response.data.error.message === "Unauthorized"
+      ) {
+        dispatch(signOut());
+        localStorage.clear();
+        router.push("/auth/login");
+      }
     }
   };
 
@@ -176,8 +179,7 @@ function bankAccount() {
   };
 
   const addBank = async () => {
-    // setLoading(true);
-
+    setLoading(true);
     try {
       let res = await axios({
         headers: {
@@ -205,8 +207,9 @@ function bankAccount() {
           "status_system": rowData.status_system
         },
       });
+      console.log(res.data);
 
-      if (res.data.message === "เพิ่มข้อมูลเรียบร้อยแล้ว") {
+      if (res.data.message === "สร้างบัญชีธนาคารสำเร็จ") {
         Swal.fire({
           position: "center",
           icon: "success",
@@ -217,7 +220,7 @@ function bankAccount() {
         setOpenDialogAdd(false);
         setRowData({});
         getBank();
-        // setLoading(false);
+        setLoading(false);
       }
     } catch (error) {
       console.log(error);
@@ -535,15 +538,16 @@ function bankAccount() {
               title: "สถานะ",
               align: "center",
               render: (item) => (
+
                 <Chip
-                  label={item.status === "ACTIVE" ? "เปิดใช้งาน" : "ปิดใช้งาน"}
+                label={item.status === "ACTIVE" ? "เปิดใช้งาน" : "ปิดใช้งาน"}
                   size="small"
                   style={{
                     padding: 10,
                     paddingTop: 12,
-                    backgroundColor:
-                      item.status === "ACTIVE" ? "#129A50" : "#FFB946",
-                    color: "#eee",
+                    backgroundColor: "#fff",
+                    border: item.status === "ACTIVE" ? "2px solid #129A50" : "2px solid #FFB946",
+                    color: item.status === "ACTIVE" ? "#129A50" : "#FFB946",
                   }}
                 />
               ),
@@ -552,15 +556,16 @@ function bankAccount() {
               title: "ประเภท",
               align: "center",
               render: (item) => (
+
                 <Chip
                   label={item.type === "DEPOSIT" ? "สำหรับฝาก" : "สำหรับถอน"}
                   size="small"
                   style={{
                     padding: 10,
                     paddingTop: 12,
-                    backgroundColor:
-                      item.type === "DEPOSIT" ? "#129A50" : "#FFB946",
-                    color: "#eee",
+                    backgroundColor: "#fff",
+                    border: item.type === "DEPOSIT" ? "2px solid #129A50" : "2px solid #FFB946",
+                    color: item.type === "DEPOSIT" ? "#129A50" : "#FFB946",
                   }}
                 />
               ),
@@ -603,32 +608,34 @@ function bankAccount() {
                           confirmButtonText: "ยืนยัน",
                         }).then(async (result) => {
                           if (result.isConfirmed) {
-                            console.log('')
-                            // try {
-                            //   let res = await axios({
-                            //     headers: {
-                            //       Authorization:
-                            //         "Bearer " +
-                            //         localStorage.getItem("access_token"),
-                            //     },
-                            //     method: "DELETE",
-                            //     url: `${hostname}/api/bank/${item.uuid}`,
-                            //   });
-                            //   if (
-                            //     res.data.message === "ลบข้อมูลเรียบร้อยแล้ว"
-                            //   ) {
-                            //     Swal.fire({
-                            //       position: "center",
-                            //       icon: "success",
-                            //       title: "ลบข้อมูลเรียบร้อย",
-                            //       showConfirmButton: false,
-                            //       timer: 2000,
-                            //     });
-                            //     getBank();
-                            //   }
-                            // } catch (error) {
-                            //   console.log(error);
-                            // }
+                            try {
+                              let res = await axios({
+                                headers: {
+                                  Authorization:
+                                    "Bearer " +
+                                    localStorage.getItem("access_token"),
+                                },
+                                method: "Post",
+                                url: `${hostname}/bank/delete_bank`,
+                                data: {
+                                  uuid: item.uuid
+                                }
+                              });
+                              if (
+                                res.data.message === "ลบบัญชีธนาคารสำเร็จ"
+                              ) {
+                                Swal.fire({
+                                  position: "center",
+                                  icon: "success",
+                                  title: "ลบบัญชีธนาคารสำเร็จ",
+                                  showConfirmButton: false,
+                                  timer: 2000,
+                                });
+                                getBank();
+                              }
+                            } catch (error) {
+                              console.log(error);
+                            }
                           }
                         });
                       }}
@@ -787,7 +794,7 @@ function bankAccount() {
       {/* </Paper> */}
 
       <Dialog
-        open={openDialogAdd.open}
+        open={openDialogAdd}
         onClose={() => {
           setOpenDialogAdd(false);
           setRowData({});
@@ -829,7 +836,7 @@ function bankAccount() {
             <Grid item xs={5}>
               <Typography sx={{ mt: 2, color: "gray" }}>ประเภท *</Typography>
               <TextField
-                name="bank_type"
+                name="type"
                 type="text"
                 value={rowData.type || ""}
                 fullWidth
@@ -930,6 +937,21 @@ function bankAccount() {
             </Grid>
 
             <Grid item xs={5}>
+              <Typography sx={{ mt: 2, color: "gray" }}>PIN *</Typography>
+              <TextField
+                name="pin"
+                type="number"
+                value={rowData.pin || ""}
+                placeholder="PIN"
+                fullWidth
+                size="small"
+                onChange={(e) => handleChangeData(e)}
+                variant="outlined"
+                sx={{ bgcolor: "white" }}
+              />
+            </Grid>
+
+            <Grid item xs={5}>
               <Typography sx={{ mt: 2, color: "gray" }}>
                 Status System *
               </Typography>
@@ -948,7 +970,7 @@ function bankAccount() {
                 <MenuItem selected disabled value>
                   เลือกสถานะระบบ
                 </MenuItem>
-                <MenuItem value="OPEN">Online</MenuItem>
+                <MenuItem value="RUNNING">Online</MenuItem>
                 <MenuItem value="CLOSE">Offline</MenuItem>
               </TextField>
             </Grid>
@@ -969,22 +991,22 @@ function bankAccount() {
             <Grid item xs={5}>
               <Typography sx={{ mt: 2, color: "gray" }}>วัน/เดือน/ปี เกิด *</Typography>
               <TextField
-              fullWidth
-              variant="outlined"
-              size="small"
-              type="date"
-              name="birthdate"
-              value={selectedDateRange.birthdate}
-              onChange={(e) => {
-                setSelectedDateRange({
-                  ...selectedDateRange,
-                  [e.target.name]: e.target.value,
-                });
-              }}
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
+                fullWidth
+                variant="outlined"
+                size="small"
+                type="date"
+                name="birthdate"
+                value={selectedDateRange.birthdate}
+                onChange={(e) => {
+                  setSelectedDateRange({
+                    ...selectedDateRange,
+                    [e.target.name]: e.target.value,
+                  });
+                }}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
             </Grid>
             <Grid item xs={5}>
               <Typography sx={{ mt: 2, color: "gray" }}>device_id *</Typography>
@@ -1004,7 +1026,7 @@ function bankAccount() {
               <Typography sx={{ mt: 2, color: "gray" }}>เบอร์โทรศัพท์ *</Typography>
               <TextField
                 name="tel"
-                type="text"
+                type="number"
                 value={rowData.tel || ""}
                 placeholder="เบอร์โทรศัพท์"
                 fullWidth
