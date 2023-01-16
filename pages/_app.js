@@ -21,6 +21,11 @@ function MyApp({ Component, pageProps }) {
         main: "#0072B1",
         light: "#7190c4",
       },
+      background: {
+        // default: "#30323e"
+        default: "#DFE3EA"
+
+      }
     },
     typography: {
       fontFamily: 'Noto Sans Thai',
@@ -30,11 +35,7 @@ function MyApp({ Component, pageProps }) {
       //   textTransform: "none",
       // },
     },
-    background: {
-      // default: "#30323e"
-      default: "#30323e"
 
-    }
   })
 
   useEffect(() => {

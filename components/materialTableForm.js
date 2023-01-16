@@ -9,8 +9,6 @@ function materialTableForm(props) {
         pageSize
     } = props;
 
-
-
     return (
         <div>
             <MaterialTable
@@ -19,7 +17,6 @@ function materialTableForm(props) {
                 data={data}
                 options={{
                     search: true,
-                    background :"red",
                     // filtering: true,
                     columnsButton: true,
                     columnResizable: true,
@@ -29,14 +26,13 @@ function materialTableForm(props) {
                     },
                     headerStyle: {
                         border: "1px solid rgba(224, 224, 224, 1)",
-                        borderTop: "1px solid rgba(224, 224, 224, 1)",
-                        borderBottom: "1px solid rgba(224, 224, 224, 1)",
-                        whiteSpace: "nowrap",
-                        textAlign:"center",
-                        // padding: 10,
+                        paddingTop: 5,
+                        paddingBottom: 5,
+                        // paddingLeft: 15,
+                        align: "center",
                         background: "#41A3E3",
                         color: "#fff",
-                        paddingRight: 0,
+                        paddingRight:0
                     },
                     // actionsCellStyle: { padding: 0 },
                     // filterCellStyle: {
@@ -56,6 +52,7 @@ function materialTableForm(props) {
                     // },
                     pageSize: pageSize,
                     pageSizeOptions: [10, 20, 100],
+                    padding:0
                 }}
                 localization={{
                     body: {

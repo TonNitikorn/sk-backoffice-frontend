@@ -38,6 +38,7 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import Link from "next/link";
 import Logout from "@mui/icons-material/Logout";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import logo from "../assets/logo.jpg"
 
 //  function drawer
 const drawerWidth = 250;
@@ -156,9 +157,15 @@ function Layout({ children, page }) {
             <MenuIcon />
           </IconButton>
           <Grid container justifyContent="space-between">
-            <Typography variant="h6" component="div">
+            {/* <Typography variant="h6" component="div">
               อั่งเปา
-            </Typography>
+            </Typography> */}
+            <Image
+              src={logo}
+              alt="scb"
+              width={50}
+              height={50}
+            />
             <Button
               onClick={handleClickAcc}
               variant="contained"
@@ -312,6 +319,7 @@ function Layout({ children, page }) {
         <DrawerHeader />
         {children}
       </Box>
+      
     </Box>
   );
 }
