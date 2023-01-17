@@ -23,20 +23,20 @@ import {
 import hostname from "../utils/hostname";
 import axios from "axios";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
-// import TableForm from "../components/tableForm";
 import Image from "next/image";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-// import { makeStyles } from "@mui/styles";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import EditIcon from "@mui/icons-material/Edit";
 import Swal from "sweetalert2";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteIcon from "@mui/icons-material/Delete";
-import withAuth from "../routes/withAuth";
 import LoadingModal from "../theme/LoadingModal";
 import MaterialTableForm from "../components/materialTableForm";
 import moment from "moment/moment";
+import { signOut } from "../store/slices/userSlice";
+import { useRouter } from "next/router";
+import { useAppDispatch } from "../store/store";
 
 
 // const useStyles = makeStyles({
@@ -56,7 +56,9 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 });
 
 function bankAccount() {
-  // const classes = useStyles();
+  
+  const dispatch = useAppDispatch();
+  const router = useRouter()
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [bank, setBank] = useState();
   const [rowData, setRowData] = useState({});
@@ -100,14 +102,8 @@ function bankAccount() {
       resData.map((item) => {
         item.no = no++;
         item.birthdate = moment(item.birthdate).format("DD-MM-YYYY")
-
       });
-      
-      
       setBank(resData);
-
-
-
     } catch (error) {
       console.log(error);
       if (
@@ -167,14 +163,14 @@ function bankAccount() {
       }
     } catch (error) {
       console.log(error);
-      // if (
-      //   error.response.data.error.status_code === 401 &&
-      //   error.response.data.error.message === "Unauthorized"
-      // ) {
-      //   dispatch(signOut());
-      //   localStorage.clear();
-      //   router.push("/auth/login");
-      // }
+      if (
+        error.response.data.error.status_code === 401 &&
+        error.response.data.error.message === "Unauthorized"
+      ) {
+        dispatch(signOut());
+        localStorage.clear();
+        router.push("/auth/login");
+      }
     }
   };
 
@@ -235,6 +231,372 @@ function bankAccount() {
     }
   };
 
+  const columns = [
+    {
+      title: "ลำดับที่",
+      field: "no",
+      align: "center",
+    },
+    {
+      field: "bank_name",
+      title: "ธนาคาร",
+      align: "center",
+      minWidth: "220px",
+      render: (item) => (
+        <Grid container>
+          <Grid item xs={3} sx={{ mt: 1 }}>
+            {item.bank_name === "kbnk" ? (
+              <Image
+                src={
+                  "https://the1pg.com/wp-content/uploads/2022/10/kbnk.png"
+                }
+                alt="scb"
+                width={50}
+                height={50}
+              />
+            ) : item.bank_name === "truemoney" ? (
+              <Image
+                src={
+                  "https://the1pg.com/wp-content/uploads/2022/10/truemoney.png"
+                }
+                alt="scb"
+                width={50}
+                height={50}
+              />
+            ) : item.bank_name === "ktba" ? (
+              <Image
+                src={
+                  "https://the1pg.com/wp-content/uploads/2022/10/ktba.png"
+                }
+                alt="scb"
+                width={50}
+                height={50}
+              />
+            ) : item.bank_name === "scb" ? (
+              <Image
+                src={
+                  "https://the1pg.com/wp-content/uploads/2022/10/scb.png"
+                }
+                alt="scb"
+                width={50}
+                height={50}
+              />
+            ) : item.bank_name === "bay" ? (
+              <Image
+                src={
+                  "https://the1pg.com/wp-content/uploads/2022/10/bay.png"
+                }
+                alt="scb"
+                width={50}
+                height={50}
+              />
+            ) : item.bank_name === "bbla" ? (
+              <Image
+                src={
+                  "https://the1pg.com/wp-content/uploads/2022/10/bbl.png"
+                }
+                alt="scb"
+                width={50}
+                height={50}
+              />
+            ) : item.bank_name === "gsb" ? (
+              <Image
+                src={
+                  "https://the1pg.com/wp-content/uploads/2022/10/gsb.png"
+                }
+                alt="scb"
+                width={50}
+                height={50}
+              />
+            ) : item.bank_name === "ttb" ? (
+              <Image
+                src={
+                  "https://the1pg.com/wp-content/uploads/2022/10/ttb.png"
+                }
+                alt="scb"
+                width={50}
+                height={50}
+              />
+            ) : item.bank_name === "BAAC" ? (
+              <Image
+                src={
+                  "https://the1pg.com/wp-content/uploads/2022/10/baac.png"
+                }
+                alt="scb"
+                width={50}
+                height={50}
+              />
+            ) : item.bank_name === "ICBC" ? (
+              <Image
+                src={
+                  "https://the1pg.com/wp-content/uploads/2022/10/icbc.png"
+                }
+                alt="scb"
+                width={50}
+                height={50}
+              />
+            ) : item.bank_name === "TCD" ? (
+              <Image
+                src={
+                  "https://the1pg.com/wp-content/uploads/2022/10/tcd.png"
+                }
+                alt="scb"
+                width={50}
+                height={50}
+              />
+            ) : item.bank_name === "CITI" ? (
+              <Image
+                src={
+                  "https://the1pg.com/wp-content/uploads/2022/10/citi.png"
+                }
+                alt="scb"
+                width={50}
+                height={50}
+              />
+            ) : item.bank_name === "SCBT" ? (
+              <Image
+                src={
+                  "https://the1pg.com/wp-content/uploads/2022/10/scbt.png"
+                }
+                alt="scb"
+                width={50}
+                height={50}
+              />
+            ) : item.bank_name === "CIMB" ? (
+              <Image
+                src={
+                  "https://the1pg.com/wp-content/uploads/2022/10/cimb.png"
+                }
+                alt="scb"
+                width={50}
+                height={50}
+              />
+            ) : item.bank_name === "UOB" ? (
+              <Image
+                src={
+                  "https://the1pg.com/wp-content/uploads/2022/10/uob.png"
+                }
+                alt="scb"
+                width={50}
+                height={50}
+              />
+            ) : item.bank_name === "HSBC" ? (
+              <Image
+                src={
+                  "https://the1pg.com/wp-content/uploads/2022/10/hsbc.png"
+                }
+                alt="scb"
+                width={50}
+                height={50}
+              />
+            ) : item.bank_name === "MIZUHO" ? (
+              <Image
+                src={
+                  "https://the1pg.com/wp-content/uploads/2022/10/mizuho.png"
+                }
+                alt="scb"
+                width={50}
+                height={50}
+              />
+            ) : item.bank_name === "GHB" ? (
+              <Image
+                src={
+                  "https://the1pg.com/wp-content/uploads/2022/10/ghb.png"
+                }
+                alt="scb"
+                width={50}
+                height={50}
+              />
+            ) : item.bank_name === "LHBANK" ? (
+              <Image
+                src={
+                  "https://the1pg.com/wp-content/uploads/2022/10/lhbank.png"
+                }
+                alt="scb"
+                width={50}
+                height={50}
+              />
+            ) : item.bank_name === "TISCO" ? (
+              <Image
+                src={
+                  "https://the1pg.com/wp-content/uploads/2022/10/tisco.png"
+                }
+                alt="scb"
+                width={50}
+                height={50}
+              />
+            ) : item.bank_name === "kkba" ? (
+              <Image
+                src={
+                  "https://the1pg.com/wp-content/uploads/2022/10/kkba.png"
+                }
+                alt="scb"
+                width={50}
+                height={50}
+              />
+            ) : item.bank_name === "IBANK" ? (
+              <Image
+                src={
+                  "https://the1pg.com/wp-content/uploads/2022/10/ibank.png"
+                }
+                alt="scb"
+                width={50}
+                height={50}
+              />
+            ) : (
+              ""
+            )}
+          </Grid>
+          <Grid item xs={9}>
+            <Grid sx={{ ml: 2, mt: 1 }}>
+              <CopyToClipboard text={item.bank_number}>
+                <div >
+                  <Button
+                    sx={{
+                      fontSize: "14px",
+                      p: 0,
+                      color: "blue",
+                    }}
+                    onClick={handleClickSnackbar}
+                  >
+                    {item.bank_number}
+                  </Button>
+                </div>
+              </CopyToClipboard>
+            </Grid>
+            <Grid>
+              <Typography sx={{ fontSize: "14px" }}>
+                {item.bank_account_name}
+              </Typography>
+            </Grid>
+          </Grid>
+        </Grid>
+      ),
+    },
+    {
+      title: "เบอร์โทร",
+      align: "center",
+      field: "tel",
+    },
+    {
+      title: "วัน/เดือน/ปี เกิด",
+      align: "center",
+      field: "birthdate",
+    },
+    {
+      title: "สถานะ",
+      align: "center",
+      render: (item) => (
+
+        <Chip
+          label={item.status === "ACTIVE" ? "เปิดใช้งาน" : "ปิดใช้งาน"}
+          size="small"
+          style={{
+            padding: 10,
+            paddingTop: 12,
+            backgroundColor: "#fff",
+            border: item.status === "ACTIVE" ? "2px solid #129A50" : "2px solid #FFB946",
+            color: item.status === "ACTIVE" ? "#129A50" : "#FFB946",
+          }}
+        />
+      ),
+    },
+    {
+      title: "ประเภท",
+      align: "center",
+      render: (item) => (
+
+        <Chip
+          label={item.type === "DEPOSIT" ? "สำหรับฝาก" : "สำหรับถอน"}
+          size="small"
+          style={{
+            padding: 10,
+            paddingTop: 12,
+            backgroundColor: "#fff",
+            border: item.type === "DEPOSIT" ? "2px solid #129A50" : "2px solid #FFB946",
+            color: item.type === "DEPOSIT" ? "#129A50" : "#FFB946",
+          }}
+        />
+      ),
+    },
+    {
+      title: "แก้ไข",
+      align: "center",
+      render: (item) => {
+        return (
+          <>
+            <IconButton
+              onClick={async () => {
+                setRowData(item);
+                setOpenDialogAdd({
+                  open: true,
+                  type: "edit",
+                });
+              }}
+            >
+              <EditIcon />
+            </IconButton>
+          </>
+        );
+      },
+    },
+    {
+      title: "ลบ", field: "availability", align: "center",
+      render: (item) => {
+        return (
+          <>
+            <IconButton
+              onClick={async () => {
+                Swal.fire({
+                  title: "ยืนยันการลบข้อมูล",
+                  icon: "info",
+                  showCancelButton: true,
+                  cancelButtonColor: "#EB001B",
+                  confirmButtonColor: "#129A50",
+                  cancelButtonText: "ยกเลิก",
+                  confirmButtonText: "ยืนยัน",
+                }).then(async (result) => {
+                  if (result.isConfirmed) {
+                    try {
+                      let res = await axios({
+                        headers: {
+                          Authorization:
+                            "Bearer " +
+                            localStorage.getItem("access_token"),
+                        },
+                        method: "Post",
+                        url: `${hostname}/bank/delete_bank`,
+                        data: {
+                          uuid: item.uuid
+                        }
+                      });
+                      if (
+                        res.data.message === "ลบบัญชีธนาคารสำเร็จ"
+                      ) {
+                        Swal.fire({
+                          position: "center",
+                          icon: "success",
+                          title: "ลบบัญชีธนาคารสำเร็จ",
+                          showConfirmButton: false,
+                          timer: 2000,
+                        });
+                        getBank();
+                      }
+                    } catch (error) {
+                      console.log(error);
+                    }
+                  }
+                });
+              }}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </>
+        );
+      },
+    },
+  ]
+
   useEffect(() => {
     getBank();
   }, []);
@@ -242,23 +604,15 @@ function bankAccount() {
   return (
     <Layout>
       <CssBaseline />
-      <Typography
-        sx={{ fontSize: "24px", textDecoration: "underline #129A50 3px" }}
-      >
-        บัญชีธนาคาร
-      </Typography>
+
       <Paper sx={{ p: 3 }}>
         <Grid
           container
           direction="row"
-          justifyContent="space-between"
+          justifyContent="end"
           alignItems="center"
         >
-          <Typography
-            sx={{ fontSize: "24px", textDecoration: "underline #129A50 3px" }}
-          >
-            ข้อมูลบัญชีธนาคาร
-          </Typography>
+
           <Box>
             <Button
               variant="contained"
@@ -268,7 +622,7 @@ function bankAccount() {
                 my: 2,
                 justifyContent: "flex-end",
                 boxShadow: 1,
-                background: "#129A50",
+                background: "#41A3E3",
               }}
               onClick={() =>
                 setOpenDialogAdd({
@@ -286,367 +640,7 @@ function bankAccount() {
         </Grid>
         <MaterialTableForm
           data={bank}
-          columns={[
-            { title: "ลำดับที่", field: "no", align: "center", },
-            {
-              field: "bank_name",
-              title: "ธนาคาร",
-              align: "center",
-              minWidth: "220px",
-              render: (item) => (
-                <Grid container>
-                  <Grid item xs={3} sx={{ mt: 1 }}>
-                    {item.bank_name === "kbnk" ? (
-                      <Image
-                        src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/kbnk.png"
-                        }
-                        alt="scb"
-                        width={50}
-                        height={50}
-                      />
-                    ) : item.bank_name === "truemoney" ? (
-                      <Image
-                        src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/truemoney.png"
-                        }
-                        alt="scb"
-                        width={50}
-                        height={50}
-                      />
-                    ) : item.bank_name === "ktba" ? (
-                      <Image
-                        src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/ktba.png"
-                        }
-                        alt="scb"
-                        width={50}
-                        height={50}
-                      />
-                    ) : item.bank_name === "scb" ? (
-                      <Image
-                        src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/scb.png"
-                        }
-                        alt="scb"
-                        width={50}
-                        height={50}
-                      />
-                    ) : item.bank_name === "bay" ? (
-                      <Image
-                        src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/bay.png"
-                        }
-                        alt="scb"
-                        width={50}
-                        height={50}
-                      />
-                    ) : item.bank_name === "bbla" ? (
-                      <Image
-                        src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/bbl.png"
-                        }
-                        alt="scb"
-                        width={50}
-                        height={50}
-                      />
-                    ) : item.bank_name === "gsb" ? (
-                      <Image
-                        src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/gsb.png"
-                        }
-                        alt="scb"
-                        width={50}
-                        height={50}
-                      />
-                    ) : item.bank_name === "ttb" ? (
-                      <Image
-                        src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/ttb.png"
-                        }
-                        alt="scb"
-                        width={50}
-                        height={50}
-                      />
-                    ) : item.bank_name === "BAAC" ? (
-                      <Image
-                        src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/baac.png"
-                        }
-                        alt="scb"
-                        width={50}
-                        height={50}
-                      />
-                    ) : item.bank_name === "ICBC" ? (
-                      <Image
-                        src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/icbc.png"
-                        }
-                        alt="scb"
-                        width={50}
-                        height={50}
-                      />
-                    ) : item.bank_name === "TCD" ? (
-                      <Image
-                        src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/tcd.png"
-                        }
-                        alt="scb"
-                        width={50}
-                        height={50}
-                      />
-                    ) : item.bank_name === "CITI" ? (
-                      <Image
-                        src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/citi.png"
-                        }
-                        alt="scb"
-                        width={50}
-                        height={50}
-                      />
-                    ) : item.bank_name === "SCBT" ? (
-                      <Image
-                        src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/scbt.png"
-                        }
-                        alt="scb"
-                        width={50}
-                        height={50}
-                      />
-                    ) : item.bank_name === "CIMB" ? (
-                      <Image
-                        src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/cimb.png"
-                        }
-                        alt="scb"
-                        width={50}
-                        height={50}
-                      />
-                    ) : item.bank_name === "UOB" ? (
-                      <Image
-                        src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/uob.png"
-                        }
-                        alt="scb"
-                        width={50}
-                        height={50}
-                      />
-                    ) : item.bank_name === "HSBC" ? (
-                      <Image
-                        src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/hsbc.png"
-                        }
-                        alt="scb"
-                        width={50}
-                        height={50}
-                      />
-                    ) : item.bank_name === "MIZUHO" ? (
-                      <Image
-                        src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/mizuho.png"
-                        }
-                        alt="scb"
-                        width={50}
-                        height={50}
-                      />
-                    ) : item.bank_name === "GHB" ? (
-                      <Image
-                        src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/ghb.png"
-                        }
-                        alt="scb"
-                        width={50}
-                        height={50}
-                      />
-                    ) : item.bank_name === "LHBANK" ? (
-                      <Image
-                        src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/lhbank.png"
-                        }
-                        alt="scb"
-                        width={50}
-                        height={50}
-                      />
-                    ) : item.bank_name === "TISCO" ? (
-                      <Image
-                        src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/tisco.png"
-                        }
-                        alt="scb"
-                        width={50}
-                        height={50}
-                      />
-                    ) : item.bank_name === "kkba" ? (
-                      <Image
-                        src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/kkba.png"
-                        }
-                        alt="scb"
-                        width={50}
-                        height={50}
-                      />
-                    ) : item.bank_name === "IBANK" ? (
-                      <Image
-                        src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/ibank.png"
-                        }
-                        alt="scb"
-                        width={50}
-                        height={50}
-                      />
-                    ) : (
-                      ""
-                    )}
-                  </Grid>
-                  <Grid item xs={9}>
-                    <Grid sx={{ ml: 2, mt: 1 }}>
-                      <CopyToClipboard text={item.bank_number}>
-                        <div >
-                          <Button
-                            sx={{
-                              fontSize: "14px",
-                              p: 0,
-                              color: "blue",
-                            }}
-                            onClick={handleClickSnackbar}
-                          >
-                            {item.bank_number}
-                          </Button>
-                        </div>
-                      </CopyToClipboard>
-                    </Grid>
-                    <Grid>
-                      <Typography sx={{ fontSize: "14px" }}>
-                        {item.bank_account_name}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              ),
-            },
-            {
-              title: "เบอร์โทร",
-              align: "center",
-              field: "tel",
-            },
-            {
-              title: "วัน/เดือน/ปี เกิด",
-              align: "center",
-              field: "birthdate",
-            },
-            {
-              title: "สถานะ",
-              align: "center",
-              render: (item) => (
-
-                <Chip
-                label={item.status === "ACTIVE" ? "เปิดใช้งาน" : "ปิดใช้งาน"}
-                  size="small"
-                  style={{
-                    padding: 10,
-                    paddingTop: 12,
-                    backgroundColor: "#fff",
-                    border: item.status === "ACTIVE" ? "2px solid #129A50" : "2px solid #FFB946",
-                    color: item.status === "ACTIVE" ? "#129A50" : "#FFB946",
-                  }}
-                />
-              ),
-            },
-            {
-              title: "ประเภท",
-              align: "center",
-              render: (item) => (
-
-                <Chip
-                  label={item.type === "DEPOSIT" ? "สำหรับฝาก" : "สำหรับถอน"}
-                  size="small"
-                  style={{
-                    padding: 10,
-                    paddingTop: 12,
-                    backgroundColor: "#fff",
-                    border: item.type === "DEPOSIT" ? "2px solid #129A50" : "2px solid #FFB946",
-                    color: item.type === "DEPOSIT" ? "#129A50" : "#FFB946",
-                  }}
-                />
-              ),
-            },
-            {
-              title: "แก้ไข",
-              align: "center",
-              render: (item) => {
-                return (
-                  <>
-                    <IconButton
-                      onClick={async () => {
-                        setRowData(item);
-                        setOpenDialogAdd({
-                          open: true,
-                          type: "edit",
-                        });
-                      }}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                  </>
-                );
-              },
-            },
-            {
-              title: "ลบ", field: "availability", align: "center",
-              render: (item) => {
-                return (
-                  <>
-                    <IconButton
-                      onClick={async () => {
-                        Swal.fire({
-                          title: "ยืนยันการลบข้อมูล",
-                          icon: "info",
-                          showCancelButton: true,
-                          cancelButtonColor: "#EB001B",
-                          confirmButtonColor: "#129A50",
-                          cancelButtonText: "ยกเลิก",
-                          confirmButtonText: "ยืนยัน",
-                        }).then(async (result) => {
-                          if (result.isConfirmed) {
-                            try {
-                              let res = await axios({
-                                headers: {
-                                  Authorization:
-                                    "Bearer " +
-                                    localStorage.getItem("access_token"),
-                                },
-                                method: "Post",
-                                url: `${hostname}/bank/delete_bank`,
-                                data: {
-                                  uuid: item.uuid
-                                }
-                              });
-                              if (
-                                res.data.message === "ลบบัญชีธนาคารสำเร็จ"
-                              ) {
-                                Swal.fire({
-                                  position: "center",
-                                  icon: "success",
-                                  title: "ลบบัญชีธนาคารสำเร็จ",
-                                  showConfirmButton: false,
-                                  timer: 2000,
-                                });
-                                getBank();
-                              }
-                            } catch (error) {
-                              console.log(error);
-                            }
-                          }
-                        });
-                      }}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </>
-                );
-              },
-            },
-          ]}
+          columns={columns}
           pageSize="10"
           title="รายชื่อลูกค้า"
         />
@@ -1257,4 +1251,4 @@ function bankAccount() {
   );
 }
 
-export default (bankAccount);
+export default bankAccount;
