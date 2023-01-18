@@ -37,7 +37,6 @@ function addMember() {
   const editUser = async () => {
     setLoading(false);
     try {
-      console.log('rowData', rowData)
       let res = await axios({
         headers: {
           Authorization: "Bearer " + localStorage.getItem("access_token"),
@@ -67,13 +66,13 @@ function addMember() {
           showConfirmButton: false,
           timer: 2000,
         });
-        getMemberList()
+        router.push('/member/memberTable')
         setLoading(false);
       }
     } catch (error) {
       console.log(error);
       if (
-        error.response.data.error.status_code === 400 &&
+        // error.response.data.error.status_code === 400 &&
         error.response.data.error.message === "เบอร์โทรซ้ำ"
       ) {
         Swal.fire({
@@ -86,7 +85,7 @@ function addMember() {
       }
 
       if (
-        error.response.data.error.status_code === 400 &&
+        // error.response.data.error.status_code === 400 &&
         error.response.data.error.message === "เลขบัญชีซ้ำ"
       ) {
         Swal.fire({

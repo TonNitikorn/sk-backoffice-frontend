@@ -56,7 +56,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 });
 
 function bankAccount() {
-  
+
   const dispatch = useAppDispatch();
   const router = useRouter()
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -606,6 +606,11 @@ function bankAccount() {
       <CssBaseline />
 
       <Paper sx={{ p: 3 }}>
+        <Typography
+          sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px" }}
+        >
+          บัญชีธนาคาร
+        </Typography>
         <Grid
           container
           direction="row"
@@ -642,7 +647,7 @@ function bankAccount() {
           data={bank}
           columns={columns}
           pageSize="10"
-          title="รายชื่อลูกค้า"
+          title=""
         />
 
       </Paper>
@@ -1053,23 +1058,47 @@ function bankAccount() {
             </Grid>
             {rowData.bank_type === "add" ? "" : <Grid item xs={5}></Grid>}
 
-            <Grid item xs={3}>
-              <Button
-                variant="contained"
-                size="large"
-                fullWidth
-                onClick={() =>
-                  openDialogAdd.type === "add" ? addBank() : editBank()
-                }
-                sx={{
-                  mt: 3,
-                  background: "#129A50",
-                }}
-              >
-                {openDialogAdd.type === "add"
-                  ? "เพิ่มบัญชีธนาคาร"
-                  : "แก้ไขบัญชีธนาคาร"}
-              </Button>
+            <Grid container justifyContent='center' spacing={1} sx={{ mt: 2 }}>
+              <Grid container item xs={4}>
+                <Button
+                  // variant="outlined"
+                  variant="contained"
+                  size="large"
+                  fullWidth
+                  onClick={() => {
+                    openDialogAdd.type === "add" ? addBank() : editBank()
+                  }}
+                  sx={{
+                    mt: 3,
+                    // background: "#129A50",
+                    color: '#fff',
+
+                  }}
+                >
+                  {openDialogAdd.type === "add"
+                    ? "เพิ่มบัญชีธนาคาร"
+                    : "แก้ไขบัญชีธนาคาร"}
+                </Button>
+              </Grid>
+              <Grid container item xs={4}>
+                <Button
+                  // variant="outlined"
+                  variant="contained"
+                  size="large"
+                  fullWidth
+                  color="secondary"
+                  onClick={() => {
+                    setOpenDialogAdd(false)
+                  }}
+                  sx={{
+                    mt: 3,
+                    // background: "#129A50",
+                    // color: '#fff'
+                  }}
+                >
+                  ยกเลิก
+                </Button>
+              </Grid>
             </Grid>
           </Grid>
         </DialogContent>

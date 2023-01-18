@@ -45,7 +45,7 @@ export const menuSuperAdmin = [
         icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
       },
       {
-        name: "ข้อมูลลูกค้า",
+        name: "ตรวจสอบข้อมูลลูกค้า",
         link: "/member/memberInfo",
         icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
       },

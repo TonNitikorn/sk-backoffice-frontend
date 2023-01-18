@@ -54,11 +54,11 @@ function memberTable() {
    const [selectedDateRange, setSelectedDateRange] = useState({
       start: moment().format("YYYY-MM-DD 00:00"),
       end: moment().format("YYYY-MM-DD 23:59"),
-    });
-    const [search, setSearch] = useState({
-      username: "",
+   });
+   const [search, setSearch] = useState({
+      data: "",
       type: "",
-    });
+   });
 
    const handleChangeBonus = (event) => {
       setBonus(event.target.checked);
@@ -86,6 +86,12 @@ function memberTable() {
             },
             method: "post",
             url: `${hostname}/member/member_list`,
+            data: {
+               create_at_start: selectedDateRange.start,
+               create_at_end: selectedDateRange.end,
+               type: search.type === "all" ? "" : search.type,
+               data_search: search.data
+            }
          });
 
          let resData = res.data;
@@ -632,7 +638,7 @@ function memberTable() {
                   variant="outlined"
                   type="text"
                   name="type"
-                
+
                   value={search.type}
                   onChange={(e) => {
                      setSearch({
@@ -640,17 +646,17 @@ function memberTable() {
                         [e.target.name]: e.target.value,
                      });
                   }}
-                  sx={{ mt: 1, mr: 1, width: "220px" ,bgcolor:'#fff' }}
+                  sx={{ mt: 1, mr: 1, width: "220px", bgcolor: '#fff' }}
                   select
                   label="ประเภทการค้นหา"
                   InputLabelProps={{
                      shrink: true,
                   }}
                >
-                  <MenuItem value="">ทั้งหมด</MenuItem>
+                  <MenuItem value="all">ทั้งหมด</MenuItem>
                   <MenuItem value="username">Username</MenuItem>
                   <MenuItem value="tel">หมายเลขโทรศัพท์</MenuItem>
-                  <MenuItem value="bankNumber">เลขบัญชีธนาคาร</MenuItem>
+                  <MenuItem value="bank_number">เลขบัญชีธนาคาร</MenuItem>
                   <MenuItem value="fname">ชื่อจริง</MenuItem>
                   <MenuItem value="sname">นามสุกล</MenuItem>
                </TextField>
@@ -658,9 +664,9 @@ function memberTable() {
                <TextField
                   variant="outlined"
                   type="text"
-                  name="username"
-            
-                  value={search.username}
+                  name="data"
+
+                  value={search.data}
                   onChange={(e) => {
                      setSearch({
                         ...search,
@@ -668,21 +674,21 @@ function memberTable() {
                      });
                   }}
                   placeholder="ค้นหาข้อมูลที่ต้องการ"
-                  sx={{ mt: 1, mr: 2, width: "220px" ,bgcolor:'#fff'}}
+                  sx={{ mt: 1, mr: 2, width: "220px", bgcolor: '#fff' }}
                />
 
                <Button
                   variant="contained"
-                  style={{ marginRight: "8px", marginTop: 8 , color:'#fff'}}
+                  style={{ marginRight: "8px", marginTop: 8, color: '#fff' }}
                   color="primary"
                   size="large"
                   onClick={() => {
-                     getUser();
+                     getMemberList();
                   }}
                >
                   <Typography>ค้นหา</Typography>
                </Button>
-            
+
             </Grid>
          </Grid>
          <MaterialTableForm data={dataMember} columns={columns} pageSize="10" title="รายชื่อลูกค้า" />

@@ -22,7 +22,6 @@ function materialTableForm(props) {
                     columnResizable: true,
                     rowStyle: {
                         fontSize: 14,
-                        fontFamily: "Noto Sans Thai , sans-serif",
                     },
                     headerStyle: {
                         border: "1px solid rgba(224, 224, 224, 1)",
