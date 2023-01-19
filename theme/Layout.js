@@ -38,7 +38,7 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import Link from "next/link";
 import Logout from "@mui/icons-material/Logout";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import logo from "../assets/logo.jpg"
+import logo_angpao from "../assets/logo_angpao.png"
 
 //  function drawer
 const drawerWidth = 250;
@@ -161,9 +161,9 @@ function Layout({ children, page }) {
               อั่งเปา
             </Typography> */}
             <Image
-              src={logo}
+              src={logo_angpao}
               alt="scb"
-              width={50}
+              width={100}
               height={50}
             />
             <Button
