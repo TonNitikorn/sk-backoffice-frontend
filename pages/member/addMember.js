@@ -35,6 +35,7 @@ function addMember() {
   };
 
   const editUser = async () => {
+    console.log('rowData', rowData)
     setLoading(false);
     try {
       let res = await axios({
@@ -58,6 +59,8 @@ function addMember() {
         },
       });
 
+      console.log('res.data', res.data)
+
       if (res.data.message === "สร้างสมาชิกสำเร็จ") {
         Swal.fire({
           position: "center",
@@ -72,7 +75,6 @@ function addMember() {
     } catch (error) {
       console.log(error);
       if (
-        // error.response.data.error.status_code === 400 &&
         error.response.data.error.message === "เบอร์โทรซ้ำ"
       ) {
         Swal.fire({
@@ -85,13 +87,24 @@ function addMember() {
       }
 
       if (
-        // error.response.data.error.status_code === 400 &&
         error.response.data.error.message === "เลขบัญชีซ้ำ"
       ) {
         Swal.fire({
           position: "center",
           icon: "error",
           title: "เลขบัญชีธนาคารนี้มีผู้ใช้แล้ว",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      }
+
+      if (
+        error.response.data.error.message === "กรุณากรอกข้อมูลให้ครบถ้วน"
+      ) {
+        Swal.fire({
+          position: "center",
+          icon: "warning",
+          title: "กรุณากรอกข้อมูลให้ครบถ้วน",
           showConfirmButton: false,
           timer: 2000,
         });
@@ -332,7 +345,17 @@ function addMember() {
                 size="large"
                 fullWidth
                 onClick={() => {
-                  editUser();
+                  if (!rowData) {
+                    Swal.fire({
+                      position: "center",
+                      icon: "warning",
+                      title: "กรุณากรอกข้อมูลให้ครบถ้วน",
+                      showConfirmButton: false,
+                      timer: 2000,
+                    });
+                  } else {
+                    editUser();
+                  }
                 }}
                 sx={{
                   mt: 3,
