@@ -18,14 +18,35 @@ import axios from "axios";
 import hostname from "../../utils/hostname";
 import Swal from "sweetalert2";
 import withAuth from "../../routes/withAuth";
+import { useRouter } from "next/router";
 
 function addEmployee() {
+  const router = useRouter()
+
   const [rowData, setRowData] = useState({});
-  const [state, setState] = React.useState({
-    gilad: false,
-    jason: false,
-    antoine: false,
+  const [state, setState] = useState({
+    grap: false,
+    home: false,
+    member: false,
+    whitdraw: false,
+    reportWhitdrawDeposit: false,
+    promotion: false,
+    checkDataMember: false,
+    bank: false,
+    prefix: false,
+    transfer_money: false,
+    editError: false,
+    criminal_list: false,
+    deposit: false,
+    affiliate: false,
+    activities_log: false,
+    report: false,
+    admin_list: false,
   });
+
+  const { grap, home, member, whitdraw, reportWhitdrawDeposit,
+    promotion, checkDataMember, bank, prefix, transfer_money, editError,
+    criminal_list, deposit, affiliate, activities_log, report, admin_list } = state;
 
   const handleChange = (event) => {
     setState({
@@ -33,11 +54,14 @@ function addEmployee() {
       [event.target.name]: event.target.checked,
     });
   };
-  const { gilad, jason, antoine } = state;
+
+
 
   const handleChangeData = async (e) => {
     setRowData({ ...rowData, [e.target.name]: e.target.value });
   };
+
+  // console.log('state', state)
 
   const addEmployee = async () => {
     try {
@@ -46,13 +70,15 @@ function addEmployee() {
           Authorization: "Bearer " + localStorage.getItem("access_token"),
         },
         method: "post",
-        url: `${hostname}/api/user`,
+        url: `${hostname}/admin/register`,
         data: {
-          prefix: rowData.prefix,
-          info_name: rowData.info_name,
+          name: rowData.name,
           username: rowData.username,
           password: rowData.password,
           role: rowData.role,
+          tel: rowData.tel,
+          status: rowData.status,
+          preference: state
         },
       });
       if (res.data.message === "เพิ่มข้อมูลเรียบร้อยแล้ว") {
@@ -64,7 +90,7 @@ function addEmployee() {
           timer: 3000,
         });
       }
-      router.push("/employee");
+      router.push("/employee/employee");
     } catch (error) {
       console.log(error);
       if (error.response.data.error.status_code === 400) {
@@ -100,10 +126,21 @@ function addEmployee() {
             </Typography>
             <Typography>ชื่อ-นามสกุล</Typography>
             <TextField
-              name="info_name"
+              name="name"
               type="text"
               fullWidth
-              value={rowData.info_name || ""}
+              value={rowData.name || ""}
+              size="small"
+              onChange={(e) => handleChangeData(e)}
+              variant="outlined"
+              sx={{ mb: 3 }}
+            />
+            <Typography>เบอร์โทรศัพท์</Typography>
+            <TextField
+              name="tel"
+              type="number"
+              fullWidth
+              value={rowData.tel || ""}
               size="small"
               onChange={(e) => handleChangeData(e)}
               variant="outlined"
@@ -153,17 +190,26 @@ function addEmployee() {
               <MenuItem value="Owner">Owner</MenuItem>
               <MenuItem value="Support">Support</MenuItem>
             </TextField>
-            <Typography>prefix</Typography>
+            
+            <Typography>สถานะ</Typography>
             <TextField
-              name="prefix"
+              name="status"
               type="text"
+              value={rowData.status || ""}
+              placeholder="ชื่อ"
               fullWidth
-              value={rowData.prefix || ""}
               size="small"
               onChange={(e) => handleChangeData(e)}
               variant="outlined"
               sx={{ mb: 3 }}
-            />
+              select
+            >
+              <MenuItem selected disabled value>
+                เลือกสถานะ
+              </MenuItem>
+              <MenuItem value="ACTIVE">เปิดใช้งาน</MenuItem>
+              <MenuItem value="INACTIVE">ปิดใช้งาน</MenuItem>
+            </TextField>
             <Grid
               container
               direction="row"
@@ -173,14 +219,14 @@ function addEmployee() {
               <Button
                 variant="outlined"
                 sx={{ mr: 2 }}
-                onClick={() => {}}
+                onClick={() => { setRowData({}) }}
               >
                 รีเซ็ท
               </Button>
 
               <Button
                 variant="contained"
-                sx={{ bgcolor: "#41A3E3", color:"#ffff" }}
+                sx={{ bgcolor: "#41A3E3", color: "#ffff" }}
                 onClick={() => addEmployee()}
               >
                 ยืนยัน
@@ -188,6 +234,9 @@ function addEmployee() {
             </Grid>
           </Paper>
         </Grid>
+
+        {/* preference */}
+
         <Grid item xs={5}>
           <Paper sx={{ p: 5 }}>
             <Typography
@@ -203,15 +252,15 @@ function addEmployee() {
                     sx={{ m: 4 }}
                     component="fieldset"
                     variant="standard"
-                    disabled
+
                   >
                     <FormGroup>
                       <FormControlLabel
                         control={
                           <Checkbox
-                            checked={gilad}
+                            checked={grap}
                             onChange={handleChange}
-                            name="gilad"
+                            name="grap"
                           />
                         }
                         label="กราฟ"
@@ -219,9 +268,9 @@ function addEmployee() {
                       <FormControlLabel
                         control={
                           <Checkbox
-                            checked={jason}
+                            checked={home}
                             onChange={handleChange}
-                            name="jason"
+                            name="home"
                           />
                         }
                         label="หน้าหลัก"
@@ -229,9 +278,9 @@ function addEmployee() {
                       <FormControlLabel
                         control={
                           <Checkbox
-                            checked={antoine}
+                            checked={admin_list}
                             onChange={handleChange}
-                            name="antoine"
+                            name="admin_list"
                           />
                         }
                         label="รายชื่อพนักงาน"
@@ -239,9 +288,9 @@ function addEmployee() {
                       <FormControlLabel
                         control={
                           <Checkbox
-                            checked={gilad}
+                            checked={member}
                             onChange={handleChange}
-                            name="gilad"
+                            name="member"
                           />
                         }
                         label="สมาชิก"
@@ -249,9 +298,9 @@ function addEmployee() {
                       <FormControlLabel
                         control={
                           <Checkbox
-                            checked={jason}
+                            checked={whitdraw}
                             onChange={handleChange}
-                            name="jason"
+                            name="whitdraw"
                           />
                         }
                         label="ถอนเงิน"
@@ -259,9 +308,9 @@ function addEmployee() {
                       <FormControlLabel
                         control={
                           <Checkbox
-                            checked={antoine}
+                            checked={reportWhitdrawDeposit}
                             onChange={handleChange}
-                            name="antoine"
+                            name="reportWhitdrawDeposit"
                           />
                         }
                         label="รายงานฝาก-ถอน"
@@ -269,9 +318,9 @@ function addEmployee() {
                       <FormControlLabel
                         control={
                           <Checkbox
-                            checked={gilad}
+                            checked={promotion}
                             onChange={handleChange}
-                            name="gilad"
+                            name="promotion"
                           />
                         }
                         label="โปรโมชัน"
@@ -279,9 +328,9 @@ function addEmployee() {
                       <FormControlLabel
                         control={
                           <Checkbox
-                            checked={jason}
+                            checked={checkDataMember}
                             onChange={handleChange}
-                            name="jason"
+                            name="checkDataMember"
                           />
                         }
                         label="เช็คข้อมูลลูกค้า"
@@ -289,9 +338,9 @@ function addEmployee() {
                       <FormControlLabel
                         control={
                           <Checkbox
-                            checked={antoine}
+                            checked={bank}
                             onChange={handleChange}
-                            name="antoine"
+                            name="bank"
                           />
                         }
                         label="Bank"
@@ -299,9 +348,9 @@ function addEmployee() {
                       <FormControlLabel
                         control={
                           <Checkbox
-                            checked={jason}
+                            checked={transfer_money}
                             onChange={handleChange}
-                            name="jason"
+                            name="transfer_money"
                           />
                         }
                         label="โอนเงินภายใน"
@@ -314,15 +363,15 @@ function addEmployee() {
                     sx={{ m: 4 }}
                     component="fieldset"
                     variant="standard"
-                    disabled
+
                   >
                     <FormGroup>
                       <FormControlLabel
                         control={
                           <Checkbox
-                            checked={gilad}
+                            checked={prefix}
                             onChange={handleChange}
-                            name="gilad"
+                            name="prefix"
                           />
                         }
                         label="Prefix"
@@ -330,9 +379,9 @@ function addEmployee() {
                       <FormControlLabel
                         control={
                           <Checkbox
-                            checked={jason}
+                            checked={editError}
                             onChange={handleChange}
-                            name="jason"
+                            name="editError"
                           />
                         }
                         label="แก้ไขข้อผิดพลาด"
@@ -340,9 +389,9 @@ function addEmployee() {
                       <FormControlLabel
                         control={
                           <Checkbox
-                            checked={antoine}
+                            checked={criminal_list}
                             onChange={handleChange}
-                            name="antoine"
+                            name="criminal_list"
                           />
                         }
                         label="รายชื่อมิจฉาชีพ"
@@ -350,9 +399,9 @@ function addEmployee() {
                       <FormControlLabel
                         control={
                           <Checkbox
-                            checked={gilad}
+                            checked={deposit}
                             onChange={handleChange}
-                            name="gilad"
+                            name="deposit"
                           />
                         }
                         label="ฝากติดต่อ 7 วัน"
@@ -360,9 +409,9 @@ function addEmployee() {
                       <FormControlLabel
                         control={
                           <Checkbox
-                            checked={jason}
+                            checked={affiliate}
                             onChange={handleChange}
-                            name="AFFILIATE"
+                            name="affiliate"
                           />
                         }
                         label="AFFILIATE"
@@ -370,9 +419,9 @@ function addEmployee() {
                       <FormControlLabel
                         control={
                           <Checkbox
-                            checked={antoine}
+                            checked={activities_log}
                             onChange={handleChange}
-                            name="antoine"
+                            name="activities_log"
                           />
                         }
                         label="ACTIVITIES LOGS"
@@ -380,9 +429,9 @@ function addEmployee() {
                       <FormControlLabel
                         control={
                           <Checkbox
-                            checked={gilad}
+                            checked={report}
                             onChange={handleChange}
-                            name="gilad"
+                            name="report"
                           />
                         }
                         label="รายงานสรุป"
@@ -394,6 +443,8 @@ function addEmployee() {
             </Box>
           </Paper>
         </Grid>
+
+
       </Grid>
     </Layout>
   );
