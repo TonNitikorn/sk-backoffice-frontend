@@ -13,12 +13,14 @@ import {
   FormGroup,
   FormControlLabel,
   MenuItem,
+  IconButton,
 } from "@mui/material";
 import axios from "axios";
 import hostname from "../../utils/hostname";
 import Swal from "sweetalert2";
 import withAuth from "../../routes/withAuth";
 import { useRouter } from "next/router";
+import CloseIcon from '@mui/icons-material/Close';
 
 function addEmployee() {
   const router = useRouter()
@@ -115,12 +117,14 @@ function addEmployee() {
 
   return (
     <Layout>
-      <Grid container direction="row" spacing={2}>
-        <Grid item xs={7}>
-          <Paper sx={{ p: 5 }}>
+      <Paper sx={{ p: 5 }}>
+        <Grid container direction="row" spacing={10}>
+
+          <Grid item xs={7}>
+
             {" "}
             <Typography
-              sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px" }}
+              sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px", mb: 3 }}
             >
               เพิ่มพนักงาน
             </Typography>
@@ -190,7 +194,7 @@ function addEmployee() {
               <MenuItem value="Owner">Owner</MenuItem>
               <MenuItem value="Support">Support</MenuItem>
             </TextField>
-            
+
             <Typography>สถานะ</Typography>
             <TextField
               name="status"
@@ -210,46 +214,35 @@ function addEmployee() {
               <MenuItem value="ACTIVE">เปิดใช้งาน</MenuItem>
               <MenuItem value="INACTIVE">ปิดใช้งาน</MenuItem>
             </TextField>
+
+
+          </Grid>
+
+          {/* preference */}
+
+          <Grid item xs={5}>
+
             <Grid
               container
               direction="row"
-              justifyContent="flex-end"
-              alignItems="flex-end"
-            >
-              <Button
-                variant="outlined"
-                sx={{ mr: 2 }}
-                onClick={() => { setRowData({}) }}
+              justifyContent="space-between"
+              alignItems="start">
+              <Typography
+                sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px", mb: 3 }}
               >
-                รีเซ็ท
-              </Button>
+                ตั้งค่าสิทธิ์การเข้าถึง
+              </Typography>
 
-              <Button
-                variant="contained"
-                sx={{ bgcolor: "#41A3E3", color: "#ffff" }}
-                onClick={() => addEmployee()}
-              >
-                ยืนยัน
-              </Button>
+              <IconButton onClick={() => router.push("/employee/employee")}>
+                <CloseIcon sx={{ fontSize: '30px' }} />
+              </IconButton>
             </Grid>
-          </Paper>
-        </Grid>
 
-        {/* preference */}
-
-        <Grid item xs={5}>
-          <Paper sx={{ p: 5 }}>
-            <Typography
-              sx={{ mb: 2, fontWeight: "bold", color: "#4CAEE3" }}
-              variant="h6"
-            >
-              ตั้งค่าสิทธิ์การเข้าถึง
-            </Typography>
             <Box sx={{ display: "flex" }}>
               <Grid container direction="row">
                 <Grid item xs={6}>
                   <FormControl
-                    sx={{ m: 4 }}
+                    sx={{ m: 2 }}
                     component="fieldset"
                     variant="standard"
 
@@ -360,7 +353,7 @@ function addEmployee() {
                 </Grid>
                 <Grid item xs={6}>
                   <FormControl
-                    sx={{ m: 4 }}
+                    sx={{ m: 2 }}
                     component="fieldset"
                     variant="standard"
 
@@ -374,7 +367,7 @@ function addEmployee() {
                             name="prefix"
                           />
                         }
-                        label="Prefix"
+                        label="จัดการหน้าเว็บ"
                       />
                       <FormControlLabel
                         control={
@@ -441,11 +434,35 @@ function addEmployee() {
                 </Grid>
               </Grid>
             </Box>
-          </Paper>
+            <Grid
+              container
+              direction="row"
+              justifyContent="flex-end"
+              alignItems="flex-end"
+              sx={{ mt: 5 }}
+            >
+              <Button
+                variant="outlined"
+                sx={{ mr: 2 }}
+                onClick={() => { setRowData({}) }}
+              >
+                รีเซ็ท
+              </Button>
+
+              <Button
+                variant="contained"
+                sx={{ bgcolor: "#41A3E3", color: "#ffff" }}
+                onClick={() => addEmployee()}
+              >
+                ยืนยัน
+              </Button>
+            </Grid>
+
+          </Grid>
+
+
         </Grid>
-
-
-      </Grid>
+      </Paper>
     </Layout>
   );
 }

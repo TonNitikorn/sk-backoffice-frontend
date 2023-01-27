@@ -17,6 +17,9 @@ import {
   FormControl,
   FormGroup,
   FormControlLabel,
+  Chip,
+  Card,
+  CardContent
 } from "@mui/material";
 import axios from "axios";
 import hostname from "../../utils/hostname";
@@ -42,6 +45,7 @@ function employee() {
   const [openEditData, setOpenEditData] = useState(false);
   const [confirmEditPassword, setConfirmEditPassword] = useState(false)
   const [newPassword, setNewPassword] = useState()
+  const [employeeTotal, setEmployeeTotal] = useState({})
   const [state, setState] = useState({
     grap: false,
     home: false,
@@ -100,9 +104,23 @@ function employee() {
       let resData = res.data;
 
       let no = 1;
+      let active_total = resData.filter(item => item.status === 'ACTIVE')
+      let admin_total = resData.filter(item => item.role === 'ADMIN')
+      let owner_total = resData.filter(item => item.role === 'OWNER')
+      let support_total = resData.filter(item => item.role === 'SUPPORT')
+      let superAdmin_total = resData.filter(item => item.role === "SUPERADMIN")
+
       resData.map((item) => {
         item.no = no++;
       });
+      setEmployeeTotal({
+        total: resData.length,
+        active: active_total.length,
+        admin: admin_total.length,
+        owner: owner_total.length,
+        support: support_total.length,
+        superAdmin: superAdmin_total.length
+      })
       setEmployee(resData);
       setLoading(false);
     } catch (error) {
@@ -138,6 +156,8 @@ function employee() {
         },
       });
       setOpenEditData(false);
+      setNewPassword()
+      setRowData({})
       if (res.data.message) {
         Swal.fire({
           position: "center",
@@ -162,8 +182,6 @@ function employee() {
   };
 
   const editPassword = async () => {
-
-    console.log('rowData', rowData)
     try {
       let res = await axios({
         headers: {
@@ -189,11 +207,6 @@ function employee() {
       }
     }
   };
-
-  useEffect(() => {
-    getProfileAdmin()
-  }, [])
-
   const columns = [
     {
       title: "สถานะ",
@@ -202,12 +215,19 @@ function employee() {
       render: (item) => {
         return (
           <>
-          <IconButton>
-            <CircleIcon sx={{ color: item.status === "ACTIVE" ? '#50F343' : '#F33700', fontSize: 'small'}}/>
-          </IconButton>
-        </>
+            <Chip
+              label={item.status === "ACTIVE" ? "เปิดใช้งาน" : "ปิดใช้งาน"}
+              // size="small"
+              style={{
+                padding: 10,
+                backgroundColor: item.status === "ACTIVE" ? "#129A50" : "#FFB946",
+                color: "#fff",
+                minWidth: "120px"
+              }}
+            />
+          </>
         )
-        
+
       }
     },
 
@@ -253,13 +273,183 @@ function employee() {
 
   ]
 
+  useEffect(() => {
+    getProfileAdmin()
+  }, [])
+
   return (
     <Layout>
       <Paper sx={{ p: 3 }}>
+        <Grid
+          container
+          justifyContent="space-between"
+          sx={{ mb: 5 }}
+        >
+
+
+          <Card sx={{ bgcolor: "#101D35", maxWidth: 200, width: 180, }}>
+            <CardContent>
+              <Typography component="div" sx={{ color: "#eee" }}>
+                พนักงานทั้งหมด
+              </Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>
+                {employeeTotal.total}
+              </Typography>
+              <Typography
+                component="div"
+                sx={{ color: "#eee", textAlign: "right" }}
+              >
+                คน
+              </Typography>
+            </CardContent>
+          </Card>
+
+          <Card
+            sx={{
+              width: 180,
+              bgcolor: "#101D35",
+              maxWidth: 200,
+            }}
+          >
+            <CardContent>
+              <Typography component="div" sx={{ color: "#eee" }}>
+                ใช้งานอยู่
+              </Typography>
+
+              <Typography
+                variant="h5"
+                sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}
+              >                  {employeeTotal.active}
+
+              </Typography>
+              <Typography
+                component="div"
+                sx={{ color: "#eee", textAlign: "right" }}
+              >
+                คน
+              </Typography>
+            </CardContent>
+          </Card>
+
+          <Card
+            sx={{
+              width: 180,
+              bgcolor: "#101D35",
+              maxWidth: 200,
+            }}
+          >
+            <CardContent>
+              <Typography component="div" sx={{ color: "#eee" }}>
+                Super Admin
+              </Typography>
+
+              <Typography
+                variant="h5"
+                sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}
+              >                  {employeeTotal.superAdmin}
+
+                {/* {Intl.NumberFormat("TH").format(parseInt(report.sumAmountAll))} */}
+              </Typography>
+              <Typography
+                component="div"
+                sx={{ color: "#eee", textAlign: "right" }}
+              >
+                คน
+              </Typography>
+            </CardContent>
+          </Card>
+
+          <Card
+            sx={{
+              width: 180,
+              bgcolor: "#101D35",
+              maxWidth: 200,
+            }}
+          >
+            <CardContent>
+              <Typography component="div" sx={{ color: "#eee" }}>
+                Admin
+              </Typography>
+
+              <Typography
+                variant="h5"
+                sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}
+              >                  {employeeTotal.admin}
+
+                {/* {Intl.NumberFormat("TH").format(parseInt(report.sumAmountAll))} */}
+              </Typography>
+              <Typography
+                component="div"
+                sx={{ color: "#eee", textAlign: "right" }}
+              >
+                คน
+              </Typography>
+            </CardContent>
+          </Card>
+
+          <Card
+            sx={{
+              width: 180,
+              bgcolor: "#101D35",
+              maxWidth: 200,
+            }}
+          >
+            <CardContent>
+              <Typography component="div" sx={{ color: "#eee" }}>
+                Owner
+              </Typography>
+
+              <Typography
+                variant="h5"
+                sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}
+              >                  {employeeTotal.owner}
+
+                {/* {Intl.NumberFormat("TH").format(parseInt(report.sumAmountAll))} */}
+              </Typography>
+              <Typography
+                component="div"
+                sx={{ color: "#eee", textAlign: "right" }}
+              >
+                คน
+              </Typography>
+            </CardContent>
+          </Card>
+
+          <Card
+            sx={{
+              width: 180,
+              bgcolor: "#101D35",
+              maxWidth: 200,
+            }}
+          >
+            <CardContent>
+              <Typography component="div" sx={{ color: "#eee" }}>
+                SUPPORT
+              </Typography>
+
+              <Typography
+                variant="h5"
+                sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}
+              >                  {employeeTotal.support}
+
+                {/* {Intl.NumberFormat("TH").format(parseInt(report.sumAmountAll))} */}
+              </Typography>
+              <Typography
+                component="div"
+                sx={{ color: "#eee", textAlign: "right" }}
+              >
+                คน
+              </Typography>
+            </CardContent>
+          </Card>
+
+        </Grid>
+
         <Grid container
           direction="row"
-          justifyContent="end"
-          alignItems="center">
+          justifyContent="space-between"
+          alignItems="start">
+            <Typography variant='h5'>รายชื่อพนักงาน</Typography>
           <Box>
             <Button
               variant='contained'
@@ -277,14 +467,11 @@ function employee() {
               </Typography>
             </Button>
           </Box>
-
         </Grid>
-
         <MaterialTableForm
           data={employee}
           columns={columns}
           pageSize="10"
-          title="รายชื่อพนักงาน"
         />
       </Paper>
 

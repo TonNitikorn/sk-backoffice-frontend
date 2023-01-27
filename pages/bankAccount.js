@@ -487,16 +487,14 @@ function bankAccount() {
       title: "สถานะ",
       align: "center",
       render: (item) => (
-
         <Chip
           label={item.status === "ACTIVE" ? "เปิดใช้งาน" : "ปิดใช้งาน"}
-          size="small"
+          // size="small"
           style={{
             padding: 10,
-            paddingTop: 12,
-            backgroundColor: "#fff",
-            border: item.status === "ACTIVE" ? "2px solid #129A50" : "2px solid #FFB946",
-            color: item.status === "ACTIVE" ? "#129A50" : "#FFB946",
+            backgroundColor: item.status === "ACTIVE" ? "#129A50" : "#FFB946",
+            color: "#fff",
+            minWidth: "120px"
           }}
         />
       ),
@@ -505,16 +503,14 @@ function bankAccount() {
       title: "ประเภท",
       align: "center",
       render: (item) => (
-
         <Chip
           label={item.type === "DEPOSIT" ? "สำหรับฝาก" : "สำหรับถอน"}
-          size="small"
+          // size="small"
           style={{
             padding: 10,
-            paddingTop: 12,
-            backgroundColor: "#fff",
-            border: item.type === "DEPOSIT" ? "2px solid #129A50" : "2px solid #FFB946",
-            color: item.type === "DEPOSIT" ? "#129A50" : "#FFB946",
+            backgroundColor: item.status === "DEPOSIT" ? "#129A50" : "#FFB946",
+            color: "#fff",
+            minWidth: "120px"
           }}
         />
       ),
