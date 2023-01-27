@@ -25,13 +25,13 @@ export const menuSuperAdmin = [
     icon: <HomeIcon />,
   },
   {
-    name: "ถอนเงิน",
-    link: "/withdraw",
+    name: "สร้างรายการถอน",
+    link: "/withdrawCreate",
     icon: <CurrencyExchangeIcon />,
   },
   {
     name: "จัดการข้อมูลการถอน",
-    link: "/withdrawpending",
+    link: "/withdrawPending",
     icon: <FormatListBulletedIcon />,
   },
   {
@@ -57,11 +57,11 @@ export const menuSuperAdmin = [
     ],
   },
 
-  // {
-  //   name: "Prefix",
-  //   link: "/prefix",
-  //   icon: <LibraryBooksIcon />,
-  // },
+  {
+    name: "จัดการหน้าเว็บ",
+    link: "/manageWebPages",
+    icon: <LibraryBooksIcon />,
+  },
   {
     name: "แก้ไขข้อผิดพลาด",
     link: "/editError",
@@ -195,13 +195,13 @@ export const menuAdmin = [
     icon: <HomeIcon />,
   },
   {
-    name: "ถอนเงิน",
-    link: "/withdraw",
+    name: "สร้างรายการถอน",
+    link: "/withdrawCreate",
     icon: <CurrencyExchangeIcon />,
   },
   {
     name: "จัดการข้อมูลการถอน",
-    link: "/withdrawpending",
+    link: "/withdrawPending",
     icon: <FormatListBulletedIcon />,
   },
   {
@@ -222,11 +222,11 @@ export const menuAdmin = [
     ],
   },
 
-  // {
-  //   name: "Prefix",
-  //   link: "/prefix",
-  //   icon: <LibraryBooksIcon />,
-  // },
+  {
+    name: "จัดการหน้าเว็บ",
+    link: "/manageWebPages",
+    icon: <LibraryBooksIcon />,
+  },
   {
     name: "แก้ไขข้อผิดพลาด",
     link: "/editError",

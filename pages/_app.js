@@ -29,7 +29,7 @@ function MyApp({ Component, pageProps }) {
     },
     typography: {
       fontFamily: 'Noto Sans Thai',
-      // fontSize: 14,
+      fontSize: 14,
       // color: '#ffff',
       // button: {
       //   textTransform: "none",
