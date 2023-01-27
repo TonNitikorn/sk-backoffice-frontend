@@ -12,7 +12,7 @@ import {
   Menu,
   MenuItem,
   Grid,
-  Button,AppBar,Drawer,Toolbar,Collapse
+  Button, AppBar, Drawer, Toolbar, Collapse
 } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
 import { menuSuperAdmin } from "../routes/menu";
@@ -29,6 +29,7 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import axios from "axios";
 import hostname from "../utils/hostname";
 import logo_angpao from "../assets/logo_ap.png"
+import PersonIcon from "@mui/icons-material/Person";
 
 const drawerWidth = 260;
 
@@ -102,7 +103,30 @@ function Layout({ children, page }) {
               onClick={handleCloseAcc}
               transformOrigin={{ horizontal: "right", vertical: "top" }}
               anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+              color='red'
+              sx={{
+                mt: "1px",
+                "& .MuiMenuItem-root": {
+                  "&:hover": {
+                    backgroundColor: "#41A3E3",
+                    borderRadius: "6px",
+                  },
+                },
+              }}
             >
+              <MenuItem
+                onClick={async () => {
+                  await dispatch(signOut());
+                  localStorage.clear();
+                  router.push("/auth/login");
+                }}
+
+              >
+                <ListItemIcon>
+                  <PersonIcon fontSize="small" />
+                </ListItemIcon>
+                โปรไฟล์
+              </MenuItem>
               <MenuItem
                 onClick={async () => {
                   await dispatch(signOut());
