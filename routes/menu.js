@@ -38,7 +38,9 @@ export const menuSuperAdmin = [
     name: "ลูกค้า",
     // link: "/DepositWithdrawalSystem/CreditManual",
     icon: <GroupsIcon />,
-    children: [
+    type: 'collapse',
+    id: 'member',
+    member: [
       {
         name: "สมัครสมาชิกลูกค้า",
         link: "/member/addMember",
@@ -86,7 +88,9 @@ export const menuSuperAdmin = [
     name: "Point & Ranking",
     link: "/ranking",
     icon: <PersonIcon />,
-    children: [
+    type: 'collapse',
+    id: 'point',
+    point: [
       {
         name: "อนุมัติ Point",
         link: "approvePoint",
@@ -104,7 +108,9 @@ export const menuSuperAdmin = [
     name: "รายงาน",
     // link: "/DepositWithdrawalSystem/CreditManual",
     icon: <FormatListBulletedIcon />,
-    children: [
+    type: 'collapse',
+    id: 'report',
+    report: [
       {
         name: "รายงานการฝาก",
         link: "/report/reportDeposit",
@@ -128,33 +134,33 @@ export const menuSuperAdmin = [
     ],
   },
 
-  {
-    name: "สรุป",
-    // link: "/DepositWithdrawalSystem/CreditManual",
-    icon: <InsertChartIcon />,
-    children: [
-      {
-        name: "สรุปโปรโมชัน",
-        link: "/summary/summaryPromotion",
-        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
-      },
-      {
-        name: "รายงานการฝาก/ถอนตามบุคคล",
-        link: "/summary/depositWithdraw",
-        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
-      },
-      {
-        name: "รายการฝากที่ถูกซ่อน",
-        link: "/summary/withdrawClose",
-        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
-      },
-      {
-        name: "กำไรขาดทุน",
-        link: "/summary/profitLoss",
-        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
-      },
-    ],
-  },
+  // {
+  //   name: "สรุป",
+  //   // link: "/DepositWithdrawalSystem/CreditManual",
+  //   icon: <InsertChartIcon />,
+  //   children: [
+  //     {
+  //       name: "สรุปโปรโมชัน",
+  //       link: "/summary/summaryPromotion",
+  //       icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
+  //     },
+  //     {
+  //       name: "รายงานการฝาก/ถอนตามบุคคล",
+  //       link: "/summary/depositWithdraw",
+  //       icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
+  //     },
+  //     {
+  //       name: "รายการฝากที่ถูกซ่อน",
+  //       link: "/summary/withdrawClose",
+  //       icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
+  //     },
+  //     {
+  //       name: "กำไรขาดทุน",
+  //       link: "/summary/profitLoss",
+  //       icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
+  //     },
+  //   ],
+  // },
   // {
   //   name: "เช็คข้อมูลลูกค้า",
   //   link: "/checkUserData",

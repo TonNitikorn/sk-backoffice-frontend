@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Divider,
@@ -11,112 +12,34 @@ import {
   Menu,
   MenuItem,
   Grid,
-  Button
+  Button,AppBar,Drawer,Toolbar,Collapse
 } from "@mui/material";
-import React, { useState, useEffect } from "react";
-import Image from "next/image";
 import CssBaseline from "@mui/material/CssBaseline";
-import { useRouter } from "next/router";
-import { signOut } from "../store/slices/userSlice";
+import { menuSuperAdmin } from "../routes/menu";
 import { useAppDispatch } from "../store/store";
-import hostname from "../utils/hostname";
-import axios from "axios";
-import MuiAppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
-import MuiDrawer from '@mui/material/Drawer';
-import { styled, useTheme } from '@mui/material/styles';
-import MenuIcon from '@mui/icons-material/Menu';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { menuSuperAdmin, menuAdmin } from "../routes/menu";
+import Router, { useRouter } from "next/router";
+import { signOut } from "../store/slices/userSlice";
+import Image from "next/image";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import Logout from "@mui/icons-material/Logout";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import Collapse from "@mui/material/Collapse";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import Link from "next/link";
-import Logout from "@mui/icons-material/Logout";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import logo_angpao from "../assets/logo_angpao.png"
+import axios from "axios";
+import hostname from "../utils/hostname";
+import logo_angpao from "../assets/logo_ap.png"
 
-//  function drawer
-const drawerWidth = 250;
-const openedMixin = (theme) => ({
-  width: drawerWidth,
-  transition: theme.transitions.create('width', {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.enteringScreen,
-  }),
-  overflowX: 'hidden',
-});
-
-const closedMixin = (theme) => ({
-  transition: theme.transitions.create('width', {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  overflowX: 'hidden',
-  width: `calc(${theme.spacing(7)} + 1px)`,
-  [theme.breakpoints.up('sm')]: {
-    width: `calc(${theme.spacing(8)} + 1px)`,
-  },
-});
-
-const DrawerHeader = styled('div')(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'flex-end',
-  padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
-  ...theme.mixins.toolbar,
-}));
-
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== 'open',
-})(({ theme, open }) => ({
-  zIndex: theme.zIndex.drawer + 1,
-  transition: theme.transitions.create(['width', 'margin'], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
-}));
-
-const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme, open }) => ({
-    width: drawerWidth,
-    flexShrink: 0,
-    whiteSpace: 'nowrap',
-    boxSizing: 'border-box',
-    ...(open && {
-      ...openedMixin(theme),
-      '& .MuiDrawer-paper': openedMixin(theme),
-    }),
-    ...(!open && {
-      ...closedMixin(theme),
-      '& .MuiDrawer-paper': closedMixin(theme),
-    }),
-  }),
-);
-//  function drawer
-
+const drawerWidth = 260;
 
 function Layout({ children, page }) {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const theme = useTheme();
-  const [open, setOpen] = useState(true);
-  const [openListMenu, setOpenListMenu] = useState(false)
   const [anchorEl, setAnchorEl] = useState(null);
   const openAcc = Boolean(anchorEl);
+  const [dataProfile, setDataProfile] = useState([]);
+  const [open, setOpen] = useState(false);
+
 
   const handleClickAcc = (event) => {
     setAnchorEl(event.currentTarget);
@@ -125,47 +48,39 @@ function Layout({ children, page }) {
     setAnchorEl(null);
   };
 
-
-  const handleDrawerOpen = () => {
-    setOpen(true);
+  const handleClick = (id) => {
+    if (id === "member") {
+      setOpen({
+        member: !open.member,
+      });
+    }
+    if (id === "point") {
+      setOpen({
+        point: !open.point,
+      });
+    }
+    if (id === "report") {
+      setOpen({
+        report: !open.report,
+      });
+    }
   };
 
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
-
-  const handleClick = () => {
-    setOpenListMenu(!openListMenu);
-  };
 
 
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open} elevation={0}>
+      <AppBar
+        position="fixed"
+        sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px` }}
+      >
         <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{
-              marginRight: 5,
-              ...(open && { display: 'none' }),
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
           <Grid container justifyContent="space-between">
-            {/* <Typography variant="h6" component="div">
-              อั่งเปา
-            </Typography> */}
-            <Image
-              src={logo_angpao}
-              alt="scb"
-              width={100}
-              height={50}
-            />
+            <Typography variant="h6" component="div">
+
+            </Typography>
+
             <Button
               onClick={handleClickAcc}
               variant="contained"
@@ -205,16 +120,16 @@ function Layout({ children, page }) {
             </Menu>
           </Grid>
 
-
-
         </Toolbar>
       </AppBar>
-      <Drawer variant="permanent"
+      <Drawer
         sx={{
-          display: { xs: "none", sm: "block" },
-          "& .MuiDrawer-paper": {
+          width: drawerWidth,
+          flexShrink: 0,
+          '& .MuiDrawer-paper': {
+            width: drawerWidth,
+            boxSizing: 'border-box',
             backgroundColor: "#eee",
-            color: "#000",
           },
           "& .MuiListItemButton-root": {
             "&:hover": {
@@ -222,106 +137,101 @@ function Layout({ children, page }) {
               borderRadius: "6px",
             },
           },
-        }} open={open}>
-        <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-          </IconButton>
-        </DrawerHeader>
+        }}
+        variant="permanent"
+        anchor="left"
+      >
+        <Grid justifyContent="center" alignItems="center" sx={{ pl: 7, pt: 1 }}>
+          <Image
+            src={logo_angpao}
+            alt="scb"
+            width={150}
+            height={80}
+          />
+        </Grid>
         <Divider />
+
         <List>
           {menuSuperAdmin.map((item) => (
             <>
-              {!item.children ? <ListItem key={item.name} disablePadding sx={{ display: 'block' }}>
-                <ListItemButton
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
-                    px: 2.5,
-                  }}
-                  onClick={() => {
-                    router.push(`${item.link}`)
-                  }}
-                >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    {item.icon}
-                  </ListItemIcon>
-                  <ListItemText primary={item.name} sx={{ opacity: open ? 1 : 0 }} />
-                </ListItemButton>
-              </ListItem> : ""}
-
-              {item.children ? (
+              {item.type === "collapse" ? (
                 <>
-                  <ListItemButton onClick={handleClick}>
-                    <ListItemIcon >
+                  <ListItemButton onClick={() => handleClick(item.id)}>
+                    <ListItemIcon>
                       {item.icon}
                     </ListItemIcon>
                     <ListItemText primary={item.name} />
-                    {openListMenu ? <ExpandLess /> : <ExpandMore />}
+
+                    {item.id === "member" ? open.member ? <ExpandLess /> : <ExpandMore /> :
+                      item.id === "point" ? open.point ? <ExpandLess /> : <ExpandMore /> :
+                        item.id === "report" ? open.report ? <ExpandLess /> : <ExpandMore /> : ''}
                   </ListItemButton>
-                  <Collapse in={openListMenu} timeout="auto" unmountOnExit>
-                    {item.children.map((e) => (
+
+                  <Collapse in={open.member} timeout="auto" unmountOnExit>
+                    {item.member?.map((e) => (
                       <List component="div" disablePadding>
-                        <Link href={`${e.link}`}>
-                          <ListItemButton sx={{ pl: 4 }}>
-                            <ListItemIcon >
-                              {e.icon}
-                            </ListItemIcon>
-                            <ListItemText
-                              primary={e.name}
-                            />
-                          </ListItemButton>
-                        </Link>
+                        <ListItemButton sx={{ pl: 4 }} onClick={() => router.push(e.link)}>
+                          <ListItemIcon>
+                            {e.icon}
+                          </ListItemIcon>
+                          <ListItemText primary={e.name} />
+                        </ListItemButton>
+                      </List>
+                    ))}
+                  </Collapse>
+                  <Collapse in={open.point} timeout="auto" unmountOnExit>
+                    {item.point?.map((e) => (
+                      <List component="div" disablePadding>
+                        <ListItemButton sx={{ pl: 4 }} onClick={() => router.push(e.link)}>
+                          <ListItemIcon>
+                            {e.icon}
+                          </ListItemIcon>
+                          <ListItemText primary={e.name} />
+                        </ListItemButton>
+                      </List>
+                    ))}
+                  </Collapse>
+                  <Collapse in={open.report} timeout="auto" unmountOnExit>
+                    {item.report?.map((e) => (
+                      <List component="div" disablePadding>
+                        <ListItemButton sx={{ pl: 4 }} onClick={() => router.push(e.link)}>
+                          <ListItemIcon>
+                            {e.icon}
+                          </ListItemIcon>
+                          <ListItemText primary={e.name} />
+                        </ListItemButton>
                       </List>
                     ))}
                   </Collapse>
                 </>
               ) : (
-                ""
+                <ListItem key={item} disablePadding>
+                  <ListItemButton onClick={() => router.push(item.link)}>
+                    <ListItemIcon >
+                      {item.icon}
+                    </ListItemIcon>
+                    <ListItemText primary={item.name} />
+                  </ListItemButton>
+                </ListItem>
               )}
             </>
 
+
           ))}
         </List>
-        <Divider />
-        <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}
-                >
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
+
+
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <DrawerHeader />
+
+      <Box
+        component="main"
+        sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
+      >
+        <Toolbar />
         {children}
       </Box>
-      
     </Box>
   );
 }
 
-export default Layout;
+export default Layout
