@@ -155,11 +155,11 @@ export const menuSuperAdmin = [
       },
     ],
   },
-  {
-    name: "เช็คข้อมูลลูกค้า",
-    link: "/checkUserData",
-    icon: <LocalLibraryIcon />,
-  },
+  // {
+  //   name: "เช็คข้อมูลลูกค้า",
+  //   link: "/checkUserData",
+  //   icon: <LocalLibraryIcon />,
+  // },
   // {
   //   name: "ลูกค้าเก่า",
   //   link: "/oldMember",
