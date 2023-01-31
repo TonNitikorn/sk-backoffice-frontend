@@ -91,7 +91,7 @@ function reportError() {
             <Paper sx={{ p: 3, mt: 3 }}>
                 <Grid container>
                     <Typography variant="h5" sx={{ p: 3 }}>
-                        รายงานการผิดพลาด
+                    รายงานการเติมเครดิตแบบ manual
                     </Typography>
                     <Grid xs={12} sx={{ mb: 3 }}>
                         <TextField

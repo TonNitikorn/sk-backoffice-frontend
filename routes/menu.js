@@ -65,7 +65,7 @@ export const menuSuperAdmin = [
     icon: <LibraryBooksIcon />,
   },
   {
-    name: "แก้ไขข้อผิดพลาด",
+    name: "เติมเครดิตแบบ manual",
     link: "/editError",
     icon: <EditLocationAltIcon />,
   },

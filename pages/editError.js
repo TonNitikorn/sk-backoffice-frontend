@@ -405,7 +405,7 @@ function editError() {
     <Layout>
       <Box>
         <Paper sx={{ p: 3 }}>
-          <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px", mb: 4, }}> แก้ไขข้อผิดพลาด </Typography>
+          <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px", mb: 4, }}> เติมเครดิตแบบ manual </Typography>
           <Grid container>
 
             <Button
