@@ -30,6 +30,7 @@ import axios from "axios";
 import hostname from "../utils/hostname";
 import logo_angpao from "../assets/logo_ap.png"
 import PersonIcon from "@mui/icons-material/Person";
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const drawerWidth = 260;
 
@@ -74,74 +75,13 @@ function Layout({ children, page }) {
       <CssBaseline />
       <AppBar
         position="fixed"
-        sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px` }}
+        sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px`, height: 80 }}
       >
         <Toolbar>
           <Grid container justifyContent="space-between">
             <Typography variant="h6" component="div">
 
             </Typography>
-
-            <Button
-              onClick={handleClickAcc}
-              variant="contained"
-              size="small"
-              sx={{ ml: 2, bgcolor: "#eee" }}
-              aria-controls={open ? "account-menu" : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? "true" : undefined}
-            >
-              <AccountCircleIcon sx={{ width: 35, height: 35, mr: 2 }} />
-              <Typography>asdasd</Typography>
-              <ArrowDropDownIcon />
-            </Button>
-            <Menu
-              anchorEl={anchorEl}
-              id="account-menu"
-              open={openAcc}
-              onClose={handleCloseAcc}
-              onClick={handleCloseAcc}
-              transformOrigin={{ horizontal: "right", vertical: "top" }}
-              anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-              color='red'
-              sx={{
-                mt: "1px",
-                "& .MuiMenuItem-root": {
-                  "&:hover": {
-                    backgroundColor: "#41A3E3",
-                    borderRadius: "6px",
-                  },
-                },
-              }}
-            >
-              <MenuItem
-                onClick={async () => {
-                  await dispatch(signOut());
-                  localStorage.clear();
-                  router.push("/auth/login");
-                }}
-
-              >
-                <ListItemIcon>
-                  <PersonIcon fontSize="small" />
-                </ListItemIcon>
-                โปรไฟล์
-              </MenuItem>
-              <MenuItem
-                onClick={async () => {
-                  await dispatch(signOut());
-                  localStorage.clear();
-                  router.push("/auth/login");
-                }}
-              >
-                <ListItemIcon>
-                  <Logout fontSize="small" />
-                </ListItemIcon>
-                ออกจากระบบ
-              </MenuItem>
-
-
-            </Menu>
           </Grid>
 
         </Toolbar>
@@ -165,12 +105,12 @@ function Layout({ children, page }) {
         variant="permanent"
         anchor="left"
       >
-        <Grid justifyContent="center" alignItems="center" sx={{ pl: 7, pt: 1 }}>
+        <Grid justifyContent="center" alignItems="center" sx={{ pl: 9, pt: 1 }}>
           <Image
             src={logo_angpao}
             alt="scb"
-            width={150}
-            height={80}
+            width={120}
+            height={65}
           />
         </Grid>
         <Divider />
@@ -244,12 +184,37 @@ function Layout({ children, page }) {
           ))}
         </List>
 
+        <Divider />
+        <List>
+          <ListItem disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                <PersonIcon />
+              </ListItemIcon>
+              <ListItemText primary="โปรไฟล์" />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton
+              onClick={async () => {
+                await dispatch(signOut());
+                localStorage.clear();
+                router.push("/auth/login");
+              }}>
+              <ListItemIcon>
+                <LogoutIcon />
+              </ListItemIcon>
+              <ListItemText primary="ออกจากระบบ" />
+            </ListItemButton>
+          </ListItem>
+        </List>
+
 
       </Drawer>
 
       <Box
         component="main"
-        sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
+        sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3, mt: 2 }}
       >
         <Toolbar />
         {children}
