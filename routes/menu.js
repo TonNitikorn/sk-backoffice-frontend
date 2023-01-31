@@ -26,7 +26,7 @@ export const menuSuperAdmin = [
   },
   {
     name: "สร้างรายการถอน",
-    link: "/withdrawCreate",
+    link: "/withdraw",
     icon: <CurrencyExchangeIcon />,
   },
   {
@@ -129,6 +129,11 @@ export const menuSuperAdmin = [
       {
         name: "รายงานการสร้างรายการฝาก",
         link: "/report/reportMakeDeposit",
+        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
+      },
+      {
+        name: "รายงานการเติมเครดิต(Admin)",
+        link: "/report/reportError",
         icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
       },
     ],

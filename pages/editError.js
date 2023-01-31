@@ -405,16 +405,9 @@ function editError() {
     <Layout>
       <Box>
         <Paper sx={{ p: 3 }}>
-          <Typography
-            sx={{
-              fontSize: "24px",
-              textDecoration: "underline #41A3E3 3px",
-              mb: 4,
-            }}
-          >
-            แก้ไขข้อผิดพลาด
-          </Typography>
+          <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px", mb: 4, }}> แก้ไขข้อผิดพลาด </Typography>
           <Grid container>
+
             <Button
               variant="contained"
               onClick={() => {
@@ -460,262 +453,322 @@ function editError() {
             >
               <Typography>เติมเครดิต</Typography>
             </Button>
+
+
+            {page === 0 ? (
+              <>
+                <Grid container sx={{ mt: 5, ml: 4 }}>
+                  <Grid item xs={1} >
+                    <Typography>ชื่อผู้ใช้ : </Typography>
+                  </Grid>
+                  <Grid item xs={5}>
+                    <TextField
+                      name="username"
+                      type="text"
+                      fullWidth
+                      value={rowData.username || ""}
+                      size="small"
+                      placeholder="Username"
+                      onChange={(e) => handleChangeData(e)}
+                      variant="outlined"
+                    />
+                  </Grid>
+                </Grid>{" "}
+                <Grid container sx={{ mt: 2, ml: 4 }}>
+                  <Grid item xs={1} >
+                    <Typography >จำนวนเครดิต : </Typography>
+                  </Grid>
+                  <Grid item xs={5}>
+                    <TextField
+                      name="amount"
+                      type="text"
+                      fullWidth
+                      value={rowData.amount || ""}
+                      size="small"
+                      placeholder="จำนวนเครดิต"
+                      onChange={(e) => handleChangeData(e)}
+                      variant="outlined"
+                    />
+                  </Grid>
+                </Grid>
+                <Grid container sx={{ mt: 2, ml: 4 }}>
+                  <Grid item xs={1} >
+                    <Typography>หมายเหตุ : </Typography>
+                  </Grid>
+                  <Grid item xs={5}>
+                    <TextField
+                      name="annotation"
+                      type="text"
+                      fullWidth
+                      placeholder="หมายเหตุ"
+                      value={rowData.annotation || ""}
+                      size="small"
+                      onChange={(e) => handleChangeData(e)}
+                      variant="outlined"
+                    />
+                  </Grid>
+                </Grid>{" "}
+
+
+                <Grid
+                  container
+                  direction="row"
+                  justifyContent="flex-end"
+                  alignItems="center"
+                >
+                  <Button
+                    variant="contained"
+                    onClick={() => submitFormCutCredit()}
+                  >
+
+                    <Typography sx={{ color: '#fff' }}>ยืนยัน</Typography>
+                  </Button>
+                </Grid>
+              </>
+            ) : page === 1 ? (
+              <>
+                <Grid container sx={{ mt: 5, ml: 4 }}>
+                  <Grid item xs={1} >
+                    <Typography> ชื่อผู้ใช้ : </Typography>
+                  </Grid>
+                  <Grid item xs={5}  >
+                    <TextField
+                      name="username"
+                      type="text"
+                      fullWidth
+                      value={rowData.username || ""}
+                      size="small"
+                      onChange={(e) => handleChangeData(e)}
+                      variant="outlined"
+                    />
+                  </Grid>
+                </Grid>
+                <Grid container sx={{ mt: 2, ml: 4 }}>
+                  <Grid item xs={1} >
+                    <Typography>จำนวนเงิน : </Typography>
+                  </Grid>
+                  <Grid item xs={5}>
+
+                    <TextField
+                      name="amount"
+                      type="text"
+                      fullWidth
+                      value={rowData.amount || ""}
+                      size="small"
+                      onChange={(e) => handleChangeData(e)}
+                      variant="outlined"
+                    />
+                  </Grid>
+                </Grid>
+                <Grid container sx={{ mt: 2, ml: 4 }}>
+                  <Grid item xs={1}>
+                    <Typography>หมายเหตุ : </Typography>
+                  </Grid>
+                  <Grid item xs={5}>
+
+                    <TextField
+                      name="annotation"
+                      type="text"
+                      fullWidth
+                      value={rowData.annotation || ""}
+                      size="small"
+                      onChange={(e) => handleChangeData(e)}
+                      variant="outlined"
+                    />
+                  </Grid>
+                </Grid>
+                <Grid container sx={{ mt: 2, ml: 4 }}>
+                  <Grid item xs={1}>
+                    <Typography>อั้นถอน : </Typography>
+                  </Grid>
+                  <Grid item xs={5}>
+                    <TextField
+                      name="max_withdraw"
+                      type="text"
+                      fullWidth
+                      value={rowData.max_withdraw || ""}
+                      size="small"
+                      onChange={(e) => handleChangeData(e)}
+                      variant="outlined"
+                    />
+                  </Grid>
+                </Grid>
+
+                <Grid container sx={{ mt: 2, ml: 4 }}>
+                  <Grid item xs={1}>
+                    <Typography>TURN OVER : </Typography>
+                  </Grid>
+                  <Grid item xs={5}>
+                    <TextField
+                      name="turn_over"
+                      type="text"
+                      fullWidth
+                      value={rowData.turn_over || ""}
+                      size="small"
+                      onChange={(e) => handleChangeData(e)}
+                      variant="outlined"
+                    />
+                  </Grid>
+                </Grid>
+
+
+                <Grid
+                  container
+                  direction="row"
+                  justifyContent="flex-end"
+                  alignItems="center"
+                >
+
+                  <Button
+                    variant="contained"
+                    onClick={() => submitFormCreditPromo()}
+                  >
+
+                    <Typography sx={{ color: '#fff' }}>ยืนยัน</Typography>
+                  </Button>
+                </Grid>
+              </>
+            ) : (
+              <>
+                <Grid container sx={{ mt: 5, ml: 4 }}>
+                  <Grid xs={1}>
+                    <Typography>ชื่อผู้ใช้ : </Typography>
+                  </Grid>
+                  <Grid item xs={5}>
+
+                    <TextField
+                      name="username"
+                      type="text"
+                      fullWidth
+                      value={rowData.username || ""}
+                      size="small"
+                      onChange={(e) => handleChangeData(e)}
+                      variant="outlined"
+                    />
+                  </Grid>
+                </Grid>
+
+                <Grid container sx={{ mt: 2, ml: 4 }}>
+                  <Grid xs={1}>
+                    <Typography>จำนวนเงิน : </Typography>
+                  </Grid>
+                  <Grid item xs={5}>
+                    <TextField
+                      name="amount"
+                      type="number"
+                      fullWidth
+                      value={rowData.amount || ""}
+                      size="small"
+                      onChange={(e) => handleChangeData(e)}
+                      variant="outlined"
+                    />
+                  </Grid>
+                </Grid>
+                <Grid container sx={{ mt: 2, ml: 4 }}>
+                  <Grid xs={1}>
+                    <Typography>หมายเหตุ : </Typography>
+                  </Grid>
+                  <Grid item xs={5}>
+                    <TextField
+                      name="annotation"
+                      type="text"
+                      fullWidth
+                      value={rowData.annotation || ""}
+                      size="small"
+                      onChange={(e) => handleChangeData(e)}
+                      variant="outlined"
+                    />
+                  </Grid>
+                </Grid>
+                <Grid container sx={{ mt: 2, ml: 4 }}>
+                  <Grid xs={1}>
+                    <Typography >วัน-เวลาที่โอน : </Typography>
+                  </Grid>
+                  <Grid item xs={5}>
+
+                    <TextField
+                      name="date"
+                      type="datetime-local"
+                      fullWidth
+                      value={rowData.date || ""}
+                      size="small"
+                      onChange={(e) => handleChangeData(e)}
+                      variant="outlined"
+                    />
+                  </Grid>
+                </Grid>
+
+                <Grid
+                  container
+                  direction="row"
+                  justifyContent="flex-end"
+                  alignItems="center"
+                >
+                  <Button
+                    variant="contained"
+                    onClick={() => submitFormSlip()}
+                  >
+                    <Typography sx={{ color: '#fff' }}>ยืนยัน</Typography>
+                  </Button>
+                </Grid>
+              </>
+            )}
+
           </Grid>
 
-          {page === 0 ? (
-            <>
-              <Grid container sx={{ mt: 5, ml: 4 }}>
-                <Grid item xs={1} sx={{ textAlign: "center" }}>
-                  <Typography>ชื่อผู้ใช้ : </Typography>
-                </Grid>
-                <Grid item xs={3}>
-                  <TextField
-                    name="username"
-                    type="text"
-                    fullWidth
-                    value={rowData.username || ""}
-                    size="small"
-                    placeholder="Username"
-                    onChange={(e) => handleChangeData(e)}
-                    variant="outlined"
-                  />
-                </Grid>
-              </Grid>{" "}
-              <Grid container sx={{ mt: 2, ml: 4 }}>
-                <Grid item xs={1} sx={{ textAlign: "center" }}>
-                  <Typography>จำนวนเครดิต : </Typography>
-                </Grid>
-                <Grid item xs={3}>
-                  <TextField
-                    name="amount"
-                    type="text"
-                    fullWidth
-                    value={rowData.amount || ""}
-                    size="small"
-                    placeholder="จำนวนเครดิต"
-                    onChange={(e) => handleChangeData(e)}
-                    variant="outlined"
-                  />
-                </Grid>
-              </Grid>
-              <Grid container sx={{ mt: 2, ml: 4 }}>
-                <Grid item xs={1} sx={{ textAlign: "center" }}>
-                  <Typography>หมายเหตุ : </Typography>
-                </Grid>
-                <Grid item xs={3}>
-                  <TextField
-                    name="annotation"
-                    type="text"
-                    fullWidth
-                    placeholder="หมายเหตุ"
-                    value={rowData.annotation || ""}
-                    size="small"
-                    onChange={(e) => handleChangeData(e)}
-                    variant="outlined"
-                  />
-                </Grid>
-              </Grid>{" "}
-              <Grid
-                container
-                direction="row"
-                justifyContent="flex-end"
-                alignItems="center"
-              >
-                <Button
-                  variant="contained"
-                  onClick={() => submitFormCutCredit()}
-                >
 
-                  <Typography sx={{ color: '#fff' }}>ยืนยัน</Typography>
-                </Button>
-              </Grid>
-            </>
-          ) : page === 1 ? (
-            <>
-              <Grid container direction="row" spacing={3} sx={{ p: 5 }}>
-                <Grid item xs={4}>
-                  <Typography>ชื่อผู้ใช้ : </Typography>
-                  <TextField
-                    name="username"
-                    type="text"
-                    fullWidth
-                    value={rowData.username || ""}
-                    size="small"
-                    onChange={(e) => handleChangeData(e)}
-                    variant="outlined"
-                  />
-                </Grid>
-                <Grid item xs={4}>
-                  <Typography>จำนวนเงิน : </Typography>
-                  <TextField
-                    name="amount"
-                    type="text"
-                    fullWidth
-                    value={rowData.amount || ""}
-                    size="small"
-                    onChange={(e) => handleChangeData(e)}
-                    variant="outlined"
-                  />
-                </Grid>
-                <Grid item xs={4}>
-                  <Typography>หมายเหตุ : </Typography>
-                  <TextField
-                    name="annotation"
-                    type="text"
-                    fullWidth
-                    value={rowData.annotation || ""}
-                    size="small"
-                    onChange={(e) => handleChangeData(e)}
-                    variant="outlined"
-                  />
-                </Grid>
-                <Grid item xs={4}>
-                  <Typography>อั้นถอน : </Typography>
-                  <TextField
-                    name="max_withdraw"
-                    type="text"
-                    fullWidth
-                    value={rowData.max_withdraw || ""}
-                    size="small"
-                    onChange={(e) => handleChangeData(e)}
-                    variant="outlined"
-                  />
-                </Grid>
-                <Grid item xs={4}>
-                  <Typography>TURN OVER : </Typography>
-                  <TextField
-                    name="turn_over"
-                    type="text"
-                    fullWidth
-                    value={rowData.turn_over || ""}
-                    size="small"
-                    onChange={(e) => handleChangeData(e)}
-                    variant="outlined"
-                  />
-                </Grid>
-              </Grid>
-              <Grid
-                container
-                direction="row"
-                justifyContent="flex-end"
-                alignItems="center"
-              >
 
-                <Button
-                  variant="contained"
-                  onClick={() => submitFormCreditPromo()}
-                >
 
-                  <Typography sx={{ color: '#fff' }}>ยืนยัน</Typography>
-                </Button>
-              </Grid>
-            </>
-          ) : (
-            <>
-              <Grid container direction="row" spacing={3} sx={{ p: 5 }}>
-                <Grid item xs={6}>
-                  <Typography>ชื่อผู้ใช้ : </Typography>
-                  <TextField
-                    name="username"
-                    type="text"
-                    fullWidth
-                    value={rowData.username || ""}
-                    size="small"
-                    onChange={(e) => handleChangeData(e)}
-                    variant="outlined"
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography>จำนวนเงิน : </Typography>
-                  <TextField
-                    name="amount"
-                    type="text"
-                    fullWidth
-                    value={rowData.amount || ""}
-                    size="small"
-                    onChange={(e) => handleChangeData(e)}
-                    variant="outlined"
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography>หมายเหตุ : </Typography>
-                  <TextField
-                    name="annotation"
-                    type="text"
-                    fullWidth
-                    value={rowData.annotation || ""}
-                    size="small"
-                    onChange={(e) => handleChangeData(e)}
-                    variant="outlined"
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography>วัน-เวลาที่โอน : </Typography>
-                  <TextField
-                    name="date"
-                    type="datetime-local"
-                    fullWidth
-                    value={rowData.date || ""}
-                    size="small"
-                    onChange={(e) => handleChangeData(e)}
-                    variant="outlined"
-                  />
-                </Grid>
-              </Grid>
-              <Grid
-                container
-                direction="row"
-                justifyContent="flex-end"
-                alignItems="center"
-              >
-                <Button
-                  variant="contained"
-                  onClick={() => submitFormSlip()}
-                >
-                  <Typography sx={{ color: '#fff' }}>ยืนยัน</Typography>
-                </Button>
-              </Grid>
-            </>
-          )}
         </Paper>
 
-        
-
-
-        <Grid
-          container
-          direction="row"
-          justifyContent="space-between"
-          alignItems="flex-start"
-          sx={{mt: 3}}>
-
-          <Card sx={{ width: 400, bgcolor: "#101D35", }}>
-            <CardContent>
-              <Typography variant="h5" sx={{ color: "#eee" }}>เติมเครดิต</Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {slipCreditTotal || 0} </Typography>
-              <Typography  sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
-            </CardContent>
-          </Card>
-
-          <Card sx={{ width: 400, bgcolor: "#101D35", }}>
-            <CardContent>
-              <Typography variant="h5" sx={{ color: "#eee" }}>ตัดเครดิต</Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {cutCreditTotal || 0} </Typography>
-              <Typography  sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
-            </CardContent>
-          </Card>
-
-          <Card sx={{ width: 400, bgcolor: "#101D35", }}>
-            <CardContent>
-              <Typography variant="h5" sx={{ color: "#eee" }}>เพิ่มเครดิตโปรโมชั่น</Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {addCreditTotal || 0} </Typography>
-              <Typography  sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
-            </CardContent>
-          </Card>
-
-        </Grid>
-
         <Paper sx={{ p: 3, mt: 3 }}>
+          <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px", mb: 3, }} > ยอดรวม </Typography>
+
+          <Grid
+            container
+            direction="row"
+            justifyContent="space-between"
+            alignItems="flex-start"
+            sx={{ mt: 5 }}>
+
+            <Card sx={{ width: 400, bgcolor: "#101D35", }}>
+              <CardContent>
+                <Typography variant="h5" sx={{ color: "#eee" }}>เติมเครดิต</Typography>
+                <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {slipCreditTotal || 0} </Typography>
+                <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
+              </CardContent>
+            </Card>
+
+            <Card sx={{ width: 400, bgcolor: "#101D35", }}>
+              <CardContent>
+                <Typography variant="h5" sx={{ color: "#eee" }}>ตัดเครดิต</Typography>
+                <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {cutCreditTotal || 0} </Typography>
+                <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
+              </CardContent>
+            </Card>
+
+            <Card sx={{ width: 400, bgcolor: "#101D35", }}>
+              <CardContent>
+                <Typography variant="h5" sx={{ color: "#eee" }}>เพิ่มเครดิตโปรโมชั่น</Typography>
+                <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {addCreditTotal || 0} </Typography>
+                <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
+              </CardContent>
+            </Card>
+
+          </Grid>
+          {/* <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px", mb: 3, }} > ยอดรวม </Typography> */}
+
+          <Button
+            variant="text"
+            onClick={() => { }}
+          >
+            <Typography variant="h6" sx={{textDecoration: "underline #41A3E3 3px", mt:3}}>รายงานการผิดพลาด</Typography>
+          </Button>
+
+        </Paper>
+
+
+        {/* <Paper sx={{ p: 3, mt: 3 }}>
           <Grid container>
             <Typography variant="h5" sx={{ p: 3 }}>
               รายงานการผิดพลาด
@@ -1077,6 +1130,7 @@ function editError() {
             <TabPanel value={value} index={3}>
               <MaterialTableForm
                 // title="รายการฝาก"
+                pageSize={10}
                 data={upCredit}
                 columns={[
                   {
@@ -1142,7 +1196,7 @@ function editError() {
               />
             </TabPanel>
           </Grid>
-        </Paper>
+        </Paper> */}
       </Box>
       <LoadingModal open={loading} />
     </Layout>
