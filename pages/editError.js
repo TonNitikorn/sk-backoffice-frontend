@@ -26,6 +26,8 @@ import withAuth from "../routes/withAuth";
 import LoadingModal from "../theme/LoadingModal";
 import Swal from "sweetalert2";
 import MaterialTableForm from "../components/materialTableForm"
+import { useRouter } from "next/router";
+
 
 
 function TabPanel(props) {
@@ -74,6 +76,7 @@ function a11yProps(index) {
 // });
 
 function editError() {
+  const router = useRouter()
   const [value, setValue] = useState(0);
   const [page, setPage] = useState(0);
   const [selectedDateRange, setSelectedDateRange] = useState({
@@ -762,7 +765,7 @@ function editError() {
             variant="text"
             onClick={() => { }}
           >
-            <Typography variant="h6" sx={{textDecoration: "underline #41A3E3 3px", mt:3}}>รายงานการผิดพลาด</Typography>
+            <Typography variant="h6" sx={{textDecoration: "underline #41A3E3 3px", mt:3}} onClick={() => router.push("/report/reportError")}>รายงานการการเติมเครดิตแบบ manual</Typography>
           </Button>
 
         </Paper>
