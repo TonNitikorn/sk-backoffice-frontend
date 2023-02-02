@@ -57,20 +57,29 @@ function reportDepositDecimal() {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("access_token"),
         },
-        method: "get",
-        url: `${hostname}/api/report/decimal/?start_date=${
-          type === undefined ? selectedDateRange.start : start
-        }&end_date=${
-          type === undefined ? selectedDateRange.end : end
-        }&username=${username}`,
+        method: "post",
+        // url: `${hostname}/api/report/deposit/?start_date=${
+        //   type === undefined ? selectedDateRange.start : start
+        // }&end_date=${
+        //   type === undefined ? selectedDateRange.end : end
+        // }&username=${username}`,
+        url: `${hostname}/report/get_transaction`,
+        data: {
+          "transfer_type": "DEPOSIT"
+        }
       });
 
-      let resData = res.data.data;
+      let resData = res.data;
+      let transaction = res.data.transaction
       let no = 1;
-      resData.map((item) => {
+      transaction.map((item) => {
         item.no = no++;
+        item.create_at = moment(item.create_at).format('DD/MM/YYYY hh:mm')
+        // item.bank_number = item.member_account_banks[0].bank_number
+        // item.bank_account_name = item.member_account_banks[0].bank_account_name
+
       });
-      setReport(resData);
+      setReport(transaction);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -84,10 +93,11 @@ function reportDepositDecimal() {
       // }
     }
   };
+  console.log('report', report)
 
-  // useEffect(() => {
-  //   getReport();
-  // }, []);
+  useEffect(() => {
+    getReport();
+  }, []);
 
   return (
     <Layout>
