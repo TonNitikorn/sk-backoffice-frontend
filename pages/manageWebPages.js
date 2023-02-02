@@ -26,6 +26,10 @@ import logo_angpao from "../assets/logo_ap.png"
 import logo_angpao_white from "../assets/logo_ap_white.png"
 import axios from "axios";
 import hostname from "../utils/hostname";
+import banner1 from "../assets/banner1.jpg"
+import banner2 from "../assets/banner2.jpg"
+import banner3 from "../assets/banner3.jpg"
+import banner4 from "../assets/banner4.jpg"
 
 function manageWebPages() {
   const dispatch = useAppDispatch();
@@ -53,9 +57,7 @@ function manageWebPages() {
   };
 
   const images = [
-    "https://images.unsplash.com/photo-1509721434272-b79147e0e708?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80",
-    "https://images.unsplash.com/photo-1506710507565-203b9f24669b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1536&q=80",
-    "https://images.unsplash.com/photo-1536987333706-fc9adfb10d91?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80",
+    banner1, banner2, banner3, banner4
   ];
 
   const category = [
@@ -190,27 +192,101 @@ function manageWebPages() {
   return (
     <Layout>
       <CssBaseline />
-      <Paper sx={{ p: 3 }}>
-        <Typography
-          sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px" }}
+      <Grid container justifyContent="space-between">
+        <Paper
+          sx={{
+            p: 2,
+            mt: 2,
+            width: "49%",
+            maxHeight: "800px",
+            overflow: "auto",
+          }}
         >
-          จัดการหน้าเว็บ
-        </Typography>
-        <Grid container justifyContent="center" sx={{ mt: 3 }}>
-          <Grid container spacing={2} >
-            <Grid item xs={6}>
-              <Typography sx={{ mt: 2 }}>โลโก้ *</Typography>
-              <TextField
-                required
-                sx={{ bgcolor: "white" }}
-                fullWidth
-                size="large"
-                type="file"
-                onChange={uploadFile}
-              />
+          <Typography
+            sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px" }}
+          >
+            จัดการหน้าเว็บ
+          </Typography>
+          <>
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <Typography sx={{ mt: 2 }}>โลโก้ *</Typography>
+                <TextField
+                  required
+                  sx={{ bgcolor: "white" }}
+                  fullWidth
+                  size="large"
+                  type="file"
+                  onChange={uploadFile}
+                />
+              </Grid>
+              <Grid item xs={5} sx={{ mt: 5 }}>
+                <Image alt="logo" src={prefix.logo} width={100} height={80} />
+              </Grid>
+              <Grid item xs={6}>
+                <Typography sx={{ mt: 2 }}>Banner *</Typography>
+                <TextField
+                  required
+                  sx={{ bgcolor: "white" }}
+                  fullWidth
+                  size="large"
+                  type="file"
+                  onChange={uploadFile}
+                />
+              </Grid>
+              <Grid item xs={5} sx={{ mt: 5 }}>
+                <Image alt="logo" src={prefix.logo} width={100} height={80} />
+              </Grid>
+              <Grid item xs={6}>
+                <Typography sx={{ mt: 2 }}>Slide *</Typography>
+                <TextField
+                  required
+                  sx={{ bgcolor: "white" }}
+                  fullWidth
+                  size="large"
+                  type="file"
+                  onChange={uploadFile}
+                />
+              </Grid>
+              <Grid item xs={5} sx={{ mt: 5 }}>
+                <Image alt="logo" src={prefix.logo} width={100} height={80} />
+              </Grid>
+              <Grid item xs={6}>
+                <Typography sx={{ mt: 2 }}>ประเภทเกม *</Typography>
+                <TextField
+                  required
+                  sx={{ bgcolor: "white" }}
+                  fullWidth
+                  size="large"
+                  type="file"
+                  onChange={uploadFile}
+                />
+              </Grid>
+              <Grid item xs={5} sx={{ mt: 5 }}>
+                <Image alt="logo" src={prefix.logo} width={100} height={80} />
+              </Grid>
             </Grid>
-            <Grid item xs={6} container justifyContent="center" >
-              <Grid item xs={6} sx={{ bgcolor: '#eee', borderTopLeftRadius: '20px', borderTopRightRadius: '20px', height: 900 }} >
+          </>
+        </Paper>
+
+        <Paper
+          sx={{
+            p: 2,
+            mt: 2,
+            width: "49%",
+            maxHeight: "800px",
+            overflow: "auto",
+          }}
+        >
+          <Typography
+            sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px" }}
+          >
+            ตัวอย่างหน้าเว็บ
+          </Typography>
+          <>
+            <Grid container justifyContent="center" >
+
+              <Grid item xs={6} sx={{ mt: 1, bgcolor: '#eee', borderTopLeftRadius: '20px', borderTopRightRadius: '20px', height: 900 }} >
                 <Box sx={{
                   bgcolor: '#41A3E3', width: '100%',
                   height: 50,
@@ -236,12 +312,11 @@ function manageWebPages() {
                       className="mySwiper"
                     >
                       {images.map((item) => (
-                        <SwiperSlide>
-                          <Box >
-                            <Image alt="banner" src={item} width={400} height={150} />
-                          </Box>
-                        </SwiperSlide>
-
+                      <SwiperSlide>
+                        <Box >
+                          <Image alt="banner" src={item} width={350} height={120} />
+                        </Box>
+                      </SwiperSlide>
                       ))}
                     </Swiper>
                   </Box>
@@ -264,7 +339,7 @@ function manageWebPages() {
                       {images.map((item) => (
                         <SwiperSlide>
                           <Box >
-                            <Image alt="banner" src={item} width={120} height={65} />
+                            <Image alt="banner" src={item} width={115} height={65} />
                           </Box>
 
                         </SwiperSlide>
@@ -350,48 +425,17 @@ function manageWebPages() {
 
                 </Box>
               </Grid>
+
             </Grid>
+          </>
+        </Paper>
+      </Grid>
 
-          </Grid>
 
-
-
-          <Grid container justifyContent='center' spacing={1}>
-            <Grid container item xs={4}>
-              <Button
-                // variant="outlined"
-                variant="contained"
-                size="large"
-                fullWidth
-                onClick={() => {
-                  if (!rowData) {
-                    Swal.fire({
-                      position: "center",
-                      icon: "warning",
-                      title: "กรุณากรอกข้อมูลให้ครบถ้วน",
-                      showConfirmButton: false,
-                      timer: 2000,
-                    });
-                  } else {
-                    editUser();
-                  }
-                }}
-                sx={{
-                  mt: 3,
-                  // background: "#129A50",
-                  color: '#fff',
-
-                }}
-              >
-                ยืนยัน
-              </Button>
-            </Grid>
-
-          </Grid>
-        </Grid>
-      </Paper>
       <LoadingModal open={loading} />
+
     </Layout>
+
 
   )
 }
