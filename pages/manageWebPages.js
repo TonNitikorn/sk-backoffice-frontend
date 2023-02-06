@@ -22,14 +22,9 @@ import { Autoplay, Pagination, Navigation, FreeMode, Thumbs } from "swiper";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-import logo_angpao from "../assets/logo_ap.png"
-import logo_angpao_white from "../assets/logo_ap_white.png"
 import axios from "axios";
 import hostname from "../utils/hostname";
-import banner1 from "../assets/banner1.jpg"
-import banner2 from "../assets/banner2.jpg"
-import banner3 from "../assets/banner3.jpg"
-import banner4 from "../assets/banner4.jpg"
+import ClearIcon from '@mui/icons-material/Clear';
 
 function manageWebPages() {
   const dispatch = useAppDispatch();
@@ -38,9 +33,12 @@ function manageWebPages() {
   const [loading, setLoading] = useState(false)
   const [rowData, setRowData] = useState({})
   const [prefix, setPrefix] = useState({});
-  const [categoryType, setCategoryType] = useState('game')
   const [gameType, setGameType] = useState([])
   const [subGameType, setSubGameType] = useState([])
+  const [banner, setBanner] = useState([])
+  const [logo, setLogo] = useState([])
+  const [slide, setSlide] = useState([])
+  const [render, setRender] = useState(false)
 
   const uploadFile = async (e) => {
     let file = e.target.files[0];
@@ -52,108 +50,52 @@ function manageWebPages() {
         bg: reader.result,
         bandner: reader.result,
       });
+
     };
     reader.readAsDataURL(file);
   };
 
-  const images = [
-    banner1, banner2, banner3, banner4
-  ];
+  const uploadBanner = async (e) => {
+    let file = e.target.files[0];
+    let reader = new FileReader();
+    reader.onloadend = () => {
+      banner.push({
+        img_url: reader.result,
+        type: "banner",
+        file: file
+      })
+      setRender(!render)
+    };
+    reader.readAsDataURL(file);
+  };
 
-  const category = [
-    {
-      type: 'game',
-      img: 'game',
-      category: 'game'
-    },
-    {
-      type: 'poker',
-      img: 'game',
-      category: 'poker'
-    },
-    {
-      type: 'slot',
-      img: 'game',
-      category: 'slot',
-    },
-    {
-      type: 'esport',
-      img: 'game',
-      category: 'esport',
-    },
-    {
-      type: 'casino',
-      img: 'game',
-      category: 'casino',
-    },
-    {
-      type: 'casino',
-      img: 'game',
-      category: 'casino',
-    },
-  ];
 
-  const games1 = [
-    {
-      type: 'game',
-      img: 'game'
-    },
-    {
-      type: 'poker',
-      img: 'game'
-    },
-    {
-      type: 'slot',
-      img: 'game'
-    },
-    {
-      type: 'esport',
-      img: 'game'
-    },
-    {
-      type: 'casino',
-      img: 'game'
-    },
-    {
-      type: 'casino',
-      img: 'game'
-    },
-    {
-      type: 'game',
-      img: 'game'
-    },
-    {
-      type: 'poker',
-      img: 'game'
-    },
-    {
-      type: 'slot',
-      img: 'game'
-    },
-    {
-      type: 'esport',
-      img: 'game'
-    },
-    {
-      type: 'casino',
-      img: 'game'
-    },
-    {
-      type: 'casino',
-      img: 'game'
-    },
-  ];
+  const uploadLogo = async (e) => {
+    let file = e.target.files[0];
+    let reader = new FileReader();
+    reader.onloadend = () => {
+      logo.push({
+        img_url: reader.result,
+        type: "logo",
+      })
+      setRender(!render)
 
-  const games2 = [
-    {
-      type: 'poker',
-      img: 'game'
-    },
-    {
-      type: 'poker',
-      img: 'game'
-    },
-  ];
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const uploadSlide = async (e) => {
+    let file = e.target.files[0];
+    let reader = new FileReader();
+    reader.onloadend = () => {
+      slide.push({
+        img_url: reader.result,
+        type: "slide",
+      })
+      setRender(!render)
+    };
+    reader.readAsDataURL(file);
+  };
 
 
   const getGameType = async () => {
@@ -185,89 +127,255 @@ function manageWebPages() {
     }
   };
 
+  const getAssets = async () => {
+    setLoading(true);
+    try {
+      let res = await axios({
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("access_token"),
+        },
+        method: "get",
+        url: `${hostname}/web_setting/get_web_setting`,
+      });
+
+      let resData = res.data;
+      let banner = resData.filter((item) => item.type === "banner")
+      let logo = resData.filter((item) => item.type === "logo")
+      let slide = resData.filter((item) => item.type === "slide")
+      setBanner(banner)
+      setLogo(logo)
+      setSlide(slide)
+
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      if (
+        error.response.data.error.status_code === 401 &&
+        error.response.data.error.message === "Unauthorized"
+      ) {
+        dispatch(signOut());
+        localStorage.clear();
+        router.push("/auth/login");
+      }
+    }
+  };
+
+  const uploadAssets = async (type) => {
+    setLoading(true);
+    try {
+      const tempBanner = banner.filter(item => !item.uuid)
+      for (const item of tempBanner) {
+        const formData = new FormData();
+        formData.append("upload", item.file);
+        formData.append("type", type);
+
+        let res = await axios({
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("TOKEN"),
+          },
+          method: "post",
+          url: `${hostname}/web_setting/create_web_setting_img_url`,
+          data: formData,
+        });
+
+      }
+
+      setLoading(false);
+
+    } catch (error) {
+      console.log(error);
+      // if (
+      //   error.response.data.error.status_code === 401 &&
+      //   error.response.data.error.message === "Unauthorized"
+      // ) {
+      //   dispatch(signOut());
+      //   localStorage.clear();
+      //   router.push("/auth/login");
+      // }
+    }
+
+  }
+
   useEffect(() => {
     getGameType()
+    getAssets()
   }, [])
 
   return (
     <Layout>
       <CssBaseline />
       <Grid container justifyContent="space-between">
-        <Paper
+        <Grid
           sx={{
-            p: 2,
             mt: 2,
             width: "49%",
-            maxHeight: "800px",
+            // maxHeight: "800px",
             overflow: "auto",
           }}
         >
-          <Typography
-            sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px" }}
-          >
-            จัดการหน้าเว็บ
-          </Typography>
           <>
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <Typography sx={{ mt: 2 }}>โลโก้ *</Typography>
+            <Paper sx={{ p: 2 }}>
+              <Typography
+                sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px" }}
+              >
+                จัดการหน้าเว็บ
+              </Typography>
+              <Grid item xs={12} container sx={{ mb: 2 }}>
+                <Typography sx={{ mt: 2, mr: 2, fontSize: '20px' }}>โลโก้ </Typography>
+                <Typography sx={{ mt: 2, color: '#41A3E3' }}>* (ขนาดรูป 2560 x 1440 pixels)</Typography>
                 <TextField
                   required
                   sx={{ bgcolor: "white" }}
                   fullWidth
                   size="large"
                   type="file"
-                  onChange={uploadFile}
+                  onChange={uploadLogo}
                 />
               </Grid>
-              <Grid item xs={5} sx={{ mt: 5 }}>
+              {/* <Grid item xs={5} sx={{ mt: 5 }}>
                 <Image alt="logo" src={prefix.logo} width={100} height={80} />
+              </Grid> */}
+              <Grid item xs={4} container>
+                <Grid container sx={{ bgcolor: '#eee', pl: 2, mb: 1, borderRadius: '10px' }}>
+
+                  <img src={logo[0]?.img_url} width={150} height={100} />
+
+                </Grid>
+
               </Grid>
-              <Grid item xs={6}>
-                <Typography sx={{ mt: 2 }}>Banner *</Typography>
+              <Grid container justifyContent='flex-end' spacing={1}>
+                <Grid container item xs={3}>
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                    fullWidth
+                    onClick={() => {
+                      console.log('รีเซ็ต')
+                    }}
+                    sx={{ mt: 3 }}
+                  >
+                    รีเซ็ต
+                  </Button>
+                </Grid>
+                <Grid container item xs={3}>
+                  <Button
+                    variant="contained"
+                    size="large"
+                    fullWidth
+                    onClick={() => {
+                      setOpenDialogEdit(false)
+                    }}
+                    sx={{ mt: 3, color: '#fff', }}
+                  >
+                    ยืนยัน
+                  </Button>
+                </Grid>
+              </Grid>
+            </Paper>
+
+            <Paper sx={{ p: 2, mt: 1, }}>
+              <Grid item xs={12} container sx={{ mb: 2 }}>
+                <Typography sx={{ mt: 2, mr: 2, fontSize: '20px' }}>Banner </Typography>
+                <Typography sx={{ mt: 2, color: '#41A3E3' }}>* (ขนาดรูป 1900 x 498)</Typography>
                 <TextField
                   required
                   sx={{ bgcolor: "white" }}
                   fullWidth
                   size="large"
                   type="file"
-                  onChange={uploadFile}
+                  onChange={uploadBanner}
                 />
               </Grid>
-              <Grid item xs={5} sx={{ mt: 5 }}>
+              <Grid item xs={12} container >
+                {banner.map((item, index) => (
+                  <>
+                    <img src={item.img_url} width={350} height={130} style={{ borderRadius: '5px' }} />
+                    <IconButton sx={{ mb: 15, ml: 1, mr: 2, bgcolor: '#fff', boxShadow: '2px 2px 10px #C3C1C1' }}
+                      onClick={() => {
+                        banner.splice(index, 1)
+                        setRender(!render)
+                      }} >
+                      <ClearIcon fontSize="small" />
+                    </IconButton>
+                  </>
+                ))}
+              </Grid>
+              <Grid container justifyContent='flex-end' spacing={1}>
+                <Grid container item xs={3}>
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                    fullWidth
+                    onClick={() => {
+                      console.log('รีเซ็ต')
+                    }}
+                    sx={{ mt: 3 }}
+                  >
+                    รีเซ็ต
+                  </Button>
+                </Grid>
+                <Grid container item xs={3}>
+                  <Button
+                    variant="contained"
+                    size="large"
+                    fullWidth
+                    onClick={() => {
+                      uploadAssets("banner")
+                    }}
+                    sx={{ mt: 3, color: '#fff', }}
+                  >
+                    ยืนยัน
+                  </Button>
+                </Grid>
+              </Grid>
+            </Paper>
+
+            <Grid item xs={12} container>
+              <Typography sx={{ mt: 2, mr: 2, fontSize: '20px' }}>Slide </Typography>
+              <Typography sx={{ mt: 2, color: '#41A3E3' }}>* (ขนาดรูป 1400 x 900 pixels)</Typography>
+              <TextField
+                required
+                sx={{ bgcolor: "white" }}
+                fullWidth
+                size="large"
+                type="file"
+                onChange={uploadSlide}
+              />
+            </Grid>
+            {/* <Grid item xs={5} sx={{ mt: 5 }}>
                 <Image alt="logo" src={prefix.logo} width={100} height={80} />
-              </Grid>
-              <Grid item xs={6}>
-                <Typography sx={{ mt: 2 }}>Slide *</Typography>
-                <TextField
-                  required
-                  sx={{ bgcolor: "white" }}
-                  fullWidth
-                  size="large"
-                  type="file"
-                  onChange={uploadFile}
-                />
-              </Grid>
-              <Grid item xs={5} sx={{ mt: 5 }}>
-                <Image alt="logo" src={prefix.logo} width={100} height={80} />
-              </Grid>
-              <Grid item xs={6}>
-                <Typography sx={{ mt: 2 }}>ประเภทเกม *</Typography>
-                <TextField
-                  required
-                  sx={{ bgcolor: "white" }}
-                  fullWidth
-                  size="large"
-                  type="file"
-                  onChange={uploadFile}
-                />
-              </Grid>
-              <Grid item xs={5} sx={{ mt: 5 }}>
-                <Image alt="logo" src={prefix.logo} width={100} height={80} />
-              </Grid>
+              </Grid> */}
+            <Grid item xs={12} container>
+              {slide.map((item, index) => (
+                <>
+                  <img src={item.img_url} width={180} height={80} style={{ borderRadius: '5px' }} />
+                  <IconButton sx={{ mb: 15, ml: 1, mr: 2, bgcolor: '#fff', boxShadow: '2px 2px 10px #C3C1C1' }}
+                    onClick={() => {
+                      slide.splice(index, 1)
+                      setRender(!render)
+                    }} >
+                    <ClearIcon fontSize="small" />
+                  </IconButton>
+                </>
+              ))}
+            </Grid>
+
+            <Grid item xs={6}>
+              <Typography sx={{ mt: 2 }}>ประเภทเกม *</Typography>
+              <TextField
+                required
+                sx={{ bgcolor: "white" }}
+                fullWidth
+                size="large"
+                type="file"
+                onChange={uploadFile}
+              />
+            </Grid>
+            <Grid item xs={5} sx={{ mt: 5 }}>
+              <Image alt="logo" src={prefix.logo} width={100} height={80} />
             </Grid>
           </>
-        </Paper>
+        </Grid>
 
         <Paper
           sx={{
@@ -293,7 +401,8 @@ function manageWebPages() {
                   borderTopLeftRadius: '20px', borderTopRightRadius: '20px', borderBottomLeftRadius: '30px', borderBottomRightRadius: '30px'
                 }} >
                   <Box sx={{ pl: 2, pt: 1 }}>
-                    <Image alt="banner" src={logo_angpao_white} width={40} height={30} />
+                    {/* <Image alt="banner" src={logo_angpao_white} width={40} height={30} /> */}
+                    <img src={logo[0]?.img_url} width={40} height={30} />
                   </Box>
 
                   <Box sx={{ mt: 2, mb: 1, px: 1 }}>
@@ -311,12 +420,13 @@ function manageWebPages() {
                       modules={[Autoplay, Pagination, Navigation]}
                       className="mySwiper"
                     >
-                      {images.map((item) => (
-                      <SwiperSlide>
-                        <Box >
-                          <Image alt="banner" src={item} width={350} height={120} />
-                        </Box>
-                      </SwiperSlide>
+                      {banner?.map((item) => (
+                        <SwiperSlide>
+                          <Box >
+                            <img src={item.img_url} width={350} height={130} style={{ borderRadius: '5px' }} />
+                            {/* <Image alt="banner" src={item.img_url} width={350} height={120} /> */}
+                          </Box>
+                        </SwiperSlide>
                       ))}
                     </Swiper>
                   </Box>
@@ -336,10 +446,11 @@ function manageWebPages() {
                       modules={[FreeMode, Navigation, Thumbs, Autoplay]}
                       className="mySwiper"
                     >
-                      {images.map((item) => (
+                      {slide.map((item) => (
                         <SwiperSlide>
                           <Box >
-                            <Image alt="banner" src={item} width={115} height={65} />
+                            <img src={item.img_url} width={115} height={65} style={{ borderRadius: '5px' }} />
+                            {/* <Image alt="banner" src={item} width={115} height={65} /> */}
                           </Box>
 
                         </SwiperSlide>
@@ -369,12 +480,6 @@ function manageWebPages() {
 
                               }}
                             >
-                              {/* <Typography
-                                sx={{ fontWeight: "bold", textAlign: "center", color: "black" }}
-                              >
-                                {item.type}
-                              </Typography> */}
-
                               <Box >
                                 {/* <Image alt="game type" src={item.type_logo} width={120} height={65} /> */}
                                 <img src={item.type_logo} width={80} height={80} style={{ borderRadius: '20px' }} />
@@ -388,31 +493,15 @@ function manageWebPages() {
                       <Grid item xs={9}
                         justifyContent="center"
                         alignItems="flex-start"
-                      // sx={{ bgcolor: 'green' }}
                       >
-                        {/* {categoryType === "game" ? games1.map((item) => ( */}
-                        {categoryType === "game" ? subGameType.map((item) => (
+                        {subGameType.map((item) => (
                           <Button
-                            variant="contained"
                             // fullWidth
-                            sx={{ mt: 1, mr: "2px", bgcolor: "#fff", height: '70px', width: '49%' }}
+                            sx={{ mt: 1, mr: "2px", height: '70px', width: '49%' }}
                             onClick={() => handelAddData()}
                           >
-                            <img src={item.game_icon} width={80} height={80} style={{ borderRadius: '20px' }} />
+                            <img src={item.game_icon} width={125} height={75} style={{ borderRadius: '5px' }} />
 
-                          </Button>
-                        )) : games2.map((item) => (
-                          <Button
-                            variant="contained"
-                            // fullWidth
-                            sx={{ mt: 1, mr: "2px", bgcolor: "#fff", height: '70px', width: '49%' }}
-                          // onClick={() => setPrice(100)}
-                          >
-                            <Typography
-                              sx={{ fontWeight: "bold", textAlign: "center", color: "black" }}
-                            >
-                              {item.type}
-                            </Typography>
                           </Button>
                         ))}
 

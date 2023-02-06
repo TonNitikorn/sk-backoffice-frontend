@@ -1955,7 +1955,7 @@ function withdrawpending() {
                   </Grid>
                </Grid>
                <Grid container justifyContent="start" >
-                  <MaterialTableForm data={data2} columns={columns} pageSize="5" title="รายการถอนวันนี้" />
+                  <MaterialTableForm data={data2} columns={columns} pageSize="5" title="จัดการรายการถอน" />
                </Grid>
             </Paper>
          </Grid>
