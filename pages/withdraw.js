@@ -28,6 +28,7 @@ function withdraw() {
     const [depositLast, setDepositLast] = useState({});
     const [rowData, setRowData] = useState({});
     const [loading, setLoading] = useState(false);
+    const [transaction, setTransaction] = useState([])
 
     const handleChangeData = async (e) => {
         setRowData({ ...rowData, [e.target.name]: e.target.value });
@@ -41,16 +42,26 @@ function withdraw() {
                 headers: {
                     Authorization: "Bearer " + localStorage.getItem("access_token"),
                 },
-                method: "get",
-                url: `${hostname}/api/member_transaction/check-data/${username}`,
+                method: "post",
+                url: `${hostname}/member/member_transaction`,
+                data: {
+                    uuid: username
+                }
             });
 
-            setDeposit(res.data.deposit_latest);
-            setDataCredit(res.data.user[0]);
-            setDataUser(res.data.info);
+            // setDeposit(res.data.deposit_latest);
+            // setDataCredit(res.data.user[0]);
+            setDataUser(res.data);
+            let resTran = res.data.transaction
+            let no = 1
+            resTran.map((item) => {
+                item.no = no++;
+                item.create_at = moment(item.create_at).format('DD/MM/YYYY hh:mm')
+            })
+            setTransaction(resTran)
 
-            setPromotion(res.data.deposit_latest_one_with_promotion?.promotion);
-            setDepositLast(res.data.deposit_latest_one_with_promotion?.deposit_last);
+            // setPromotion(res.data.deposit_latest_one_with_promotion?.promotion);
+            // setDepositLast(res.data.deposit_latest_one_with_promotion?.deposit_last);
             setLoading(false);
         } catch (error) {
             if (
@@ -66,74 +77,69 @@ function withdraw() {
     };
 
     const submitWithdraw = async () => {
-        let data = {
-            bank_uuid: dataUser.uuid,
-            amount: dataCredit.credit,
-            bonus_credit: 0,
-            username: dataCredit.username,
-            annotation: "-",
-            bank_time: moment().format("DD/MM hh:mm"),
-            create_by: localStorage.getItem("create_by"),
-            createdAt: moment().format(),
-        }
-        console.log('data', data)
+
         // setLoading(true);
-        // try {
-        //   if (dataCredit.credit >= rowData.amount) {
-        //     let res = await axios({
-        //       headers: {
-        //         Authorization: "Bearer " + localStorage.getItem("access_token"),
-        //       },
-        //       method: "post",
-        //       url: `${hostname}/api/member_transaction/make-withdraw/`,
-        //       data: {
-        //         bank_uuid: dataUser.uuid,
-        //         amount: dataCredit.credit,
-        //         bonus_credit: 0,
-        //         username: dataCredit.username,
-        //         annotation: "-",
-        //         bank_time: moment().format("DD/MM hh:mm"),
-        //         create_by: localStorage.getItem("create_by"),
-        //         createdAt: moment().format(),
-        //       },
-        //     });
-        //     setLoading(false);
-        //     Swal.fire({
-        //       position: "center",
-        //       icon: "success",
-        //       title: "ทำรายการเรียบร้อย",
-        //       showConfirmButton: false,
-        //       timer: 3000,
-        //     });
-        //     setRowData({});
-        //     setUsername("");
-        //   } else if (
-        //     rowData.amount === undefined ||
-        //     rowData === null ||
-        //     rowData === ""
-        //   ) {
-        //     Swal.fire({
-        //       position: "center",
-        //       icon: "warning",
-        //       title: "กรุณาระบุเครดิตที่ต้องการถอน",
-        //       showConfirmButton: false,
-        //       timer: 3000,
-        //     });
-        //   } else {
-        //     Swal.fire({
-        //       position: "center",
-        //       icon: "warning",
-        //       title: "ยอดเครดิตไม่เพียงพอ",
-        //       showConfirmButton: false,
-        //       timer: 2500,
-        //     });
-        //   }
-        // } catch (error) {
-        //   console.log(error);
-        // }
+        try {
+            if (dataUser.credit >= rowData.amount) {
+                let res = await axios({
+                    headers: {
+                        Authorization: "Bearer " + localStorage.getItem("access_token"),
+                    },
+                    method: "post",
+                    url: `${hostname}/transaction/withdraw_request`,
+                    data: {
+                        member_uuid: dataUser.uuid,
+                        amount: rowData.amount,
+                        bonus_credit: 0,
+                        username: dataCredit.username,
+                        annotation: "-",
+                        bank_time: moment().format("DD/MM hh:mm"),
+                        create_by: localStorage.getItem("create_by"),
+                        createdAt: moment().format(),
+                    },
+                });
+
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: "ทำรายการเรียบร้อย",
+                    showConfirmButton: false,
+                    timer: 3000,
+                });
+                setRowData({});
+                setUsername("");
+                setDataUser({})
+                // setLoading(false);
+            } else if (!!rowData.amount) {
+                Swal.fire({
+                    position: "center",
+                    icon: "warning",
+                    title: "กรุณาระบุเครดิตที่ต้องการถอน",
+                    showConfirmButton: false,
+                    timer: 3000,
+                });
+            } else {
+                Swal.fire({
+                    position: "center",
+                    icon: "warning",
+                    title: "ยอดเครดิตไม่เพียงพอ",
+                    showConfirmButton: false,
+                    timer: 2500,
+                });
+            }
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const columns = [
+        {
+            title: "ลำดับที่",
+            field: "no",
+            search: true,
+            width: "10%",
+            align: "center",
+        },
         {
             title: "เงินฝาก",
             field: "amount",
@@ -141,23 +147,23 @@ function withdraw() {
             // width: "10%",
             align: "center",
         },
-        {
-            title: "โบนัส",
-            field: "bonus_credit",
-            search: true,
-            // width: "10%",
-            align: "center",
-            render: (item) => (
-                <Chip
-                    label={item.bonus_credit}
-                    size="small"
-                    style={{
-                        background: "#109CF1",
-                        color: "#ffff",
-                    }}
-                />
-            ),
-        },
+        // {
+        //     title: "โบนัส",
+        //     field: "bonus_credit",
+        //     search: true,
+        //     // width: "10%",
+        //     align: "center",
+        //     render: (item) => (
+        //         <Chip
+        //             label={item.bonus_credit}
+        //             size="small"
+        //             style={{
+        //                 background: "#109CF1",
+        //                 color: "#ffff",
+        //             }}
+        //         />
+        //     ),
+        // },
         {
             title: "เครดิตก่อนเติม",
             field: "credit_before",
@@ -196,7 +202,7 @@ function withdraw() {
 
         {
             title: "เวลา",
-            field: "bank_time",
+            field: "create_at",
             search: true,
             align: 'center',
             // width: "30%",
@@ -210,7 +216,6 @@ function withdraw() {
             // width: "30%",
             align: "center",
         },
-        { title: "Ref", field: "ref", search: true, width: "10%", align: "center" },
     ];
 
     useEffect(() => { }, [rowData.amount]);
@@ -266,7 +271,7 @@ function withdraw() {
                                         name="username"
                                         type="text"
                                         fullWidth
-                                        value={dataUser.bank_account_name || ""}
+                                        value={dataUser.name || ""}
                                         size="small"
                                         onChange={(e) => handleChangeData(e)}
                                         variant="outlined"
@@ -290,7 +295,7 @@ function withdraw() {
                                         name="credit"
                                         type="text"
                                         fullWidth
-                                        value={dataCredit.credit || "ไม่มีเครดิต"}
+                                        value={Intl.NumberFormat("TH").format(parseInt(dataUser.credit || "ไม่มีเครดิต"))}
                                         size="small"
                                         onChange={(e) => handleChangeData(e)}
                                         variant="outlined"
@@ -328,14 +333,14 @@ function withdraw() {
                                     <Typography>จำนวนเงินที่จะถอน</Typography>
                                     <TextField
                                         name="amount"
-                                        type="text"
+                                        type="number"
                                         fullWidth
-                                        value={dataCredit.credit || "ไม่มีเครดิต"}
+                                        value={rowData.amount || ""}
                                         size="small"
                                         onChange={(e) => handleChangeData(e)}
                                         variant="outlined"
                                         sx={{ mb: 3 }}
-                                        disabled
+                                    // disabled
                                     />{" "}
                                     <Box sx={{ textAlign: "right" }}>
                                         <Button
@@ -368,7 +373,7 @@ function withdraw() {
                             <Typography
                                 variant="h5"
                                 sx={{ textAlign: "center", color: "#41A3E3" }}
-                            >100
+                            >-
                                 {/* {Intl.NumberFormat("TH").format(parseInt(report.sumAmountAll))} */}
                             </Typography>
                             <Typography
@@ -380,46 +385,19 @@ function withdraw() {
                         </CardContent>
                     </Card>
 
-                    <Card fullWidth
-                        sx={{
-                            mt: 4,
-                            bgcolor: "#101D35",
-                        }}
-                    >
+                    <Card fullWidth sx={{ mt: 4, bgcolor: "#101D35", }}>
                         <CardContent>
-                            <Typography component="div" sx={{ color: "#eee" }}>
-                                ยอดเครดิตที่ต้องทำ
-                            </Typography>
-
-                            <Typography
-                                variant="h5"
-                                sx={{ textAlign: "center", color: "#41A3E3" }}
-                            >100
-                                {/* {Intl.NumberFormat("TH").format(parseInt(report.sumAmountAll))} */}
-                            </Typography>
-                            <Typography
-                                component="div"
-                                sx={{ color: "#eee", textAlign: "right" }}
-                            >
-                                บาท
-                            </Typography>
+                            <Typography component="div" sx={{ color: "#eee" }}> ยอดเครดิตที่ต้องทำ</Typography>
+                            <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3" }} >-{/* {Intl.NumberFormat("TH").format(parseInt(report.sumAmountAll))} */}</Typography>
+                            <Typography component="div" sx={{ color: "#eee", textAlign: "right" }}> บาท</Typography>
                         </CardContent>
                     </Card>
-                    <Card fullWidth
-                        sx={{
-                            mt: 3,
-                            bgcolor: "#101D35",
-                        }}
-                    >
+                    <Card fullWidth sx={{ mt: 3, bgcolor: "#101D35", }}>
                         <CardContent>
-                            <Typography component="div" sx={{ color: "#eee" }}>
-                                Total
-                            </Typography>
+                            <Typography component="div" sx={{ color: "#eee" }}>Total</Typography>
 
-                            <Typography
-                                variant="h5"
-                                sx={{ textAlign: "center", color: "#41A3E3" }}
-                            >100
+                            <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3" }}
+                            >-
                                 {/* {Intl.NumberFormat("TH").format(parseInt(report.sumAmountAll))} */}
                             </Typography>
                             <Typography
@@ -435,7 +413,7 @@ function withdraw() {
             </Grid>
 
             <Grid style={{ marginTop: "20px" }}>
-                <MaterialTableForm pageSize={10} data={deposit} columns={columns} />
+                <MaterialTableForm pageSize={10} data={transaction} columns={columns} />
             </Grid>
             <LoadingModal open={loading} />
         </Layout>

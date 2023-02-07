@@ -8,6 +8,8 @@ import {
   Snackbar,
   Alert,
   Chip,
+  Card,
+  CardContent,
 } from "@mui/material";
 import Layout from "../../theme/Layout";
 import moment from "moment";
@@ -52,7 +54,7 @@ function reportDeposit() {
     setOpen(false);
   };
   const getReport = async (type, start, end) => {
-    setLoading(true);
+    // setLoading(true);
     try {
       let res = await axios({
         headers: {
@@ -224,6 +226,48 @@ function reportDeposit() {
             </Button>
           </Grid>
         </Grid>
+
+        <Grid
+          container
+          direction="row"
+          justifyContent="space-between"
+          alignItems="flex-start"
+          sx={{ mt: 4, mb: 4 }}>
+
+          <Card sx={{ width: 250, bgcolor: "#101D35", }}>
+            <CardContent>
+              <Typography variant="h5" sx={{ color: "#eee" }}>จำนวนรายการ</Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}> { Intl.NumberFormat("THB").format('0')} </Typography>
+              <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
+            </CardContent>
+          </Card>
+
+          <Card sx={{ width: 250, bgcolor: "#101D35", }}>
+            <CardContent>
+              <Typography variant="h5" sx={{ color: "#eee" }}>ยอดเงิน</Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}> { Intl.NumberFormat("THB").format('1')}</Typography>
+              <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
+            </CardContent>
+          </Card>
+
+          <Card sx={{ width: 250, bgcolor: "#101D35", }}>
+            <CardContent>
+              <Typography variant="h5" sx={{ color: "#eee" }}>เครดิตก่อนเติม</Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  { Intl.NumberFormat("THB").format('2')}</Typography>
+              <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
+            </CardContent>
+          </Card>
+
+          <Card sx={{ width: 250, bgcolor: "#101D35", }}>
+            <CardContent>
+              <Typography variant="h5" sx={{ color: "#eee" }}>เครดิตหลังเติม</Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  { Intl.NumberFormat("THB").format(2)} </Typography>
+              <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
+            </CardContent>
+          </Card>
+
+        </Grid>
+
         <MaterialTableForm
           pageSize={10}
           // actions={actions}

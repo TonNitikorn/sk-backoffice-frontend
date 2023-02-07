@@ -11,7 +11,12 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
-  IconButton
+  IconButton,
+  Card,
+  CardContent,
+  Divider,
+  Box,
+  CardMedia
 } from "@mui/material";
 import Layout from "../../theme/Layout";
 import moment from "moment";
@@ -24,7 +29,8 @@ import Image from "next/image";
 import withAuth from "../../routes/withAuth";
 import LoadingModal from "../../theme/LoadingModal";
 import ManageSearchIcon from "@mui/icons-material/ManageSearch";
-
+import { useTheme } from '@mui/material/styles';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 // const useStyles = makeStyles({
 //   copy: {
 //     "& .MuiButton-text": {
@@ -39,6 +45,7 @@ import ManageSearchIcon from "@mui/icons-material/ManageSearch";
 
 function reportDeposit() {
   // const classes = useStyles();
+  const theme = useTheme();
   const [selectedDateRange, setSelectedDateRange] = useState({
     start: moment().format("YYYY-MM-DD 00:00"),
     end: moment().format("YYYY-MM-DD 23:59"),
@@ -48,6 +55,7 @@ function reportDeposit() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [openDialogView, setOpenDialogView] = useState(false);
+  const [total, setTotal] = useState({})
 
   const handleClickSnackbar = () => {
     setOpen(true);
@@ -81,26 +89,55 @@ function reportDeposit() {
       transaction.map((item) => {
         item.no = no++;
         item.create_at = moment(item.create_at).format('DD/MM/YYYY hh:mm')
-        // item.bank_number = item.member_account_banks[0].bank_number
-        // item.bank_account_name = item.member_account_banks[0].bank_account_name
-
+        item.bank_name =item.members?.bank_name
+        item.bank_number=item.members?.bank_number
       });
+
+      let sumPrice = 0
+      let sumCreditBefore = 0
+      let sumCreditAfter = 0
+      let price = []
+      let before = []
+      let after = []
+
+      for (const item of transaction) {
+        price.push(item.amount)
+      }
+
+      for (const item of transaction) {
+        before.push(item.credit_before)
+      }
+
+      for (const item of transaction) {
+        after.push(item.credit_after)
+      }
+
+      sumPrice = price.reduce((a, b) => a + b, 0)
+      sumCreditBefore = before.reduce((a, b) => a + b, 0)
+      sumCreditAfter = after.reduce((a, b) => a + b, 0)
+
+
+      setTotal({
+        totalList: transaction.length,
+        sumPrice: parseInt(sumPrice),
+        sumCreditAfter: parseInt(sumCreditAfter),
+        sumCreditBefore: parseInt(sumCreditBefore)
+      })
+
       setReport(transaction);
       setLoading(false);
     } catch (error) {
       console.log(error);
-      // if (
-      //   error.response.data.error.status_code === 401 &&
-      //   error.response.data.error.message === "Unauthorized"
-      // ) {
-      //   dispatch(signOut());
-      //   localStorage.clear();
-      //   router.push("/auth/login");
-      // }
+      if (
+        error.response.data.error.status_code === 401 &&
+        error.response.data.error.message === "Unauthorized"
+      ) {
+        dispatch(signOut());
+        localStorage.clear();
+        router.push("/auth/login");
+      }
     }
   };
-  console.log('report', report)
-
   useEffect(() => {
     getReport();
   }, []);
@@ -129,7 +166,7 @@ function reportDeposit() {
                 borderRadius: 4,
               }}
               variant="outlined"
-              size=""
+              size="small"
               type="datetime-local"
               name="start"
               value={selectedDateRange.start}
@@ -153,7 +190,7 @@ function reportDeposit() {
                 borderRadius: 4,
               }}
               variant="outlined"
-              size=""
+              size="small"
               type="datetime-local"
               name="end"
               value={selectedDateRange.end}
@@ -176,18 +213,19 @@ function reportDeposit() {
               placeholder="ค้นหาโดยใช้ Username"
               onChange={(e) => setUsername(e.target.value)}
               variant="outlined"
+              size="small"
               sx={{ mt: 1, mr: 2 }}
             />
             <Button
               variant="contained"
-              style={{ marginRight: "8px", marginTop: 13 }}
+              style={{ marginRight: "8px", marginTop: 13, }}
               color="primary"
-              size="large"
+              size="small"
               onClick={() => {
                 getReport();
               }}
             >
-              <Typography>ค้นหา</Typography>
+              <Typography sx={{ color: '#ffff' }}>ค้นหา</Typography>
             </Button>
             <Button
               variant="contained"
@@ -196,7 +234,7 @@ function reportDeposit() {
                 marginTop: 13,
                 backgroundColor: "#FFB946",
               }}
-              size="large"
+              size="small"
               onClick={async () => {
                 let start = moment()
                   .subtract(1, "days")
@@ -207,7 +245,7 @@ function reportDeposit() {
                 getReport("yesterday", start, end);
               }}
             >
-              <Typography>เมื่อวาน</Typography>
+              <Typography sx={{ color: '#ffff' }}>เมื่อวาน</Typography>
             </Button>
             <Button
               variant="contained"
@@ -216,17 +254,162 @@ function reportDeposit() {
                 marginTop: 13,
                 backgroundColor: "#129A50",
               }}
-              size="large"
+              size="small"
               onClick={async () => {
                 let start = moment().format("YYYY-MM-DD 00:00");
                 let end = moment().format("YYYY-MM-DD 23:59");
                 getReport("today", start, end);
               }}
             >
-              <Typography>วันนี้</Typography>
+              <Typography sx={{ color: '#ffff' }}>วันนี้</Typography>
             </Button>
           </Grid>
         </Grid>
+
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            {/* <Card sx={{ bgcolor: '#55C9F0  ', height: 305 }}>
+              <CardContent>
+                <Typography variant="h6" sx={{ color: '#ffff' }}>ข้อมูลผู้ใช้</Typography>
+                <Divider sx={{ bgcolor: '#ffff' }} />
+                <Grid container direction="row">
+                  <Grid item xs={5}>sdsd</Grid>
+                  <Grid item xs={5}>
+                    <Typography>username</Typography>
+                    <Typography>name</Typography>
+                    <Typography>rank + point</Typography>
+                    <Typography>line_id</Typography>
+                    <Typography>bank_name</Typography>
+                    <Typography>bank_number</Typography>
+                  </Grid>
+
+                </Grid>
+              </CardContent>
+            </Card> */}
+
+            <Card sx={{ display: 'flex', bgcolor: '#EAEAEA ' }}>
+              <CardMedia sx={{ width: 200, borderLeft: 8, borderColor: '#6D06A4' }}>
+                <Grid
+                  container
+                  direction="row"
+                  justifyContent="center"
+                  alignItems="flex-end"
+                  sx={{ my: 6 }}
+                >
+                  <Image
+                    src={"https://the1pg.com/wp-content/uploads/2022/10/kbnk.png"}
+                    alt="scb"
+                    width={50}
+                    height={50}
+
+                  />
+                </Grid>
+              </CardMedia>
+
+              {/* <Box sx={{ display: 'flex', flexDirection: 'column' }}> */}
+              <CardContent sx={{ flex: '1 0 auto' }}>
+                <CopyToClipboard text={'23xx00987'}>
+                  <Button
+                    sx={{ p: 0, color: "blue", }}
+                  // onClick={handleClickSnackbar}
+                  >
+                    <Typography component="div" variant="h5">{'23xx00987'}<ContentCopyIcon sx={{ ml: 2 }} /></Typography>
+                  </Button>
+                </CopyToClipboard>
+                <Divider sx={{ my: 1, bgcolor: "#41A3E3" }} />
+                <Grid container sx={{ ml: 2 }} >
+                  <Grid xs={5}>
+                    <Typography color="text.secondary" variant="h6">สมใจ หมายปอง</Typography>
+                    <Typography color="text.secondary" variant="h6" sx={{ mt: 1 }}>1,320 เครดิต</Typography>
+                  </Grid>
+                  <Grid xs={6}>
+                    <Typography color="text.secondary" variant="h6">rank : MEMBER</Typography>
+                    <Typography color="text.secondary" variant="h6" sx={{ mt: 1 }}>points : 130</Typography>
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </Card>
+
+            <Card sx={{ display: 'flex', bgcolor: '#EAEAEA ',mt:2 }}>
+              <CardMedia sx={{ width: 200, borderLeft: 8, borderColor: '#0FA736 ' }}>
+                <Grid
+                  container
+                  direction="row"
+                  justifyContent="center"
+                  alignItems="flex-end"
+                  sx={{ my: 6 }}
+                >
+                  <Image
+                    src={"https://the1pg.com/wp-content/uploads/2022/10/kbnk.png"}
+                    alt="scb"
+                    width={50}
+                    height={50}
+
+                  />
+                </Grid>
+              </CardMedia>
+
+              {/* <Box sx={{ display: 'flex', flexDirection: 'column' }}> */}
+              <CardContent sx={{ flex: '1 0 auto' }}>
+                {/* <CopyToClipboard text={'23xx00987'}>
+                  <Button
+                    sx={{ p: 0, color: "blue", }}
+                  // onClick={handleClickSnackbar}
+                  >
+                    <Typography component="div" variant="h5">{'23xx00987'}<ContentCopyIcon sx={{ ml: 2 }} /></Typography>
+                  </Button>
+                </CopyToClipboard> */}
+                {/* <Divider sx={{ my: 1, bgcolor: "#41A3E3" }} /> */}
+                <Grid container sx={{ ml: 2 }} >
+                  <Grid xs={5}>
+                    <Typography color="text.secondary" variant="h6">kbnk</Typography>
+                    <Typography color="text.secondary" variant="h6" sx={{ mt: 1 }}>999999999955 </Typography>
+                    <Typography color="text.secondary" variant="h6" sx={{ mt: 1 }}>สมใจ หมายปอง </Typography>
+
+                  </Grid>
+                  <Grid xs={6}>
+                    <Typography color="text.secondary" variant="h6" sx={{ mt: 1 }}>status : {" "}
+                      <Chip
+                        label={"เปิดใช้งาน"}
+                        size="small"
+                        style={{padding: 10, backgroundColor: "#129A50", color: "#eee",}}/>
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </Card>
+
+          </Grid>
+          <Grid item xs={6}>
+            <Grid
+              container
+              direction="column"
+              justifyContent="space-between"
+              alignItems="flex-start"
+              sx={{mt:2}}
+              >
+
+              <Card  sx={{ width: 650, bgcolor: '#0072B1', }}>
+                <CardContent>
+                  <Typography variant="h5" sx={{ color: "#eee" }}>จำนวนรายการ</Typography>
+                  <Typography variant="h5" sx={{ textAlign: "center", color: "#ffff", mt: 2 }}> {Intl.NumberFormat("THB").format(total.totalList)} </Typography>
+                  <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
+                </CardContent>
+              </Card>
+
+              <Card sx={{ width: 650, bgcolor: "#101D35", mt: 2 }}>
+                <CardContent>
+                  <Typography variant="h5" sx={{ color: "#eee" }}>ยอดเงิน</Typography>
+                  <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}> {Intl.NumberFormat("THB").format(total.sumPrice)}</Typography>
+                  <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
+                </CardContent>
+              </Card>
+
+            </Grid>
+          </Grid>
+        </Grid>
+
+
         <MaterialTableForm
           pageSize={10}
           // actions={actions}
@@ -466,7 +649,7 @@ function reportDeposit() {
                       </div>
                     </CopyToClipboard>
                     <Typography sx={{ fontSize: "14px" }}>
-                      {item.bank_account_name}
+                      {item.bank_name}
                     </Typography>
                   </Grid>
                   <Grid container justifyContent="center">
@@ -536,7 +719,7 @@ function reportDeposit() {
             },
 
             {
-              field: "create_by",
+              field: "transfer_by",
               title: "ทำรายการโดย",
               align: "center",
             },
