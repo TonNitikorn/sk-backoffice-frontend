@@ -330,50 +330,119 @@ function manageWebPages() {
               </Grid>
             </Paper>
 
-            <Grid item xs={12} container>
-              <Typography sx={{ mt: 2, mr: 2, fontSize: '20px' }}>Slide </Typography>
-              <Typography sx={{ mt: 2, color: '#41A3E3' }}>* (ขนาดรูป 1400 x 900 pixels)</Typography>
-              <TextField
-                required
-                sx={{ bgcolor: "white" }}
-                fullWidth
-                size="large"
-                type="file"
-                onChange={uploadSlide}
-              />
-            </Grid>
-            {/* <Grid item xs={5} sx={{ mt: 5 }}>
-                <Image alt="logo" src={prefix.logo} width={100} height={80} />
-              </Grid> */}
-            <Grid item xs={12} container>
-              {slide.map((item, index) => (
-                <>
-                  <img src={item.img_url} width={180} height={80} style={{ borderRadius: '5px' }} />
-                  <IconButton sx={{ mb: 15, ml: 1, mr: 2, bgcolor: '#fff', boxShadow: '2px 2px 10px #C3C1C1' }}
+            <Paper sx={{ p: 2, mt: 1, }}>
+              <Grid item xs={12} container sx={{ mb: 2 }}>
+                <Typography sx={{ mt: 2, mr: 2, fontSize: '20px' }}>Slide </Typography>
+                <Typography sx={{ mt: 2, color: '#41A3E3' }}>* (ขนาดรูป 1400 x 900 pixels)</Typography>
+                <TextField
+                  required
+                  sx={{ bgcolor: "white" }}
+                  fullWidth
+                  size="large"
+                  type="file"
+                  onChange={uploadSlide}
+                />
+              </Grid>
+              <Grid item xs={12} container>
+                {slide.map((item, index) => (
+                  <>
+                    <img src={item.img_url} width={180} height={80} style={{ borderRadius: '5px' }} />
+                    <IconButton sx={{ mb: 15, ml: 1, mr: 2, bgcolor: '#fff', boxShadow: '2px 2px 10px #C3C1C1' }}
+                      onClick={() => {
+                        slide.splice(index, 1)
+                        setRender(!render)
+                      }} >
+                      <ClearIcon fontSize="small" />
+                    </IconButton>
+                  </>
+                ))}
+              </Grid>
+              <Grid container justifyContent='flex-end' spacing={1}>
+                <Grid container item xs={3}>
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                    fullWidth
                     onClick={() => {
-                      slide.splice(index, 1)
-                      setRender(!render)
-                    }} >
-                    <ClearIcon fontSize="small" />
-                  </IconButton>
-                </>
-              ))}
-            </Grid>
+                      console.log('รีเซ็ต')
+                    }}
+                    sx={{ mt: 3 }}
+                  >
+                    รีเซ็ต
+                  </Button>
+                </Grid>
+                <Grid container item xs={3}>
+                  <Button
+                    variant="contained"
+                    size="large"
+                    fullWidth
+                    onClick={() => {
+                      setOpenDialogEdit(false)
+                    }}
+                    sx={{ mt: 3, color: '#fff', }}
+                  >
+                    ยืนยัน
+                  </Button>
+                </Grid>
+              </Grid>
+            </Paper>
 
-            <Grid item xs={6}>
-              <Typography sx={{ mt: 2 }}>ประเภทเกม *</Typography>
-              <TextField
-                required
-                sx={{ bgcolor: "white" }}
-                fullWidth
-                size="large"
-                type="file"
-                onChange={uploadFile}
-              />
-            </Grid>
-            <Grid item xs={5} sx={{ mt: 5 }}>
-              <Image alt="logo" src={prefix.logo} width={100} height={80} />
-            </Grid>
+            <Paper sx={{ p: 2, mt: 1, }}>
+              <Grid item xs={12} container sx={{ mb: 2 }}>
+                <Typography sx={{ mt: 2, mr: 2, fontSize: '20px' }}>ประเภทเกม </Typography>
+                <Typography sx={{ mt: 2, color: '#41A3E3' }}>* (ขนาดรูป 400 x 400 pixels)</Typography>
+                <TextField
+                  required
+                  sx={{ bgcolor: "white" }}
+                  fullWidth
+                  size="large"
+                  type="file"
+                  onChange={uploadFile}
+                />
+              </Grid>
+              <Grid item xs={12} container>
+                {gameType.map((item, index) => (
+                  <>
+                    <img src={item.type_logo} width={80} height={80} style={{ borderRadius: '20px' }} />
+                    <IconButton sx={{ mb: 15, ml: 1, mr: 2, bgcolor: '#fff', boxShadow: '2px 2px 10px #C3C1C1' }}
+                      onClick={() => {
+                        gameType.splice(index, 1)
+                        setRender(!render)
+                      }} >
+                      <ClearIcon fontSize="small" />
+                    </IconButton>
+                  </>
+                ))}
+              </Grid>
+              <Grid container justifyContent='flex-end' spacing={1}>
+                <Grid container item xs={3}>
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                    fullWidth
+                    onClick={() => {
+                      console.log('รีเซ็ต')
+                    }}
+                    sx={{ mt: 3 }}
+                  >
+                    รีเซ็ต
+                  </Button>
+                </Grid>
+                <Grid container item xs={3}>
+                  <Button
+                    variant="contained"
+                    size="large"
+                    fullWidth
+                    onClick={() => {
+                      setOpenDialogEdit(false)
+                    }}
+                    sx={{ mt: 3, color: '#fff', }}
+                  >
+                    ยืนยัน
+                  </Button>
+                </Grid>
+              </Grid>
+            </Paper>
           </>
         </Grid>
 
