@@ -16,7 +16,8 @@ import {
   CardContent,
   Divider,
   Box,
-  CardMedia
+  CardMedia,
+  MenuItem
 } from "@mui/material";
 import Layout from "../../theme/Layout";
 import moment from "moment";
@@ -56,6 +57,10 @@ function reportDeposit() {
   const [loading, setLoading] = useState(false);
   const [openDialogView, setOpenDialogView] = useState(false);
   const [total, setTotal] = useState({})
+  const [search, setSearch] = useState({
+    data: "",
+    type: "",
+  });
 
   const handleClickSnackbar = () => {
     setOpen(true);
@@ -89,8 +94,8 @@ function reportDeposit() {
       transaction.map((item) => {
         item.no = no++;
         item.create_at = moment(item.create_at).format('DD/MM/YYYY hh:mm')
-        item.bank_name =item.members?.bank_name
-        item.bank_number=item.members?.bank_number
+        item.bank_name = item.members?.bank_name
+        item.bank_number = item.members?.bank_number
       });
 
       let sumPrice = 0
@@ -205,6 +210,31 @@ function reportDeposit() {
               }}
               required
             />
+            <TextField variant="outlined"
+              type="text"
+              name="type"
+              size="small"
+
+              value={search.type}
+              onChange={(e) => {
+                setSearch({
+                  ...search,
+                  [e.target.name]: e.target.value,
+                });
+              }}
+              sx={{ mt: 1, mr: 1, width: "220px", bgcolor: '#fff' }}
+              select label="ประเภทการค้นหา"
+              InputLabelProps={{ shrink: true }} >
+              <MenuItem value="" > ทั้งหมด </MenuItem>
+              <MenuItem value="Fail" > ผิดพลาด </MenuItem>
+              <MenuItem value="Create" > รออนุมัติ </MenuItem>
+              <MenuItem value="Approve" > อนุมัติแล้ว </MenuItem>
+              <MenuItem value="Process" > กำลังทำรายการ </MenuItem>
+              <MenuItem value="Success" > สำเร็จ </MenuItem>
+              <MenuItem value="OTP" > OTP </MenuItem>
+              <MenuItem value="Reject" > ยกเลิก </MenuItem>
+              <MenuItem value="manual" > ถอนมือ </MenuItem>
+            </TextField>
             <TextField
               name="username"
               type="text"
@@ -267,7 +297,7 @@ function reportDeposit() {
         </Grid>
 
         <Grid container spacing={2}>
-          <Grid item xs={6}>
+          <Grid item xs={6} sx={{ mb: 3 }}>
             {/* <Card sx={{ bgcolor: '#55C9F0  ', height: 305 }}>
               <CardContent>
                 <Typography variant="h6" sx={{ color: '#ffff' }}>ข้อมูลผู้ใช้</Typography>
@@ -330,7 +360,7 @@ function reportDeposit() {
               </CardContent>
             </Card>
 
-            <Card sx={{ display: 'flex', bgcolor: '#EAEAEA ',mt:2 }}>
+            <Card sx={{ display: 'flex', bgcolor: '#EAEAEA ', mt: 2 }}>
               <CardMedia sx={{ width: 200, borderLeft: 8, borderColor: '#0FA736 ' }}>
                 <Grid
                   container
@@ -372,7 +402,7 @@ function reportDeposit() {
                       <Chip
                         label={"เปิดใช้งาน"}
                         size="small"
-                        style={{padding: 10, backgroundColor: "#129A50", color: "#eee",}}/>
+                        style={{ padding: 10, backgroundColor: "#129A50", color: "#eee", }} />
                     </Typography>
                   </Grid>
                 </Grid>
@@ -380,16 +410,17 @@ function reportDeposit() {
             </Card>
 
           </Grid>
+
           <Grid item xs={6}>
             <Grid
               container
               direction="column"
               justifyContent="space-between"
               alignItems="flex-start"
-              sx={{mt:2}}
-              >
+              sx={{ mt: 2 }}
+            >
 
-              <Card  sx={{ width: 650, bgcolor: '#0072B1', }}>
+              <Card sx={{ width: 650, bgcolor: '#0072B1', }}>
                 <CardContent>
                   <Typography variant="h5" sx={{ color: "#eee" }}>จำนวนรายการ</Typography>
                   <Typography variant="h5" sx={{ textAlign: "center", color: "#ffff", mt: 2 }}> {Intl.NumberFormat("THB").format(total.totalList)} </Typography>
@@ -400,13 +431,14 @@ function reportDeposit() {
               <Card sx={{ width: 650, bgcolor: "#101D35", mt: 2 }}>
                 <CardContent>
                   <Typography variant="h5" sx={{ color: "#eee" }}>ยอดเงิน</Typography>
-                  <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}> {Intl.NumberFormat("THB").format(total.sumPrice)}</Typography>
+                  <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}> {Intl.NumberFormat("THB").format('1800')}</Typography>
                   <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
                 </CardContent>
               </Card>
 
             </Grid>
           </Grid>
+          
         </Grid>
 
 

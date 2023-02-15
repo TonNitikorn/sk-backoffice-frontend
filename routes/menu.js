@@ -74,36 +74,40 @@ export const menuSuperAdmin = [
     link: "/bankAccount",
     icon: <AccountBalanceIcon />,
   },
-  {
-    name: "โปรโมชัน",
-    link: "/promotion",
-    icon: <SellIcon />,
-  },
+  // {
+  //   name: "โปรโมชัน",
+  //   link: "/promotion",
+  //   icon: <SellIcon />,
+  // },
   {
     name: "ข้อมูลส่วนตัว",
     link: "/profile",
     icon: <PersonIcon />,
   },
+  // {
+  //   name: "Point & Ranking",
+  //   link: "/ranking",
+  //   icon: <PersonIcon />,
+  //   type: 'collapse',
+  //   id: 'point',
+  //   point: [
+  //     {
+  //       name: "อนุมัติ Point",
+  //       link: "approvePoint",
+  //       icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
+  //     },
+  //     {
+  //       name: "จัดการ Rank Point",
+  //       link: "rank/ranking",
+  //       icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
+  //     }
+  //   ],
+  // },
   {
-    name: "Point & Ranking",
-    link: "/ranking",
-    icon: <PersonIcon />,
-    type: 'collapse',
-    id: 'point',
-    point: [
-      {
-        name: "อนุมัติ Point",
-        link: "approvePoint",
-        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
-      },
-      {
-        name: "จัดการ Rank Point",
-        link: "/ranking",
-        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
-      }
-    ],
+    name: "Rank Management",
+    link: "rank/ranking",
+    icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
   },
-
   {
     name: "รายงาน",
     // link: "/DepositWithdrawalSystem/CreditManual",
@@ -126,11 +130,11 @@ export const menuSuperAdmin = [
         link: "/report/reportDepositDecimal",
         icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
       },
-      {
-        name: "รายงานการสร้างรายการฝาก",
-        link: "/report/reportMakeDeposit",
-        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
-      },
+      // {
+      //   name: "รายงานการสร้างรายการฝาก",
+      //   link: "/report/reportMakeDeposit",
+      //   icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
+      // },
       {
         name: "รายงานการเติมเครดิต(Admin)",
         link: "/report/reportError",
@@ -263,14 +267,15 @@ export const menuAdmin = [
     link: "/ranking",
     icon: <PersonIcon />,
     children: [
+
       {
-        name: "อนุมัติ Point",
-        link: "approvePoint",
+        name: "จัดการ Rank Point",
+        link: "rank/ranking",
         icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
       },
       {
-        name: "จัดการ Rank Point",
-        link: "/ranking",
+        name: "อนุมัติ Point",
+        link: "approvePoint",
         icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
       }
     ],
@@ -296,11 +301,11 @@ export const menuAdmin = [
         link: "/report/reportDepositDecimal",
         icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
       },
-      {
-        name: "รายงานการสร้างรายการฝาก",
-        link: "/report/reportMakeDeposit",
-        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
-      },
+      // {
+      //   name: "รายงานการสร้างรายการฝาก",
+      //   link: "/report/reportMakeDeposit",
+      //   icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
+      // },
     ],
   },
 
