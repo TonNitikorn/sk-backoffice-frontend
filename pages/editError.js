@@ -83,6 +83,7 @@ function editError() {
     start: moment().format("YYYY-MM-DD 00:00"),
     end: moment().format("YYYY-MM-DD 23:59"),
   });
+  const [dataAdmin, setDataAdmin] = useState({})
   const [username, setUsername] = useState("");
   const [cutCredit, setCutCredit] = useState([]);
   const [allError, setAllError] = useState([]);
@@ -103,45 +104,18 @@ function editError() {
     setRowData({ ...rowData, [e.target.name]: e.target.value });
   };
 
-  const getAll = async () => {
+  const getDataAdmin = async () => {
     setLoading(true);
     try {
-      let start = moment().format("YYYY-MM-DD 00:00");
-      let end = moment().format("YYYY-MM-DD 23:59");
-
       let res = await axios({
         headers: {
           Authorization: "Bearer " + localStorage.getItem("access_token"),
         },
-        method: "get",
-        url: `${hostname}/api/err_list/?start_date=${start}&end_date=${end}&username=&error_type=`,
+        method: "post",
+        url: `${hostname}/admin/admin_profile`,
       });
-      let resData = res.data.data;
-      let no = 1;
-      resData.map((item) => {
-        item.no = no++;
-        // item.amount = Intl.NumberFormat("TH", {
-        //   style: "currency",
-        //   currency: "THB",
-        // }).format(parseInt(item.amount));
-        // item.bonus_credit = Intl.NumberFormat("TH", {
-        //   style: "currency",
-        //   currency: "THB",
-        // }).format(parseInt(item.bonus_credit));
-        // item.credit_before = Intl.NumberFormat("TH", {
-        //   style: "currency",
-        //   currency: "THB",
-        // }).format(parseInt(item.credit_before));
-        // item.credit_after = Intl.NumberFormat("TH", {
-        //   style: "currency",
-        //   currency: "THB",
-        // }).format(parseInt(item.credit_after));
-      });
-      setAddCreditTotal(res.data.addCreditTotal[0].totalAmount);
-      setCutCreditTotal(res.data.cutCreditTotal[0].totalAmount);
-      setSlipCreditTotal(res.data.slipCreditTotal[0].totalAmount);
-
-      setAllError(resData);
+      let resData = res.data;
+      setDataAdmin(resData);
       setLoading(false);
     } catch (error) {
       if (
@@ -250,46 +224,41 @@ function editError() {
   const submitFormCutCredit = async () => {
     setLoading(true);
     try {
-      let now = moment().format("YYYY-MM-DD h:mm");
-      let create_by = localStorage.getItem("create_by")
       let res = await axios({
         headers: {
           Authorization: "Bearer " + localStorage.getItem("access_token"),
         },
         method: "post",
-        url: `${hostname}/api/err_list`,
+        url: `${hostname}/report/create_transaction`,
         data: {
-          amount: rowData.amount,
-          annotation: rowData.annotation,
-          bouns_credit: "0",
-          create_by: create_by,
-          date: now,
-          error_list_name: "ตัดเครดิต",
-          username: rowData.username,
-          turn_over: {
-            max_withdraw: "",
-            turn_over: "0",
-            turn_over_bacara: "0",
-            turn_over_hdp: "0",
-            turn_over_mix_replay: "0",
-            turn_over_mix_step: "0",
-            turn_over_slot: "0",
-            turn_over_thai_lotterry: "0",
-            turn_over_thai_m2: "0",
-            turn_over_thai_multiplayer: "0",
-            turn_type: "",
-            turn_win: "0",
-          },
+          "credit": "1000",
+          "credit_before": "1500",
+          "credit_after": "-1000",
+          "amount": rowData.amount,
+          "amount_before": "1000000",
+          "amount_after": "-1000",
+          "transfer_by": dataAdmin.name,
+          "transfer_type": "WITHDRAW",
+          "status_transction": "SUCCESS",
+          "status_provider": "SUCCESS",
+          "status_bank": "SUCCESS",
+          "content": "data.contentQWE",
+          "member_uuid": rowData.username,
+          "detail": rowData.annotation,
+          "detail_bank": "data.detail_bankQWE",
+          "slip": "data.test.slipQWE"
         },
       });
+      
       setLoading(false);
-      if (res.data.message === "เพิ่มข้อมูลเรียบร้อยแล้ว") {
+      if (res.data.message === "สร้างรายการสำเร็จ") {
+        setRowData({})
         Swal.fire({
           position: "center",
           icon: "success",
           title: "ทำรายการเรียบร้อย",
           showConfirmButton: false,
-          timer: 3000,
+          timer: 2000,
         });
       }
     } catch (error) {
@@ -309,27 +278,24 @@ function editError() {
         method: "post",
         url: `${hostname}/api/err_list`,
         data: {
-          amount: rowData.amount,
-          annotation: rowData.annotation,
-          bouns_credit: "0",
-          create_by: create_by,
-          date: now,
-          error_list_name: "เพิ่มเครดิต",
-          username: rowData.username,
-          turn_over: {
-            max_withdraw: rowData.max_withdraw,
-            turn_over: rowData.turn_over,
-            turn_over_bacara: "0",
-            turn_over_hdp: "0",
-            turn_over_mix_replay: "0",
-            turn_over_mix_step: "0",
-            turn_over_slot: "0",
-            turn_over_thai_lotterry: "0",
-            turn_over_thai_m2: "0",
-            turn_over_thai_multiplayer: "0",
-            turn_type: 2,
-            turn_win: "0",
-          },
+          "credit": "1000",
+          "credit_before": "1500",
+          "credit_after": "-1000",
+          "amount": rowData.amount,
+          "amount_before": "1000000",
+          "amount_after": "-1000",
+          "transfer_by": dataAdmin.name,
+          "transfer_type": "WITHDRAW",
+          "status_transction": "SUCCESS",
+          "status_provider": "SUCCESS",
+          "status_bank": "SUCCESS",
+          "content": "data.contentQWE",
+          "member_uuid": rowData.username,
+          "detail": rowData.annotation,
+          "detail_bank": "data.detail_bankQWE",
+          "slip": "data.test.slipQWE",
+
+          // "max_withdraw": rowData.max_withdraw
         },
       });
       setLoading(false);
@@ -401,7 +367,7 @@ function editError() {
   };
 
   useEffect(() => {
-    // getAll();
+    getDataAdmin();
   }, []);
 
   return (
@@ -447,12 +413,7 @@ function editError() {
                 setPage(2);
                 setRowData({});
               }}
-              sx={{
-                p: 2,
-                mx: 3,
-                backgroundColor: page === 2 ? "#41A3E3" : "gray",
-                color: "#fff",
-              }}
+              sx={{p: 2,mx: 3,backgroundColor: page === 2 ? "#41A3E3" : "gray",color: "#fff"}}
             >
               <Typography>เติมเครดิต</Typography>
             </Button>
@@ -613,20 +574,16 @@ function editError() {
                     />
                   </Grid>
                 </Grid>
-
-
                 <Grid
                   container
                   direction="row"
                   justifyContent="flex-end"
                   alignItems="center"
                 >
-
                   <Button
                     variant="contained"
                     onClick={() => submitFormCreditPromo()}
                   >
-
                     <Typography sx={{ color: '#fff' }}>ยืนยัน</Typography>
                   </Button>
                 </Grid>
@@ -765,7 +722,7 @@ function editError() {
             variant="text"
             onClick={() => { }}
           >
-            <Typography variant="h6" sx={{textDecoration: "underline #41A3E3 3px", mt:3}} onClick={() => router.push("/report/reportError")}>รายงานการการเติมเครดิตแบบ manual</Typography>
+            <Typography variant="h6" sx={{ textDecoration: "underline #41A3E3 3px", mt: 3 }} onClick={() => router.push("/report/reportError")}>รายงานการการเติมเครดิตแบบ manual</Typography>
           </Button>
 
         </Paper>
