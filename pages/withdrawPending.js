@@ -61,6 +61,11 @@ function withdrawpending() {
    });
    const [wallet, setWallet] = useState()
    const [item, setitem] = useState()
+   const [content, setContent] = useState(false)
+
+   const handleChangeData = async (e) => {
+      setRowData({ ...rowData, [e.target.name]: e.target.value });
+   };
 
    const handleClickSnackbar = () => {
       setOpen(true);
@@ -131,7 +136,7 @@ function withdrawpending() {
          "bank_name": "kbnk",
          "bank_account_name": "ภูชิต กุลนอก",
          "bank_number": "1338361889",
-        
+
       },
       {
          "id": 54735,
@@ -2151,9 +2156,12 @@ function withdrawpending() {
                            name="radio-buttons-group"
                         >
                            <FormControlLabel value="auto" control={<Radio />} label={<Typography sx={{ fontSize: '14px' }}>ออโต้ </Typography>} />
-                           <FormControlLabel value="manual" control={<Radio />} label={<Typography sx={{ fontSize: '14px' }}>ถอนมือ </Typography>} />
+                           <FormControlLabel value="manual" onClick={() => setContent(true)} control={<Radio />} label={<Typography sx={{ fontSize: '14px' }}>ถอนมือ </Typography>} />
                         </RadioGroup>
                      </FormControl>
+
+
+
 
                      <Typography sx={{ fontSize: '14px', mt: 3 }}> ธนาคาร</Typography>
                      <FormControl>
@@ -2187,7 +2195,23 @@ function withdrawpending() {
 
                         </RadioGroup>
                      </FormControl>
-
+                     {content ?
+                        <TextField
+                           name="content"
+                           type="text"
+                           value={rowData.content || ""}
+                           placeholder="หมายเหตุ"
+                           fullWidth
+                           size="small"
+                           onChange={(e) => handleChangeData(e)}
+                           variant="outlined"
+                           sx={{ bgcolor: "white",width:300 ,mt:2 }}
+                           multiline
+                           rows={3}
+                           maxRows={4}
+                           error
+                        />
+                        : ''}
                   </Grid>
 
                   <Grid container justifyContent='center' spacing={1}>

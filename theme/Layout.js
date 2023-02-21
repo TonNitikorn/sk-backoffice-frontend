@@ -187,7 +187,7 @@ function Layout({ children, page }) {
         <Divider />
         <List>
           <ListItem disablePadding>
-            <ListItemButton>
+            <ListItemButton onClick={() => router.push('/profile')}>
               <ListItemIcon>
                 <PersonIcon />
               </ListItemIcon>
