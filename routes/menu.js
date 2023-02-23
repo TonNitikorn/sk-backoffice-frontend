@@ -79,11 +79,11 @@ export const menuSuperAdmin = [
   //   link: "/promotion",
   //   icon: <SellIcon />,
   // },
-  {
-    name: "ข้อมูลส่วนตัว",
-    link: "/profile",
-    icon: <PersonIcon />,
-  },
+  // {
+  //   name: "ข้อมูลส่วนตัว",
+  //   link: "/profile",
+  //   icon: <PersonIcon />,
+  // },
   // {
   //   name: "Point & Ranking",
   //   link: "/ranking",
@@ -257,11 +257,11 @@ export const menuAdmin = [
     link: "/promotion",
     icon: <SellIcon />,
   },
-  {
-    name: "ข้อมูลส่วนตัว",
-    link: "/profile",
-    icon: <PersonIcon />,
-  },
+  // {
+  //   name: "ข้อมูลส่วนตัว",
+  //   link: "/profile",
+  //   icon: <PersonIcon />,
+  // },
   {
     name: "Point & Ranking",
     link: "/ranking",

@@ -805,8 +805,8 @@ function bankAccount() {
 
         <DialogContent>
           <Grid container justifyContent="center" spacing={2}>
-            <Grid item xs={5}>
-              <Typography sx={{ mt: 2, color: "gray" }}>
+            <Grid container item xs={6}>
+              <Typography>
                 เลือกธนาคาร *
               </Typography>
               <TextField
@@ -828,8 +828,8 @@ function bankAccount() {
                 <MenuItem value="truemoney">Truemoney Wallet</MenuItem>
               </TextField>
             </Grid>
-            <Grid item xs={5}>
-              <Typography sx={{ mt: 2, color: "gray" }}>ประเภท *</Typography>
+            <Grid container item xs={6}>
+              <Typography >ประเภท *</Typography>
               <TextField
                 name="type"
                 type="text"
@@ -849,8 +849,8 @@ function bankAccount() {
               </TextField>
             </Grid>
             {rowData.bank_type === "1" ? (
-              <Grid item xs={5}>
-                <Typography sx={{ mt: 2, color: "gray" }}>การฝาก *</Typography>
+              <Grid container item xs={6}>
+                <Typography >การฝาก *</Typography>
                 <TextField
                   name="type_deposit"
                   type="text"
@@ -872,8 +872,8 @@ function bankAccount() {
             ) : (
               ""
             )}
-            <Grid item xs={5}>
-              <Typography sx={{ mt: 2, color: "gray" }}>
+            <Grid container item xs={6}>
+              <Typography >
                 เลขที่บัญชี *
               </Typography>
               <TextField
@@ -888,8 +888,8 @@ function bankAccount() {
                 sx={{ bgcolor: "white" }}
               />
             </Grid>
-            <Grid item xs={5}>
-              <Typography sx={{ mt: 2, color: "gray" }}>USERNAME *</Typography>
+            <Grid container item xs={6}>
+              <Typography >USERNAME *</Typography>
               <TextField
                 name="username_ibanking"
                 type="text"
@@ -902,8 +902,8 @@ function bankAccount() {
                 sx={{ bgcolor: "white" }}
               />
             </Grid>
-            <Grid item xs={5}>
-              <Typography sx={{ mt: 2, color: "gray" }}>ชื่อบัญชี *</Typography>
+            <Grid container item xs={6}>
+              <Typography >ชื่อบัญชี *</Typography>
               <TextField
                 name="bank_account_name"
                 type="text"
@@ -916,8 +916,8 @@ function bankAccount() {
                 sx={{ bgcolor: "white" }}
               />
             </Grid>
-            <Grid item xs={5}>
-              <Typography sx={{ mt: 2, color: "gray" }}>PASSWORD *</Typography>
+            <Grid container item xs={6}>
+              <Typography >PASSWORD *</Typography>
               <TextField
                 name="password_ibanking"
                 type="text"
@@ -931,8 +931,8 @@ function bankAccount() {
               />
             </Grid>
 
-            <Grid item xs={5}>
-              <Typography sx={{ mt: 2, color: "gray" }}>PIN *</Typography>
+            <Grid container item xs={6}>
+              <Typography >PIN *</Typography>
               <TextField
                 name="pin"
                 type="number"
@@ -946,8 +946,8 @@ function bankAccount() {
               />
             </Grid>
 
-            <Grid item xs={5}>
-              <Typography sx={{ mt: 2, color: "gray" }}>
+            <Grid container item xs={6}>
+              <Typography >
                 Status System *
               </Typography>
               <TextField
@@ -969,8 +969,8 @@ function bankAccount() {
                 <MenuItem value="CLOSE">Offline</MenuItem>
               </TextField>
             </Grid>
-            <Grid item xs={5}>
-              <Typography sx={{ mt: 2, color: "gray" }}>ลำดับที่ *</Typography>
+            <Grid container item xs={6}>
+              <Typography >ลำดับที่ *</Typography>
               <TextField
                 name="no"
                 type="text"
@@ -983,8 +983,8 @@ function bankAccount() {
                 sx={{ bgcolor: "white" }}
               />
             </Grid>
-            <Grid item xs={5}>
-              <Typography sx={{ mt: 2, color: "gray" }}>วัน/เดือน/ปี เกิด *</Typography>
+            <Grid container item xs={6}>
+              <Typography >วัน/เดือน/ปี เกิด *</Typography>
               <TextField
                 fullWidth
                 variant="outlined"
@@ -1003,8 +1003,8 @@ function bankAccount() {
                 }}
               />
             </Grid>
-            <Grid item xs={5}>
-              <Typography sx={{ mt: 2, color: "gray" }}>device_id *</Typography>
+            <Grid container item xs={6}>
+              <Typography >device_id *</Typography>
               <TextField
                 name="device_id"
                 type="text"
@@ -1017,8 +1017,8 @@ function bankAccount() {
                 sx={{ bgcolor: "white" }}
               />
             </Grid>
-            <Grid item xs={5}>
-              <Typography sx={{ mt: 2, color: "gray" }}>เบอร์โทรศัพท์ *</Typography>
+            <Grid container item xs={6}>
+              <Typography >เบอร์โทรศัพท์ *</Typography>
               <TextField
                 name="tel"
                 type="number"
@@ -1031,8 +1031,8 @@ function bankAccount() {
                 sx={{ bgcolor: "white" }}
               />
             </Grid>
-            <Grid item xs={5}>
-              <Typography sx={{ mt: 2, color: "gray" }}>สถานะ *</Typography>
+            <Grid container item xs={6}>
+              <Typography >สถานะ *</Typography>
               <TextField
                 name="status"
                 type="text"
@@ -1052,7 +1052,7 @@ function bankAccount() {
                 <MenuItem value="INACTIVE">ปิดใช้งาน</MenuItem>
               </TextField>
             </Grid>
-            {rowData.bank_type === "add" ? "" : <Grid item xs={5}></Grid>}
+            {rowData.bank_type === "add" ? "" : <Grid container item xs={6}></Grid>}
 
             <Grid container justifyContent='center' spacing={1} sx={{ mt: 2 }}>
               <Grid container item xs={4}>
@@ -1117,8 +1117,8 @@ function bankAccount() {
 
         <DialogContent>
           <Grid container justifyContent="center" spacing={2}>
-            <Grid item xs={5}>
-              <Typography sx={{ mt: 2, color: "gray" }}>api_Key *</Typography>
+            <Grid container item xs={6}>
+              <Typography >api_Key *</Typography>
               <TextField
                 name="api_Refresh"
                 type="text"
@@ -1131,8 +1131,8 @@ function bankAccount() {
                 sx={{ bgcolor: "white" }}
               />
             </Grid>
-            <Grid item xs={5}>
-              <Typography sx={{ mt: 2, color: "gray" }}>ประเภท *</Typography>
+            <Grid container item xs={6}>
+              <Typography >ประเภท *</Typography>
               <TextField
                 name="status_type"
                 type="text"
@@ -1152,8 +1152,8 @@ function bankAccount() {
               </TextField>
             </Grid>
 
-            <Grid item xs={5}>
-              <Typography sx={{ mt: 2, color: "gray" }}>
+            <Grid container item xs={6}>
+              <Typography >
                 หมายเลขอุปกรณ์ *
               </Typography>
               <TextField
@@ -1168,8 +1168,8 @@ function bankAccount() {
                 sx={{ bgcolor: "white" }}
               />
             </Grid>
-            <Grid item xs={5}>
-              <Typography sx={{ mt: 2, color: "gray" }}>
+            <Grid container item xs={6}>
+              <Typography >
                 ชื่อธนาคาร *
               </Typography>
               <TextField
@@ -1183,8 +1183,8 @@ function bankAccount() {
                 disabled
               />
             </Grid>
-            <Grid item xs={5}>
-              <Typography sx={{ mt: 2, color: "gray" }}>
+            <Grid container item xs={6}>
+              <Typography >
                 หมายเลขบัญชี *
               </Typography>
               <TextField
@@ -1199,8 +1199,8 @@ function bankAccount() {
                 sx={{ bgcolor: "white" }}
               />
             </Grid>
-            <Grid item xs={5}>
-              <Typography sx={{ mt: 2, color: "gray" }}>ชื่อบัญชี *</Typography>
+            <Grid container item xs={6}>
+              <Typography >ชื่อบัญชี *</Typography>
               <TextField
                 name="bank_account_name_app"
                 type="text"
@@ -1214,8 +1214,8 @@ function bankAccount() {
               />
             </Grid>
 
-            <Grid item xs={5}>
-              <Typography sx={{ mt: 2, color: "gray" }}>สถานะ *</Typography>
+            <Grid container item xs={6}>
+              <Typography >สถานะ *</Typography>
               <TextField
                 name="status"
                 type="text"
@@ -1236,7 +1236,7 @@ function bankAccount() {
               </TextField>
             </Grid>
 
-            <Grid item xs={5}></Grid>
+            <Grid container item xs={6}></Grid>
             <Grid item xs={3}>
               <Button
                 variant="contained"

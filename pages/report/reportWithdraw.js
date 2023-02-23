@@ -96,6 +96,7 @@ function reportDeposit() {
         item.create_at = moment(item.create_at).format('DD/MM/YYYY hh:mm')
         item.bank_name = item.members?.bank_name
         item.bank_number = item.members?.bank_number
+        item.username = item.members?.username
       });
 
       let sumPrice = 0
@@ -130,6 +131,7 @@ function reportDeposit() {
       })
 
       setReport(transaction);
+
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -719,7 +721,7 @@ function reportDeposit() {
               align: "center",
             },
             {
-              field: "bank_time",
+              field: "create_at",
               title: "เวลาทำรายการ",
               align: "center",
             },
@@ -776,11 +778,7 @@ function reportDeposit() {
                 );
               },
             },
-            {
-              field: "ref",
-              title: "ref.",
-              align: "center",
-            },
+            
           ]}
         />
       </Paper>
@@ -795,7 +793,7 @@ function reportDeposit() {
         <DialogContent>
           <Grid item xs={12} container justifyContent="center" sx={{ mb: 2 }}>
             <Typography sx={{ fontSize: "16px" }}>
-              {openDialogView.text}
+              {report.content}
             </Typography>
           </Grid>
         </DialogContent>

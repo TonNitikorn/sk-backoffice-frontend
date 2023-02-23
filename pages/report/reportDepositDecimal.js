@@ -75,6 +75,9 @@ function reportDepositDecimal() {
       transaction.map((item) => {
         item.no = no++;
         item.create_at = moment(item.create_at).format('DD/MM/YYYY hh:mm')
+        item.username = item.members?.username
+        item.bank_name = item.members?.bank_name
+        item.bank_number = item.members?.bank_number
         // item.bank_number = item.member_account_banks[0].bank_number
         // item.bank_account_name = item.member_account_banks[0].bank_account_name
 
@@ -123,7 +126,7 @@ function reportDepositDecimal() {
                 borderRadius: 4,
               }}
               variant="outlined"
-              size=""
+              size="small"
               type="datetime-local"
               name="start"
               value={selectedDateRange.start}
@@ -147,7 +150,7 @@ function reportDepositDecimal() {
                 borderRadius: 4,
               }}
               variant="outlined"
-              size=""
+              size="small"
               type="datetime-local"
               name="end"
               value={selectedDateRange.end}
@@ -165,6 +168,8 @@ function reportDepositDecimal() {
             <TextField
               name="username"
               type="text"
+              size="small"
+
               value={username || ""}
               label="ค้นหาโดยใช้ Username"
               placeholder="ค้นหาโดยใช้ Username"
@@ -176,12 +181,12 @@ function reportDepositDecimal() {
               variant="contained"
               style={{ marginRight: "8px", marginTop: 13 }}
               color="primary"
-              size="large"
+              size="small"
               onClick={() => {
                 getReport();
               }}
             >
-              <Typography>ค้นหา</Typography>
+              <Typography sx={{color: '#ffff'}}>ค้นหา</Typography>
             </Button>
             <Button
               variant="contained"
@@ -190,7 +195,7 @@ function reportDepositDecimal() {
                 marginTop: 13,
                 backgroundColor: "#FFB946",
               }}
-              size="large"
+              size="small"
               onClick={async () => {
                 let start = moment()
                   .subtract(1, "days")
@@ -201,7 +206,7 @@ function reportDepositDecimal() {
                 getReport("yesterday", start, end);
               }}
             >
-              <Typography>เมื่อวาน</Typography>
+              <Typography sx={{color: '#ffff'}}>เมื่อวาน</Typography>
             </Button>
             <Button
               variant="contained"
@@ -210,14 +215,14 @@ function reportDepositDecimal() {
                 marginTop: 13,
                 backgroundColor: "#129A50",
               }}
-              size="large"
+              size="small"
               onClick={async () => {
                 let start = moment().format("YYYY-MM-DD 00:00");
                 let end = moment().format("YYYY-MM-DD 23:59");
                 getReport("today", start, end);
               }}
             >
-              <Typography>วันนี้</Typography>
+              <Typography sx={{color: '#ffff'}}>วันนี้</Typography>
             </Button>
           </Grid>
         </Grid>
@@ -460,7 +465,7 @@ function reportDepositDecimal() {
                       </div>
                     </CopyToClipboard>
                     <Typography sx={{ fontSize: "14px" }}>
-                      {item.bank_account_name}
+                      {item.bank_name}
                     </Typography>
                   </Grid>
                   <Grid container justifyContent="center">
@@ -498,7 +503,7 @@ function reportDepositDecimal() {
               align: "center",
             },
             {
-              field: "bank_time",
+              field: "create_at",
               title: "เวลาทำรายการ",
               align: "center",
             },
@@ -530,18 +535,13 @@ function reportDepositDecimal() {
             },
 
             {
-              field: "create_by",
+              field: "transfer_by",
               title: "ทำรายการโดย",
               align: "center",
             },
             {
-              field: "annotation",
+              field: "content",
               title: "หมายเหตุ",
-              align: "center",
-            },
-            {
-              field: "ref",
-              title: "ref.",
               align: "center",
             },
           ]}

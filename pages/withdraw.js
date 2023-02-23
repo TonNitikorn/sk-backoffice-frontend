@@ -271,7 +271,7 @@ function withdraw() {
                                         name="username"
                                         type="text"
                                         fullWidth
-                                        value={dataUser.name || ""}
+                                        value={dataUser?.name || ""}
                                         size="small"
                                         onChange={(e) => handleChangeData(e)}
                                         variant="outlined"
@@ -283,7 +283,7 @@ function withdraw() {
                                         name="bank_name"
                                         type="text"
                                         fullWidth
-                                        value={dataUser.bank_name || ""}
+                                        value={dataUser?.bank_name || ""}
                                         size="small"
                                         onChange={(e) => handleChangeData(e)}
                                         variant="outlined"
@@ -295,7 +295,7 @@ function withdraw() {
                                         name="credit"
                                         type="text"
                                         fullWidth
-                                        value={Intl.NumberFormat("TH").format(parseInt(dataUser.credit || "ไม่มีเครดิต"))}
+                                        value={Intl.NumberFormat("TH").format(parseInt(dataUser?.credit || "ไม่มีเครดิต"))}
                                         size="small"
                                         onChange={(e) => handleChangeData(e)}
                                         variant="outlined"
@@ -311,7 +311,7 @@ function withdraw() {
                                         name="tel"
                                         type="text"
                                         fullWidth
-                                        value={dataUser.tel || ""}
+                                        value={dataUser?.tel || ""}
                                         size="small"
                                         onChange={(e) => handleChangeData(e)}
                                         variant="outlined"
@@ -323,7 +323,7 @@ function withdraw() {
                                         name="bank_number"
                                         type="text"
                                         fullWidth
-                                        value={dataUser.bank_number || ""}
+                                        value={dataUser?.bank_number || ""}
                                         size="small"
                                         onChange={(e) => handleChangeData(e)}
                                         variant="outlined"

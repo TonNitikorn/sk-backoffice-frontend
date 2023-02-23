@@ -508,7 +508,7 @@ function reportDeposit() {
                     </CopyToClipboard>
                     <Typography sx={{ fontSize: "14px" }}>
                       {" "}
-                      {item.bank_account_name}
+                      {item.bank_name}
                     </Typography>
                   </Grid>
                   {/* <Grid container justifyContent="center">
@@ -588,11 +588,7 @@ function reportDeposit() {
               title: "หมายเหตุ",
               align: "center",
             },
-            {
-              field: "ref",
-              title: "ref.",
-              align: "center",
-            },
+            
           ]}
         />
       </Paper>

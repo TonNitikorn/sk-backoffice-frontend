@@ -83,9 +83,13 @@ function editError() {
     start: moment().format("YYYY-MM-DD 00:00"),
     end: moment().format("YYYY-MM-DD 23:59"),
   });
+  const [dataAdmin, setDataAdmin] = useState({})
   const [username, setUsername] = useState("");
   const [cutCredit, setCutCredit] = useState([]);
-  const [allError, setAllError] = useState([]);
+  const [total, setTotal] = useState({
+    sumDeposit: 0,
+    sumWithdraw: 0,
+  });
   const [creditPromo, setCreditPromo] = useState([]);
   const [upCredit, setUpCredit] = useState([]);
   const [rowData, setRowData] = useState({});
@@ -103,45 +107,18 @@ function editError() {
     setRowData({ ...rowData, [e.target.name]: e.target.value });
   };
 
-  const getAll = async () => {
+  const getDataAdmin = async () => {
     setLoading(true);
     try {
-      let start = moment().format("YYYY-MM-DD 00:00");
-      let end = moment().format("YYYY-MM-DD 23:59");
-
       let res = await axios({
         headers: {
           Authorization: "Bearer " + localStorage.getItem("access_token"),
         },
-        method: "get",
-        url: `${hostname}/api/err_list/?start_date=${start}&end_date=${end}&username=&error_type=`,
+        method: "post",
+        url: `${hostname}/admin/admin_profile`,
       });
-      let resData = res.data.data;
-      let no = 1;
-      resData.map((item) => {
-        item.no = no++;
-        // item.amount = Intl.NumberFormat("TH", {
-        //   style: "currency",
-        //   currency: "THB",
-        // }).format(parseInt(item.amount));
-        // item.bonus_credit = Intl.NumberFormat("TH", {
-        //   style: "currency",
-        //   currency: "THB",
-        // }).format(parseInt(item.bonus_credit));
-        // item.credit_before = Intl.NumberFormat("TH", {
-        //   style: "currency",
-        //   currency: "THB",
-        // }).format(parseInt(item.credit_before));
-        // item.credit_after = Intl.NumberFormat("TH", {
-        //   style: "currency",
-        //   currency: "THB",
-        // }).format(parseInt(item.credit_after));
-      });
-      setAddCreditTotal(res.data.addCreditTotal[0].totalAmount);
-      setCutCreditTotal(res.data.cutCreditTotal[0].totalAmount);
-      setSlipCreditTotal(res.data.slipCreditTotal[0].totalAmount);
-
-      setAllError(resData);
+      let resData = res.data;
+      setDataAdmin(resData);
       setLoading(false);
     } catch (error) {
       if (
@@ -156,92 +133,24 @@ function editError() {
     }
   };
 
-  const getAllError = async (type, start, end) => {
+  const getTotal = async () => {
     setLoading(true);
-
     try {
       let res = await axios({
         headers: {
           Authorization: "Bearer " + localStorage.getItem("access_token"),
         },
-        method: "get",
-        url: `${hostname}/api/err_list/?start_date=${type === undefined ? selectedDateRange.start : start
-          }&end_date=${type === undefined ? selectedDateRange.end : end
-          }&username=&error_type=`,
+        method: "post",
+        url: `${hostname}/report/get_manual_transaction`,
+        data: {
+          "status_transction": "MANUAL"
+        }
       });
-      let resData = res.data.data;
-      let no = 1;
-      resData.map((item) => {
-        item.no = no++;
+      setTotal({
+        sumDeposit: res.data.sumDeposit,
+        sumWithdraw: res.data.sumWithdraw,
       });
-      setAllError(resData);
       setLoading(false);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const getCreditCut = async (type, start, end) => {
-    try {
-      let res = await axios({
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("access_token"),
-        },
-        method: "get",
-        url: `${hostname}/api/err_list/?start_date=${type === undefined ? selectedDateRange.start : start
-          }&end_date=${type === undefined ? selectedDateRange.end : end
-          }&username=&error_type=ตัดเครดิต`,
-      });
-      let resData = res.data.data;
-      let no = 1;
-      resData.map((item) => {
-        item.no = no++;
-      });
-      setCutCredit(resData);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const getCreditPromo = async (type, start, end) => {
-    try {
-      let res = await axios({
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("access_token"),
-        },
-        method: "get",
-        url: `${hostname}/api/err_list/?start_date=${type === undefined ? selectedDateRange.start : start
-          }&end_date=${type === undefined ? selectedDateRange.end : end
-          }&username=&error_type=เพิ่มเครดิต`,
-      });
-      let resData = res.data.data;
-      let no = 1;
-      resData.map((item) => {
-        item.no = no++;
-      });
-      setCreditPromo(resData);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const getUpCredit = async (type, start, end) => {
-    try {
-      let res = await axios({
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("access_token"),
-        },
-        method: "get",
-        url: `${hostname}/api/err_list/?start_date=${type === undefined ? selectedDateRange.start : start
-          }&end_date=${type === undefined ? selectedDateRange.end : end
-          }&username=&error_type=สลิปไม่แสดง`,
-      });
-      let resData = res.data.data;
-      let no = 1;
-      resData.map((item) => {
-        item.no = no++;
-      });
-      setUpCredit(resData);
     } catch (error) {
       console.log(error);
     }
@@ -250,47 +159,32 @@ function editError() {
   const submitFormCutCredit = async () => {
     setLoading(true);
     try {
-      let now = moment().format("YYYY-MM-DD h:mm");
-      let create_by = localStorage.getItem("create_by")
       let res = await axios({
         headers: {
           Authorization: "Bearer " + localStorage.getItem("access_token"),
         },
         method: "post",
-        url: `${hostname}/api/err_list`,
+        url: `${hostname}/transaction/create_manual`,
         data: {
-          amount: rowData.amount,
-          annotation: rowData.annotation,
-          bouns_credit: "0",
-          create_by: create_by,
-          date: now,
-          error_list_name: "ตัดเครดิต",
-          username: rowData.username,
-          turn_over: {
-            max_withdraw: "",
-            turn_over: "0",
-            turn_over_bacara: "0",
-            turn_over_hdp: "0",
-            turn_over_mix_replay: "0",
-            turn_over_mix_step: "0",
-            turn_over_slot: "0",
-            turn_over_thai_lotterry: "0",
-            turn_over_thai_m2: "0",
-            turn_over_thai_multiplayer: "0",
-            turn_type: "",
-            turn_win: "0",
-          },
+          "member_username": rowData.username,
+          "amount": rowData.amount,
+          "transfer_type": "WITHDRAW",
+          "content": rowData.annotation
         },
       });
+      getTotal()
+
       setLoading(false);
-      if (res.data.message === "เพิ่มข้อมูลเรียบร้อยแล้ว") {
+      if (res.data.message === "สร้างรายการสำเร็จ") {
+        setRowData({})
         Swal.fire({
           position: "center",
           icon: "success",
           title: "ทำรายการเรียบร้อย",
           showConfirmButton: false,
-          timer: 3000,
+          timer: 2000,
         });
+        getTotal()
       }
     } catch (error) {
       console.log(error);
@@ -309,27 +203,24 @@ function editError() {
         method: "post",
         url: `${hostname}/api/err_list`,
         data: {
-          amount: rowData.amount,
-          annotation: rowData.annotation,
-          bouns_credit: "0",
-          create_by: create_by,
-          date: now,
-          error_list_name: "เพิ่มเครดิต",
-          username: rowData.username,
-          turn_over: {
-            max_withdraw: rowData.max_withdraw,
-            turn_over: rowData.turn_over,
-            turn_over_bacara: "0",
-            turn_over_hdp: "0",
-            turn_over_mix_replay: "0",
-            turn_over_mix_step: "0",
-            turn_over_slot: "0",
-            turn_over_thai_lotterry: "0",
-            turn_over_thai_m2: "0",
-            turn_over_thai_multiplayer: "0",
-            turn_type: 2,
-            turn_win: "0",
-          },
+          "credit": "1000",
+          "credit_before": "1500",
+          "credit_after": "-1000",
+          "amount": rowData.amount,
+          "amount_before": "1000000",
+          "amount_after": "-1000",
+          "transfer_by": dataAdmin.name,
+          "transfer_type": "WITHDRAW",
+          "status_transction": "SUCCESS",
+          "status_provider": "SUCCESS",
+          "status_bank": "SUCCESS",
+          "content": "data.contentQWE",
+          "member_uuid": rowData.username,
+          "detail": rowData.annotation,
+          "detail_bank": "data.detail_bankQWE",
+          "slip": "data.test.slipQWE",
+
+          // "max_withdraw": rowData.max_withdraw
         },
       });
       setLoading(false);
@@ -351,57 +242,41 @@ function editError() {
     setLoading(true);
 
     try {
-      let now = moment().format("YYYY-MM-DD h:mm");
-      let create_by = localStorage.getItem("create_by")
       let res = await axios({
         headers: {
           Authorization: "Bearer " + localStorage.getItem("access_token"),
         },
         method: "post",
-        url: `${hostname}/api/err_list`,
+        url: `${hostname}/transaction/create_manual`,
         data: {
-          amount: rowData.amount,
-          annotation: rowData.annotation,
-          bouns_credit: "0",
-          create_by: create_by,
-          date: now,
-          error_list_name: "สลิปไม่แสดง",
-          username: rowData.username,
-          turn_over: {
-            max_withdraw: "0",
-            turn_over: "0",
-            turn_over_bacara: "0",
-            turn_over_hdp: "0",
-            turn_over_mix_replay: "0",
-            turn_over_mix_step: "0",
-            turn_over_slot: "0",
-            turn_over_thai_lotterry: "0",
-            turn_over_thai_m2: "0",
-            turn_over_thai_multiplayer: "0",
-            turn_type: "",
-            turn_win: "0",
-          },
+          "member_username": rowData.username,
+          "amount": rowData.amount,
+          "transfer_type": "DEPOSIT",
+          "content": rowData.annotation
         },
       });
+      
+
       setLoading(false);
-      if (res.data.message === "เพิ่มข้อมูลเรียบร้อยแล้ว") {
+      if (res.data.message === "สร้างรายการสำเร็จ") {
+        setRowData({})
         Swal.fire({
           position: "center",
           icon: "success",
           title: "ทำรายการเรียบร้อย",
           showConfirmButton: false,
-          timer: 3000,
+          timer: 2000,
         });
+        getTotal()
       }
-
-
     } catch (error) {
       console.log(error);
     }
   };
 
   useEffect(() => {
-    // getAll();
+    getDataAdmin();
+    getTotal()
   }, []);
 
   return (
@@ -426,7 +301,7 @@ function editError() {
             >
               <Typography>ตัดเครดิต</Typography>
             </Button>
-            <Button
+            {/* <Button
               variant="contained"
               onClick={() => {
                 setPage(1);
@@ -440,19 +315,14 @@ function editError() {
               }}
             >
               <Typography>เพิ่มเครดิตโปรโมชั่น</Typography>
-            </Button>
+            </Button> */}
             <Button
               variant="contained"
               onClick={() => {
                 setPage(2);
                 setRowData({});
               }}
-              sx={{
-                p: 2,
-                mx: 3,
-                backgroundColor: page === 2 ? "#41A3E3" : "gray",
-                color: "#fff",
-              }}
+              sx={{ p: 2, mx: 3, backgroundColor: page === 2 ? "#41A3E3" : "gray", color: "#fff" }}
             >
               <Typography>เติมเครดิต</Typography>
             </Button>
@@ -613,20 +483,16 @@ function editError() {
                     />
                   </Grid>
                 </Grid>
-
-
                 <Grid
                   container
                   direction="row"
                   justifyContent="flex-end"
                   alignItems="center"
                 >
-
                   <Button
                     variant="contained"
                     onClick={() => submitFormCreditPromo()}
                   >
-
                     <Typography sx={{ color: '#fff' }}>ยืนยัน</Typography>
                   </Button>
                 </Grid>
@@ -683,23 +549,7 @@ function editError() {
                     />
                   </Grid>
                 </Grid>
-                <Grid container sx={{ mt: 2, ml: 4 }}>
-                  <Grid xs={1}>
-                    <Typography >วัน-เวลาที่โอน : </Typography>
-                  </Grid>
-                  <Grid item xs={5}>
 
-                    <TextField
-                      name="date"
-                      type="datetime-local"
-                      fullWidth
-                      value={rowData.date || ""}
-                      size="small"
-                      onChange={(e) => handleChangeData(e)}
-                      variant="outlined"
-                    />
-                  </Grid>
-                </Grid>
 
                 <Grid
                   container
@@ -737,7 +587,7 @@ function editError() {
             <Card sx={{ width: 400, bgcolor: "#101D35", }}>
               <CardContent>
                 <Typography variant="h5" sx={{ color: "#eee" }}>เติมเครดิต</Typography>
-                <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {slipCreditTotal || 0} </Typography>
+                <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {total.sumDeposit || 0} </Typography>
                 <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
               </CardContent>
             </Card>
@@ -745,7 +595,7 @@ function editError() {
             <Card sx={{ width: 400, bgcolor: "#101D35", }}>
               <CardContent>
                 <Typography variant="h5" sx={{ color: "#eee" }}>ตัดเครดิต</Typography>
-                <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {cutCreditTotal || 0} </Typography>
+                <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {total.sumWithdraw || 0} </Typography>
                 <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
               </CardContent>
             </Card>
@@ -765,7 +615,7 @@ function editError() {
             variant="text"
             onClick={() => { }}
           >
-            <Typography variant="h6" sx={{textDecoration: "underline #41A3E3 3px", mt:3}} onClick={() => router.push("/report/reportError")}>รายงานการการเติมเครดิตแบบ manual</Typography>
+            <Typography variant="h6" sx={{ textDecoration: "underline #41A3E3 3px", mt: 3 }} onClick={() => router.push("/report/reportError")}>รายงานการการเติมเครดิตแบบ manual</Typography>
           </Button>
 
         </Paper>
