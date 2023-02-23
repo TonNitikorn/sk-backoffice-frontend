@@ -169,9 +169,37 @@ function manageWebPages() {
     try {
       const tempBanner = banner.filter(item => !item.uuid)
       const tempSlide = slide.filter(item => !item.uuid)
+      const tempLogo = logo.filter(item => !item.uuid)
+
       console.log('tempBanner', tempBanner)
       console.log('tempSlide', tempSlide)
+      if (tempLogo) {
+        for (const item of tempLogo) {
+          const formData = new FormData();
+          formData.append("upload", item.file);
+          formData.append("type", type);
 
+          let res = await axios({
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("TOKEN"),
+            },
+            method: "post",
+            url: `${hostname}/web_setting/create_web_setting_img_url`,
+            data: formData,
+          });
+
+          if (res.data.message === "success") {
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: "เพิ่ม Logo เรียบร้อย",
+              showConfirmButton: false,
+              timer: 2000,
+            });
+          }
+
+        }
+      }
 
       if (tempBanner) {
         for (const item of tempBanner) {
