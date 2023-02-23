@@ -8,10 +8,9 @@ import {
   CssBaseline,
   MenuItem,
   Paper,
-  IconButton, Box, AppBar, Container, Toolbar, Tooltip, Avatar
+  IconButton, Box, AppBar, Container, Toolbar, Tooltip, Avatar, Divider
 } from "@mui/material";
 import LoadingModal from "../theme/LoadingModal";
-import Swal from "sweetalert2";
 import { signOut } from "../store/slices/userSlice";
 import { useRouter } from "next/router";
 import { useAppDispatch } from "../store/store";
@@ -25,6 +24,9 @@ import "swiper/css/navigation";
 import axios from "axios";
 import hostname from "../utils/hostname";
 import ClearIcon from '@mui/icons-material/Clear';
+import Swal from "sweetalert2";
+import rank1 from "../assets/rank-1.png"
+import AppsIcon from "@mui/icons-material/Apps";
 
 function manageWebPages() {
   const dispatch = useAppDispatch();
@@ -77,6 +79,7 @@ function manageWebPages() {
       logo.push({
         img_url: reader.result,
         type: "logo",
+        file: file
       })
       setRender(!render)
 
@@ -91,6 +94,7 @@ function manageWebPages() {
       slide.push({
         img_url: reader.result,
         type: "slide",
+        file: file
       })
       setRender(!render)
     };
@@ -164,21 +168,68 @@ function manageWebPages() {
     setLoading(true);
     try {
       const tempBanner = banner.filter(item => !item.uuid)
-      for (const item of tempBanner) {
-        const formData = new FormData();
-        formData.append("upload", item.file);
-        formData.append("type", type);
+      const tempSlide = slide.filter(item => !item.uuid)
+      console.log('tempBanner', tempBanner)
+      console.log('tempSlide', tempSlide)
 
-        let res = await axios({
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("TOKEN"),
-          },
-          method: "post",
-          url: `${hostname}/web_setting/create_web_setting_img_url`,
-          data: formData,
-        });
 
+      if (tempBanner) {
+        for (const item of tempBanner) {
+          const formData = new FormData();
+          formData.append("upload", item.file);
+          formData.append("type", type);
+
+          let res = await axios({
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("TOKEN"),
+            },
+            method: "post",
+            url: `${hostname}/web_setting/create_web_setting_img_url`,
+            data: formData,
+          });
+
+          if (res.data.message === "success") {
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: "เพิ่ม Banner เรียบร้อย",
+              showConfirmButton: false,
+              timer: 2000,
+            });
+          }
+
+        }
       }
+
+      if (tempSlide) {
+        for (const item of tempSlide) {
+          const formData = new FormData();
+          formData.append("upload", item.file);
+          formData.append("type", type);
+
+          let res = await axios({
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("TOKEN"),
+            },
+            method: "post",
+            url: `${hostname}/web_setting/create_web_setting_img_url`,
+            data: formData,
+          });
+
+          if (res.data.message === "success") {
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: "เพิ่ม Slide เรียบร้อย",
+              showConfirmButton: false,
+              timer: 2000,
+            });
+          }
+
+        }
+      }
+
+
 
       setLoading(false);
 
@@ -263,7 +314,7 @@ function manageWebPages() {
                     size="large"
                     fullWidth
                     onClick={() => {
-                      setOpenDialogEdit(false)
+                      uploadAssets("logo")
                     }}
                     sx={{ mt: 3, color: '#fff', }}
                   >
@@ -377,7 +428,8 @@ function manageWebPages() {
                     size="large"
                     fullWidth
                     onClick={() => {
-                      setOpenDialogEdit(false)
+                      console.log('slide')
+                      uploadAssets("slide")
                     }}
                     sx={{ mt: 3, color: '#fff', }}
                   >
@@ -526,6 +578,40 @@ function manageWebPages() {
 
                       ))}
                     </Swiper>
+                  </Box>
+
+                  <Box sx={{ m: 1 }}>
+                    <Paper sx={{ background: "linear-gradient(#0072B1, #41A3E3)", p: 1, width: "100%" }}>
+                      <Grid container>
+                        <Grid item sx={{ mt: 1 }}>
+                          <Image src={rank1} alt="diamond" width={60} height={50} />
+                        </Grid>
+                        <Grid item sx={{ ml: 1, mt: 1 }}>
+                          <Typography sx={{ color: "#fff" }}>
+                            Diamond
+                          </Typography>
+                          <Typography sx={{ color: "#fff", fontSize: "10px", mt: 1 }}>
+                            เติม 1000฿ จะได้ Commander
+                          </Typography>
+                        </Grid>
+                        <Divider
+                          orientation="vertical"
+                          flexItem
+                          sx={{ color: "white", bgcolor: "white", mx: 1 }}
+                        />
+                        <Grid item sx={{ ml: 1, mt: 1 }}>
+                          <Grid container>
+                            <AppsIcon sx={{ color: "white" }} />
+                            <Typography sx={{ mx: 1, color: "white", fontSize: "14px" }}>
+                              500 pts
+                            </Typography>
+                          </Grid>
+                          <Typography sx={{ mt: 1, ml: 1, fontSize: "10px", color: "white" }}>
+                            450 pts จะหมดอายุ
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    </Paper>
                   </Box>
 
                   <Box sx={{ m: 1, mb: 8 }}>
