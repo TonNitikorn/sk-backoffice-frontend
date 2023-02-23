@@ -2,22 +2,26 @@ import React from "react";
 import Backdrop from "@mui/material/Backdrop";
 // import { makeStyles } from "@mui/styles";
 import { CircularProgress, Fab } from "@mui/material";
+import logo_angpao from "../assets/logo_ap.png";
+import Image from "next/image";
 
 export default function LoadingModal(props) {
 
   return (
     <Backdrop style={{
       zIndex: 1299,
-      color: "#fff",
+      color: "#E8EAEA",
     }} open={props.open} onClick={() => { }}>
       <div style={{
         margin: 1,
         position: "relative",
       }}>
         <Fab aria-label="save" color="neutral">
-          <img
-            src={"https://the1pg.com/wp-content/uploads/2022/09/The1PG-6-2.png"}
+          <Image
+            src={logo_angpao}
             alt="mascot"
+            width={120}
+            height={65}
           />
         </Fab>
         <CircularProgress

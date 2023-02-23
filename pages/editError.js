@@ -6,21 +6,24 @@ import {
   Typography,
   Box,
   TextField,
-  TableRow,
-  TableContainer,
-  TableBody,
-  TableHead,
-  TableCell,
-  Table,
-  Tabs,
-  Tab,
   Card,
-  CardContent
+  CardContent,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  Stack,
+  DialogTitle,
+  Slide,
+  Divider,
+  FormControl,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  MenuItem
 } from "@mui/material";
 import axios from "axios";
 import hostname from "../utils/hostname";
 import moment from "moment/moment";
-import PropTypes from "prop-types";
 import Layout from "../theme/Layout";
 import withAuth from "../routes/withAuth";
 import LoadingModal from "../theme/LoadingModal";
@@ -28,52 +31,9 @@ import Swal from "sweetalert2";
 import MaterialTableForm from "../components/materialTableForm"
 import { useRouter } from "next/router";
 
-
-
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
-
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.number.isRequired,
-  value: PropTypes.number.isRequired,
-};
-
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
-  };
-}
-
-// const useStyles = makeStyles({
-//   copy: {
-//     "& .MuiButton-text": {
-//       "&:hover": {
-//         // backgroundColor: "#9CE1BC",
-//         // color: "blue",
-//         textDecoration: "underline blue 1px",
-//       },
-//     },
-//   },
-// });
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 function editError() {
   const router = useRouter()
@@ -84,28 +44,85 @@ function editError() {
     end: moment().format("YYYY-MM-DD 23:59"),
   });
   const [dataAdmin, setDataAdmin] = useState({})
-  const [username, setUsername] = useState("");
-  const [cutCredit, setCutCredit] = useState([]);
+  const [dataUser, setDataUser] = useState({})
   const [total, setTotal] = useState({
     sumDeposit: 0,
     sumWithdraw: 0,
   });
-  const [creditPromo, setCreditPromo] = useState([]);
-  const [upCredit, setUpCredit] = useState([]);
   const [rowData, setRowData] = useState({});
-
-  const [slipCreditTotal, setSlipCreditTotal] = useState(0);
-  const [cutCreditTotal, setCutCreditTotal] = useState(0);
   const [addCreditTotal, setAddCreditTotal] = useState(0);
   const [loading, setLoading] = useState(false);
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+  const [open, setOpen] = useState(false);
+  const [type, setType] = useState(0)
 
   const handleChangeData = async (e) => {
     setRowData({ ...rowData, [e.target.name]: e.target.value });
   };
+
+  const handleClickOpen = async (type) => {
+
+    if (type === "WITHDRAW") {
+      if (!!rowData.amountWithdraw && !!rowData.usernameWithdraw && !!rowData.annotationWithdraw) {
+        getUser(type)
+      } else {
+        Swal.fire({
+          position: "center",
+          icon: "warning",
+          title: "กรุณากรอกข้อมูลให้ครบถ้วน",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      }
+    }
+    if (type === "DEPOSIT") {
+      if (!!rowData.amountDeposit && !!rowData.usernameDeposit && !!rowData.annotationDeposit) {
+        getUser(type)
+      } else {
+        Swal.fire({
+          position: "center",
+          icon: "warning",
+          title: "กรุณากรอกข้อมูลให้ครบถ้วน",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      }
+    }
+  };
+
+  const getUser = async (type) => {
+    setLoading(true);
+    try {
+      let res = await axios({
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("access_token"),
+        },
+        method: "post",
+        url: `${hostname}/member/get_member`,
+        data: {
+          "uuid": "56b816e1-4350-42f9-b582-cd084dc418da"
+        }
+      });
+      let resData = res.data;
+      setDataUser(resData);
+      setLoading(false);
+    } catch (error) {
+      if (
+        error.response.data.error.status_code === 401 &&
+        error.response.data.error.message === "Unauthorized"
+      ) {
+        dispatch(signOut());
+        localStorage.clear();
+        router.push("/auth/login");
+      }
+      console.log(error);
+    }
+    setOpen({
+      open: true,
+      type: type
+    });
+  }
+
+
 
   const getDataAdmin = async () => {
     setLoading(true);
@@ -157,86 +174,112 @@ function editError() {
   };
 
   const submitFormCutCredit = async () => {
-    setLoading(true);
-    try {
-      let res = await axios({
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("access_token"),
-        },
-        method: "post",
-        url: `${hostname}/transaction/create_manual`,
-        data: {
-          "member_username": rowData.username,
-          "amount": rowData.amount,
-          "transfer_type": "WITHDRAW",
-          "content": rowData.annotation
-        },
+    let totalCredit = parseInt(dataUser.credit) - parseInt(rowData.amountWithdraw)
+    if (totalCredit <= 0) {
+      Swal.fire({
+        position: "center",
+        icon: "warning",
+        title: "จำนวนเคตรดิตไม่เพียงพอ",
+        showConfirmButton: false,
+        timer: 2000,
       });
-      getTotal()
-
-      setLoading(false);
-      if (res.data.message === "สร้างรายการสำเร็จ") {
-        setRowData({})
-        Swal.fire({
-          position: "center",
-          icon: "success",
-          title: "ทำรายการเรียบร้อย",
-          showConfirmButton: false,
-          timer: 2000,
+    } else {
+      setLoading(true);
+      try {
+        let res = await axios({
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("access_token"),
+          },
+          method: "post",
+          url: `${hostname}/transaction/create_manual`,
+          data: {
+            "member_username": rowData.usernameWithdraw,
+            "amount": rowData.amountWithdraw,
+            "transfer_type": "WITHDRAW",
+            "content": rowData.annotationWithdraw
+          },
         });
         getTotal()
+
+        setLoading(false);
+        if (res.data.message === "สร้างรายการสำเร็จ") {
+          setRowData({})
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "ทำรายการเรียบร้อย",
+            showConfirmButton: false,
+            timer: 2000,
+          });
+          getTotal()
+          setOpen(false);
+        }
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
     }
+
   };
 
-  const submitFormCreditPromo = async () => {
-    setLoading(true);
-    try {
-      let now = moment().format("YYYY-MM-DD h:mm");
-      let create_by = localStorage.getItem("create_by")
-      let res = await axios({
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("access_token"),
-        },
-        method: "post",
-        url: `${hostname}/api/err_list`,
-        data: {
-          "credit": "1000",
-          "credit_before": "1500",
-          "credit_after": "-1000",
-          "amount": rowData.amount,
-          "amount_before": "1000000",
-          "amount_after": "-1000",
-          "transfer_by": dataAdmin.name,
-          "transfer_type": "WITHDRAW",
-          "status_transction": "SUCCESS",
-          "status_provider": "SUCCESS",
-          "status_bank": "SUCCESS",
-          "content": "data.contentQWE",
-          "member_uuid": rowData.username,
-          "detail": rowData.annotation,
-          "detail_bank": "data.detail_bankQWE",
-          "slip": "data.test.slipQWE",
+  // const submitFormCreditPromo = async () => {
+  //   let totalCredit = parseInt(dataUser.credit) - parseInt(rowData.amount)
 
-          // "max_withdraw": rowData.max_withdraw
-        },
-      });
-      setLoading(false);
-      if (res.data.message === "เพิ่มข้อมูลเรียบร้อยแล้ว") {
-        Swal.fire({
-          position: "center",
-          icon: "success",
-          title: "ทำรายการเรียบร้อย",
-          showConfirmButton: false,
-          timer: 3000,
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //   if (totalCredit <= 0) {
+  //     Swal.fire({
+  //       position: "center",
+  //       icon: "warning",
+  //       title: "เคตรดิตไม่เพียงพอให้ทำรายการ",
+  //       showConfirmButton: false,
+  //       timer: 2000,
+  //     });
+  //   } else {
+  //     console.log('eiei');
+  //   }
+  //   // setLoading(true);
+  //   // try {
+  //   //   let now = moment().format("YYYY-MM-DD h:mm");
+  //   //   let create_by = localStorage.getItem("create_by")
+  //   //   let res = await axios({
+  //   //     headers: {
+  //   //       Authorization: "Bearer " + localStorage.getItem("access_token"),
+  //   //     },
+  //   //     method: "post",
+  //   //     url: `${hostname}/api/err_list`,
+  //   //     data: {
+  //   //       "credit": "1000",
+  //   //       "credit_before": "1500",
+  //   //       "credit_after": "-1000",
+  //   //       "amount": rowData.amount,
+  //   //       "amount_before": "1000000",
+  //   //       "amount_after": "-1000",
+  //   //       "transfer_by": dataAdmin.name,
+  //   //       "transfer_type": "WITHDRAW",
+  //   //       "status_transction": "SUCCESS",
+  //   //       "status_provider": "SUCCESS",
+  //   //       "status_bank": "SUCCESS",
+  //   //       "content": "data.contentQWE",
+  //   //       "member_uuid": rowData.username,
+  //   //       "detail": rowData.annotation,
+  //   //       "detail_bank": "data.detail_bankQWE",
+  //   //       "slip": "data.test.slipQWE",
+
+  //   //       // "max_withdraw": rowData.max_withdraw
+  //   //     },
+  //   //   });
+  //   //   setLoading(false);
+  //   //   if (res.data.message === "เพิ่มข้อมูลเรียบร้อยแล้ว") {
+  //   //     Swal.fire({
+  //   //       position: "center",
+  //   //       icon: "success",
+  //   //       title: "ทำรายการเรียบร้อย",
+  //   //       showConfirmButton: false,
+  //   //       timer: 3000,
+  //   //     });
+  //   //   }
+  //   // } catch (error) {
+  //   //   console.log(error);
+  //   // }
+  // };
 
   const submitFormSlip = async () => {
     setLoading(true);
@@ -249,14 +292,12 @@ function editError() {
         method: "post",
         url: `${hostname}/transaction/create_manual`,
         data: {
-          "member_username": rowData.username,
-          "amount": rowData.amount,
+          "member_username": rowData.usernameDeposit,
+          "amount": rowData.amountDeposit,
           "transfer_type": "DEPOSIT",
-          "content": rowData.annotation
+          "content": rowData.annotationDeposit
         },
       });
-      
-
       setLoading(false);
       if (res.data.message === "สร้างรายการสำเร็จ") {
         setRowData({})
@@ -268,25 +309,207 @@ function editError() {
           timer: 2000,
         });
         getTotal()
+        setOpen(false);
       }
     } catch (error) {
       console.log(error);
     }
   };
-
   useEffect(() => {
     getDataAdmin();
     getTotal()
   }, []);
-
   return (
     <Layout>
       <Box>
         <Paper sx={{ p: 3 }}>
           <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px", mb: 4, }}> เติมเครดิตแบบ manual </Typography>
-          <Grid container>
+          <FormControl>
+            <RadioGroup
+              row
+              defaultValue="auto"
+              name="radio-buttons-group"
+            >
+              <Typography sx={{ my: 3, mr: 3 }} variant="h6">เลือกรายการ</Typography>
+              <FormControlLabel value="auto" onClick={() => setType(0)} control={<Radio />} label={<Typography sx={{ fontSize: '20px' }}>ตัดเครดิต </Typography>} />
+              <FormControlLabel value="manual" onClick={() => setType(1)} control={<Radio />} label={<Typography sx={{ fontSize: '20px' }}>เติมเครดิต </Typography>} />
+            </RadioGroup>
+          </FormControl>
 
-            <Button
+          {/* <Typography sx={{ my: 3, mr: 3 }} variant="h6">เลือกรายการ</Typography>
+          <Box sx={{ width: 400 }}>
+            <TextField
+              name="bank_name"
+              type="text"
+              // value={rowData.bank_name || ""}
+              fullWidth
+              label="เลือกรายการ"
+              size="small"
+              onChange={(e) => handleChangeData(e)}
+              variant="outlined"
+              sx={{ bgcolor: "white" }}
+              select
+            >
+              <MenuItem selected disabled value>
+                เลือกรายการ
+              </MenuItem>
+              <MenuItem value="WITHDRAW">ตัดเครดิต</MenuItem>
+              <MenuItem value="DEPOSIT">เติมเครดิต</MenuItem>
+            </TextField>
+          </Box> */}
+        </Paper>
+
+        <Grid container spacing={3}>
+          {/* ----------ตัดเครดิต------------- */}
+          <Grid item xs={6}>
+            <Paper sx={{ p: 3, mt: 3, backgroundColor: type === 0 ? '#fff' : '#DCDCDC' }}>
+              <Typography sx={{ mb: 3, color: type === 0 ? '#41A3E3' : '#A2A2A2' }} variant="h6">ตัดเครดิต</Typography>
+              <Grid container>
+                <Grid item xs={4}>
+                  <Stack spacing={4}>
+                    <Typography sx={{color: type === 0 ? 'black':'#A2A2A2' }}>ชื่อผู้ใช้ :</Typography>
+                    <Typography sx={{color: type === 0 ? 'black':'#A2A2A2' }}>จำนวนเครดิต :</Typography>
+                    <Typography sx={{color: type === 0 ? 'black':'#A2A2A2' }}>หมายเหตุ :</Typography>
+                  </Stack>
+                </Grid>
+                <Grid item xs={8}>
+                  <Stack spacing={2}>
+                    <TextField
+                      name="usernameWithdraw"
+                      type="text"
+                      disabled={type === 1}
+                      fullWidth
+                      value={rowData.usernameWithdraw || ""}
+                      size="small"
+                      placeholder="Username"
+                      onChange={(e) => handleChangeData(e)}
+                      variant="outlined"
+                    />
+                    <TextField
+                      name="amountWithdraw"
+                      type="number"
+                      fullWidth
+                      disabled={type === 1}
+                      value={rowData.amountWithdraw || ""}
+                      size="small"
+                      placeholder="จำนวนเครดิต"
+                      onChange={(e) => handleChangeData(e)}
+                      variant="outlined"
+                    />
+                    <TextField
+                      name="annotationWithdraw"
+                      type="text"
+                      fullWidth
+                      disabled={type === 1}
+                      placeholder="หมายเหตุ"
+                      value={rowData.annotationWithdraw || ""}
+                      size="small"
+                      onChange={(e) => handleChangeData(e)}
+                      variant="outlined"
+                    />
+                    <Button
+                      variant="contained"
+                      fullWidth
+                      disabled={type === 1}
+                      // onClick={() => submitFormCutCredit()}
+                      onClick={() => handleClickOpen('WITHDRAW')}
+                    >
+                      <Typography sx={{ color: '#fff' }}>ยืนยัน</Typography>
+                    </Button>
+                  </Stack>
+                </Grid>
+                {/* <Grid
+                  container
+                  direction="row"
+                  justifyContent="flex-end"
+                  alignItems="center"
+                  sx={{ mt: 3 }}
+                >
+                  <Button
+                    variant="contained"
+                    fullWidth
+                    // onClick={() => submitFormCutCredit()}
+                    onClick={() => handleClickOpen('WITHDRAW')}
+                  >
+
+                    <Typography sx={{ color: '#fff' }}>ยืนยัน</Typography>
+                  </Button>
+                </Grid> */}
+              </Grid>
+            </Paper>
+          </Grid>
+
+          {/* -----------เติมเครดิต------------- */}
+          <Grid item xs={6}>
+            <Paper sx={{ p: 3, mt: 3, backgroundColor: type === 0 ? '#DCDCDC' : '#fff' }} >
+              <Typography sx={{ mb: 3, color: type === 1 ? '#41A3E3' : '#A2A2A2' }} variant="h6">เติมเครดิต</Typography>
+              <Grid container>
+                <Grid item xs={4}>
+                  <Stack spacing={4}>
+                    <Typography sx={{color: type === 1 ? 'black':'#A2A2A2' }}>ชื่อผู้ใช้ :</Typography>
+                    <Typography sx={{color: type === 1 ? 'black':'#A2A2A2' }}>จำนวนเครดิต :</Typography>
+                    <Typography sx={{color: type === 1 ? 'black':'#A2A2A2' }}>หมายเหตุ :</Typography>
+                  </Stack>
+                </Grid>
+                <Grid item xs={8}>
+                  <Stack spacing={2}>
+                    <TextField
+                      name="usernameDeposit"
+                      type="text"
+                      fullWidth
+                      disabled={type === 0}
+                      value={rowData.usernameDeposit || ""}
+                      size="small"
+                      placeholder="Username"
+                      onChange={(e) => handleChangeData(e)}
+                      variant="outlined"
+                    />
+                    <TextField
+                      name="amountDeposit"
+                      type="text"
+                      disabled={type === 0}
+                      fullWidth
+                      value={rowData.amountDeposit || ""}
+                      size="small"
+                      placeholder="จำนวนเครดิต"
+                      onChange={(e) => handleChangeData(e)}
+                      variant="outlined"
+                    />
+                    <TextField
+                      name="annotationDeposit"
+                      type="text"
+                      fullWidth
+                      disabled={type === 0}
+                      placeholder="หมายเหตุ"
+                      value={rowData.annotationDeposit || ""}
+                      size="small"
+                      onChange={(e) => handleChangeData(e)}
+                      variant="outlined"
+                    />
+                  </Stack>
+                </Grid>
+                <Grid
+                  container
+                  direction="row"
+                  justifyContent="flex-end"
+                  alignItems="center"
+                  sx={{ mt: 2 }}
+                >
+                  <Button
+                    variant="contained"
+                    disabled={type === 0}
+                    // fullWidth
+                    // onClick={() => submitFormCutCredit()}
+                    onClick={() => handleClickOpen('DEPOSIT')}
+                  >
+                    <Typography sx={{ color: '#fff' }}>ยืนยัน</Typography>
+                  </Button>
+                </Grid>
+              </Grid>
+            </Paper>
+          </Grid>
+
+          {/* <Button
               variant="contained"
               onClick={() => {
                 setPage(0);
@@ -300,8 +523,8 @@ function editError() {
               }}
             >
               <Typography>ตัดเครดิต</Typography>
-            </Button>
-            {/* <Button
+            </Button> */}
+          {/* <Button
               variant="contained"
               onClick={() => {
                 setPage(1);
@@ -316,7 +539,7 @@ function editError() {
             >
               <Typography>เพิ่มเครดิตโปรโมชั่น</Typography>
             </Button> */}
-            <Button
+          {/* <Button
               variant="contained"
               onClick={() => {
                 setPage(2);
@@ -325,10 +548,10 @@ function editError() {
               sx={{ p: 2, mx: 3, backgroundColor: page === 2 ? "#41A3E3" : "gray", color: "#fff" }}
             >
               <Typography>เติมเครดิต</Typography>
-            </Button>
+            </Button> */}
 
 
-            {page === 0 ? (
+          {/* {page === 0 ? (
               <>
                 <Grid container sx={{ mt: 5, ml: 4 }}>
                   <Grid item xs={1} >
@@ -391,7 +614,8 @@ function editError() {
                 >
                   <Button
                     variant="contained"
-                    onClick={() => submitFormCutCredit()}
+                    // onClick={() => submitFormCutCredit()}
+                    onClick={() => handleClickOpen('WITHDRAW')}
                   >
 
                     <Typography sx={{ color: '#fff' }}>ยืนยัน</Typography>
@@ -559,20 +783,15 @@ function editError() {
                 >
                   <Button
                     variant="contained"
-                    onClick={() => submitFormSlip()}
+                    onClick={() => handleClickOpen('DEPOSIT')}
                   >
                     <Typography sx={{ color: '#fff' }}>ยืนยัน</Typography>
                   </Button>
                 </Grid>
               </>
-            )}
+            )} */}
 
-          </Grid>
-
-
-
-
-        </Paper>
+        </Grid>
 
         <Paper sx={{ p: 3, mt: 3 }}>
           <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px", mb: 3, }} > ยอดรวม </Typography>
@@ -1051,6 +1270,75 @@ function editError() {
           </Grid>
         </Paper> */}
       </Box>
+
+      <Dialog
+        open={open}
+        TransitionComponent={Transition}
+        keepMounted
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle ><Typography sx={{ color: '#41A3E3' }}>ยืนยันการทำรายการ</Typography></DialogTitle>
+        <Divider />
+        <DialogContent>
+          <Grid container>
+            <Grid item xs={4}>
+              <Stack spacing={2}>
+                <Typography sx={{ fontWeight: 'bold' }}>รายการ</Typography>
+                <Typography sx={{ fontWeight: 'bold' }}>Username</Typography>
+                <Typography sx={{ fontWeight: 'bold' }}>เครดิตปัจจุบัน</Typography>
+                <Typography sx={{ fontWeight: 'bold' }}> {open.type === "WITHDRAW" ? 'จำนวนที่ตัดเครดิต' : 'จำนวนเติมเครดิต'}</Typography>
+                <Typography sx={{ fontWeight: 'bold' }}>เครดิตหลังทำรายการ</Typography>
+                <Typography sx={{ fontWeight: 'bold' }}>ทำรายการวันที่</Typography>
+              </Stack>
+            </Grid>
+            <Grid item xs={8}>
+              <Stack spacing={2}>
+                <Typography>{open.type === 'WITHDRAW' ? 'ตัดเครดิต' : 'เติมเครดิต'}</Typography>
+                <Typography>{dataUser.username}</Typography>
+                <Typography>{Intl.NumberFormat("THB").format(dataUser.credit)}</Typography>
+                <Typography>{open.type === 'WITHDRAW' ?  rowData.amountWithdraw : rowData.amountDeposit}</Typography>
+                <Typography>{
+                  open.type === "WITHDRAW"
+                    ? Intl.NumberFormat("THB").format(parseInt(dataUser.credit) - parseInt(rowData.amountWithdraw))
+                    : Intl.NumberFormat("THB").format(parseInt(dataUser.credit) + parseInt(rowData.amountDeposit))
+                }</Typography>
+                <Typography>{moment().format("DD/MM/YYYY hh:mm")}</Typography>
+              </Stack>
+            </Grid>
+          </Grid>
+
+
+          {/* <Grid container >
+            <Grid item xs={4}>
+              <Typography>รายการ</Typography>
+            </Grid>
+            <Grid item xs={8}>
+              <Typography>ตัดเครดิต</Typography>
+            </Grid>
+            <Grid item xs={4}>
+              <Typography>username</Typography>
+            </Grid>
+            <Grid item xs={8}>
+              <Typography>userton</Typography>
+            </Grid>
+          </Grid> */}
+        </DialogContent>
+        <Divider />
+
+        <DialogActions>
+          <Button
+            onClick={() => setOpen(false)}>
+            <Typography>ยกเลิก</Typography>
+          </Button>
+          <Button
+            onClick={() => open.type === 'WITHDRAW' ? submitFormCutCredit() : submitFormSlip()}
+            variant="contained">
+            <Typography sx={{ color: '#ffff' }}>ยืนยัน</Typography>
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       <LoadingModal open={loading} />
     </Layout>
   );
