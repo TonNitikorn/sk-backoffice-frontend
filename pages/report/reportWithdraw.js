@@ -70,21 +70,20 @@ function reportDeposit() {
     setOpen(false);
   };
   const getReport = async (type, start, end) => {
-    setLoading(true);
+    // setLoading(true);
     try {
       let res = await axios({
         headers: {
           Authorization: "Bearer " + localStorage.getItem("access_token"),
         },
         method: "post",
-        // url: `${hostname}/api/report/deposit/?start_date=${
-        //   type === undefined ? selectedDateRange.start : start
-        // }&end_date=${
-        //   type === undefined ? selectedDateRange.end : end
-        // }&username=${username}`,
         url: `${hostname}/report/get_transaction`,
         data: {
-          "transfer_type": "WITHDRAW"
+          "create_at_start":  type === undefined ? selectedDateRange.start : start,
+          "create_at_end": type === undefined ? selectedDateRange.end : end,
+          "transfer_type": "WITHDRAW",
+          "status_transction": search.type,
+          "username": username
         }
       });
 
@@ -216,7 +215,6 @@ function reportDeposit() {
               type="text"
               name="type"
               size="small"
-
               value={search.type}
               onChange={(e) => {
                 setSearch({
@@ -298,149 +296,30 @@ function reportDeposit() {
           </Grid>
         </Grid>
 
-        <Grid container spacing={2}>
-          <Grid item xs={6} sx={{ mb: 3 }}>
-            {/* <Card sx={{ bgcolor: '#55C9F0  ', height: 305 }}>
-              <CardContent>
-                <Typography variant="h6" sx={{ color: '#ffff' }}>ข้อมูลผู้ใช้</Typography>
-                <Divider sx={{ bgcolor: '#ffff' }} />
-                <Grid container direction="row">
-                  <Grid item xs={5}>sdsd</Grid>
-                  <Grid item xs={5}>
-                    <Typography>username</Typography>
-                    <Typography>name</Typography>
-                    <Typography>rank + point</Typography>
-                    <Typography>line_id</Typography>
-                    <Typography>bank_name</Typography>
-                    <Typography>bank_number</Typography>
-                  </Grid>
+        <Grid
+          container
+          direction="row"
+          justifyContent="space-between"
+          alignItems="flex-start"
+          sx={{ mt: 2 }}
+        >
 
-                </Grid>
-              </CardContent>
-            </Card> */}
+          <Card sx={{ width: 650, bgcolor: '#0072B1', }}>
+            <CardContent>
+              <Typography variant="h5" sx={{ color: "#eee" }}>จำนวนรายการ</Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#ffff", mt: 2 }}> {Intl.NumberFormat("THB").format(total.totalList)} </Typography>
+              <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
+            </CardContent>
+          </Card>
 
-            <Card sx={{ display: 'flex', bgcolor: '#EAEAEA ' }}>
-              <CardMedia sx={{ width: 200, borderLeft: 8, borderColor: '#6D06A4' }}>
-                <Grid
-                  container
-                  direction="row"
-                  justifyContent="center"
-                  alignItems="flex-end"
-                  sx={{ my: 6 }}
-                >
-                  <Image
-                    src={"https://the1pg.com/wp-content/uploads/2022/10/kbnk.png"}
-                    alt="scb"
-                    width={50}
-                    height={50}
+          <Card sx={{ width: 650, bgcolor: "#101D35"}}>
+            <CardContent>
+              <Typography variant="h5" sx={{ color: "#eee" }}>ยอดเงิน</Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}> {Intl.NumberFormat("THB").format('1800')}</Typography>
+              <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
+            </CardContent>
+          </Card>
 
-                  />
-                </Grid>
-              </CardMedia>
-
-              {/* <Box sx={{ display: 'flex', flexDirection: 'column' }}> */}
-              <CardContent sx={{ flex: '1 0 auto' }}>
-                <CopyToClipboard text={'23xx00987'}>
-                  <Button
-                    sx={{ p: 0, color: "blue", }}
-                  // onClick={handleClickSnackbar}
-                  >
-                    <Typography component="div" variant="h5">{'23xx00987'}<ContentCopyIcon sx={{ ml: 2 }} /></Typography>
-                  </Button>
-                </CopyToClipboard>
-                <Divider sx={{ my: 1, bgcolor: "#41A3E3" }} />
-                <Grid container sx={{ ml: 2 }} >
-                  <Grid xs={5}>
-                    <Typography color="text.secondary" variant="h6">สมใจ หมายปอง</Typography>
-                    <Typography color="text.secondary" variant="h6" sx={{ mt: 1 }}>1,320 เครดิต</Typography>
-                  </Grid>
-                  <Grid xs={6}>
-                    <Typography color="text.secondary" variant="h6">rank : MEMBER</Typography>
-                    <Typography color="text.secondary" variant="h6" sx={{ mt: 1 }}>points : 130</Typography>
-                  </Grid>
-                </Grid>
-              </CardContent>
-            </Card>
-
-            <Card sx={{ display: 'flex', bgcolor: '#EAEAEA ', mt: 2 }}>
-              <CardMedia sx={{ width: 200, borderLeft: 8, borderColor: '#0FA736 ' }}>
-                <Grid
-                  container
-                  direction="row"
-                  justifyContent="center"
-                  alignItems="flex-end"
-                  sx={{ my: 6 }}
-                >
-                  <Image
-                    src={"https://the1pg.com/wp-content/uploads/2022/10/kbnk.png"}
-                    alt="scb"
-                    width={50}
-                    height={50}
-
-                  />
-                </Grid>
-              </CardMedia>
-
-              {/* <Box sx={{ display: 'flex', flexDirection: 'column' }}> */}
-              <CardContent sx={{ flex: '1 0 auto' }}>
-                {/* <CopyToClipboard text={'23xx00987'}>
-                  <Button
-                    sx={{ p: 0, color: "blue", }}
-                  // onClick={handleClickSnackbar}
-                  >
-                    <Typography component="div" variant="h5">{'23xx00987'}<ContentCopyIcon sx={{ ml: 2 }} /></Typography>
-                  </Button>
-                </CopyToClipboard> */}
-                {/* <Divider sx={{ my: 1, bgcolor: "#41A3E3" }} /> */}
-                <Grid container sx={{ ml: 2 }} >
-                  <Grid xs={5}>
-                    <Typography color="text.secondary" variant="h6">kbnk</Typography>
-                    <Typography color="text.secondary" variant="h6" sx={{ mt: 1 }}>999999999955 </Typography>
-                    <Typography color="text.secondary" variant="h6" sx={{ mt: 1 }}>สมใจ หมายปอง </Typography>
-
-                  </Grid>
-                  <Grid xs={6}>
-                    <Typography color="text.secondary" variant="h6" sx={{ mt: 1 }}>status : {" "}
-                      <Chip
-                        label={"เปิดใช้งาน"}
-                        size="small"
-                        style={{ padding: 10, backgroundColor: "#129A50", color: "#eee", }} />
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </CardContent>
-            </Card>
-
-          </Grid>
-
-          <Grid item xs={6}>
-            <Grid
-              container
-              direction="column"
-              justifyContent="space-between"
-              alignItems="flex-start"
-              sx={{ mt: 2 }}
-            >
-
-              <Card sx={{ width: 650, bgcolor: '#0072B1', }}>
-                <CardContent>
-                  <Typography variant="h5" sx={{ color: "#eee" }}>จำนวนรายการ</Typography>
-                  <Typography variant="h5" sx={{ textAlign: "center", color: "#ffff", mt: 2 }}> {Intl.NumberFormat("THB").format(total.totalList)} </Typography>
-                  <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
-                </CardContent>
-              </Card>
-
-              <Card sx={{ width: 650, bgcolor: "#101D35", mt: 2 }}>
-                <CardContent>
-                  <Typography variant="h5" sx={{ color: "#eee" }}>ยอดเงิน</Typography>
-                  <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}> {Intl.NumberFormat("THB").format('1800')}</Typography>
-                  <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
-                </CardContent>
-              </Card>
-
-            </Grid>
-          </Grid>
-          
         </Grid>
 
 
@@ -778,7 +657,7 @@ function reportDeposit() {
                 );
               },
             },
-            
+
           ]}
         />
       </Paper>

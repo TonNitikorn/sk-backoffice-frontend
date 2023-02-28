@@ -66,6 +66,11 @@ function Layout({ children, page }) {
         report: !open.report,
       });
     }
+    if (id === "rank") {
+      setOpen({
+        rank: !open.rank,
+      });
+    }
   };
 
 
@@ -128,7 +133,8 @@ function Layout({ children, page }) {
 
                     {item.id === "member" ? open.member ? <ExpandLess /> : <ExpandMore /> :
                       item.id === "point" ? open.point ? <ExpandLess /> : <ExpandMore /> :
-                        item.id === "report" ? open.report ? <ExpandLess /> : <ExpandMore /> : ''}
+                        item.id === "report" ? open.report ? <ExpandLess /> : <ExpandMore /> : 
+                        item.id === "rank" ? open.rank ? <ExpandLess /> : <ExpandMore /> : ''}
                   </ListItemButton>
 
                   <Collapse in={open.member} timeout="auto" unmountOnExit>

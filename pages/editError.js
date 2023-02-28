@@ -99,7 +99,7 @@ function editError() {
         method: "post",
         url: `${hostname}/member/get_member`,
         data: {
-          "uuid": "56b816e1-4350-42f9-b582-cd084dc418da"
+          "username": type === "WITHDRAW" ? rowData.usernameWithdraw: rowData.usernameDeposit
         }
       });
       let resData = res.data;
@@ -125,29 +125,29 @@ function editError() {
 
 
   const getDataAdmin = async () => {
-    setLoading(true);
-    try {
-      let res = await axios({
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("access_token"),
-        },
-        method: "post",
-        url: `${hostname}/admin/admin_profile`,
-      });
-      let resData = res.data;
-      setDataAdmin(resData);
-      setLoading(false);
-    } catch (error) {
-      if (
-        error.response.data.error.status_code === 401 &&
-        error.response.data.error.message === "Unauthorized"
-      ) {
-        dispatch(signOut());
-        localStorage.clear();
-        router.push("/auth/login");
-      }
-      console.log(error);
-    }
+    // setLoading(true);
+    // try {
+    //   let res = await axios({
+    //     headers: {
+    //       Authorization: "Bearer " + localStorage.getItem("access_token"),
+    //     },
+    //     method: "post",
+    //     url: `${hostname}/admin/admin_profile`,
+    //   });
+    //   let resData = res.data;
+    //   setDataAdmin(resData);
+    //   setLoading(false);
+    // } catch (error) {
+    //   if (
+    //     error.response.data.error.status_code === 401 &&
+    //     error.response.data.error.message === "Unauthorized"
+    //   ) {
+    //     dispatch(signOut());
+    //     localStorage.clear();
+    //     router.push("/auth/login");
+    //   }
+    //   console.log(error);
+    // }
   };
 
   const getTotal = async () => {
@@ -363,7 +363,7 @@ function editError() {
           {/* ----------ตัดเครดิต------------- */}
           <Grid item xs={6}>
             <Paper sx={{ p: 3, mt: 3, backgroundColor: type === 0 ? '#fff' : '#DCDCDC' }}>
-              <Typography sx={{ mb: 3, color: type === 0 ? '#41A3E3' : '#A2A2A2' }} variant="h6">ตัดเครดิต</Typography>
+              <Typography sx={{ mb: 3, color: type === 0 ? '#41A3E3' : '#A2A2A2', textDecoration:  type === 0 ?  "underline #41A3E3 3px": "underline #A2A2A2 3px", }} variant="h6">ตัดเครดิต</Typography>
               <Grid container>
                 <Grid item xs={4}>
                   <Stack spacing={4}>
@@ -442,7 +442,7 @@ function editError() {
           {/* -----------เติมเครดิต------------- */}
           <Grid item xs={6}>
             <Paper sx={{ p: 3, mt: 3, backgroundColor: type === 0 ? '#DCDCDC' : '#fff' }} >
-              <Typography sx={{ mb: 3, color: type === 1 ? '#41A3E3' : '#A2A2A2' }} variant="h6">เติมเครดิต</Typography>
+              <Typography sx={{ mb: 3, color: type === 1 ? '#41A3E3' : '#A2A2A2', textDecoration:  type === 1 ?  "underline #41A3E3 3px": "underline #A2A2A2 3px", }} variant="h6">เติมเครดิต</Typography>
               <Grid container>
                 <Grid item xs={4}>
                   <Stack spacing={4}>

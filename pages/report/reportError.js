@@ -125,7 +125,6 @@ function reportError() {
         item.no = noAll++
         item.transfer_type = item.transfer_type === "DEPOSIT" ? 'เติมเครดิต' : 'ตัดเครดิต'
         item.username = item.members?.username
-        item.create_at = moment(item.create_at).format('DD/MM/YYYY hh:mm')
 
       })
 

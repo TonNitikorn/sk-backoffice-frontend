@@ -45,13 +45,16 @@ function withdraw() {
                 method: "post",
                 url: `${hostname}/member/member_transaction`,
                 data: {
-                    uuid: username
+                    username: username
                 }
             });
 
             // setDeposit(res.data.deposit_latest);
             // setDataCredit(res.data.user[0]);
-            setDataUser(res.data);
+            let userData = res.data
+            let lastDataUser = { ...userData, fullname: userData.fname + ' ' + userData.lname }
+
+            setDataUser(lastDataUser);
             let resTran = res.data.transaction
             let no = 1
             resTran.map((item) => {
@@ -75,27 +78,18 @@ function withdraw() {
             console.log(error);
         }
     };
-
     const submitWithdraw = async () => {
 
-        // setLoading(true);
+        setLoading(true);
         try {
-            if (dataUser.credit >= rowData.amount) {
+            if (parseInt(dataUser.credit) >= parseInt(rowData.amount)) {
                 let res = await axios({
-                    headers: {
-                        Authorization: "Bearer " + localStorage.getItem("access_token"),
-                    },
+                    headers: { Authorization: "Bearer " + localStorage.getItem("access_token") },
                     method: "post",
                     url: `${hostname}/transaction/withdraw_request`,
                     data: {
-                        member_uuid: dataUser.uuid,
                         amount: rowData.amount,
-                        bonus_credit: 0,
-                        username: dataCredit.username,
-                        annotation: "-",
-                        bank_time: moment().format("DD/MM hh:mm"),
-                        create_by: localStorage.getItem("create_by"),
-                        createdAt: moment().format(),
+                        username: username,
                     },
                 });
 
@@ -104,19 +98,19 @@ function withdraw() {
                     icon: "success",
                     title: "ทำรายการเรียบร้อย",
                     showConfirmButton: false,
-                    timer: 3000,
+                    timer: 2500,
                 });
                 setRowData({});
                 setUsername("");
                 setDataUser({})
-                // setLoading(false);
+                setLoading(false);
             } else if (!!rowData.amount) {
                 Swal.fire({
                     position: "center",
                     icon: "warning",
                     title: "กรุณาระบุเครดิตที่ต้องการถอน",
                     showConfirmButton: false,
-                    timer: 3000,
+                    timer: 2500,
                 });
             } else {
                 Swal.fire({
@@ -271,7 +265,7 @@ function withdraw() {
                                         name="username"
                                         type="text"
                                         fullWidth
-                                        value={dataUser?.name || ""}
+                                        value={dataUser?.fullname || ''}
                                         size="small"
                                         onChange={(e) => handleChangeData(e)}
                                         variant="outlined"

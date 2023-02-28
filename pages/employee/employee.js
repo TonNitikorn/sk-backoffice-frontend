@@ -97,8 +97,8 @@ function employee() {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("access_token"),
         },
-        method: "get",
-        url: `${hostname}/admin/admin_list`,
+        method: "post",
+        url: `${hostname}/admin/list`,
       });
 
       let resData = res.data;
