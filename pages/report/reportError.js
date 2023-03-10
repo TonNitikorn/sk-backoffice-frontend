@@ -137,7 +137,6 @@ function reportError() {
       console.log(error);
     }
   };
-  console.log('depo', deposit)
 
   const columns = [
     {
@@ -214,12 +213,11 @@ function reportError() {
               label="เริ่ม"
               style={{
                 marginRight: "8px",
-                marginTop: "8px",
                 backgroundColor: "white",
                 borderRadius: 4,
               }}
               variant="outlined"
-              size=""
+              size="small"
               type="datetime-local"
               name="start"
               value={selectedDateRange.start}
@@ -237,13 +235,12 @@ function reportError() {
               label="สิ้นสุด"
               style={{
                 marginRight: "8px",
-                marginTop: "8px",
                 color: "white",
                 backgroundColor: "white",
                 borderRadius: 4,
               }}
               variant="outlined"
-              size=""
+              size="small"
               type="datetime-local"
               name="end"
               value={selectedDateRange.end}
@@ -266,11 +263,12 @@ function reportError() {
               placeholder="ค้นหาโดยใช้ Username"
               onChange={(e) => setUsername(e.target.value)}
               variant="outlined"
-              sx={{ mt: 1, mr: 2 }}
+              size="small"
+              sx={{mr: 2 }}
             />
             <Button
               variant="contained"
-              style={{ marginRight: "8px", marginTop: 13 }}
+              style={{ marginRight: "8px" }}
               color="primary"
               size="large"
               onClick={() => {
@@ -283,7 +281,6 @@ function reportError() {
               variant="contained"
               style={{
                 marginRight: "8px",
-                marginTop: 13,
                 backgroundColor: "#FFB946",
               }}
               size="large"
@@ -303,7 +300,6 @@ function reportError() {
               variant="contained"
               style={{
                 marginRight: "8px",
-                marginTop: 13,
                 backgroundColor: "#129A50",
               }}
               size="large"

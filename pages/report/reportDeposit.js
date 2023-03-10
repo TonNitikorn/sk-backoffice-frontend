@@ -99,7 +99,6 @@ function reportDeposit() {
       // }
     }
   };
-  console.log('report', report)
   useEffect(() => {
     getReport();
   }, []);
@@ -123,12 +122,11 @@ function reportDeposit() {
               label="เริ่ม"
               style={{
                 marginRight: "8px",
-                marginTop: "8px",
                 backgroundColor: "white",
                 borderRadius: 4,
               }}
               variant="outlined"
-              size=""
+              size="small"
               type="datetime-local"
               name="start"
               value={selectedDateRange.start}
@@ -146,13 +144,12 @@ function reportDeposit() {
               label="สิ้นสุด"
               style={{
                 marginRight: "8px",
-                marginTop: "8px",
                 color: "white",
                 backgroundColor: "white",
                 borderRadius: 4,
               }}
               variant="outlined"
-              size=""
+              size="small"
               type="datetime-local"
               name="end"
               value={selectedDateRange.end}
@@ -175,27 +172,27 @@ function reportDeposit() {
               placeholder="ค้นหาโดยใช้ Username"
               onChange={(e) => setUsername(e.target.value)}
               variant="outlined"
-              sx={{ mt: 1, mr: 2 }}
+              size="small"
+              sx={{ mr: 2 }}
             />
             <Button
               variant="contained"
-              style={{ marginRight: "8px", marginTop: 13 }}
+              style={{ marginRight: "8px", }}
               color="primary"
               size="large"
               onClick={() => {
                 getReport();
               }}
             >
-              <Typography sx={{color: '#ffff'}}>ค้นหา</Typography>
+              <Typography sx={{ color: '#ffff' }}>ค้นหา</Typography>
             </Button>
             <Button
               variant="contained"
               style={{
                 marginRight: "8px",
-                marginTop: 13,
                 backgroundColor: "#FFB946",
               }}
-              size="large"
+              size=""
               onClick={async () => {
                 let start = moment()
                   .subtract(1, "days")
@@ -206,23 +203,22 @@ function reportDeposit() {
                 getUser("yesterday", start, end);
               }}
             >
-              <Typography sx={{color: '#ffff'}}>เมื่อวาน</Typography>
+              <Typography sx={{ color: '#ffff' }}>เมื่อวาน</Typography>
             </Button>
             <Button
               variant="contained"
               style={{
                 marginRight: "8px",
-                marginTop: 13,
                 backgroundColor: "#129A50",
               }}
-              size="large"
+              size=""
               onClick={async () => {
                 let start = moment().format("YYYY-MM-DD 00:00");
                 let end = moment().format("YYYY-MM-DD 23:59");
                 getUser("today", start, end);
               }}
             >
-              <Typography sx={{color: '#ffff'}}>วันนี้</Typography>
+              <Typography sx={{ color: '#ffff' }}>วันนี้</Typography>
             </Button>
           </Grid>
         </Grid>
@@ -237,7 +233,7 @@ function reportDeposit() {
           <Card sx={{ width: 250, bgcolor: "#101D35", }}>
             <CardContent>
               <Typography variant="h5" sx={{ color: "#eee" }}>จำนวนรายการ</Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}> { Intl.NumberFormat("THB").format('0')} </Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}> {Intl.NumberFormat("THB").format('0')} </Typography>
               <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
             </CardContent>
           </Card>
@@ -245,7 +241,7 @@ function reportDeposit() {
           <Card sx={{ width: 250, bgcolor: "#101D35", }}>
             <CardContent>
               <Typography variant="h5" sx={{ color: "#eee" }}>ยอดเงิน</Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}> { Intl.NumberFormat("THB").format('1')}</Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}> {Intl.NumberFormat("THB").format('1')}</Typography>
               <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
             </CardContent>
           </Card>
@@ -253,7 +249,7 @@ function reportDeposit() {
           <Card sx={{ width: 250, bgcolor: "#101D35", }}>
             <CardContent>
               <Typography variant="h5" sx={{ color: "#eee" }}>เครดิตก่อนเติม</Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  { Intl.NumberFormat("THB").format('2')}</Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {Intl.NumberFormat("THB").format('2')}</Typography>
               <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
             </CardContent>
           </Card>
@@ -261,7 +257,7 @@ function reportDeposit() {
           <Card sx={{ width: 250, bgcolor: "#101D35", }}>
             <CardContent>
               <Typography variant="h5" sx={{ color: "#eee" }}>เครดิตหลังเติม</Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  { Intl.NumberFormat("THB").format(2)} </Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {Intl.NumberFormat("THB").format(2)} </Typography>
               <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
             </CardContent>
           </Card>
@@ -588,7 +584,7 @@ function reportDeposit() {
               title: "หมายเหตุ",
               align: "center",
             },
-            
+
           ]}
         />
       </Paper>

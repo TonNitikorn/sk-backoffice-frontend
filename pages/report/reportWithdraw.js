@@ -244,13 +244,13 @@ function reportDeposit() {
               onChange={(e) => setUsername(e.target.value)}
               variant="outlined"
               size="small"
-              sx={{ mt: 1, mr: 2 }}
+              sx={{ mr: 2 }}
             />
             <Button
               variant="contained"
-              style={{ marginRight: "8px", marginTop: 13, }}
+              style={{ marginRight: "8px",}}
               color="primary"
-              size="small"
+              size="large"
               onClick={() => {
                 getReport();
               }}
@@ -261,10 +261,9 @@ function reportDeposit() {
               variant="contained"
               style={{
                 marginRight: "8px",
-                marginTop: 13,
                 backgroundColor: "#FFB946",
               }}
-              size="small"
+              size="large"
               onClick={async () => {
                 let start = moment()
                   .subtract(1, "days")
@@ -281,10 +280,9 @@ function reportDeposit() {
               variant="contained"
               style={{
                 marginRight: "8px",
-                marginTop: 13,
                 backgroundColor: "#129A50",
               }}
-              size="small"
+              size="large"
               onClick={async () => {
                 let start = moment().format("YYYY-MM-DD 00:00");
                 let end = moment().format("YYYY-MM-DD 23:59");

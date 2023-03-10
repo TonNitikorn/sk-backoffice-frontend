@@ -16,6 +16,7 @@ import Image from 'next/image';
 import hostname from "../utils/hostname";
 import axios from "axios";
 import scbL from "../assets/scbL.png";
+import kbank from "../assets/kbank.png";
 import trueL from "../assets/trueL.png";
 import MaterialTableForm from '../components/materialTableForm';
 import { CopyToClipboard } from "react-copy-to-clipboard";
@@ -55,13 +56,15 @@ function withdrawpending() {
       start: moment().format("YYYY-MM-DD 00:00"),
       end: moment().format("YYYY-MM-DD 23:59"),
    });
-   const [search, setSearch] = useState({
-      data: "",
-      type: "",
-   });
-   const [wallet, setWallet] = useState()
-   const [item, setitem] = useState()
    const [content, setContent] = useState(false)
+   const [dataWithdraw, setDataWithdraw] = useState()
+   const [bankData, setBankData] = useState([]);
+   const [selectedBank, setSelectedBank] = useState();
+
+   const handleChange = (uuid) => {
+      setSelectedBank(uuid);
+   };
+
 
    const handleChangeData = async (e) => {
       setRowData({ ...rowData, [e.target.name]: e.target.value });
@@ -75,105 +78,163 @@ function withdrawpending() {
       setOpen(false);
    };
 
+   const getDataWithdraw = async () => {
+      setLoading(true);
+      try {
+         let res = await axios({
+            headers: {
+               Authorization: "Bearer " + localStorage.getItem("access_token"),
+            },
+            method: "get",
+            url: `${hostname}/transaction/withdraw_list`,
+            data: {
+               start: selectedDateRange.start,
+               end: selectedDateRange.end
+            }
+         });
+         let resData = res.data
 
-   const bank = [{
-      "id": 11,
-      "uuid": "091f0717-92c2-480b-8cc7-b5870033a682",
-      "bank_account_name": "สมศักดิ์ วังร่ม",
-      "bank_name": "scb",
-      "bank_number": "4221231909",
-      "ip_address": null,
-      "bank_status": "1",
-      "bank_type": "1",
-      "bank_sms": "1",
-      "status_system": "1",
-      "type_deposit": "0",
-      "username": "1",
-      "password": "1",
-      "account_sequence": 1,
-      "account_set": 1,
-      "amount": 0,
-      "createdAt": "2022-08-08T07:33:42.000Z",
-      "updatedAt": "2022-09-02T17:14:11.000Z"
-   },
-   {
-      "id": 7,
-      "uuid": "89ddac80-c0b7-44d2-be2d-1873b5ac4c16",
-      "bank_account_name": "ปริญญา โพธิ์อ่อง",
-      "bank_name": "truemoney",
-      "bank_number": "0637190735",
-      "ip_address": null,
-      "bank_status": "1",
-      "bank_type": "2",
-      "bank_sms": "1",
-      "status_system": "1",
-      "type_deposit": "",
-      "username": "parinyaphoongOneungg@gmail.com",
-      "password": "P0922904932b",
-      "account_sequence": 2,
-      "account_set": 1,
-      "amount": 0,
-      "createdAt": "2022-06-30T04:00:17.000Z",
-      "updatedAt": "2022-06-30T04:00:17.000Z"
-   },
-   ];
+         let no = 1
+         resData.map((item) => {
+            item.no = no++;
+            item.create_at = moment(item.create_at).format('DD/MM/YYYY hh:mm')
+            item.update_at = moment(item.update_at).format('DD/MM/YYYY hh:mm')
+            item.bank_account_name = item.members?.fname + ' ' + item.members?.lname
+         })
+         setDataWithdraw(resData)
+         setLoading(false);
+      } catch (error) {
+         console.log(error);
+      }
+   }
 
-   const data = [
-      {
-         "uuid": "710039f9-a6cb-472d-8d51-64801e11bb5d",
-         "amount": 18833,
-         "transaction_type": "2",
-         "credit_bank_before": null,
-         "credit_bank_after": null,
-         "bank_time": "2022-10-17 14:05:46",
-         "create_by": "เกียริ",
-         "annotation": "ถอนมือ",
-         "transaction_status": "Success",
-         "auto_status": "manual",
-         "username": "23maa4934450",
-         "createdAt": "2022-10-19T07:05:46.000Z",
-         "updatedAt": "2022-10-19T07:05:55.000Z",
-         "bank_name": "kbnk",
-         "bank_account_name": "ภูชิต กุลนอก",
-         "bank_number": "1338361889",
+   const getBank = async () => {
+      setLoading(true);
+      try {
+         let res = await axios({
+            headers: {
+               Authorization: "Bearer " + localStorage.getItem("access_token"),
+            },
+            method: "post",
+            url: `${hostname}/bank/bank_list`,
+         });
+         let resData = res.data;
+         let lastData = resData.filter(item => item.type === "WITHDRAW")
+         let no = 1;
+         lastData.map((item) => {
+            item.no = no++;
+            item.birthdate = moment(item.birthdate).format("DD-MM-YYYY")
+         });
 
-      },
-      {
-         "id": 54735,
-         "uuid": "2e6d5730-26bf-475a-832a-45b5e679a3ca",
-         "bank": "479432cc-0c9a-4b17-925c-35dfdd3f9042",
-         "amount": 437,
-         "bonus_credit": null,
-         "transaction_type": "2",
-         "credit_before": 437.75,
-         "credit_after": 0.75,
-         "credit_bank_before": null,
-         "credit_bank_after": null,
-         "bank_time": "2022-10-17 14:03:20",
-         "create_by": "เกียริ",
-         "annotation": "ถอนมือ",
-         "ref": "PWQ166599020055031602",
-         "transaction_status": "Success",
-         "auto_status": "manual",
-         "transaction_slip": null,
-         "username": "23maa5038798",
-         "promotion_uuid": null,
-         "sms_transaction_uuid": null,
-         "createdAt": "2022-10-19T07:03:20.000Z",
-         "updatedAt": "2022-10-19T07:03:30.000Z",
-         "member_account_banks": [{
-            "id": 6739,
-            "uuid": "479432cc-0c9a-4b17-925c-35dfdd3f9042",
-            "bank_name": "kbnk",
-            "bank_account_name": "ชัญญพัชร์  พึ่งทิม",
-            "bank_number": "0513807236",
-            "member_credit": 0,
-            "member_uuid": "8407b7fb-10ab-4c58-8c24-631e36eb846b",
-            "createdAt": "2022-10-17T05:37:36.000Z",
-            "updatedAt": "2022-10-17T05:37:36.000Z"
-         }]
-      },
-   ]
+
+         setBankData(lastData);
+      } catch (error) {
+         console.log(error);
+         if (
+            error.response.data.error.status_code === 401 &&
+            error.response.data.error.message === "Unauthorized"
+         ) {
+            dispatch(signOut());
+            localStorage.clear();
+            router.push("/auth/login");
+         }
+      }
+   };
+
+   const approveWithdraw = async (uuid) => {
+      setLoading(true);
+      try {
+         let res = await axios({
+            headers: {
+               Authorization: "Bearer " + localStorage.getItem("access_token"),
+            },
+            method: "post",
+            url: `${hostname}/transaction/approve_withdraw_request`,
+            data:
+            {
+               "uuid": uuid,
+               "by_bank": selectedBank
+            }
+         });
+         if (res.data.message === "อนุมัติคำขอถอนเงินสำเร็จ") {
+            Swal.fire({
+               position: "center",
+               icon: "success",
+               title: "อนุมัติคำขอถอนเงินสำเร็จ",
+               showConfirmButton: false,
+               timer: 2000,
+            });
+            setOpenDialogApprove(false)
+            setRowData({})
+         }
+         setLoading(false);
+         getDataWithdraw()
+      } catch (error) {
+         console.log(error);
+      }
+   }
+
+   const handelwithdraw = () => {
+      setOpenDialogApprove(false)
+      Swal.fire({
+         title: "ท่านต้องยกเลิกการถอน",
+         html: `<h7>Username : ` + rowData.members?.username + `</h7> <br> 
+                <h7>เป็นจำนวนเงิน : `+ rowData.credit + ' ฿ ' + `</h7> <br>
+                <h7>ธนาคาร : `+ rowData.members?.bank_name + `</h7> <br>
+                <h7>เลขบัญชี : `+ rowData.members?.bank_number + `</h7><br>
+                <h7>เวลาที่ถอน : `+ rowData.create_at + `</h7> <br>`,
+         icon: "info",
+         showCancelButton: true,
+         cancelButtonColor: "#EB001B",
+         confirmButtonColor: "#058900",
+         cancelButtonText: `ยกเลิก`,
+         confirmButtonText: "ยืนยัน",
+      }).then((result) => {
+         if (result.isConfirmed) {
+            cancelWithdraw();
+         }
+      });
+   };
+
+   const cancelWithdraw = async () => {
+      setLoading(true);
+      try {
+         let res = await axios({
+            headers: {
+               Authorization: "Bearer " + localStorage.getItem("access_token"),
+            },
+            method: "post",
+            url: `${hostname}/transaction/cancel_withdraw_request`,
+            data:
+            {
+               "uuid": rowData.uuid,
+               "content": content
+            }
+         });
+         if (res.data.message === "อนุมัติคำขอถอนเงินสำเร็จ") {
+            Swal.fire({
+               position: "center",
+               icon: "success",
+               title: "อนุมัติคำขอถอนเงินสำเร็จ",
+               showConfirmButton: false,
+               timer: 2000,
+            });
+            setOpenDialogApprove(false)
+            setRowData({})
+         }
+         setLoading(false);
+         getDataWithdraw()
+      } catch (error) {
+         console.log(error);
+      }
+   }
+
+   useEffect(() => {
+      getDataWithdraw()
+      getBank()
+   }, [])
+
+
 
    const columns = [
       {
@@ -199,23 +260,23 @@ function withdrawpending() {
          align: "center",
          render: (item) => (
             <Chip label={
-               item.transaction_status === "Fail" ?
+               item.status_transction === "FAIL" ?
                   "ผิดพลาด" :
-                  item.transaction_status === "Create" ?
+                  item.status_transction === "CREATE" ?
                      "รออนุมัติ" :
-                     item.transaction_status === "Approve" ?
+                     item.status_transction === "APPROVE" ?
                         "อนุมัติแล้ว" :
-                        item.transaction_status === "Process" ?
+                        item.status_transction === "PROCESS" ?
                            "รอทำรายการ" :
-                           item.transaction_status === "Success" ?
+                           item.status_transction === "SUCCESS" ?
                               "สำเร็จ" :
-                              item.transaction_status === "OTP" ?
+                              item.status_transction === "OTP" ?
                                  "OTP" :
-                                 item.transaction_status === "Reject" ?
+                                 item.status_transction === "REJECT" ?
                                     "ยกเลิก" :
-                                    item.transaction_status === "manual" ?
+                                    item.status_transction === "MANUAL" ?
                                        "ถอนมือ" :
-                                       item.transaction_status === "" ?
+                                       item.status_transction === "" ?
                                           "ทั้งหมด" :
                                           "-"
             }
@@ -223,26 +284,26 @@ function withdrawpending() {
                style={
                   {
                      padding: 10,
-                     backgroundColor: item.transaction_status === "Fail" ?
+                     backgroundColor: item.status_transction === "FAIL" ?
                         "#EB001B" :
-                        item.transaction_status === "Create" ?
+                        item.status_transction === "CREATE" ?
                            "#16539B" :
-                           item.transaction_status === "Approve" ?
+                           item.status_transction === "APPROVE" ?
                               "#16539B" :
-                              item.transaction_status === "Process" ?
+                              item.status_transction === "PROCESS" ?
                                  "#FFB946" :
-                                 item.transaction_status === "Success" ?
+                                 item.status_transction === "SUCCESS" ?
                                     "#129A50" :
-                                    item.transaction_status === "OTP" ?
+                                    item.status_transction === "OTP" ?
                                        "#FFB946" :
-                                       item.transaction_status === "Reject" ?
+                                       item.status_transction === "REJECT" ?
                                           "#FD3B52" :
-                                          item.transaction_status === "manual" ?
+                                          item.status_transction === "MANUAL" ?
                                              "#E1772B" :
-                                             item.transaction_status === "" ?
+                                             item.status_transction === "" ?
                                                 "gray" :
                                                 "gray",
-                     // item.transaction_status === 1 ? "#129A50" : "#FFB946",
+                     // item.status_transction === 1 ? "#129A50" : "#FFB946",
                      color: "#eee",
                   }
                }
@@ -257,7 +318,7 @@ function withdrawpending() {
          render: (item) => (
             <Grid container >
                <Grid item xs={12} sx={{ mt: 1 }}>
-                  {item.bank_name === "kbnk" ? (
+                  {item.members?.bank_name === "kbnk" ? (
                      <Image
                         src={
                            "https://the1pg.com/wp-content/uploads/2022/10/kbnk.png"
@@ -266,7 +327,7 @@ function withdrawpending() {
                         width={50}
                         height={50}
                      />
-                  ) : item.bank_name === "truemoney" ? (
+                  ) : item.members?.bank_name === "truemoney" ? (
                      <Image
                         src={
                            "https://the1pg.com/wp-content/uploads/2022/10/truemoney.png"
@@ -275,7 +336,7 @@ function withdrawpending() {
                         width={50}
                         height={50}
                      />
-                  ) : item.bank_name === "ktba" ? (
+                  ) : item.members?.bank_name === "ktba" ? (
                      <Image
                         src={
                            "https://the1pg.com/wp-content/uploads/2022/10/ktba.png"
@@ -284,7 +345,7 @@ function withdrawpending() {
                         width={50}
                         height={50}
                      />
-                  ) : item.bank_name === "scb" ? (
+                  ) : item.members?.bank_name === "scb" ? (
                      <Image
                         src={
                            "https://the1pg.com/wp-content/uploads/2022/10/scb.png"
@@ -293,7 +354,7 @@ function withdrawpending() {
                         width={50}
                         height={50}
                      />
-                  ) : item.bank_name === "bay" ? (
+                  ) : item.members?.bank_name === "bay" ? (
                      <Image
                         src={
                            "https://the1pg.com/wp-content/uploads/2022/10/bay.png"
@@ -302,7 +363,7 @@ function withdrawpending() {
                         width={50}
                         height={50}
                      />
-                  ) : item.bank_name === "bbla" ? (
+                  ) : item.members?.bank_name === "bbla" ? (
                      <Image
                         src={
                            "https://the1pg.com/wp-content/uploads/2022/10/bbl.png"
@@ -311,7 +372,7 @@ function withdrawpending() {
                         width={50}
                         height={50}
                      />
-                  ) : item.bank_name === "gsb" ? (
+                  ) : item.members?.bank_name === "gsb" ? (
                      <Image
                         src={
                            "https://the1pg.com/wp-content/uploads/2022/10/gsb.png"
@@ -320,7 +381,7 @@ function withdrawpending() {
                         width={50}
                         height={50}
                      />
-                  ) : item.bank_name === "ttb" ? (
+                  ) : item.members?.bank_name === "ttb" ? (
                      <Image
                         src={
                            "https://the1pg.com/wp-content/uploads/2022/10/ttb.png"
@@ -329,7 +390,7 @@ function withdrawpending() {
                         width={50}
                         height={50}
                      />
-                  ) : item.bank_name === "BAAC" ? (
+                  ) : item.members?.bank_name === "BAAC" ? (
                      <Image
                         src={
                            "https://the1pg.com/wp-content/uploads/2022/10/baac.png"
@@ -338,7 +399,7 @@ function withdrawpending() {
                         width={50}
                         height={50}
                      />
-                  ) : item.bank_name === "ICBC" ? (
+                  ) : item.members?.bank_name === "ICBC" ? (
                      <Image
                         src={
                            "https://the1pg.com/wp-content/uploads/2022/10/icbc.png"
@@ -347,7 +408,7 @@ function withdrawpending() {
                         width={50}
                         height={50}
                      />
-                  ) : item.bank_name === "TCD" ? (
+                  ) : item.members?.bank_name === "TCD" ? (
                      <Image
                         src={
                            "https://the1pg.com/wp-content/uploads/2022/10/tcd.png"
@@ -356,7 +417,7 @@ function withdrawpending() {
                         width={50}
                         height={50}
                      />
-                  ) : item.bank_name === "CITI" ? (
+                  ) : item.members?.bank_name === "CITI" ? (
                      <Image
                         src={
                            "https://the1pg.com/wp-content/uploads/2022/10/citi.png"
@@ -365,7 +426,7 @@ function withdrawpending() {
                         width={50}
                         height={50}
                      />
-                  ) : item.bank_name === "SCBT" ? (
+                  ) : item.members?.bank_name === "SCBT" ? (
                      <Image
                         src={
                            "https://the1pg.com/wp-content/uploads/2022/10/scbt.png"
@@ -374,7 +435,7 @@ function withdrawpending() {
                         width={50}
                         height={50}
                      />
-                  ) : item.bank_name === "CIMB" ? (
+                  ) : item.members?.bank_name === "CIMB" ? (
                      <Image
                         src={
                            "https://the1pg.com/wp-content/uploads/2022/10/cimb.png"
@@ -383,7 +444,7 @@ function withdrawpending() {
                         width={50}
                         height={50}
                      />
-                  ) : item.bank_name === "UOB" ? (
+                  ) : item.members?.bank_name === "UOB" ? (
                      <Image
                         src={
                            "https://the1pg.com/wp-content/uploads/2022/10/uob.png"
@@ -392,7 +453,7 @@ function withdrawpending() {
                         width={50}
                         height={50}
                      />
-                  ) : item.bank_name === "HSBC" ? (
+                  ) : item.members?.bank_name === "HSBC" ? (
                      <Image
                         src={
                            "https://the1pg.com/wp-content/uploads/2022/10/hsbc.png"
@@ -401,7 +462,7 @@ function withdrawpending() {
                         width={50}
                         height={50}
                      />
-                  ) : item.bank_name === "MIZUHO" ? (
+                  ) : item.members?.bank_name === "MIZUHO" ? (
                      <Image
                         src={
                            "https://the1pg.com/wp-content/uploads/2022/10/mizuho.png"
@@ -410,7 +471,7 @@ function withdrawpending() {
                         width={50}
                         height={50}
                      />
-                  ) : item.bank_name === "GHB" ? (
+                  ) : item.members?.bank_name === "GHB" ? (
                      <Image
                         src={
                            "https://the1pg.com/wp-content/uploads/2022/10/ghb.png"
@@ -419,7 +480,7 @@ function withdrawpending() {
                         width={50}
                         height={50}
                      />
-                  ) : item.bank_name === "LHBANK" ? (
+                  ) : item.members?.bank_name === "LHBANK" ? (
                      <Image
                         src={
                            "https://the1pg.com/wp-content/uploads/2022/10/lhbank.png"
@@ -428,7 +489,7 @@ function withdrawpending() {
                         width={50}
                         height={50}
                      />
-                  ) : item.bank_name === "TISCO" ? (
+                  ) : item.members?.bank_name === "TISCO" ? (
                      <Image
                         src={
                            "https://the1pg.com/wp-content/uploads/2022/10/tisco.png"
@@ -437,7 +498,7 @@ function withdrawpending() {
                         width={50}
                         height={50}
                      />
-                  ) : item.bank_name === "kkba" ? (
+                  ) : item.members?.bank_name === "kkba" ? (
                      <Image
                         src={
                            "https://the1pg.com/wp-content/uploads/2022/10/kkba.png"
@@ -446,7 +507,7 @@ function withdrawpending() {
                         width={50}
                         height={50}
                      />
-                  ) : item.bank_name === "IBANK" ? (
+                  ) : item.members?.bank_name === "IBANK" ? (
                      <Image
                         src={
                            "https://the1pg.com/wp-content/uploads/2022/10/ibank.png"
@@ -463,15 +524,15 @@ function withdrawpending() {
          ),
       },
       {
-         field: "bank_name",
+         field: "bank_number",
          title: "ธนาคาร",
          align: "center",
-         // minWidth: "150px",
+         minWidth: "150px",
          render: (item) => (
             <Grid container >
                <Grid item xs={12} >
                   <Grid >
-                     <CopyToClipboard text={item.bank_number} >
+                     <CopyToClipboard text={item.members?.bank_number} >
                         <div style={{
                            "& .MuiButton-text": {
                               "&:hover": {
@@ -487,13 +548,13 @@ function withdrawpending() {
                               color: "blue",
                            }}
                               onClick={handleClickSnackbar} >
-                              {item.bank_number}
+                              {item.members?.bank_number}
                            </Button>
                         </div>
                      </CopyToClipboard>
                   </Grid>
                   <Grid >
-                     <Typography sx={{ fontSize: "14px" }}> {item.name}</Typography>
+                     <Typography sx={{ fontSize: "14px" }}> {item.members?.name}</Typography>
                   </Grid>
                   <Grid sx={{ ml: 1 }} >
                      <Typography sx={{ fontSize: "14px" }}> {item.bank_account_name} </Typography>
@@ -510,7 +571,7 @@ function withdrawpending() {
             <Grid container >
                <Grid item xs={12} >
                   <Grid>
-                     <CopyToClipboard text={item.username} >
+                     <CopyToClipboard text={item.members?.username} >
                         <div style={
                            {
                               "& .MuiButton-text": {
@@ -530,7 +591,7 @@ function withdrawpending() {
                               }
                            }
                               onClick={handleClickSnackbar} >
-                              {item.username}
+                              {item.members?.username}
                            </Button>
                         </div>
                      </CopyToClipboard>
@@ -548,7 +609,7 @@ function withdrawpending() {
                <Grid container justifyContent="center" >
                   <Grid >
                      <Typography sx={{ fontSize: "14px" }} >
-                        {Intl.NumberFormat("TH", { style: "currency", currency: "THB", }).format(parseInt(item.amount))}
+                        {Intl.NumberFormat("TH", { style: "currency", currency: "THB", }).format(parseInt(item.credit))}
                      </Typography>
                   </Grid>
 
@@ -561,31 +622,31 @@ function withdrawpending() {
          align: "center",
          render: (item) => (<
             Chip label={
-               item.auto_status === "withdraw Fail" ?
-                  "ถอนผิดพลาด" :
-                  item.auto_status === "queue" ?
+               item.transfer_type === "WITHDRAW" ?
+                  "ถอนเงิน" :
+                  item.transfer_type === "queue" ?
                      "อยู่ในคิว" :
-                     item.auto_status === "Normal" ?
+                     item.transfer_type === "Normal" ?
                         "ปกติ" :
-                        item.auto_status === "Create" ?
+                        item.transfer_type === "Create" ?
                            "ปกติ" :
-                           item.auto_status === "Approve" ?
+                           item.transfer_type === "Approve" ?
                               "อนุมัติ" :
-                              item.auto_status === "manual" ?
+                              item.transfer_type === "manual" ?
                                  "ถอนมือ" :
-                                 item.auto_status === "Manual" ?
+                                 item.transfer_type === "Manual" ?
                                     "ถอนมือ" :
-                                    item.auto_status === "Success" ?
+                                    item.transfer_type === "Success" ?
                                        "อนุมัติ" :
-                                       item.auto_status === "-" ?
+                                       item.transfer_type === "-" ?
                                           "-" :
-                                          item.auto_status === "null" ?
+                                          item.transfer_type === "null" ?
                                              "-" :
-                                             item.auto_status === "Process" ?
+                                             item.transfer_type === "Process" ?
                                                 "ดำเนินการ" :
-                                                item.auto_status === "Withdraw Success" ?
+                                                item.transfer_type === "Withdraw Success" ?
                                                    "ปกติ" :
-                                                   item.auto_status === "wait OTP" ?
+                                                   item.transfer_type === "wait OTP" ?
                                                       "ปกติ" :
                                                       "-"
             }
@@ -593,31 +654,31 @@ function withdrawpending() {
             style={
                {
                   padding: 10,
-                  backgroundColor: item.auto_status === "withdraw Fail" ?
-                     "#EB001B" :
-                     item.auto_status === "queue" ?
+                  backgroundColor: item.transfer_type === "WITHDRAW" ?
+                     "#16539B" :
+                     item.transfer_type === "queue" ?
                         "#16539B" :
-                        item.auto_status === "Normal" ?
+                        item.transfer_type === "Normal" ?
                            "#16539B" :
-                           item.auto_status === "Create" ?
+                           item.transfer_type === "Create" ?
                               "#129A50" :
-                              item.auto_status === "Approve" ?
+                              item.transfer_type === "Approve" ?
                                  "#16539B" :
-                                 item.auto_status === "manual" ?
+                                 item.transfer_type === "manual" ?
                                     "#FFB946" :
-                                    item.auto_status === "Manual" ?
+                                    item.transfer_type === "Manual" ?
                                        "#FFB946" :
-                                       item.auto_status === "Success" ?
+                                       item.transfer_type === "Success" ?
                                           "#129A50" :
-                                          item.auto_status === "-" ?
+                                          item.transfer_type === "-" ?
                                              "gray" :
-                                             item.auto_status === "null" ?
+                                             item.transfer_type === "null" ?
                                                 "gray" :
-                                                item.auto_status === "Process" ?
+                                                item.transfer_type === "Process" ?
                                                    "#16539B" :
-                                                   item.auto_status === "Withdraw Success" ?
+                                                   item.transfer_type === "Withdraw Success" ?
                                                       "#129A50" :
-                                                      item.auto_status === "wait OTP" ?
+                                                      item.transfer_type === "wait OTP" ?
                                                          "#129A50" :
                                                          "gray",
                   color: "#eee",
@@ -627,13 +688,13 @@ function withdrawpending() {
          ),
       },
       {
-         field: "bank_time",
+         field: "create_at",
          title: "วันที่ถอน",
          align: "center",
          minWidth: "120px",
       },
       {
-         field: "updatedAt",
+         field: "update_at",
          title: "วันที่อัพเดท",
          align: "center",
          minWidth: "130px",
@@ -641,21 +702,20 @@ function withdrawpending() {
             <>
                <Grid container justifyContent="center" >
                   <Grid >
-                     <Typography sx={{ fontSize: "14px" }} > {item.updated_date}</Typography>
-                     <Typography sx={{ fontSize: "14px" }} > {item.updated_time} </Typography>
+                     <Typography sx={{ fontSize: "14px" }} > {item.update_at}</Typography>
                   </Grid>
                </Grid>
             </>
          ),
       },
       {
-         field: "create_by",
+         field: "transfer_by",
          title: "ทำโดย",
          align: "center",
          minWidth: "100px"
       },
       {
-         field: "annotation",
+         field: "detail",
          title: "หมายเหตุ",
          align: "center",
          render: (item) => {
@@ -665,7 +725,7 @@ function withdrawpending() {
                      () => {
                         setOpenDialogView({
                            open: true,
-                           text: item.annotation,
+                           text: item.detail,
                         });
                      }
                   } >
@@ -678,7 +738,6 @@ function withdrawpending() {
          title: "เงินในบัญชี",
          align: "center",
          minWidth: "130px",
-
          render: (item) => (
             <>
                <Grid container justifyContent="center" >
@@ -686,8 +745,8 @@ function withdrawpending() {
                      sx={
                         { mb: 1 }} >
                      <Chip label={
-                        item.credit_bank_before ?
-                           item.credit_bank_before :
+                        item.credit_before ?
+                           item.credit_before :
                            "0.00"
                      }
                         size="small"
@@ -702,8 +761,8 @@ function withdrawpending() {
                      /> </Grid>
                   <Grid item xs={12} >
                      <Chip label={
-                        item.credit_bank_after ?
-                           item.credit_bank_after :
+                        item.credit_after ?
+                           item.credit_after :
                            "0.00"
                      }
                         size="small"
@@ -722,11 +781,10 @@ function withdrawpending() {
          title: "เปลี่ยนสถานะ",
          align: "center",
          minWidth: "140px",
-
          render: (item) => {
             return (
                <>
-                  <IconButton disabled={item.transaction_status !== "Reject"}
+                  <IconButton disabled={item.status_transction !== "Reject"}
                      onClick={
                         () => {
                            setOpenDialogText({
@@ -737,7 +795,7 @@ function withdrawpending() {
                         }
                      } >
                      <EditIcon color={
-                        item.transaction_status !== "Reject" ?
+                        item.status_transction !== "Reject" ?
                            "gray" :
                            "secondary2"
                      }
@@ -770,822 +828,13 @@ function withdrawpending() {
       },
 
 
-   ]
-
-   const data2 = [
-      {
-         "id": 54738,
-         "uuid": "710039f9-a6cb-472d-8d51-64801e11bb5d",
-         "bank": "2d336309-0680-4fde-b331-74811a647a8f",
-         "amount": 18833,
-         "bonus_credit": null,
-         "transaction_type": "2",
-         "credit_before": 9.45,
-         "credit_after": 0.45,
-         "credit_bank_before": null,
-         "credit_bank_after": null,
-         "bank_time": "2022-10-17 14:05:46",
-         "create_by": "เกียริ",
-         "annotation": "ถอนมือ",
-         "ref": "PWQ166599034601610379",
-         "transaction_status": "Success",
-         "auto_status": "manual",
-         "transaction_slip": null,
-         "username": "23maa4934450",
-         "promotion_uuid": null,
-         "sms_transaction_uuid": null,
-         "createdAt": "2022-10-19T07:05:46.000Z",
-         "updatedAt": "2022-10-19T07:05:55.000Z",
-         "bank_name": "kbnk",
-         "bank_account_name": "ภูชิต กุลนอก",
-         "bank_number": "1338361889",
-         "member_account_banks": [{
-            "id": 1267,
-            "uuid": "2d336309-0680-4fde-b331-74811a647a8f",
-            "bank_name": "kbnk",
-            "bank_account_name": "ภูชิต กุลนอก",
-            "bank_number": "1338361889",
-            "member_credit": 0,
-            "member_uuid": "722ad776-7c39-470f-ad3c-d1aa89d30139",
-            "createdAt": "2022-07-22T08:56:25.000Z",
-            "updatedAt": "2022-07-22T08:56:25.000Z"
-         }]
-      },
-      {
-         "id": 54735,
-         "uuid": "2e6d5730-26bf-475a-832a-45b5e679a3ca",
-         "bank": "479432cc-0c9a-4b17-925c-35dfdd3f9042",
-         "amount": 437,
-         "bonus_credit": null,
-         "transaction_type": "2",
-         "credit_before": 437.75,
-         "credit_after": 0.75,
-         "credit_bank_before": null,
-         "credit_bank_after": null,
-         "bank_time": "2022-10-17 14:03:20",
-         "create_by": "เกียริ",
-         "annotation": "ถอนมือ",
-         "ref": "PWQ166599020055031602",
-         "transaction_status": "Success",
-         "auto_status": "manual",
-         "transaction_slip": null,
-         "username": "23maa5038798",
-         "promotion_uuid": null,
-         "sms_transaction_uuid": null,
-         "createdAt": "2022-10-19T07:03:20.000Z",
-         "updatedAt": "2022-10-19T07:03:30.000Z",
-         "member_account_banks": [{
-            "id": 6739,
-            "uuid": "479432cc-0c9a-4b17-925c-35dfdd3f9042",
-            "bank_name": "kbnk",
-            "bank_account_name": "ชัญญพัชร์  พึ่งทิม",
-            "bank_number": "0513807236",
-            "member_credit": 0,
-            "member_uuid": "8407b7fb-10ab-4c58-8c24-631e36eb846b",
-            "createdAt": "2022-10-17T05:37:36.000Z",
-            "updatedAt": "2022-10-17T05:37:36.000Z"
-         }]
-      },
-   ]
-
-   const columns2 = [{
-      field: "no",
-      title: "ลำดับ",
-      maxWidth: 80,
-      align: "center",
-   },
-   {
-      field: "bank_name",
-      title: "ธนาคาร",
-      align: "center",
-      minWidth: "220px",
-      render: (item) => (
-         <Grid container >
-            <Grid item xs={3} sx={{ mt: 1 }}>
-               {item.bank_name === "kbnk" ? (
-                  <Image
-                     src={
-                        "https://the1pg.com/wp-content/uploads/2022/10/kbnk.png"
-                     }
-                     alt="scb"
-                     width={50}
-                     height={50}
-                  />
-               ) : item.bank_name === "truemoney" ? (
-                  <Image
-                     src={
-                        "https://the1pg.com/wp-content/uploads/2022/10/truemoney.png"
-                     }
-                     alt="scb"
-                     width={50}
-                     height={50}
-                  />
-               ) : item.bank_name === "ktba" ? (
-                  <Image
-                     src={
-                        "https://the1pg.com/wp-content/uploads/2022/10/ktba.png"
-                     }
-                     alt="scb"
-                     width={50}
-                     height={50}
-                  />
-               ) : item.bank_name === "scb" ? (
-                  <Image
-                     src={
-                        "https://the1pg.com/wp-content/uploads/2022/10/scb.png"
-                     }
-                     alt="scb"
-                     width={50}
-                     height={50}
-                  />
-               ) : item.bank_name === "bay" ? (
-                  <Image
-                     src={
-                        "https://the1pg.com/wp-content/uploads/2022/10/bay.png"
-                     }
-                     alt="scb"
-                     width={50}
-                     height={50}
-                  />
-               ) : item.bank_name === "bbla" ? (
-                  <Image
-                     src={
-                        "https://the1pg.com/wp-content/uploads/2022/10/bbl.png"
-                     }
-                     alt="scb"
-                     width={50}
-                     height={50}
-                  />
-               ) : item.bank_name === "gsb" ? (
-                  <Image
-                     src={
-                        "https://the1pg.com/wp-content/uploads/2022/10/gsb.png"
-                     }
-                     alt="scb"
-                     width={50}
-                     height={50}
-                  />
-               ) : item.bank_name === "ttb" ? (
-                  <Image
-                     src={
-                        "https://the1pg.com/wp-content/uploads/2022/10/ttb.png"
-                     }
-                     alt="scb"
-                     width={50}
-                     height={50}
-                  />
-               ) : item.bank_name === "BAAC" ? (
-                  <Image
-                     src={
-                        "https://the1pg.com/wp-content/uploads/2022/10/baac.png"
-                     }
-                     alt="scb"
-                     width={50}
-                     height={50}
-                  />
-               ) : item.bank_name === "ICBC" ? (
-                  <Image
-                     src={
-                        "https://the1pg.com/wp-content/uploads/2022/10/icbc.png"
-                     }
-                     alt="scb"
-                     width={50}
-                     height={50}
-                  />
-               ) : item.bank_name === "TCD" ? (
-                  <Image
-                     src={
-                        "https://the1pg.com/wp-content/uploads/2022/10/tcd.png"
-                     }
-                     alt="scb"
-                     width={50}
-                     height={50}
-                  />
-               ) : item.bank_name === "CITI" ? (
-                  <Image
-                     src={
-                        "https://the1pg.com/wp-content/uploads/2022/10/citi.png"
-                     }
-                     alt="scb"
-                     width={50}
-                     height={50}
-                  />
-               ) : item.bank_name === "SCBT" ? (
-                  <Image
-                     src={
-                        "https://the1pg.com/wp-content/uploads/2022/10/scbt.png"
-                     }
-                     alt="scb"
-                     width={50}
-                     height={50}
-                  />
-               ) : item.bank_name === "CIMB" ? (
-                  <Image
-                     src={
-                        "https://the1pg.com/wp-content/uploads/2022/10/cimb.png"
-                     }
-                     alt="scb"
-                     width={50}
-                     height={50}
-                  />
-               ) : item.bank_name === "UOB" ? (
-                  <Image
-                     src={
-                        "https://the1pg.com/wp-content/uploads/2022/10/uob.png"
-                     }
-                     alt="scb"
-                     width={50}
-                     height={50}
-                  />
-               ) : item.bank_name === "HSBC" ? (
-                  <Image
-                     src={
-                        "https://the1pg.com/wp-content/uploads/2022/10/hsbc.png"
-                     }
-                     alt="scb"
-                     width={50}
-                     height={50}
-                  />
-               ) : item.bank_name === "MIZUHO" ? (
-                  <Image
-                     src={
-                        "https://the1pg.com/wp-content/uploads/2022/10/mizuho.png"
-                     }
-                     alt="scb"
-                     width={50}
-                     height={50}
-                  />
-               ) : item.bank_name === "GHB" ? (
-                  <Image
-                     src={
-                        "https://the1pg.com/wp-content/uploads/2022/10/ghb.png"
-                     }
-                     alt="scb"
-                     width={50}
-                     height={50}
-                  />
-               ) : item.bank_name === "LHBANK" ? (
-                  <Image
-                     src={
-                        "https://the1pg.com/wp-content/uploads/2022/10/lhbank.png"
-                     }
-                     alt="scb"
-                     width={50}
-                     height={50}
-                  />
-               ) : item.bank_name === "TISCO" ? (
-                  <Image
-                     src={
-                        "https://the1pg.com/wp-content/uploads/2022/10/tisco.png"
-                     }
-                     alt="scb"
-                     width={50}
-                     height={50}
-                  />
-               ) : item.bank_name === "kkba" ? (
-                  <Image
-                     src={
-                        "https://the1pg.com/wp-content/uploads/2022/10/kkba.png"
-                     }
-                     alt="scb"
-                     width={50}
-                     height={50}
-                  />
-               ) : item.bank_name === "IBANK" ? (
-                  <Image
-                     src={
-                        "https://the1pg.com/wp-content/uploads/2022/10/ibank.png"
-                     }
-                     alt="scb"
-                     width={50}
-                     height={50}
-                  />
-               ) : (
-                  ""
-               )}
-            </Grid>
-
-            <Grid item xs={9} >
-               <Grid sx={
-                  { ml: 2, mt: 1 }} >
-                  <CopyToClipboard text={item.bank_number} >
-                     <div style={
-                        {
-                           "& .MuiButton-text": {
-                              "&:hover": {
-                                 // backgroundColor: "#9CE1BC",
-                                 // color: "blue",
-                                 textDecoration: "underline blue 1px",
-                              }
-                           }
-                        }
-                     } >
-                        <Button sx={
-                           {
-                              fontSize: "14px",
-                              p: 0,
-                              color: "blue",
-                           }
-                        }
-                           onClick={handleClickSnackbar} >
-                           {item.bank_number}
-                        </Button>
-                     </div>
-                  </CopyToClipboard>
-               </Grid>
-               <Grid >
-                  <Typography sx={
-                     { fontSize: "14px" }} > {item.name}
-                  </Typography>
-               </Grid>
-               <Grid sx={
-                  { ml: 2 }} >
-                  <CopyToClipboard text={item.username} >
-                     <div style={
-                        {
-                           "& .MuiButton-text": {
-                              "&:hover": {
-                                 // backgroundColor: "#9CE1BC",
-                                 // color: "blue",
-                                 textDecoration: "underline blue 1px",
-                              }
-                           }
-                        }
-                     } >
-                        <Button sx={
-                           {
-                              fontSize: "14px",
-                              p: 0,
-                              color: "blue",
-                           }
-                        }
-                           onClick={handleClickSnackbar} >
-                           {item.username}
-                        </Button>
-                     </div>
-                  </CopyToClipboard>
-               </Grid>
-            </Grid>
-         </Grid>
-      ),
-   },
-   {
-      title: "ยอดเงินถอน",
-      align: "center",
-      render: (item) => (
-         <>
-            <Grid container justifyContent="center" >
-               <Grid >
-                  <Typography sx={
-                     { fontSize: "14px" }} > {
-                        Intl.NumberFormat("TH", {
-                           style: "currency",
-                           currency: "THB",
-                        }).format(parseInt(item.amount))
-                     }
-                  </Typography>
-               </Grid>
-
-               <Chip label={"เครดิต"}
-                  size="small"
-                  style={
-                     {
-                        padding: 10,
-                        backgroundColor: "#FFB946",
-                        color: "#eee",
-                     }
-                  }
-               />
-            </Grid>
-         </>
-      ),
-   },
-   {
-      field: "bank_time",
-      title: "วันที่ถอน",
-      align: "center",
-      minWidth: "110px",
-   },
-   {
-      field: "updatedAt",
-      title: "วันที่อัพเดท",
-      align: "center",
-      render: (item) => (
-         <>
-            <Grid container justifyContent="center" >
-               <Grid >
-                  <Typography sx={
-                     { fontSize: "14px" }} > {item.updated_date}
-                  </Typography>
-                  <Typography sx={
-                     { fontSize: "14px" }} > {item.updated_time} </Typography>
-               </Grid> </Grid>
-         </>
-      ),
-   },
-
-   {
-      title: "สถานะ",
-      align: "center",
-      render: (item) => (<
-         Chip label={
-            item.transaction_status === "Fail" ?
-               "ผิดพลาด" :
-               item.transaction_status === "Create" ?
-                  "รออนุมัติ" :
-                  item.transaction_status === "Approve" ?
-                     "อนุมัติแล้ว" :
-                     item.transaction_status === "Process" ?
-                        "รอทำรายการ" :
-                        item.transaction_status === "Success" ?
-                           "สำเร็จ" :
-                           item.transaction_status === "OTP" ?
-                              "OTP" :
-                              item.transaction_status === "Reject" ?
-                                 "ยกเลิก" :
-                                 item.transaction_status === "manual" ?
-                                    "ถอนมือ" :
-                                    item.transaction_status === "" ?
-                                       "ทั้งหมด" :
-                                       "-"
-         }
-         size="small"
-         style={
-            {
-               padding: 10,
-               backgroundColor: item.transaction_status === "Fail" ?
-                  "#EB001B" :
-                  item.transaction_status === "Create" ?
-                     "#16539B" :
-                     item.transaction_status === "Approve" ?
-                        "#16539B" :
-                        item.transaction_status === "Process" ?
-                           "#FFB946" :
-                           item.transaction_status === "Success" ?
-                              "#129A50" :
-                              item.transaction_status === "OTP" ?
-                                 "#FFB946" :
-                                 item.transaction_status === "Reject" ?
-                                    "#FD3B52" :
-                                    item.transaction_status === "manual" ?
-                                       "#E1772B" :
-                                       item.transaction_status === "" ?
-                                          "gray" :
-                                          "gray",
-               // item.transaction_status === 1 ? "#129A50" : "#FFB946",
-               color: "#eee",
-            }
-         }
-      />
-      ),
-   },
-   {
-      title: "ออโต้",
-      align: "center",
-      render: (item) => (<
-         Chip label={
-            item.auto_status === "withdraw Fail" ?
-               "ถอนผิดพลาด" :
-               item.auto_status === "queue" ?
-                  "อยู่ในคิว" :
-                  item.auto_status === "Normal" ?
-                     "ปกติ" :
-                     item.auto_status === "Create" ?
-                        "ปกติ" :
-                        item.auto_status === "Approve" ?
-                           "อนุมัติ" :
-                           item.auto_status === "manual" ?
-                              "ถอนมือ" :
-                              item.auto_status === "Manual" ?
-                                 "ถอนมือ" :
-                                 item.auto_status === "Success" ?
-                                    "อนุมัติ" :
-                                    item.auto_status === "-" ?
-                                       "-" :
-                                       item.auto_status === "null" ?
-                                          "-" :
-                                          item.auto_status === "Process" ?
-                                             "ดำเนินการ" :
-                                             item.auto_status === "Withdraw Success" ?
-                                                "ปกติ" :
-                                                item.auto_status === "wait OTP" ?
-                                                   "ปกติ" :
-                                                   "-"
-         }
-         size="small"
-         style={
-            {
-               padding: 10,
-               backgroundColor: item.auto_status === "withdraw Fail" ?
-                  "#EB001B" :
-                  item.auto_status === "queue" ?
-                     "#16539B" :
-                     item.auto_status === "Normal" ?
-                        "#16539B" :
-                        item.auto_status === "Create" ?
-                           "#129A50" :
-                           item.auto_status === "Approve" ?
-                              "#16539B" :
-                              item.auto_status === "manual" ?
-                                 "#FFB946" :
-                                 item.auto_status === "Manual" ?
-                                    "#FFB946" :
-                                    item.auto_status === "Success" ?
-                                       "#129A50" :
-                                       item.auto_status === "-" ?
-                                          "gray" :
-                                          item.auto_status === "null" ?
-                                             "gray" :
-                                             item.auto_status === "Process" ?
-                                                "#16539B" :
-                                                item.auto_status === "Withdraw Success" ?
-                                                   "#129A50" :
-                                                   item.auto_status === "wait OTP" ?
-                                                      "#129A50" :
-                                                      "gray",
-               color: "#eee",
-            }
-         }
-      />
-      ),
-   },
-   {
-      field: "create_by",
-      title: "ทำโดย",
-      align: "center",
-      minWidth: "120px"
-   },
-   {
-      field: "annotation",
-      title: "หมายเหตุ",
-      align: "center",
-      render: (item) => {
-         return (
-            <>
-               <IconButton onClick={
-                  () => {
-                     setOpenDialogView({
-                        open: true,
-                        text: item.annotation,
-                     });
-                  }
-               } >
-                  <ManageSearchIcon />
-               </IconButton> </>
-         );
-      },
-   },
-   {
-      title: "เงินในบัญชี",
-      align: "center",
-      render: (item) => (
-         <>
-            <Grid container justifyContent="center" >
-               <Grid item xs={12}
-                  sx={
-                     { mb: 1 }} >
-                  <Chip label={
-                     item.credit_bank_before ?
-                        item.credit_bank_before :
-                        "0.00"
-                  }
-                     size="small"
-                     style={
-                        {
-                           padding: 10,
-                           minWidth: "80px",
-                           backgroundColor: "#FD3B52",
-                           color: "#eee",
-                        }
-                     }
-                  /> </Grid>
-               <Grid item xs={12} >
-                  <Chip label={
-                     item.credit_bank_after ?
-                        item.credit_bank_after :
-                        "0.00"
-                  }
-                     size="small"
-                     style={
-                        {
-                           padding: 10,
-                           minWidth: "80px",
-                           backgroundColor: "#129A50",
-                           color: "#eee",
-                        }
-                     }
-                  /> </Grid> </Grid> </>
-      ),
-   },
-
-   {
-      title: "เปลี่ยนสถานะ",
-      align: "center",
-      render: (item) => {
-         return (
-            <>
-               <IconButton disabled={item.transaction_status !== "Reject"}
-                  onClick={
-                     () => {
-                        setOpenDialogText({
-                           open: true,
-                           data: item,
-                           type: "change_status",
-                        });
-                     }
-                  } >
-                  <EditIcon color={
-                     item.transaction_status !== "Reject" ?
-                        "gray" :
-                        "secondary2"
-                  }
-                  /> </IconButton> </>
-         );
-      },
-   },
-
-   {
-      title: "อนุมัติ",
-      align: "center",
-      maxWidth: "80px",
-      render: (item) => {
-         return (
-            <Grid sx={
-               { textAlign: "center" }} >
-               <IconButton disabled={
-                  item.transaction_status === "Success" ||
-                  item.transaction_status === "Reject"
-               }
-                  onClick={
-                     () => {
-                        Swal.fire({
-                           title: "ต้องการอนุมัติการถอน",
-                           icon: "info",
-                           showCancelButton: true,
-                           cancelButtonColor: "#EB001B",
-                           confirmButtonColor: "#129A50",
-                           cancelButtonText: "ยกเลิก",
-                           confirmButtonText: "ยืนยัน",
-                        }).then(async (result) => {
-                           if (result.isConfirmed) {
-                              Swal.fire({
-                                 position: "center",
-                                 icon: "success",
-                                 title: "อนุมัติการถอนเรียบร้อยแล้ว",
-                                 showConfirmButton: false,
-                                 timer: 2000,
-                              });
-                              try {
-                                 let res = await axios({
-                                    headers: {
-                                       Authorization: "Bearer " +
-                                          localStorage.getItem("access_token"),
-                                    },
-                                    method: "post",
-                                    url: `${hostname}/api/member_transaction/approve-withdraw-auto`,
-                                    data: {
-                                       uuid: item.uuid,
-                                       username: item.username,
-                                       amount: item.amount,
-                                       bank_name: item.bank_name,
-                                       bank_number: item.bank_number,
-                                    },
-                                 });
-                              } catch (error) {
-                                 console.log(error);
-                              }
-                           }
-                        });
-                     }
-                  } >
-                  <CheckCircleOutlineIcon color={
-                     item.transaction_status === "Success" ||
-                        item.transaction_status === "Reject" ?
-                        "gray" :
-                        "secondary"
-                  }
-                  /> </IconButton> </Grid>
-         );
-      },
-   },
-   {
-      title: "ยกเลิกถอน",
-      align: "center",
-      maxWidth: "90px",
-      render: (item) => {
-         return (
-            <Grid sx={
-               { textAlign: "center" }} >
-               <IconButton disabled={
-                  item.transaction_status === "Success" ||
-                  item.transaction_status === "Reject"
-               }
-                  onClick={
-                     () => {
-                        setOpenDialogText({
-                           open: true,
-                           data: item,
-                           type: "cancel",
-                        });
-                     }
-                  } >
-                  <HighlightOffIcon color={
-                     item.transaction_status === "Success" ||
-                        item.transaction_status === "Reject" ?
-                        "gray" :
-                        "error"
-                  }
-                  /> </IconButton> </Grid>
-         );
-      },
-   },
-   {
-      title: "ถอนมือ",
-      align: "center",
-      render: (item) => {
-         return (
-            <Grid sx={
-               { textAlign: "center" }} >
-               <IconButton disabled={
-                  item.transaction_status === "Success" ||
-                  item.transaction_status === "Reject"
-               }
-                  onClick={
-                     () => {
-                        setOpenDialogText({
-                           open: true,
-                           data: item,
-                           type: "manual",
-                        });
-                     }
-                  } >
-                  <CurrencyExchangeIcon color={
-                     item.transaction_status === "Success" ||
-                        item.transaction_status === "Reject" ?
-                        "gray" :
-                        "secondary2"
-                  }
-                  /> </IconButton> </Grid>
-         );
-      },
-   },
-   {
-      title: "สลิป",
-      align: "center",
-      maxWidth: "80px",
-      render: (item) => {
-         return (
-            <Grid sx={
-               { textAlign: "center" }} >
-               <IconButton disabled={!item.transaction_slip}
-                  onClick={
-                     () => {
-                        setOpenDialogSlip({
-                           open: true,
-                           slip: item.transaction_slip,
-                        });
-                     }
-                  } >
-                  { /* <TextSnippetIcon sx={{ color: "#16539B"  }} /> */}
-                  <TextSnippetIcon color={!item.transaction_slip ? "gray" : "neutral"}
-                  /> </IconButton> </Grid>
-         );
-      },
-   },
-   {
-      title: "เปลี่ยนสถานะ",
-      align: "center",
-      render: (item) => {
-         return (
-            <>
-               <IconButton disabled={item.transaction_status !== "Reject"}
-                  onClick={
-                     () => {
-                        setOpenDialogText({
-                           open: true,
-                           data: item,
-                           type: "change_status",
-                        });
-                     }
-                  } >
-                  <EditIcon color={
-                     item.transaction_status !== "Reject" ?
-                        "gray" :
-                        "secondary2"
-                  }
-                  /> </IconButton> </>
-         );
-      },
-   },
    ];
-
-   console.log('rowData', rowData)
 
    return (
       <Layout>
          <Paper sx={{ p: 3, mb: 2 }} >
             <Grid container justifyContent="start" >
-               {bank.map((item) =>
+               {bankData.map((item) =>
                   <Paper sx={
                      {
                         // backgroundImage:
@@ -1609,9 +858,10 @@ function withdrawpending() {
                               ) : item.bank_name === "scb" ? (
                                  <Image src={scbL}
                                     alt="" />
-                              ) : (
-                                 ""
-                              )
+                              ) : item.bank_name === "kbnk" ?
+                                 <Image src={kbank}
+                                    alt="" />
+                                 : ''
                               } </Box>
                         </Grid>
                         <Grid item xs={5} sx={{ ml: 2, mt: 2 }} >
@@ -1622,11 +872,10 @@ function withdrawpending() {
                               color: "#EEEEEE",
                            }} >
                               {
-                                 item.bank_name === "truemoney" ?
-                                    "True Wallet" :
-                                    item.bank_name === "scb" ?
-                                       "SCB (ไทยพาณิชย์)" :
-                                       ""
+                                 item.bank_name === "truemoney" ? "True Wallet"
+                                    : item.bank_name === "scb" ? "SCB (ไทยพาณิชย์)"
+                                       : item.bank_name === "kbnk" ? "KBank (กสิกรไทย)"
+                                          : ""
                               } </Typography>
                            <Typography sx={
                               {
@@ -1683,7 +932,7 @@ function withdrawpending() {
                            } >
                               จำนวนเงินถอน
                            </Typography>
-                           <Chip label={Intl.NumberFormat("TH").format(parseInt(1221100))}
+                           <Chip label={Intl.NumberFormat("TH").format(parseInt(item.bank_total))}
                               size="small"
                               style={
                                  {
@@ -1798,7 +1047,7 @@ function withdrawpending() {
 
          <Grid container justifyContent="space-between" >
             <Paper sx={{ p: 3, mb: 2 }} >
-               <Grid container sx={{ mt: 2 }} >
+               {/* <Grid container sx={{ mt: 2 }} >
                   <Grid item container xs={12} sx={{ mb: 3 }} >
                      <TextField label="เริ่ม"
                         style={{
@@ -1885,7 +1134,7 @@ function withdrawpending() {
                         placeholder="ค้นหาชื่อผู้ใช้"
                         sx={{ mt: 1, mr: 2, width: "220px", bgcolor: '#fff' }}
                      />
-                     {/* <Button variant="contained"
+                    <Button variant="contained"
                         style={{ marginRight: "8px", marginTop: 8, color: '#fff' }}
                         color="primary"
                         size="large"
@@ -1893,7 +1142,7 @@ function withdrawpending() {
                            getMemberList();
                         }} >
                         <Typography > ค้นหา </Typography>
-                     </Button> */}
+                     </Button> 
                      <Button
                         variant="contained"
                         style={{ marginRight: "8px", marginTop: 9, color: '#fff' }}
@@ -1958,9 +1207,9 @@ function withdrawpending() {
                         <Typography>วันนี้</Typography>
                      </Button>
                   </Grid>
-               </Grid>
+               </Grid> */}
                <Grid container justifyContent="start" >
-                  <MaterialTableForm data={data2} columns={columns} pageSize="5" title="จัดการรายการถอน" />
+                  <MaterialTableForm data={dataWithdraw} columns={columns} pageSize="5" title="จัดการรายการถอน" />
                </Grid>
             </Paper>
          </Grid>
@@ -1992,23 +1241,23 @@ function withdrawpending() {
                      รายละเอียด :
                      <Chip
                         label={
-                           rowData.transaction_status === "Fail" ?
+                           rowData.status_transction === "Fail" ?
                               "ผิดพลาด" :
-                              rowData.transaction_status === "Create" ?
+                              rowData.status_transction === "CREATE" ?
                                  "รออนุมัติ" :
-                                 rowData.transaction_status === "Approve" ?
+                                 rowData.status_transction === "Approve" ?
                                     "อนุมัติแล้ว" :
-                                    rowData.transaction_status === "Process" ?
+                                    rowData.status_transction === "Process" ?
                                        "รอทำรายการ" :
-                                       rowData.transaction_status === "Success" ?
+                                       rowData.status_transction === "Success" ?
                                           "สำเร็จ" :
-                                          rowData.transaction_status === "OTP" ?
+                                          rowData.status_transction === "OTP" ?
                                              "OTP" :
-                                             rowData.transaction_status === "Reject" ?
+                                             rowData.status_transction === "Reject" ?
                                                 "ยกเลิก" :
-                                                rowData.transaction_status === "manual" ?
+                                                rowData.status_transction === "manual" ?
                                                    "ถอนมือ" :
-                                                   rowData.transaction_status === "" ?
+                                                   rowData.status_transction === "" ?
                                                       "ทั้งหมด" :
                                                       "-"
                         }
@@ -2016,23 +1265,23 @@ function withdrawpending() {
                            ml: 2,
                            p: 2,
                            fontSize: '16px',
-                           border: rowData.transaction_status === "Fail" ?
+                           border: rowData.status_transction === "Fail" ?
                               "2px solid #EB001B" :
-                              rowData.transaction_status === "Create" ?
+                              rowData.status_transction === "CREATE" ?
                                  "2px solid #16539B" :
-                                 rowData.transaction_status === "Approve" ?
+                                 rowData.status_transction === "Approve" ?
                                     "2px solid #16539B" :
-                                    rowData.transaction_status === "Process" ?
+                                    rowData.status_transction === "Process" ?
                                        "2px solid #FFB946" :
-                                       rowData.transaction_status === "Success" ?
+                                       rowData.status_transction === "Success" ?
                                           "2px solid #129A50" :
-                                          rowData.transaction_status === "OTP" ?
+                                          rowData.status_transction === "OTP" ?
                                              "2px solid #FFB946" :
-                                             rowData.transaction_status === "Reject" ?
+                                             rowData.status_transction === "Reject" ?
                                                 "2px solid #FD3B52" :
-                                                rowData.transaction_status === "manual" ?
+                                                rowData.status_transction === "manual" ?
                                                    "2px solid #E1772B" :
-                                                   rowData.transaction_status === "" ?
+                                                   rowData.status_transction === "" ?
                                                       "2px solid gray" :
                                                       "2px solid gray",
                            // backgroundColor: rowData.transaction_status === "Fail" ?
@@ -2077,12 +1326,11 @@ function withdrawpending() {
                      />
                   </Grid>
                   <Grid>
-                     <Button variant="outlined" color="error" sx={{}}>
+                     <Button variant="outlined" color="error" sx={{}} onClick={() => handelwithdraw()}>
                         ยกเลิกและคืนเงิน
                      </Button>
                   </Grid>
                </Grid>
-
 
             </DialogTitle>
 
@@ -2097,7 +1345,7 @@ function withdrawpending() {
                            >
                               ชื่อผู้ใช้งาน
                            </TableCell>
-                           <TableCell>{rowData.username}</TableCell>
+                           <TableCell>{rowData.members?.username}</TableCell>
                         </TableRow>
                         <TableRow>
                            <TableCell
@@ -2106,7 +1354,7 @@ function withdrawpending() {
                            >
                               ธนาคาร
                            </TableCell>
-                           <TableCell >{rowData.bank_name}</TableCell>
+                           <TableCell >{rowData.members?.bank_name}</TableCell>
                         </TableRow>
                         <TableRow>
                            <TableCell
@@ -2115,7 +1363,7 @@ function withdrawpending() {
                            >
                               เลขบัญชี
                            </TableCell>
-                           <TableCell >{rowData.bank_number}</TableCell>
+                           <TableCell >{rowData.members?.bank_number}</TableCell>
                         </TableRow>
                         <TableRow>
                            <TableCell
@@ -2133,7 +1381,7 @@ function withdrawpending() {
                            >
                               เวลาที่ถอน
                            </TableCell>
-                           <TableCell >{moment(rowData.createdAt).format("DD-MM-YYYY HH:mm")}</TableCell>
+                           <TableCell >{moment(rowData.create_at).format("DD-MM-YYYY HH:mm")}</TableCell>
                         </TableRow>
                         <TableRow>
                            <TableCell
@@ -2142,7 +1390,7 @@ function withdrawpending() {
                            >
                               ยอดถอนเงิน
                            </TableCell>
-                           <TableCell sx={{ fontWeight: "bold" }} > {Intl.NumberFormat("TH").format(parseInt(rowData.amount))} บาท</TableCell>
+                           <TableCell sx={{ fontWeight: "bold" }} > {Intl.NumberFormat("TH").format(parseInt(rowData.credit))} บาท</TableCell>
                         </TableRow>
                      </Table>
                   </Grid>
@@ -2155,46 +1403,34 @@ function withdrawpending() {
                            defaultValue="auto"
                            name="radio-buttons-group"
                         >
-                           <FormControlLabel value="auto" control={<Radio />} label={<Typography sx={{ fontSize: '14px' }}>ออโต้ </Typography>} />
+                           <FormControlLabel value="auto" onClick={() => setContent(false)} control={<Radio />} label={<Typography sx={{ fontSize: '14px' }}>ออโต้ </Typography>} />
                            <FormControlLabel value="manual" onClick={() => setContent(true)} control={<Radio />} label={<Typography sx={{ fontSize: '14px' }}>ถอนมือ </Typography>} />
                         </RadioGroup>
                      </FormControl>
-
-
-
-
                      <Typography sx={{ fontSize: '14px', mt: 3 }}> ธนาคาร</Typography>
                      <FormControl>
-                        <RadioGroup
-                           defaultValue="auto"
-                           name="radio-buttons-group"
-                        >
-                           <Paper sx={{ pl: 4, pr: 10, py: 2, mb: 2 }}>
-                              <FormControlLabel value="auto" control={<Radio />}
-                                 label={
-                                    <Grid >
-                                       <Typography sx={{ fontSize: '14px', mt: 1 }}> SCB (ไทยพาณิชย์)</Typography>
-                                       <Typography sx={{ fontSize: '14px', mt: 1 }}> 120345698801</Typography>
-                                       <Typography sx={{ fontSize: '14px', mt: 1 }}> จักรพงศ์ ปรีชาภรณ์</Typography>
-
-                                    </Grid>
-                                 }
-                              />
-                           </Paper>
-                           <Paper sx={{ pl: 4, pr: 10, py: 2 }}>
-                              <FormControlLabel value="manual" control={<Radio />}
-                                 label={
-                                    <Grid >
-                                       <Typography sx={{ fontSize: '14px', mt: 1 }}> KBANK</Typography>
-                                       <Typography sx={{ fontSize: '14px', mt: 1 }}> 120345698801</Typography>
-                                       <Typography sx={{ fontSize: '14px', mt: 1 }}> จักรพงศ์ ปรีชาภรณ์</Typography>
-                                    </Grid>
-                                 }
-                              />
-                           </Paper>
-
-                        </RadioGroup>
+                        {bankData.map((item) =>
+                           <RadioGroup
+                           onChange={(e) => handleChange(item.uuid)}
+                           >
+                              <Paper sx={{ pl: 4, pr: 10, py: 2, mb: 2 }} elevation={3}>
+                                 <FormControlLabel  
+                                    value={item.uuid}
+                                    checked={selectedBank === item.uuid}
+                                    control={<Radio />}
+                                    label={
+                                       <Grid>
+                                          <Typography sx={{ fontSize: '14px', mt: 1 }}>{item.bank_name}</Typography>
+                                          <Typography sx={{ fontSize: '14px', mt: 1 }}> {item.bank_number}</Typography>
+                                          <Typography sx={{ fontSize: '14px', mt: 1 }}> {item.bank_account_name}</Typography>
+                                       </Grid>
+                                    }
+                                 />
+                              </Paper>
+                           </RadioGroup>
+                        )}
                      </FormControl>
+
                      {content ?
                         <TextField
                            name="content"
@@ -2205,7 +1441,7 @@ function withdrawpending() {
                            size="small"
                            onChange={(e) => handleChangeData(e)}
                            variant="outlined"
-                           sx={{ bgcolor: "white",width:300 ,mt:2 }}
+                           sx={{ bgcolor: "white", width: 300, mt: 2 }}
                            multiline
                            rows={3}
                            maxRows={4}
@@ -2220,8 +1456,14 @@ function withdrawpending() {
                            variant="contained"
                            size="large"
                            fullWidth
+                           disabled={!!selectedBank ? false : true}
                            onClick={() => {
-                              editUser();
+                              if(!!selectedBank){
+                                 approveWithdraw(rowData.uuid, rowData.by_bank);
+                              }else{
+                                 alert('กรุณาเลือกธนาคาร')
+                              }
+                              
                            }}
                            sx={{
                               mt: 3,

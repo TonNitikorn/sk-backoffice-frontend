@@ -53,7 +53,7 @@ function home() {
     const [loading, setLoading] = useState(false);
 
     return (
-        <Layout>
+        <Layout title="home">
             <CssBaseline />
             <Paper sx={{ p: 2 }}>
                 <Grid container justifyContent="start">

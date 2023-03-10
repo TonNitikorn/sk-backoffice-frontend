@@ -280,7 +280,7 @@ function editError() {
   //   //   console.log(error);
   //   // }
   // };
-
+console.log('rowData', rowData)
   const submitFormSlip = async () => {
     setLoading(true);
 
@@ -323,7 +323,7 @@ function editError() {
     <Layout>
       <Box>
         <Paper sx={{ p: 3 }}>
-          <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px", mb: 4, }}> เติมเครดิตแบบ manual </Typography>
+          <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px", mb: 1, }}> เติมเครดิตแบบ manual </Typography>
           <FormControl>
             <RadioGroup
               row
@@ -1296,8 +1296,8 @@ function editError() {
               <Stack spacing={2}>
                 <Typography>{open.type === 'WITHDRAW' ? 'ตัดเครดิต' : 'เติมเครดิต'}</Typography>
                 <Typography>{dataUser.username}</Typography>
-                <Typography>{Intl.NumberFormat("THB").format(dataUser.credit)}</Typography>
-                <Typography>{open.type === 'WITHDRAW' ?  rowData.amountWithdraw : rowData.amountDeposit}</Typography>
+                <Typography>{Intl.NumberFormat("THB").format(parseInt(dataUser.credit))}</Typography>
+                <Typography>{open.type === 'WITHDRAW' ?  Intl.NumberFormat("THB").format(parseInt(rowData.amountWithdraw)) : Intl.NumberFormat("THB").format(parseInt(rowData.amountDeposit))}</Typography>
                 <Typography>{
                   open.type === "WITHDRAW"
                     ? Intl.NumberFormat("THB").format(parseInt(dataUser.credit) - parseInt(rowData.amountWithdraw))

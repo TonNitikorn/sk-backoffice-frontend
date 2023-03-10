@@ -598,7 +598,7 @@ function bankAccount() {
   }, []);
 
   return (
-    <Layout>
+    <Layout title="bank">
       <CssBaseline />
 
       <Paper sx={{ p: 3 }}>

@@ -22,10 +22,6 @@ import LoadingModal from "../theme/LoadingModal";
 function withdraw() {
     const [username, setUsername] = useState("");
     const [dataUser, setDataUser] = useState({});
-    const [dataCredit, setDataCredit] = useState({});
-    const [deposit, setDeposit] = useState([]);
-    const [promotion, setPromotion] = useState({});
-    const [depositLast, setDepositLast] = useState({});
     const [rowData, setRowData] = useState({});
     const [loading, setLoading] = useState(false);
     const [transaction, setTransaction] = useState([])
@@ -48,9 +44,6 @@ function withdraw() {
                     username: username
                 }
             });
-
-            // setDeposit(res.data.deposit_latest);
-            // setDataCredit(res.data.user[0]);
             let userData = res.data
             let lastDataUser = { ...userData, fullname: userData.fname + ' ' + userData.lname }
 
@@ -62,9 +55,6 @@ function withdraw() {
                 item.create_at = moment(item.create_at).format('DD/MM/YYYY hh:mm')
             })
             setTransaction(resTran)
-
-            // setPromotion(res.data.deposit_latest_one_with_promotion?.promotion);
-            // setDepositLast(res.data.deposit_latest_one_with_promotion?.deposit_last);
             setLoading(false);
         } catch (error) {
             if (
@@ -78,8 +68,9 @@ function withdraw() {
             console.log(error);
         }
     };
-    const submitWithdraw = async () => {
 
+
+    const submitWithdraw = async () => {
         setLoading(true);
         try {
             if (parseInt(dataUser.credit) >= parseInt(rowData.amount)) {
@@ -92,7 +83,6 @@ function withdraw() {
                         username: username,
                     },
                 });
-
                 Swal.fire({
                     position: "center",
                     icon: "success",
@@ -101,8 +91,8 @@ function withdraw() {
                     timer: 2500,
                 });
                 setRowData({});
-                setUsername("");
                 setDataUser({})
+                searchUser()
                 setLoading(false);
             } else if (!!rowData.amount) {
                 Swal.fire({
@@ -136,7 +126,7 @@ function withdraw() {
         },
         {
             title: "เงินฝาก",
-            field: "amount",
+            field: "credit",
             search: true,
             // width: "10%",
             align: "center",
@@ -159,24 +149,6 @@ function withdraw() {
         //     ),
         // },
         {
-            title: "เครดิตก่อนเติม",
-            field: "credit_before",
-            search: true,
-            // width: "10%",
-            align: "center",
-            render: (item) => (
-                <Chip
-                    label={item.credit_before}
-                    size="small"
-                    style={{
-                        background: "#FFB946",
-                        color: "#ffff",
-                    }}
-                />
-            ),
-        },
-
-        {
             title: "เครดิตหลังเติม",
             field: "credit_after",
             search: true,
@@ -189,10 +161,32 @@ function withdraw() {
                     style={{
                         background: "#00B900",
                         color: "#ffff",
+                        width: 150
+
                     }}
                 />
             ),
         },
+        {
+            title: "เครดิตก่อนเติม",
+            field: "credit_before",
+            search: true,
+            // width: "10%",
+            align: "center",
+            render: (item) => (
+                <Chip
+                    label={item.credit_before}
+                    size="small"
+                    style={{
+                        background: "#FFB946",
+                        color: "#ffff",
+                        width: 150
+                    }}
+                />
+            ),
+        },
+
+        
 
         {
             title: "เวลา",
@@ -212,10 +206,12 @@ function withdraw() {
         },
     ];
 
-    useEffect(() => { }, [rowData.amount]);
+    useEffect(() => { 
+        // searchUser()
+    }, [dataUser]);
 
     return (
-        <Layout>
+        <Layout prefer="withdraw">
             <Paper sx={{ mb: 5, p: 3 }}>
                 <Typography
                     sx={{
@@ -407,7 +403,7 @@ function withdraw() {
             </Grid>
 
             <Grid style={{ marginTop: "20px" }}>
-                <MaterialTableForm pageSize={10} data={transaction} columns={columns} />
+                <MaterialTableForm pageSize={20} data={transaction} columns={columns} />
             </Grid>
             <LoadingModal open={loading} />
         </Layout>
