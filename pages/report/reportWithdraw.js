@@ -99,34 +99,19 @@ function reportDeposit() {
       });
 
       let sumPrice = 0
-      let sumCreditBefore = 0
-      let sumCreditAfter = 0
       let price = []
-      let before = []
-      let after = []
+  
 
       for (const item of transaction) {
         price.push(item.amount)
       }
 
-      for (const item of transaction) {
-        before.push(item.credit_before)
-      }
-
-      for (const item of transaction) {
-        after.push(item.credit_after)
-      }
-
       sumPrice = price.reduce((a, b) => a + b, 0)
-      sumCreditBefore = before.reduce((a, b) => a + b, 0)
-      sumCreditAfter = after.reduce((a, b) => a + b, 0)
-
 
       setTotal({
         totalList: transaction.length,
         sumPrice: parseInt(sumPrice),
-        sumCreditAfter: parseInt(sumCreditAfter),
-        sumCreditBefore: parseInt(sumCreditBefore)
+        sumCredit: parseInt(res.data.sumCredit),
       })
 
       setReport(transaction);
@@ -144,6 +129,8 @@ function reportDeposit() {
       }
     }
   };
+
+  console.log('report', report)
   useEffect(() => {
     getReport();
   }, []);
@@ -211,7 +198,7 @@ function reportDeposit() {
               }}
               required
             />
-            <TextField variant="outlined"
+            {/* <TextField variant="outlined"
               type="text"
               name="type"
               size="small"
@@ -234,7 +221,7 @@ function reportDeposit() {
               <MenuItem value="OTP" > OTP </MenuItem>
               <MenuItem value="Reject" > ยกเลิก </MenuItem>
               <MenuItem value="manual" > ถอนมือ </MenuItem>
-            </TextField>
+            </TextField> */}
             <TextField
               name="username"
               type="text"
@@ -244,11 +231,11 @@ function reportDeposit() {
               onChange={(e) => setUsername(e.target.value)}
               variant="outlined"
               size="small"
-              sx={{ mr: 2 }}
+              sx={{ mr: 2 ,mt:1}}
             />
             <Button
               variant="contained"
-              style={{ marginRight: "8px",}}
+              style={{ marginRight: "8px", marginTop: "8px",}}
               color="primary"
               size="large"
               onClick={() => {
@@ -261,6 +248,7 @@ function reportDeposit() {
               variant="contained"
               style={{
                 marginRight: "8px",
+                marginTop: "8px",
                 backgroundColor: "#FFB946",
               }}
               size="large"
@@ -280,6 +268,7 @@ function reportDeposit() {
               variant="contained"
               style={{
                 marginRight: "8px",
+                marginTop: "8px",
                 backgroundColor: "#129A50",
               }}
               size="large"
@@ -313,7 +302,7 @@ function reportDeposit() {
           <Card sx={{ width: 650, bgcolor: "#101D35"}}>
             <CardContent>
               <Typography variant="h5" sx={{ color: "#eee" }}>ยอดเงิน</Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}> {Intl.NumberFormat("THB").format('1800')}</Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}> {Intl.NumberFormat("THB").format(total.sumCredit)}</Typography>
               <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
             </CardContent>
           </Card>
@@ -593,7 +582,7 @@ function reportDeposit() {
               ),
             },
             {
-              field: "amount",
+              field: "credit",
               title: "ยอดเงิน",
               align: "center",
             },
@@ -634,27 +623,7 @@ function reportDeposit() {
               title: "ทำรายการโดย",
               align: "center",
             },
-            {
-              field: "annotation",
-              title: "หมายเหตุ",
-              align: "center",
-              render: (item) => {
-                return (
-                  <>
-                    <IconButton
-                      onClick={() => {
-                        setOpenDialogView({
-                          open: true,
-                          text: item.annotation,
-                        });
-                      }}
-                    >
-                      <ManageSearchIcon />
-                    </IconButton>
-                  </>
-                );
-              },
-            },
+            
 
           ]}
         />

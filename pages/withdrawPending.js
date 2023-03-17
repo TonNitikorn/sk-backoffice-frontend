@@ -37,7 +37,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
-
+import ArticleIcon from '@mui/icons-material/Article';
 const Alert = React.forwardRef(function Alert(props, ref) {
    return <MuiAlert elevation={6}
       ref={ref}
@@ -60,6 +60,7 @@ function withdrawpending() {
    const [dataWithdraw, setDataWithdraw] = useState()
    const [bankData, setBankData] = useState([]);
    const [selectedBank, setSelectedBank] = useState();
+   const [openDialogView, setOpenDialogView] = useState(false);
 
    const handleChange = (uuid) => {
       setSelectedBank(uuid);
@@ -166,6 +167,7 @@ function withdrawpending() {
             });
             setOpenDialogApprove(false)
             setRowData({})
+            setSelectedBank()
          }
          setLoading(false);
          getDataWithdraw()
@@ -233,7 +235,6 @@ function withdrawpending() {
       getDataWithdraw()
       getBank()
    }, [])
-
 
 
    const columns = [
@@ -714,26 +715,7 @@ function withdrawpending() {
          align: "center",
          minWidth: "100px"
       },
-      {
-         field: "detail",
-         title: "หมายเหตุ",
-         align: "center",
-         render: (item) => {
-            return (
-               <>
-                  <IconButton onClick={
-                     () => {
-                        setOpenDialogView({
-                           open: true,
-                           text: item.detail,
-                        });
-                     }
-                  } >
-                     <ManageSearchIcon />
-                  </IconButton> </>
-            );
-         },
-      },
+     
       {
          title: "เงินในบัญชี",
          align: "center",
@@ -803,29 +785,29 @@ function withdrawpending() {
             );
          },
       },
-      {
-         title: "สลิป",
-         align: "center",
-         maxWidth: "80px",
-         render: (item) => {
-            return (
-               <Grid sx={
-                  { textAlign: "center" }} >
-                  <IconButton
-                     onClick={
-                        () => {
-                           setOpenDialogSlip({
-                              open: true,
-                              slip: item.transaction_slip,
-                           });
-                        }
-                     } >
-                     { /* <TextSnippetIcon sx={{ color: "#16539B"  }} /> */}
-                     <TextSnippetIcon color={!item.transaction_slip ? "gray" : "neutral"}
-                     /> </IconButton> </Grid>
-            );
-         },
-      },
+      // {
+      //    title: "สลิป",
+      //    align: "center",
+      //    maxWidth: "80px",
+      //    render: (item) => {
+      //       return (
+      //          <Grid sx={
+      //             { textAlign: "center" }} >
+      //             <IconButton
+      //                onClick={
+      //                   () => {
+      //                      setOpenDialogSlip({
+      //                         open: true,
+      //                         slip: item.transaction_slip,
+      //                      });
+      //                   }
+      //                } >
+      //                { /* <TextSnippetIcon sx={{ color: "#16539B"  }} /> */}
+      //                <TextSnippetIcon color={!item.transaction_slip ? "gray" : "netural"}
+      //                /> </IconButton> </Grid>
+      //       );
+      //    },
+      // },
 
 
    ];
@@ -1234,7 +1216,9 @@ function withdrawpending() {
                <Grid container justifyContent="space-between" sx={{ mt: 2 }}>
                   <Grid>
                      <IconButton onClick={() => {
+                        setSelectedBank()
                         setOpenDialogApprove(false)
+                        
                      }} >
                         <CloseIcon />
                      </IconButton>
@@ -1381,7 +1365,7 @@ function withdrawpending() {
                            >
                               เวลาที่ถอน
                            </TableCell>
-                           <TableCell >{moment(rowData.create_at).format("DD-MM-YYYY HH:mm")}</TableCell>
+                           <TableCell >{rowData.create_at}</TableCell>
                         </TableRow>
                         <TableRow>
                            <TableCell
@@ -1411,18 +1395,19 @@ function withdrawpending() {
                      <FormControl>
                         {bankData.map((item) =>
                            <RadioGroup
-                           onChange={(e) => handleChange(item.uuid)}
+                              onChange={(e) => handleChange(item.uuid)}
                            >
                               <Paper sx={{ pl: 4, pr: 10, py: 2, mb: 2 }} elevation={3}>
-                                 <FormControlLabel  
+                                 <FormControlLabel
                                     value={item.uuid}
                                     checked={selectedBank === item.uuid}
                                     control={<Radio />}
                                     label={
                                        <Grid>
-                                          <Typography sx={{ fontSize: '14px', mt: 1 }}>{item.bank_name}</Typography>
-                                          <Typography sx={{ fontSize: '14px', mt: 1 }}> {item.bank_number}</Typography>
-                                          <Typography sx={{ fontSize: '14px', mt: 1 }}> {item.bank_account_name}</Typography>
+                                          <Typography sx={{ fontSize: '14px', mt: 0 }}>{item.bank_name}</Typography>
+                                          <Typography sx={{ fontSize: '14px', mt: 0 }}> {item.bank_number}</Typography>
+                                          <Typography sx={{ fontSize: '14px', mt: 0 }}> {item.bank_account_name}</Typography>
+                                          <Typography sx={{ fontSize: '14px', mt: 0 }}> เงินในบัญชี {item.bank_total}</Typography>
                                        </Grid>
                                     }
                                  />
@@ -1458,12 +1443,12 @@ function withdrawpending() {
                            fullWidth
                            disabled={!!selectedBank ? false : true}
                            onClick={() => {
-                              if(!!selectedBank){
+                              if (!!selectedBank) {
                                  approveWithdraw(rowData.uuid, rowData.by_bank);
-                              }else{
+                              } else {
                                  alert('กรุณาเลือกธนาคาร')
                               }
-                              
+
                            }}
                            sx={{
                               mt: 3,
@@ -1693,6 +1678,22 @@ function withdrawpending() {
                      </Grid>
                   </Grid> */}
 
+               </Grid>
+            </DialogContent>
+         </Dialog>
+
+         <Dialog
+            open={openDialogView.open}
+            onClose={() => setOpenDialogView(false)}
+            fullWidth
+            maxWidth="xs"
+         >
+            <DialogTitle>หมายเหตุ</DialogTitle>
+            <DialogContent>
+               <Grid item xs={12} container justifyContent="center" sx={{ mb: 2 }}>
+                  <Typography sx={{ fontSize: "16px" }}>
+                     {/* {report.content} */}asdasdasdasd
+                  </Typography>
                </Grid>
             </DialogContent>
          </Dialog>

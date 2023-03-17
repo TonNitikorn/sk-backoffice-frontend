@@ -44,8 +44,12 @@ function reportDeposit() {
   const [username, setUsername] = useState("");
   const [report, setReport] = useState([]);
   const [open, setOpen] = useState(false);
+  const [total, setTotal] = useState({})
   const [loading, setLoading] = useState(false);
-
+  const [search, setSearch] = useState({
+    data: "",
+    type: "",
+  });
   const handleClickSnackbar = () => {
     setOpen(true);
   };
@@ -54,21 +58,21 @@ function reportDeposit() {
     setOpen(false);
   };
   const getReport = async (type, start, end) => {
-    // setLoading(true);
+    setLoading(true);
     try {
       let res = await axios({
         headers: {
           Authorization: "Bearer " + localStorage.getItem("access_token"),
         },
         method: "post",
-        // url: `${hostname}/api/report/deposit/?start_date=${
-        //   type === undefined ? selectedDateRange.start : start
-        // }&end_date=${
-        //   type === undefined ? selectedDateRange.end : end
-        // }&username=${username}`,
         url: `${hostname}/report/get_transaction`,
+       
         data: {
-          "transfer_type": "DEPOSIT"
+          "create_at_start":  type === undefined ? selectedDateRange.start : start,
+          "create_at_end": type === undefined ? selectedDateRange.end : end,
+          "transfer_type": "DEPOSIT",
+          "status_transction": search.type,
+          "username": username
         }
       });
 
@@ -78,13 +82,27 @@ function reportDeposit() {
       transaction.map((item) => {
         item.no = no++;
         item.create_at = moment(item.create_at).format('DD/MM/YYYY hh:mm')
-        item.username = item.members?.username
         item.bank_name = item.members?.bank_name
         item.bank_number = item.members?.bank_number
-        // item.bank_number = item.member_account_banks[0].bank_number
-        // item.bank_account_name = item.member_account_banks[0].bank_account_name
-
+        item.username = item.members?.username
       });
+
+      let sumPrice = 0
+      let price = []
+  
+
+      for (const item of transaction) {
+        price.push(item.amount)
+      }
+
+      sumPrice = price.reduce((a, b) => a + b, 0)
+
+      setTotal({
+        totalList: transaction.length,
+        sumPrice: parseInt(sumPrice),
+        sumCredit: parseInt(res.data.sumCredit),
+      })
+
       setReport(transaction);
       setLoading(false);
     } catch (error) {
@@ -537,7 +555,7 @@ function reportDeposit() {
               ),
             },
             {
-              field: "amount",
+              field: "credit",
               title: "ยอดเงิน",
               align: "center",
             },

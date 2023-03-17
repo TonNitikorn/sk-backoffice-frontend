@@ -9,6 +9,8 @@ import {
    Card,
    CardContent,
    Paper,
+   Tab,
+   Tabs
 } from "@mui/material";
 import {
    Chart as ChartJS,
@@ -28,6 +30,8 @@ import { useAppDispatch } from "../store/store";
 import { signOut } from "../store/slices/userSlice";
 import LoadingModal from "../theme/LoadingModal";
 import moment from "moment/moment";
+import PropTypes from 'prop-types';
+import AssessmentIcon from '@mui/icons-material/Assessment';
 
 ChartJS.register(
    CategoryScale,
@@ -37,6 +41,39 @@ ChartJS.register(
    Tooltip,
    Legend
 );
+
+function TabPanel(props) {
+   const { children, value, index, ...other } = props;
+
+   return (
+      <div
+         role="tabpanel"
+         hidden={value !== index}
+         id={`simple-tabpanel-${index}`}
+         aria-labelledby={`simple-tab-${index}`}
+         {...other}
+      >
+         {value === index && (
+            <Box sx={{ p: 3 }}>
+               <Typography>{children}</Typography>
+            </Box>
+         )}
+      </div>
+   );
+}
+
+TabPanel.propTypes = {
+   children: PropTypes.node,
+   index: PropTypes.number.isRequired,
+   value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+   return {
+      id: `simple-tab-${index}`,
+      'aria-controls': `simple-tabpanel-${index}`,
+   };
+}
 
 function dashboard() {
    const router = useRouter();
@@ -48,7 +85,11 @@ function dashboard() {
    const [loading, setLoading] = useState(false);
    const [user, setUser] = useState([]);
    const [report, setReport] = useState({});
+   const [value, setValue] = useState(0);
 
+   const handleChange = (event, newValue) => {
+      setValue(newValue);
+   };
    //   const getUser = async (type, start, end) => {
    //     setLoading(true);
    //     try {
@@ -282,587 +323,329 @@ function dashboard() {
 
    return (
       <Layout>
-         {/* <Paper sx={{ p: 4 }}> */}
-         <Grid container sx={{ mt: 2 }}>
-            <Grid item container xs={12} sx={{ mb: 3 }}>
-               <TextField
-                  label="เริ่ม"
-                  style={{
-                     marginRight: "8px",
-                     marginTop: "8px",
-                     backgroundColor: "white",
-                     borderRadius: 4,
-                  }}
-                  variant="outlined"
-                  size=""
-                  type="datetime-local"
-                  name="start"
-                  value={selectedDateRange.start}
-                  onChange={(e) => {
-                     setSelectedDateRange({
-                        ...selectedDateRange,
-                        [e.target.name]: e.target.value,
-                     });
-                  }}
-                  InputLabelProps={{
-                     shrink: true,
-                  }}
-               />
-               <TextField
-                  label="สิ้นสุด"
-                  style={{
-                     marginRight: "8px",
-                     marginTop: "8px",
-                     color: "white",
-                     backgroundColor: "white",
-                     borderRadius: 4,
-                  }}
-                  variant="outlined"
-                  size=""
-                  type="datetime-local"
-                  name="end"
-                  value={selectedDateRange.end}
-                  onChange={(e) => {
-                     setSelectedDateRange({
-                        ...selectedDateRange,
-                        [e.target.name]: e.target.value,
-                     });
-                  }}
-                  InputLabelProps={{
-                     shrink: true,
-                  }}
-                  required
-               />
+         <Paper sx={{p: 3,textAlign: 'start',mb:2}}>
+            <Typography  sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px" }}> Dashboard สรุปภาพรวม</Typography>
+         </Paper>
 
-               <Button
-                  variant="contained"
-                  style={{ marginRight: "8px", marginTop: 9 , color:'#fff'}}
-                  color="primary"
-                  size="large"
-                  onClick={() => {
-                     getUser();
-                     getReport();
-                  }}
-               >
-                  <Typography>ค้นหา</Typography>
-               </Button>
-               <Button
-                  variant="contained"
-                  style={{
-                     marginRight: "8px",
-                     marginTop: 9,
-                     backgroundColor: "#FFB946",
-                     color:'#fff'
-                  }}
-                  size="large"
-                  onClick={async () => {
-                     let start = moment()
-                        .subtract(1, "days")
-                        .format("YYYY-MM-DD 00:00");
-                     let end = moment()
-                        .subtract(1, "days")
-                        .format("YYYY-MM-DD 23:59");
-                     setSelectedDateRange({
-                        start: moment()
-                           .subtract(1, "days")
-                           .format("YYYY-MM-DD 00:00"),
-                        end: moment().subtract(1, "days").format("YYYY-MM-DD 23:59"),
-                     });
-                     getUser("yesterday", start, end);
-                     getReport("yesterday", start, end);
-                  }}
-               >
-                  <Typography>เมื่อวาน</Typography>
-               </Button>
-               <Button
-                  variant="contained"
-                  style={{
-                     marginRight: "8px",
-                     marginTop: 9,
-                     backgroundColor: "#129A50",
-                     color:'#fff'
-                  }}
-                  size="large"
-                  onClick={async () => {
-                     let start = moment().format("YYYY-MM-DD 00:00");
-                     let end = moment().format("YYYY-MM-DD 23:59");
-                     setSelectedDateRange({
-                        start: moment().format("YYYY-MM-DD 00:00"),
-                        end: moment().format("YYYY-MM-DD 23:59"),
-                     });
-                     getUser("today", start, end);
-                     getReport("today", start, end);
-                  }}
-               >
-                  <Typography>วันนี้</Typography>
-               </Button>
+
+         <Paper sx={{ p: 3 }}>
+            <Grid
+               container
+               direction="row"
+               justifyContent="center"
+               alignItems="center"
+            >
+               {/* <Box sx={{ width: "80%", mt: "20px", bgcolor: "#101D35" }}>
+                <Line options={options} data={data} height="100px" /> 
+               
+            </Box>*/}
+               <Grid item xs={6} >
+                  <Bar options={options} data={data} />
+               </Grid>
+               <Grid item xs={6} >
+                  <Bar options={options} data={data} />
+               </Grid>
+               <Grid item xs={6} >
+                  <Bar options={options} data={data} />
+               </Grid>
+               <Grid item xs={6} >
+                  <Bar options={options} data={data} />
+               </Grid>
             </Grid>
-         </Grid>
+         </Paper>
 
-         <Grid container justifyContent="center">
-            <Box sx={{ width: "80%", mt: "20px", bgcolor: "#101D35" }}>
-               {/* <Line options={options} data={data} height="100px" /> */}
-               <Bar options={options} data={data} />
+
+         <Paper sx={{ p: 3, mt: 2 }}>
+            <Box sx={{ textAlign: 'center' }}>
+               <Typography variant="h5">สรุปภาพรวมตามช่วงเวลา</Typography>
             </Box>
-         </Grid>
 
-         <Typography sx={{ fontSize: "18px", mt: 5 }}>
-            วันที่ {moment(selectedDateRange.start).format("DD/MM/YYYY")} -{" "}
-            {moment(selectedDateRange.end).format("DD/MM/YYYY")}
-         </Typography>
+            {/* วันที่ค้นหา */}
+            <Grid container sx={{ mt: 3 }}>
+               <Grid item container xs={12} sx={{ mb: 3 }}>
+                  <TextField
+                     label="เริ่ม"
+                     style={{
+                        marginRight: "8px",
+                        marginTop: "8px",
+                        backgroundColor: "white",
+                        borderRadius: 4,
+                     }}
+                     variant="outlined"
+                     size="small"
+                     type="datetime-local"
+                     name="start"
+                     value={selectedDateRange.start}
+                     onChange={(e) => {
+                        setSelectedDateRange({
+                           ...selectedDateRange,
+                           [e.target.name]: e.target.value,
+                        });
+                     }}
+                     InputLabelProps={{
+                        shrink: true,
+                     }}
+                  />
+                  <TextField
+                     label="สิ้นสุด"
+                     style={{
+                        marginRight: "8px",
+                        marginTop: "8px",
+                        color: "white",
+                        backgroundColor: "white",
+                        borderRadius: 4,
+                     }}
+                     variant="outlined"
+                     size="small"
+                     type="datetime-local"
+                     name="end"
+                     value={selectedDateRange.end}
+                     onChange={(e) => {
+                        setSelectedDateRange({
+                           ...selectedDateRange,
+                           [e.target.name]: e.target.value,
+                        });
+                     }}
+                     InputLabelProps={{
+                        shrink: true,
+                     }}
+                     required
+                  />
 
-         <Grid container justifyContent="start" sx={{ mt: 1 }}>
-            <Card
-               sx={{
-                  minWidth: 250,
-                  maxWidth: 260,
-                  minHeight: 20,
-                  mt: 4,
-                  bgcolor: "#129A50",
-                  mr: "3px",
-               }}
-            >
-               <CardContent>
-                  <Typography component="div" sx={{ color: "#eee" }}>
-                     ยอดฝากทั้งหมด
-                  </Typography>
-
-                  <Typography
-                     variant="h3"
-                     sx={{ mb: 2, mt: 4, textAlign: "center", color: "white" }}
+                  <Button
+                     variant="contained"
+                     style={{ marginRight: "8px", marginTop: 9, color: '#fff', width: 150 }}
+                     color="primary"
+                     size="small"
+                     onClick={() => {
+                        getUser();
+                        getReport();
+                     }}
                   >
-                     {Intl.NumberFormat("TH").format(parseInt(report.sumAmountAll))}
-                  </Typography>
-                  <Typography
-                     component="div"
-                     sx={{ color: "#eee", textAlign: "right", mt: 3 }}
-                  >
-                     บาท
-                  </Typography>
-               </CardContent>
-            </Card>
+                     <Typography>ค้นหา</Typography>
+                  </Button>
+               </Grid>
+            </Grid>
+         </Paper>
+         <Grid container
+            direction="row"
+            justifyContent="center"
+            alignItems="center" spacing={3}>
 
-            <Card
-               sx={{
-                  minWidth: 250,
-                  maxWidth: 260,
-                  minHeight: 20,
-                  mt: 4,
-                  bgcolor: "#101D35",
-               }}
-            >
-               <CardContent>
-                  <Typography component="div" sx={{ color: "#eee" }}>
-                     ยอดสมัครรวม
-                  </Typography>
-                  <Grid container justifyContent="center">
-                     <Grid item xs={3}></Grid>
-                     <Grid item xs={5}>
-                        <Typography
-                           variant="h3"
-                           sx={{ mt: 2, textAlign: "center", color: "#eee" }}
-                        >
-                           {user.length}
-                        </Typography>
+            <Grid item xs={4}>
+               <Paper sx={{ p: 3, mt: 1, }}>
+                  <Box sx={{ borderColor: 'divider' }}>
+                     <Tabs
+                        value={value}
+                        // variant="fullWidth"
+                        onChange={handleChange} >
+                        <Tab label="วันนี้" {...a11yProps(0)} />
+                        <Tab label="เมื่อวาน" {...a11yProps(1)} />
+                        <Tab label="สัปดาห์" {...a11yProps(2)} />
+                        <Tab label="เดือน" {...a11yProps(3)} />
+                     </Tabs>
+                  </Box>
+                  <TabPanel value={value} index={0} sx={{ width: 199 }}>
+                     <Grid container>
+                        <Grid item xs={12}>
+                           <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>สมัครสมาชิก </span>10 ยูสเซอร์</Typography>
+                           <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>สมัครสมาชิกฝากเงิน</span> 2500 บาท</Typography>
+                           <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>สมัครสมาชิกฝากเงินรับโบนัส</span> - บาท</Typography>
+                           <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>สมัครสมาชิกฝากเงินรับโบนัส</span> - รายการ</Typography>
+                           <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>ฝากเงิน</span> 55,000 บาท</Typography>
+                           <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>ฝากเงิน</span> 566 รายการ</Typography>
+                           <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>ฝากถอน</span> 55,000 บาท</Typography>
+                           <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>ฝากถอน</span> 566 รายการ</Typography>
+                        </Grid>
                      </Grid>
-                     <Grid item xs={4}>
-                        <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}>
-                           ครั้ง
-                        </Typography>
+                  </TabPanel>
+                  <TabPanel value={value} index={1}>
+                     <Grid container>
+                     <Grid item xs={12}>
+                           <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>สมัครสมาชิก </span>10 ยูสเซอร์</Typography>
+                           <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>สมัครสมาชิกฝากเงิน</span> 2500 บาท</Typography>
+                           <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>สมัครสมาชิกฝากเงินรับโบนัส</span> - บาท</Typography>
+                           <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>สมัครสมาชิกฝากเงินรับโบนัส</span> - รายการ</Typography>
+                           <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>ฝากเงิน</span> 55,000 บาท</Typography>
+                           <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>ฝากเงิน</span> 566 รายการ</Typography>
+                           <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>ฝากถอน</span> 55,000 บาท</Typography>
+                           <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>ฝากถอน</span> 566 รายการ</Typography>
+                        </Grid>
+                     </Grid>
+                  </TabPanel>
+                  <TabPanel value={value} index={2}>
+                     <Grid container>
+                     <Grid item xs={12}>
+                           <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>สมัครสมาชิก </span>10 ยูสเซอร์</Typography>
+                           <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>สมัครสมาชิกฝากเงิน</span> 2500 บาท</Typography>
+                           <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>สมัครสมาชิกฝากเงินรับโบนัส</span> - บาท</Typography>
+                           <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>สมัครสมาชิกฝากเงินรับโบนัส</span> - รายการ</Typography>
+                           <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>ฝากเงิน</span> 55,000 บาท</Typography>
+                           <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>ฝากเงิน</span> 566 รายการ</Typography>
+                           <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>ฝากถอน</span> 55,000 บาท</Typography>
+                           <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>ฝากถอน</span> 566 รายการ</Typography>
+                        </Grid>
+                     </Grid>
+                  </TabPanel>
+                  <TabPanel value={value} index={3}>
+                     <Grid container>
+                     <Grid item xs={12}>
+                           <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>สมัครสมาชิก </span>10 ยูสเซอร์</Typography>
+                           <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>สมัครสมาชิกฝากเงิน</span> 2500 บาท</Typography>
+                           <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>สมัครสมาชิกฝากเงินรับโบนัส</span> - บาท</Typography>
+                           <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>สมัครสมาชิกฝากเงินรับโบนัส</span> - รายการ</Typography>
+                           <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>ฝากเงิน</span> 55,000 บาท</Typography>
+                           <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>ฝากเงิน</span> 566 รายการ</Typography>
+                           <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>ฝากถอน</span> 55,000 บาท</Typography>
+                           <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>ฝากถอน</span> 566 รายการ</Typography>
+                        </Grid>
+                     </Grid>
+                  </TabPanel>
+               </Paper>
+            </Grid>
+            <Grid item xs={8}>
+               <Paper sx={{ p: 3, mt: 2, ml: 2 }}>
+                  <Grid container
+                     direction="row"
+                     justifyContent="center"
+                     alignItems="center" spacing={3}>
+                     <Grid item xs={6}  >
+                        <Card sx={{ minWidth: 300, maxWidth: 460, minHeight: 20, maxHeight: 100, my: 2, bgcolor: "#101D35", mt: 1 }}>
+                           <CardContent>
+                              <Grid container justifyContent="center">
+                                 <Grid item xs={4}>
+                                    <Typography component="div" sx={{ color: "#FFC300" }}>ยอดเงินคงเหลือ</Typography>
+                                 </Grid>
+                                 <Grid item xs={4}>
+                                    <Typography variant="h5" sx={{ mt: 3, textAlign: "center", color: "#eee" }}>
+                                       {user.filter((item) => item.know_us === "seo").length}
+                                    </Typography>
+                                 </Grid>
+                                 <Grid item xs={4}>
+                                    <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}> บาท </Typography>
+                                 </Grid>
+                              </Grid>
+                           </CardContent>
+                        </Card>
+                        <Card sx={{ minWidth: 300, maxWidth: 460, minHeight: 20, maxHeight: 100, my: 2, bgcolor: "#101D35", }}>
+                           <CardContent>
+                              <Grid container justifyContent="center">
+                                 <Grid item xs={4}>
+                                    <Typography component="div" sx={{ color: "#FFC300" }}>ยอดเงินคงเหลือ</Typography>
+                                 </Grid>
+                                 <Grid item xs={4}>
+                                    <Typography variant="h5" sx={{ mt: 3, textAlign: "center", color: "#eee" }}>
+                                       {user.filter((item) => item.know_us === "seo").length}
+                                    </Typography>
+                                 </Grid>
+                                 <Grid item xs={4}>
+                                    <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}> บาท </Typography>
+                                 </Grid>
+                              </Grid>
+                           </CardContent>
+                        </Card>
+                        <Card sx={{ minWidth: 300, maxWidth: 460, minHeight: 20, maxHeight: 100, my: 2, bgcolor: "#101D35", }}>
+                           <CardContent>
+                              <Grid container justifyContent="center">
+                                 <Grid item xs={4}>
+                                    <Typography component="div" sx={{ color: "#FFC300" }}>ยอดเงินคงเหลือ</Typography>
+                                 </Grid>
+                                 <Grid item xs={4}>
+                                    <Typography variant="h5" sx={{ mt: 3, textAlign: "center", color: "#eee" }}>
+                                       {user.filter((item) => item.know_us === "seo").length}
+                                    </Typography>
+                                 </Grid>
+                                 <Grid item xs={4}>
+                                    <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}> บาท </Typography>
+                                 </Grid>
+                              </Grid>
+                           </CardContent>
+                        </Card>
+
+
                      </Grid>
 
-                     <Grid item xs={3}>
-                        <Typography
-                           sx={{
-                              fontSize: "16px",
-                              mt: 2,
-                              textAlign: "center",
-                              color: "#eee",
-                           }}
-                        >
-                           ฝาก
-                        </Typography>
-                     </Grid>
-                     <Grid item xs={6}>
-                        <Typography
-                           variant="h5"
-                           sx={{ mt: 4, textAlign: "center", color: "#129A50" }}
-                        >
-                           {Intl.NumberFormat("TH").format(parseInt(report.sumAll))}
-                        </Typography>
-                     </Grid>
-                     <Grid item xs={3}>
-                        <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}>
-                           บาท
-                        </Typography>
+                     <Grid item xs={6} >
+                        <Card sx={{ minWidth: 300, maxWidth: 460, minHeight: 20, maxHeight: 100, my: 2, bgcolor: "#101D35", mt: 1 }}>
+                           <CardContent>
+                              <Grid container justifyContent="center">
+                                 <Grid item xs={4}>
+                                    <Typography component="div" sx={{ color: "#FFC300" }}>ลูกค้าทั้งหมด</Typography>
+                                 </Grid>
+                                 <Grid item xs={4}>
+                                    <Typography variant="h5" sx={{ mt: 3, textAlign: "center", color: "#eee" }}>
+                                       {user.filter((item) => item.know_us === "seo").length}
+                                    </Typography>
+                                 </Grid>
+                                 <Grid item xs={4}>
+                                    <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}> ยูสเซอร์ </Typography>
+                                 </Grid>
+                              </Grid>
+                           </CardContent>
+                        </Card>
+                        <Card sx={{ minWidth: 300, maxWidth: 460, minHeight: 20, maxHeight: 100, my: 2, bgcolor: "#101D35", }}>
+                           <CardContent>
+                              <Grid container justifyContent="center">
+                                 <Grid item xs={4}>
+                                    <Typography component="div" sx={{ color: "#FFC300" }}>สมัครใหม่วันนี้</Typography>
+                                 </Grid>
+                                 <Grid item xs={4}>
+                                    <Typography variant="h5" sx={{ mt: 3, textAlign: "center", color: "#eee" }}>
+                                       {user.filter((item) => item.know_us === "seo").length}
+                                    </Typography>
+                                 </Grid>
+                                 <Grid item xs={4}>
+                                    <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}> ยูสเซอร์ </Typography>
+                                 </Grid>
+                              </Grid>
+                           </CardContent>
+                        </Card>
+                        <Card sx={{ minWidth: 300, maxWidth: 460, minHeight: 20, maxHeight: 100, my: 2, bgcolor: "#101D35", }}>
+                           <CardContent>
+                              <Grid container justifyContent="center">
+                                 <Grid item xs={4}>
+                                    <Typography component="div" sx={{ color: "#FFC300" }}>สมัครใหม่วันนี้เงินฝาก</Typography>
+                                 </Grid>
+                                 <Grid item xs={4}>
+                                    <Typography variant="h5" sx={{ mt: 3, textAlign: "center", color: "#eee" }}>
+                                       {user.filter((item) => item.know_us === "seo").length}
+                                    </Typography>
+                                 </Grid>
+                                 <Grid item xs={4}>
+                                    <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}> บาท </Typography>
+                                 </Grid>
+                              </Grid>
+                           </CardContent>
+                        </Card>
+
                      </Grid>
                   </Grid>
-               </CardContent>
-            </Card>
+               </Paper>
+            </Grid>
+
+
+
          </Grid>
 
-         <Grid container justifyContent="space-between" sx={{ mt: 3 }}>
-            <Card
-               sx={{
-                  minWidth: 250,
-                  maxWidth: 260,
-                  minHeight: 20,
-                  my: 2,
-                  bgcolor: "#101D35",
-               }}
+         <Paper sx={{ p: 3, mt: 2 }}>
+            <Grid
+               container
+               direction="row"
+               justifyContent="center"
+               alignItems="center"
             >
-               <CardContent>
-                  <Typography component="div" sx={{ color: "#eee" }}>
-                     SEO
-                  </Typography>
-
-                  <Grid container justifyContent="center">
-                     <Grid item xs={3}></Grid>
-                     <Grid item xs={5}>
-                        <Typography
-                           variant="h3"
-                           sx={{ mt: 2, textAlign: "center", color: "#eee" }}
-                        >
-                           {user.filter((item) => item.know_us === "seo").length}
-                        </Typography>
-                     </Grid>
-                     <Grid item xs={4}>
-                        <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}>
-                           ครั้ง
-                        </Typography>
-                     </Grid>
-
-                     <Grid item xs={3}>
-                        <Typography
-                           sx={{
-                              fontSize: "16px",
-                              mt: 2,
-                              textAlign: "center",
-                              color: "#eee",
-                           }}
-                        >
-                           ฝาก
-                        </Typography>
-                     </Grid>
-                     <Grid item xs={6}>
-                        <Typography
-                           variant="h5"
-                           sx={{ mt: 4, textAlign: "center", color: "#129A50" }}
-                        >
-                           {Intl.NumberFormat("TH").format(parseInt(report.sumSeo))}
-                        </Typography>
-                     </Grid>
-                     <Grid item xs={3}>
-                        <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}>
-                           บาท
-                        </Typography>
-                     </Grid>
-                  </Grid>
-               </CardContent>
-            </Card>
-
-            <Card
-               sx={{
-                  minWidth: 250,
-                  maxWidth: 260,
-                  minHeight: 20,
-                  my: 2,
-                  bgcolor: "#101D35",
-               }}
-            >
-               <CardContent>
-                  <Typography component="div" sx={{ color: "#eee" }}>
-                     Twitter
-                  </Typography>
-
-                  <Grid container justifyContent="center">
-                     <Grid item xs={3}></Grid>
-                     <Grid item xs={5}>
-                        <Typography
-                           variant="h3"
-                           sx={{ mt: 2, textAlign: "center", color: "#eee" }}
-                        >
-                           {user.filter((item) => item.know_us === "twitter").length}
-                        </Typography>
-                     </Grid>
-                     <Grid item xs={4}>
-                        <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}>
-                           ครั้ง
-                        </Typography>
-                     </Grid>
-
-                     <Grid item xs={3}>
-                        <Typography
-                           sx={{
-                              fontSize: "16px",
-                              mt: 2,
-                              textAlign: "center",
-                              color: "#eee",
-                           }}
-                        >
-                           ฝาก
-                        </Typography>
-                     </Grid>
-                     <Grid item xs={6}>
-                        <Typography
-                           variant="h5"
-                           sx={{ mt: 4, textAlign: "center", color: "#129A50" }}
-                        >
-                           {Intl.NumberFormat("TH").format(
-                              parseInt(report.sumTwitter)
-                           )}
-                        </Typography>
-                     </Grid>
-                     <Grid item xs={3}>
-                        <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}>
-                           บาท
-                        </Typography>
-                     </Grid>
-                  </Grid>
-               </CardContent>
-            </Card>
-
-            <Card
-               sx={{
-                  minWidth: 250,
-                  maxWidth: 260,
-                  minHeight: 20,
-                  my: 2,
-                  bgcolor: "#101D35",
-               }}
-            >
-               <CardContent>
-                  <Typography component="div" sx={{ color: "#eee" }}>
-                     Line
-                  </Typography>
-
-                  <Grid container justifyContent="center">
-                     <Grid item xs={3}></Grid>
-                     <Grid item xs={5}>
-                        <Typography
-                           variant="h3"
-                           sx={{ mt: 2, textAlign: "center", color: "#eee" }}
-                        >
-                           {user.filter((item) => item.know_us === "line").length}
-                        </Typography>
-                     </Grid>
-                     <Grid item xs={4}>
-                        <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}>
-                           ครั้ง
-                        </Typography>
-                     </Grid>
-
-                     <Grid item xs={3}>
-                        <Typography
-                           sx={{
-                              fontSize: "16px",
-                              mt: 2,
-                              textAlign: "center",
-                              color: "#eee",
-                           }}
-                        >
-                           ฝาก
-                        </Typography>
-                     </Grid>
-                     <Grid item xs={6}>
-                        <Typography
-                           variant="h5"
-                           sx={{ mt: 4, textAlign: "center", color: "#129A50" }}
-                        >
-                           {Intl.NumberFormat("TH").format(parseInt(report.sumLine))}
-                        </Typography>
-                     </Grid>
-                     <Grid item xs={3}>
-                        <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}>
-                           บาท
-                        </Typography>
-                     </Grid>
-                  </Grid>
-               </CardContent>
-            </Card>
-
-            <Card
-               sx={{
-                  minWidth: 250,
-                  maxWidth: 260,
-                  minHeight: 20,
-                  my: 2,
-                  bgcolor: "#101D35",
-               }}
-            >
-               <CardContent>
-                  <Typography component="div" sx={{ color: "#eee" }}>
-                     Tiktok
-                  </Typography>
-
-                  <Grid container justifyContent="center">
-                     <Grid item xs={3}></Grid>
-                     <Grid item xs={5}>
-                        <Typography
-                           variant="h3"
-                           sx={{ mt: 2, textAlign: "center", color: "#eee" }}
-                        >
-                           {user.filter((item) => item.know_us === "tiktok").length}
-                        </Typography>
-                     </Grid>
-                     <Grid item xs={4}>
-                        <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}>
-                           ครั้ง
-                        </Typography>
-                     </Grid>
-
-                     <Grid item xs={3}>
-                        <Typography
-                           sx={{
-                              fontSize: "16px",
-                              mt: 2,
-                              textAlign: "center",
-                              color: "#eee",
-                           }}
-                        >
-                           ฝาก
-                        </Typography>
-                     </Grid>
-                     <Grid item xs={6}>
-                        <Typography
-                           variant="h5"
-                           sx={{ mt: 4, textAlign: "center", color: "#129A50" }}
-                        >
-                           {Intl.NumberFormat("TH").format(parseInt(report.sumTiktok))}
-                        </Typography>
-                     </Grid>
-                     <Grid item xs={3}>
-                        <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}>
-                           บาท
-                        </Typography>
-                     </Grid>
-                  </Grid>
-               </CardContent>
-            </Card>
-
-            <Card
-               sx={{
-                  minWidth: 250,
-                  maxWidth: 260,
-                  minHeight: 20,
-                  my: 2,
-                  bgcolor: "#101D35",
-               }}
-            >
-               <CardContent>
-                  <Typography component="div" sx={{ color: "#eee" }}>
-                     Facebook
-                  </Typography>
-
-                  <Grid container justifyContent="center">
-                     <Grid item xs={3}></Grid>
-                     <Grid item xs={5}>
-                        <Typography
-                           variant="h3"
-                           sx={{ mt: 2, textAlign: "center", color: "#eee" }}
-                        >
-                           {user.filter((item) => item.know_us === "facebook").length}
-                        </Typography>
-                     </Grid>
-                     <Grid item xs={4}>
-                        <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}>
-                           ครั้ง
-                        </Typography>
-                     </Grid>
-
-                     <Grid item xs={3}>
-                        <Typography
-                           sx={{
-                              fontSize: "16px",
-                              mt: 2,
-                              textAlign: "center",
-                              color: "#eee",
-                           }}
-                        >
-                           ฝาก
-                        </Typography>
-                     </Grid>
-                     <Grid item xs={6}>
-                        <Typography
-                           variant="h5"
-                           sx={{ mt: 4, textAlign: "center", color: "#129A50" }}
-                        >
-                           {Intl.NumberFormat("TH").format(
-                              parseInt(report.sumFacebook)
-                           )}
-                        </Typography>
-                     </Grid>
-                     <Grid item xs={3}>
-                        <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}>
-                           บาท
-                        </Typography>
-                     </Grid>
-                  </Grid>
-               </CardContent>
-            </Card>
-
-            <Card
-               sx={{
-                  minWidth: 250,
-                  maxWidth: 260,
-                  minHeight: 20,
-                  my: 2,
-                  bgcolor: "#101D35",
-               }}
-            >
-               <CardContent>
-                  <Typography component="div" sx={{ color: "#eee" }}>
-                     Friend
-                  </Typography>
-
-                  <Grid container justifyContent="center">
-                     <Grid item xs={3}></Grid>
-                     <Grid item xs={5}>
-                        <Typography
-                           variant="h3"
-                           sx={{ mt: 2, textAlign: "center", color: "#eee" }}
-                        >
-                           {user.filter((item) => item.know_us === "friend").length}
-                        </Typography>
-                     </Grid>
-                     <Grid item xs={4}>
-                        <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}>
-                           ครั้ง
-                        </Typography>
-                     </Grid>
-
-                     <Grid item xs={3}>
-                        <Typography
-                           sx={{
-                              fontSize: "16px",
-                              mt: 2,
-                              textAlign: "center",
-                              color: "#eee",
-                           }}
-                        >
-                           ฝาก
-                        </Typography>
-                     </Grid>
-                     <Grid item xs={6}>
-                        <Typography
-                           variant="h5"
-                           sx={{ mt: 4, textAlign: "center", color: "#129A50" }}
-                        >
-                           {Intl.NumberFormat("TH").format(
-                              parseInt(report.sumFriend)
-                           )}
-                        </Typography>
-                     </Grid>
-                     <Grid item xs={3}>
-                        <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}>
-                           บาท
-                        </Typography>
-                     </Grid>
-                  </Grid>
-               </CardContent>
-            </Card>
-         </Grid>
-         {/* </Paper> */}
+               {/* <Box sx={{ width: "80%", mt: "20px", bgcolor: "#101D35" }}>
+                <Line options={options} data={data} height="100px" /> 
+               
+            </Box>*/}
+               <Grid item xs={6} >
+                  <Bar options={options} data={data} />
+               </Grid>
+               <Grid item xs={6} >
+                  <Bar options={options} data={data} />
+               </Grid>
+            </Grid>
+         </Paper>
          <LoadingModal open={loading} />
       </Layout>
    );
