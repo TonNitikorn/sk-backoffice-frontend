@@ -15,7 +15,7 @@ import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 
 export const menuSuperAdmin = [
   {
-    name: "หน้าหลัก",
+    name: "รายการเดินบัญชี",
     link: "/home",
     icon: <HomeIcon />,
   },
@@ -105,11 +105,11 @@ export const menuSuperAdmin = [
   //     }
   //   ],
   // },
-  {
-    name: "Rank Management",
-    link: "rank/ranking",
-    icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
-  },
+  // {
+  //   name: "Rank Management",
+  //   link: "rank/ranking",
+  //   icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
+  // },
   {
     name: "รายงาน",
     // link: "/DepositWithdrawalSystem/CreditManual",
@@ -127,11 +127,11 @@ export const menuSuperAdmin = [
         link: "/report/reportWithdraw",
         icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
       },
-      {
-        name: "รายงานการฝากทศนิยม",
-        link: "/report/reportDepositDecimal",
-        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
-      },
+      // {
+      //   name: "รายงานการฝากทศนิยม",
+      //   link: "/report/reportDepositDecimal",
+      //   icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
+      // },
       // {
       //   name: "รายงานการสร้างรายการฝาก",
       //   link: "/report/reportMakeDeposit",
@@ -193,11 +193,11 @@ export const menuSuperAdmin = [
     link: "/employee/employee",
     icon: <GroupIcon />,
   },
-  {
-    name: "คู่มือการใช้งาน",
-    link: "/smssetting",
-    icon: <AutoStoriesIcon />,
-  },
+  // {
+  //   name: "คู่มือการใช้งาน",
+  //   link: "/smssetting",
+  //   icon: <AutoStoriesIcon />,
+  // },
 ];
 
 export const menuAdmin = [

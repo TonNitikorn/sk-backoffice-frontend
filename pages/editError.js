@@ -280,7 +280,7 @@ function editError() {
   //   //   console.log(error);
   //   // }
   // };
-console.log('rowData', rowData)
+
   const submitFormSlip = async () => {
     setLoading(true);
 
@@ -1290,6 +1290,7 @@ console.log('rowData', rowData)
                 <Typography sx={{ fontWeight: 'bold' }}> {open.type === "WITHDRAW" ? 'จำนวนที่ตัดเครดิต' : 'จำนวนเติมเครดิต'}</Typography>
                 <Typography sx={{ fontWeight: 'bold' }}>เครดิตหลังทำรายการ</Typography>
                 <Typography sx={{ fontWeight: 'bold' }}>ทำรายการวันที่</Typography>
+                <Typography sx={{ fontWeight: 'bold' }}>หมายเหตุ</Typography>
               </Stack>
             </Grid>
             <Grid item xs={8}>
@@ -1304,6 +1305,7 @@ console.log('rowData', rowData)
                     : Intl.NumberFormat("THB").format(parseInt(dataUser.credit) + parseInt(rowData.amountDeposit))
                 }</Typography>
                 <Typography>{moment().format("DD/MM/YYYY hh:mm")}</Typography>
+                <Typography>{rowData.annotationDeposit}</Typography>
               </Stack>
             </Grid>
           </Grid>

@@ -19,6 +19,7 @@ import {
 import hostname from "../utils/hostname";
 import axios from "axios";
 import scbL from "../assets/scbL.png";
+import kbank from "../assets/kbank.png";
 import trueL from "../assets/trueL.png";
 import Image from "next/image";
 import moment from "moment/moment";
@@ -33,27 +34,17 @@ import { signOut } from "../store/slices/userSlice";
 import { useRouter } from "next/router";
 import MaterialTableForm from '../components/materialTableForm';
 import Pagination from '@mui/material/Pagination';
+import MaterialTable from '@material-table/core'
+
+
 function home() {
     const dispatch = useAppDispatch();
     const router = useRouter();
-    const [selectedDateRange, setSelectedDateRange] = useState({});
-    const [bank, setBank] = useState();
-    const [wallet, setWallet] = useState([{
-        bank_tranfer: '',
-        sms_content: '',
-        title_tranfer: '',
-        amount: 0
-    }]);
-    const [listWait, setListWait] = useState([{
-        bank_tranfer: '',
-        sms_content: '',
-        title_tranfer: '',
-        amount: 0
-    }]);
     const [openDialogView, setOpenDialogView] = useState(false);
     const [search, setSearch] = useState({});
     const [loading, setLoading] = useState(false);
     const [dataLast, setDataLast] = useState([])
+    const [bankData, setBankData] = useState([]);
 
     const getDataLast = async () => {
         setLoading(true);
@@ -88,9 +79,44 @@ function home() {
             }
         }
     };
+    const getBank = async () => {
+        setLoading(true);
+        try {
+            let res = await axios({
+                headers: {
+                    Authorization: "Bearer " + localStorage.getItem("access_token"),
+                },
+                method: "post",
+                url: `${hostname}/bank/bank_list`,
+            });
+            let resData = res.data;
+            let lastData = resData.filter(item => item.type === "DEPOSIT")
+            let no = 1;
+            lastData.map((item) => {
+                item.no = no++;
+                item.birthdate = moment(item.birthdate).format("DD-MM-YYYY")
+            });
+            setBankData(lastData);
+        } catch (error) {
+            console.log(error);
+            if (
+                error.response.data.error.status_code === 401 &&
+                error.response.data.error.message === "Unauthorized"
+            ) {
+                dispatch(signOut());
+                localStorage.clear();
+                router.push("/auth/login");
+            }
+        }
+    };
+
+    const approve = async () => {
+
+    }
 
     useEffect(() => {
         getDataLast()
+        getBank()
     }, [])
 
     console.log('dataLast', dataLast)
@@ -266,187 +292,90 @@ function home() {
     return (
         <Layout title="home">
             <CssBaseline />
-            <Paper sx={{ p: 3, mb: 2 }}><Typography variant="h5">หน้าหลัก</Typography></Paper>
+            <Paper sx={{ p: 3, mb: 2 }} >
+                <Typography variant="h5" sx={{ mb: 1, textDecoration: "underline #41A3E3 3px" }}>บัญชีเงินฝาก</Typography>
+
+                <Grid container justifyContent="start" >
+                    {bankData.map((item) =>
+                        <Paper sx={
+                            {
+                                // backgroundImage:
+                                //   "url(https://the1pg.com/wp-content/uploads/2022/10/BG-wallet.jpg)",
+                                // backgroundRepeat: "no-repeat",
+                                // backgroundSize: "cover",
+                                // backgroundPosition: "center",
+                                bgcolor: '#0072B1',
+                                p: 2,
+                                height: 150,
+                                width: "400px",
+                                mr: 2,
+                            }
+                        } >
+                            <Grid container >
+                                <Grid item xs={2} sx={{ mt: 3 }} >
+                                    <Box>
+                                        {item.bank_name === "truemoney" ? (
+                                            <Image src={trueL}
+                                                alt="" />
+                                        ) : item.bank_name === "scb" ? (
+                                            <Image src={scbL}
+                                                alt="" />
+                                        ) : item.bank_name === "kbnk" ?
+                                            <Image src={kbank}
+                                                alt="" />
+                                            : ''
+                                        } </Box>
+                                </Grid>
+                                <Grid item xs={5} sx={{ ml: 2, mt: 2 }} >
+                                    <Typography sx={{ fontSize: "14px", mt: "5px", ml: "5px", color: "#EEEEEE", }} >
+                                        {
+                                            item.bank_name === "truemoney" ? "True Wallet"
+                                                : item.bank_name === "scb" ? "SCB (ไทยพาณิชย์)"
+                                                    : item.bank_name === "kbnk" ? "KBank (กสิกรไทย)"
+                                                        : ""
+                                        } </Typography>
+                                    <Typography sx={{ fontSize: "18px", fontWeight: "bold", mt: "5px", ml: "5px", color: "#EEEEEE", }}>
+                                        {item.bank_number} </Typography>
+                                    <Typography sx={{ fontSize: "14px", mt: "5px", ml: "5px", color: "#EEEEEE", }} >
+                                        {item.bank_account_name}
+                                    </Typography>
+                                </Grid>
+
+                                <Grid item xs={4} >
+                                    <Typography sx={{ fontSize: "14px", mt: "5px", ml: "5px", color: "#EEEEEE", }} >
+                                        จำนวนครั้ง
+                                    </Typography>
+                                    <Chip label={Intl.NumberFormat("TH").format(parseInt(item.bank_status))}
+                                        size="small"
+                                        style={{ marginTop: "10px", padding: 10, width: 120, backgroundColor: "#129A50", color: "#EEEEEE", }} />
+                                    <Typography sx={{ fontSize: "14px", mt: "5px", ml: "5px", color: "#EEEEEE", }} >
+                                        จำนวนเงินถอน
+                                    </Typography>
+                                    <Chip
+                                        label={Intl.NumberFormat("TH").format(parseInt(item.bank_total))}
+                                        size="small"
+                                        style={{ marginTop: "10px", padding: 10, width: 120, backgroundColor: "#129A50", color: "#EEEEEE", }} />
+                                </Grid>
+
+                            </Grid>
+                        </Paper>
+                    )
+                    }
+                </Grid>
+            </Paper>
             <Grid container justifyContent="row" spacing={2}>
 
-                {/* <Paper sx={{ p: 3, }}>
-                    <Typography
-                        sx={{ fontSize: "24px", textDecoration: "underline #129A50 3px" }}
-                    >
-                        รายการรออนุมัติ
-                    </Typography>
 
-                    {listWait?.map((item) => (
-                        <>
-                            <Grid container>
-                                <Grid item xs={3} sx={{ mt: 3, ml: 1 }}>
-                                    <Image
-                                        src={
-                                            "https://the1pg.com/wp-content/uploads/2022/10/kbnk.png"
-                                        }
-                                        alt="scb"
-                                        width={50}
-                                        height={50}
-                                    />
-
-                                </Grid>
-
-                                <Grid xs={3} sx={{ mt: 3 }} >
-                                    <Grid item xs={9}>
-                                        <Typography sx={{ fontSize: "16px", fontWeight: "bold" }}>ธนาคารกสิกรไทย"
-                                        </Typography>
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <Typography sx={{ fontSize: "14px" }}>
-                                            14-03-2023
-                                        </Typography>
-                                        <Typography sx={{ fontSize: "14px" }}>
-                                            03:49
-                                        </Typography>
-                                    </Grid>
-
-                                </Grid>
-
-                                <Grid item xs={12} container justifyContent="center">
-                                    <Typography sx={{ fontSize: "16px" }}>
-                                        test sms_content
-                                    </Typography>
-                                </Grid>
-
-                                <Grid item xs={12} container justifyContent="start">
-                                    <Typography sx={{ fontSize: "16px", ml: 10, mt: 1 }}>
-                                        ช่องทาง :
-                                        <Chip
-                                            label={<Typography sx={{ fontSize: "14px" }}>"ธนาคารกสิกรไทย</Typography>}
-                                            size="small"
-                                            sx={{
-                                                pt: 1,
-                                                p: "10px",
-                                                ml: "30px",
-                                                backgroundColor: "#129A17",
-                                                color: "#eee",
-                                            }}
-                                        />
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={12} container justifyContent="start">
-                                    <Typography sx={{ fontSize: "16px", ml: 10, mt: 1 }}>
-                                        จำนวนเงิน :
-                                        <Chip
-                                            label={"100"}
-                                            size="small"
-                                            sx={{
-                                                p: "10px",
-                                                ml: 2,
-                                                backgroundColor: "#16539B",
-                                                color: "#eee",
-                                            }}
-                                        />
-                                    </Typography>
-                                </Grid>
-                                <Grid
-                                    item
-                                    xs={12}
-                                    container
-                                    justifyContent="center"
-                                    sx={{ mt: 2 }}
-                                >
-                                    <Button
-                                        variant="contained"
-                                        color="secondary"
-                                        onClick={() => {
-                                            setOpenDialogView({
-                                                open: true,
-                                                data: item,
-                                            });
-                                        }}
-                                    >
-                                        <CheckCircleOutlineIcon />
-                                    </Button>
-                                    <Button
-                                        variant="contained"
-                                        sx={{ bgcolor: "#EB001B", ml: 1 }}
-                                        onClick={async () => {
-                                            try {
-                                                let res = await axios({
-                                                    headers: {
-                                                        Authorization:
-                                                            "Bearer " + localStorage.getItem("access_token"),
-                                                    },
-                                                    method: "post",
-                                                    url: `${hostname}/api/sms/scb/sms-transaction/hide/${item.uuid}`,
-                                                });
-                                                if (res.data.message === "แก้ไขข้อมูลเรียบร้อยแล้ว") {
-                                                    Swal.fire({
-                                                        position: "center",
-                                                        icon: "success",
-                                                        title: "ซ่อนข้อมูลเรียบร้อย",
-                                                        showConfirmButton: false,
-                                                        timer: 2000,
-                                                    });
-                                                    getListWait();
-                                                }
-                                            } catch (error) {
-                                                if (
-                                                    error.response.data.error.status_code === 401 &&
-                                                    error.response.data.error.message === "Unauthorized"
-                                                ) {
-                                                    dispatch(signOut());
-                                                    localStorage.clear();
-                                                    router.push("/auth/login");
-                                                }
-                                                console.log(error);
-                                            }
-                                        }}
-                                    >
-                                        <HighlightOffIcon />
-                                    </Button>
-                                </Grid>
-                            </Grid>
-
-                            <Divider sx={{ bgcolor: "#00897B", mt: "15px", mb: 1 }} />
-                        </>
-                    ))}
-
-                </Paper> */}
-                <Grid item xs={5}>
+                <Grid item xs={4}>
                     <Paper sx={{ p: 3 }}>
                         <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px" }}>รายการรออนุมัติ</Typography>
-                        {/* <Grid container>
-                            <Grid item xs={3}>
-                                <Image
-                                    src={"https://the1pg.com/wp-content/uploads/2022/10/kbnk.png"}
-                                    alt="scb"
-                                    width={50}
-                                    height={50}
-                                />
-                            </Grid>
-                            <Grid item xs={3}>
-                                <Typography sx={{ fontSize: "16px", fontWeight: "bold" }}>ธนาคารกสิกรไทย</Typography>
-                            </Grid>
-
-                            <Typography sx={{ fontSize: "14px" }}>
-                                {"14-03-2023 03:49"}
-                            </Typography>
-
-
-
-                        </Grid> */}
-                        <Paper elevation={3} sx={{
-                            mt: 1,
-                            borderRadius: 1,
-                            p: 3
-                            // bgcolor: '#78BEFF',
-                            // background: "linear-gradient(#41A3E3, #0072B1, #0072B1)",
-                        }}
-                        >
+                        <Paper elevation={3} sx={{ mt: 1, borderRadius: 1,  p: 3 }}>
                             <Grid container
                                 direction="row"
                                 justifyContent="center"
                                 alignItems="center">
                                 <Grid item xs={3}>
-                                    <Box sx={{ mt: 1, ml: 3 }}>
+                                    <Box sx={{ mt: 1, ml: 1 }}>
                                         <Image src={scbL} alt="scb" />
                                     </Box>
                                 </Grid>
@@ -466,7 +395,7 @@ function home() {
                                 <Grid item xs={3} >
                                     <Button
                                         variant="contained"
-                                        sx={{ bgcolor: '#34BD22 ',mt:1 }}
+                                        sx={{ bgcolor: '#34BD22 ', mt: 1 }}
                                         onClick={() => {
                                             setOpenDialogView({
                                                 open: true,
@@ -478,7 +407,7 @@ function home() {
                                     </Button>
                                     <Button
                                         variant="contained"
-                                        sx={{ bgcolor: "#EB001B",mt:1}}
+                                        sx={{ bgcolor: "#EB001B", mt: 1, color: '#ffff' }}
                                         onClick={async () => {
                                             try {
                                                 let res = await axios({
@@ -532,7 +461,7 @@ function home() {
                                 justifyContent="center"
                                 alignItems="center">
                                 <Grid item xs={3}>
-                                    <Box sx={{ mt: 1, ml: 3 }}>
+                                    <Box sx={{ mt: 1, ml: 1 }}>
                                         <Image src={scbL} alt="scb" />
                                     </Box>
                                 </Grid>
@@ -552,7 +481,7 @@ function home() {
                                 <Grid item xs={3}  >
                                     <Button
                                         variant="contained"
-                                        sx={{ bgcolor: '#34BD22 ' }}
+                                        sx={{ bgcolor: '#34BD22 ', mt: 1 }}
                                         onClick={() => {
                                             setOpenDialogView({
                                                 open: true,
@@ -564,7 +493,7 @@ function home() {
                                     </Button>
                                     <Button
                                         variant="contained"
-                                        sx={{ bgcolor: "#EB001B", mt: 2 }}
+                                        sx={{ bgcolor: "#EB001B", mt: 1, color: '#ffff' }}
                                         onClick={async () => {
                                             try {
                                                 let res = await axios({
@@ -618,7 +547,7 @@ function home() {
                                 justifyContent="center"
                                 alignItems="center">
                                 <Grid item xs={3}>
-                                    <Box sx={{ mt: 1, ml: 3 }}>
+                                    <Box sx={{ mt: 1, ml: 1 }}>
                                         <Image src={scbL} alt="scb" />
                                     </Box>
                                 </Grid>
@@ -638,7 +567,7 @@ function home() {
                                 <Grid item xs={3}  >
                                     <Button
                                         variant="contained"
-                                        sx={{ bgcolor: '#34BD22 ' }}
+                                        sx={{ bgcolor: '#34BD22 ', mt: 1 }}
                                         onClick={() => {
                                             setOpenDialogView({
                                                 open: true,
@@ -650,7 +579,7 @@ function home() {
                                     </Button>
                                     <Button
                                         variant="contained"
-                                        sx={{ bgcolor: "#EB001B", mt: 2 }}
+                                        sx={{ bgcolor: "#EB001B", mt: 1, color: '#ffff' }}
                                         onClick={async () => {
                                             try {
                                                 let res = await axios({
@@ -693,10 +622,10 @@ function home() {
 
                     </Paper>
                 </Grid>
-                <Grid item xs={7}>
+                <Grid item xs={8}>
                     <Paper sx={{ p: 3 }}>
                         <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px" }}  > รายการเดินบัญชี </Typography>
-
+                        {/* 
                         <TableContainer component={Paper}>
                             <Table sx={{ minWidth: 450 }} aria-label="simple table">
                                 <TableHead>
@@ -730,20 +659,58 @@ function home() {
 
                                 </TableBody>
                             </Table>
-                        </TableContainer>
-                        <Grid
-                            container
-                            direction="row"
-                            justifyContent="flex-end"
-                            alignItems="center"
-                        ><Pagination count={10} size="small" sx={{ mt: 2 }} /></Grid>
+                        </TableContainer> */}
+
+                        <MaterialTable
+                            title=""
+                            columns={[
+                                { title: 'วัน/เวลา', field: 'create_at' },
+                                { title: 'จำนวนเงิน', field: 'credit' },
+                                { title: 'เครดิตก่อนเติม	', field: 'credit_before' },
+                                { title: 'เครดิตหลังเติม', field: 'credit_after' },
+                                { title: 'ธนาคาร', field: 'bank_name' },
+                                { title: 'เลขที่บัญชี', field: 'bank_number' },
+                                {
+                                    title: 'สถานะ', field: 'status_transction', render: (item) => (
+                                        <Chip
+                                            label={item.status_transction === 'SUCCESS' ? "SUCCESS" : 'UNSUCCESS'}
+                                            size="small"
+                                            style={{
+                                                padding: 10,
+                                                backgroundColor: item.status_transction === 'SUCCESS' ? "#129A50" : "#FFB946",
+                                                color: "#eee",
+                                            }}
+                                        />
+                                    ),
+                                },
+
+                            ]}
+                            data={dataLast}
+                            options={{
+                                search: true,
+                                // filtering: true,
+                                columnsButton: true,
+                                columnResizable: true,
+                                rowStyle: {
+                                    fontSize: 12,
+                                },
+                                headerStyle: {
+                                    paddingTop: 5,
+                                    paddingBottom: 5,
+                                    // paddingLeft: 15,
+                                    align: "center",
+                                    paddingRight: 0
+                                },
+                                pageSize: 20,
+                                pageSizeOptions: [10, 20, 100],
+                                padding: 0
+                            }}
+
+                        />
+
 
                     </Paper>
                 </Grid>
-
-
-
-
             </Grid>
 
             <Dialog
