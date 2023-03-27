@@ -99,7 +99,7 @@ function editError() {
         method: "post",
         url: `${hostname}/member/get_member`,
         data: {
-          "username": type === "WITHDRAW" ? rowData.usernameWithdraw: rowData.usernameDeposit
+          "username": type === "WITHDRAW" ? rowData.usernameWithdraw : rowData.usernameDeposit
         }
       });
       let resData = res.data;
@@ -362,7 +362,7 @@ function editError() {
         <Grid container spacing={3}>
           {/* ----------ตัดเครดิต------------- */}
           <Grid item xs={6}>
-            <Paper sx={{ p: 3, mt: 3, backgroundColor: type === 0 ? '#fff' : '#DCDCDC' }}>
+            {/* <Paper sx={{ p: 3, mt: 3, backgroundColor: type === 0 ? '#fff' : '#DCDCDC' }}>
               <Typography sx={{ mb: 3, color: type === 0 ? '#41A3E3' : '#A2A2A2', textDecoration:  type === 0 ?  "underline #41A3E3 3px": "underline #A2A2A2 3px", }} variant="h6">ตัดเครดิต</Typography>
               <Grid container>
                 <Grid item xs={4}>
@@ -411,44 +411,44 @@ function editError() {
                       variant="contained"
                       fullWidth
                       disabled={type === 1}
-                      // onClick={() => submitFormCutCredit()}
                       onClick={() => handleClickOpen('WITHDRAW')}
                     >
                       <Typography sx={{ color: '#fff' }}>ยืนยัน</Typography>
                     </Button>
                   </Stack>
                 </Grid>
-                {/* <Grid
-                  container
-                  direction="row"
-                  justifyContent="flex-end"
-                  alignItems="center"
-                  sx={{ mt: 3 }}
-                >
-                  <Button
-                    variant="contained"
-                    fullWidth
-                    // onClick={() => submitFormCutCredit()}
-                    onClick={() => handleClickOpen('WITHDRAW')}
-                  >
-
-                    <Typography sx={{ color: '#fff' }}>ยืนยัน</Typography>
-                  </Button>
-                </Grid> */}
+                
               </Grid>
+            </Paper> */}
+            <Paper sx={{ p: 3, mt: 3 }}>
+              <Grid item xs={3}>
+              <FormControl>
+            <RadioGroup
+              row
+              defaultValue="auto"
+              name="radio-buttons-group"
+            >
+              <Typography sx={{ my: 3, mr: 3 }} variant="h6">ประเภทรายการ</Typography>
+              <FormControlLabel value="auto" onClick={() => setType(0)} control={<Radio />} label={<Typography sx={{ fontSize: '20px' }}>ตัดเครดิต </Typography>} />
+              <FormControlLabel value="manual" onClick={() => setType(1)} control={<Radio />} label={<Typography sx={{ fontSize: '20px' }}>เติมเครดิต </Typography>} />
+            </RadioGroup>
+          </FormControl>
+              </Grid>
+              <Grid item xs={6}></Grid>
+              <Grid item xs={3}></Grid>
             </Paper>
           </Grid>
 
           {/* -----------เติมเครดิต------------- */}
           <Grid item xs={6}>
             <Paper sx={{ p: 3, mt: 3, backgroundColor: type === 0 ? '#DCDCDC' : '#fff' }} >
-              <Typography sx={{ mb: 3, color: type === 1 ? '#41A3E3' : '#A2A2A2', textDecoration:  type === 1 ?  "underline #41A3E3 3px": "underline #A2A2A2 3px", }} variant="h6">เติมเครดิต</Typography>
+              <Typography sx={{ mb: 3, color: type === 1 ? '#41A3E3' : '#A2A2A2', textDecoration: type === 1 ? "underline #41A3E3 3px" : "underline #A2A2A2 3px", }} variant="h6">เติมเครดิต</Typography>
               <Grid container>
                 <Grid item xs={4}>
                   <Stack spacing={4}>
-                    <Typography sx={{color: type === 1 ? 'black':'#A2A2A2' }}>ชื่อผู้ใช้ :</Typography>
-                    <Typography sx={{color: type === 1 ? 'black':'#A2A2A2' }}>จำนวนเครดิต :</Typography>
-                    <Typography sx={{color: type === 1 ? 'black':'#A2A2A2' }}>หมายเหตุ :</Typography>
+                    <Typography sx={{ color: type === 1 ? 'black' : '#A2A2A2' }}>ชื่อผู้ใช้ :</Typography>
+                    <Typography sx={{ color: type === 1 ? 'black' : '#A2A2A2' }}>จำนวนเครดิต :</Typography>
+                    <Typography sx={{ color: type === 1 ? 'black' : '#A2A2A2' }}>หมายเหตุ :</Typography>
                   </Stack>
                 </Grid>
                 <Grid item xs={8}>
@@ -1298,7 +1298,7 @@ function editError() {
                 <Typography>{open.type === 'WITHDRAW' ? 'ตัดเครดิต' : 'เติมเครดิต'}</Typography>
                 <Typography>{dataUser.username}</Typography>
                 <Typography>{Intl.NumberFormat("THB").format(parseInt(dataUser.credit))}</Typography>
-                <Typography>{open.type === 'WITHDRAW' ?  Intl.NumberFormat("THB").format(parseInt(rowData.amountWithdraw)) : Intl.NumberFormat("THB").format(parseInt(rowData.amountDeposit))}</Typography>
+                <Typography>{open.type === 'WITHDRAW' ? Intl.NumberFormat("THB").format(parseInt(rowData.amountWithdraw)) : Intl.NumberFormat("THB").format(parseInt(rowData.amountDeposit))}</Typography>
                 <Typography>{
                   open.type === "WITHDRAW"
                     ? Intl.NumberFormat("THB").format(parseInt(dataUser.credit) - parseInt(rowData.amountWithdraw))

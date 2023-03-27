@@ -531,7 +531,7 @@ function dashboard() {
                                  </Grid>
                                  <Grid item xs={4}>
                                     <Typography variant="h5" sx={{ mt: 3, textAlign: "center", color: "#eee" }}>
-                                       {member?.sum_deposit_day}
+                                       {member?.sum_deposit_day || 0}
                                     </Typography>
                                  </Grid>
                                  <Grid item xs={4}>

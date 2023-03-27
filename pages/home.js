@@ -312,19 +312,209 @@ function home() {
                             }
                         } >
                             <Grid container >
-                                <Grid item xs={2} sx={{ mt: 3 }} >
+                                <Grid item xs={2} sx={{ mt: 4 }} >
                                     <Box>
-                                        {item.bank_name === "truemoney" ? (
-                                            <Image src={trueL}
-                                                alt="" />
+                                        {item.bank_name === "kbnk" ? (
+                                            <Image
+                                                src={
+                                                    "https://angpaos.games/wp-content/uploads/2023/03/kbnk.png"
+                                                }
+                                                alt="kbnk"
+                                                width={50}
+                                                height={50}
+                                            />
+                                        ) : item.bank_name === "truemoney" ? (
+                                            <Image
+                                                src={
+                                                    "https://angpaos.games/wp-content/uploads/2023/03/truemoney.png"
+                                                }
+                                                alt="truemoney"
+                                                width={50}
+                                                height={50}
+                                            />
+                                        ) : item.bank_name === "ktba" ? (
+                                            <Image
+                                                src={
+                                                    "https://angpaos.games/wp-content/uploads/2023/03/ktba.png"
+                                                }
+                                                alt="ktba"
+                                                width={50}
+                                                height={50}
+                                            />
                                         ) : item.bank_name === "scb" ? (
-                                            <Image src={scbL}
-                                                alt="" />
-                                        ) : item.bank_name === "kbnk" ?
-                                            <Image src={kbank}
-                                                alt="" />
-                                            : ''
-                                        } </Box>
+                                            <Image
+                                                src={
+                                                    "https://angpaos.games/wp-content/uploads/2023/03/scb.png"
+                                                }
+                                                alt="scb"
+                                                width={50}
+                                                height={50}
+                                            />
+                                        ) : item.bank_name === "bay" ? (
+                                            <Image
+                                                src={
+                                                    "https://angpaos.games/wp-content/uploads/2023/03/bay.png"
+                                                }
+                                                alt="bay"
+                                                width={50}
+                                                height={50}
+                                            />
+                                        ) : item.bank_name === "bbla" ? (
+                                            <Image
+                                                src={
+                                                    "https://angpaos.games/wp-content/uploads/2023/03/bbl.png"
+                                                }
+                                                alt="bbla"
+                                                width={50}
+                                                height={50}
+                                            />
+                                        ) : item.bank_name === "gsb" ? (
+                                            <Image
+                                                src={
+                                                    "https://angpaos.games/wp-content/uploads/2023/03/gsb.png"
+                                                }
+                                                alt="gsb"
+                                                width={50}
+                                                height={50}
+                                            />
+                                        ) : item.bank_name === "ttb" ? (
+                                            <Image
+                                                src={
+                                                    "https://angpaos.games/wp-content/uploads/2023/03/ttb.png"
+                                                }
+                                                alt="ttb"
+                                                width={50}
+                                                height={50}
+                                            />
+                                        ) : item.bank_name === "bbac" ? (
+                                            <Image
+                                                src={
+                                                    "https://angpaos.games/wp-content/uploads/2023/03/baac.png"
+                                                }
+                                                alt="bbac"
+                                                width={50}
+                                                height={50}
+                                            />
+                                        ) : item.bank_name === "icbc" ? (
+                                            <Image
+                                                src={
+                                                    "https://angpaos.games/wp-content/uploads/2023/03/icbc.png"
+                                                }
+                                                alt="icbc"
+                                                width={50}
+                                                height={50}
+                                            />
+                                        ) : item.bank_name === "tcd" ? (
+                                            <Image
+                                                src={
+                                                    "https://angpaos.games/wp-content/uploads/2023/03/tcd.png"
+                                                }
+                                                alt="tcd"
+                                                width={50}
+                                                height={50}
+                                            />
+                                        ) : item.bank_name === "citi" ? (
+                                            <Image
+                                                src={
+                                                    "https://angpaos.games/wp-content/uploads/2023/03/citi.png"
+                                                }
+                                                alt="citi"
+                                                width={50}
+                                                height={50}
+                                            />
+                                        ) : item.bank_name === "scbt" ? (
+                                            <Image
+                                                src={
+                                                    "https://angpaos.games/wp-content/uploads/2023/03/scbt.png"
+                                                }
+                                                alt="scbt"
+                                                width={50}
+                                                height={50}
+                                            />
+                                        ) : item.bank_name === "cimb" ? (
+                                            <Image
+                                                src={
+                                                    "https://angpaos.games/wp-content/uploads/2023/03/cimb.png"
+                                                }
+                                                alt="cimb"
+                                                width={50}
+                                                height={50}
+                                            />
+                                        ) : item.bank_name === "uob" ? (
+                                            <Image
+                                                src={
+                                                    "https://angpaos.games/wp-content/uploads/2023/03/uob.png"
+                                                }
+                                                alt="uob"
+                                                width={50}
+                                                height={50}
+                                            />
+                                        ) : item.bank_name === "hsbc" ? (
+                                            <Image
+                                                src={
+                                                    "https://angpaos.games/wp-content/uploads/2023/03/hsbc.png"
+                                                }
+                                                alt="hsbc"
+                                                width={50}
+                                                height={50}
+                                            />
+                                        ) : item.bank_name === "mizuho" ? (
+                                            <Image
+                                                src={
+                                                    "https://angpaos.games/wp-content/uploads/2023/03/mizuho.png"
+                                                }
+                                                alt="mizuho"
+                                                width={50}
+                                                height={50}
+                                            />
+                                        ) : item.bank_name === "ghb" ? (
+                                            <Image
+                                                src={
+                                                    "https://angpaos.games/wp-content/uploads/2023/03/ghb.png"
+                                                }
+                                                alt="ghb"
+                                                width={50}
+                                                height={50}
+                                            />
+                                        ) : item.bank_name === "lhbank" ? (
+                                            <Image
+                                                src={
+                                                    "https://angpaos.games/wp-content/uploads/2023/03/lhbank.png"
+                                                }
+                                                alt="lhbank"
+                                                width={50}
+                                                height={50}
+                                            />
+                                        ) : item.bank_name === "tisco" ? (
+                                            <Image
+                                                src={
+                                                    "https://angpaos.games/wp-content/uploads/2023/03/tisco.png"
+                                                }
+                                                alt="tisco"
+                                                width={50}
+                                                height={50}
+                                            />
+                                        ) : item.bank_name === "kkba" ? (
+                                            <Image
+                                                src={
+                                                    "https://angpaos.games/wp-content/uploads/2023/03/kkba.png"
+                                                }
+                                                alt="kkba"
+                                                width={50}
+                                                height={50}
+                                            />
+                                        ) : item.bank_name === "ibank" ? (
+                                            <Image
+                                                src={
+                                                    "https://angpaos.games/wp-content/uploads/2023/03/ibank.png"
+                                                }
+                                                alt="ibank"
+                                                width={50}
+                                                height={50}
+                                            />
+                                        ) : (
+                                            ""
+                                        )} </Box>
                                 </Grid>
                                 <Grid item xs={5} sx={{ ml: 2, mt: 2 }} >
                                     <Typography sx={{ fontSize: "14px", mt: "5px", ml: "5px", color: "#EEEEEE", }} >
@@ -369,7 +559,7 @@ function home() {
                 <Grid item xs={4}>
                     <Paper sx={{ p: 3 }}>
                         <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px" }}>รายการรออนุมัติ</Typography>
-                        <Paper elevation={3} sx={{ mt: 1, borderRadius: 1,  p: 3 }}>
+                        <Paper elevation={3} sx={{ mt: 1, borderRadius: 1, p: 3 }}>
                             <Grid container
                                 direction="row"
                                 justifyContent="center"

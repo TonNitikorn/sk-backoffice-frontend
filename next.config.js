@@ -13,8 +13,10 @@ const nextConfig = {
     },
   },
   images: {
-    domains: ["the1pg.com" , "api-007bet.superfast-auto.com" , "admin-007bet.superfast-auto.com","images.unsplash.com","cdn.softkingdoms.sgp1.digitaloceanspaces.com"],
+    domains: ["angpaos.games","the1pg.com" , "api-007bet.superfast-auto.com" , "admin-007bet.superfast-auto.com","images.unsplash.com","cdn.softkingdoms.sgp1.digitaloceanspaces.com"],
   },
 };
+
+// https://angpaos.games/wp-content/uploads/2023/03/
 
 module.exports = nextConfig;

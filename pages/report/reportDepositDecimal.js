@@ -58,11 +58,6 @@ function reportDepositDecimal() {
           Authorization: "Bearer " + localStorage.getItem("access_token"),
         },
         method: "post",
-        // url: `${hostname}/api/report/deposit/?start_date=${
-        //   type === undefined ? selectedDateRange.start : start
-        // }&end_date=${
-        //   type === undefined ? selectedDateRange.end : end
-        // }&username=${username}`,
         url: `${hostname}/report/get_transaction`,
         data: {
           "transfer_type": "DEPOSIT"
@@ -96,7 +91,6 @@ function reportDepositDecimal() {
       // }
     }
   };
-  console.log('report', report)
 
   useEffect(() => {
     getReport();

@@ -302,207 +302,207 @@ function reportDeposit() {
               render: (item) => (
                 <Grid container>
                   <Grid item xs={3} sx={{ mt: 1 }}>
-                    {item.bank_name === "kbnk" ? (
-                      <Image
+                  {item.bank_name === "kbnk" ? (
+                     <Image
                         src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/kbnk.png"
+                           "https://angpaos.games/wp-content/uploads/2023/03/kbnk.png"
+                        }
+                        alt="kbnk"
+                        width={50}
+                        height={50}
+                     />
+                  ) : item.bank_name === "truemoney" ? (
+                     <Image
+                        src={
+                           "https://angpaos.games/wp-content/uploads/2023/03/truemoney.png"
+                        }
+                        alt="truemoney"
+                        width={50}
+                        height={50}
+                     />
+                  ) : item.bank_name === "ktba" ? (
+                     <Image
+                        src={
+                           "https://angpaos.games/wp-content/uploads/2023/03/ktba.png"
+                        }
+                        alt="ktba"
+                        width={50}
+                        height={50}
+                     />
+                  ) : item.bank_name === "scb" ? (
+                     <Image
+                        src={
+                           "https://angpaos.games/wp-content/uploads/2023/03/scb.png"
                         }
                         alt="scb"
                         width={50}
                         height={50}
-                      />
-                    ) : item.bank_name === "truemoney" ? (
-                      <Image
+                     />
+                  ) : item.bank_name === "bay" ? (
+                     <Image
                         src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/truemoney.png"
+                           "https://angpaos.games/wp-content/uploads/2023/03/bay.png"
                         }
-                        alt="scb"
+                        alt="bay"
                         width={50}
                         height={50}
-                      />
-                    ) : item.bank_name === "ktba" ? (
-                      <Image
+                     />
+                  ) : item.bank_name === "bbla" ? (
+                     <Image
                         src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/ktba.png"
+                           "https://angpaos.games/wp-content/uploads/2023/03/bbl.png"
                         }
-                        alt="scb"
+                        alt="bbla"
                         width={50}
                         height={50}
-                      />
-                    ) : item.bank_name === "scb" ? (
-                      <Image
+                     />
+                  ) : item.bank_name === "gsb" ? (
+                     <Image
                         src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/scb.png"
+                           "https://angpaos.games/wp-content/uploads/2023/03/gsb.png"
                         }
-                        alt="scb"
+                        alt="gsb"
                         width={50}
                         height={50}
-                      />
-                    ) : item.bank_name === "bay" ? (
-                      <Image
+                     />
+                  ) : item.bank_name === "ttb" ? (
+                     <Image
                         src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/bay.png"
+                           "https://angpaos.games/wp-content/uploads/2023/03/ttb.png"
                         }
-                        alt="scb"
+                        alt="ttb"
                         width={50}
                         height={50}
-                      />
-                    ) : item.bank_name === "bbla" ? (
-                      <Image
+                     />
+                  ) : item.bank_name === "bbac" ? (
+                     <Image
                         src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/bbl.png"
+                           "https://angpaos.games/wp-content/uploads/2023/03/baac.png"
                         }
-                        alt="scb"
+                        alt="bbac"
                         width={50}
                         height={50}
-                      />
-                    ) : item.bank_name === "gsb" ? (
-                      <Image
+                     />
+                  ) : item.bank_name === "icbc" ? (
+                     <Image
                         src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/gsb.png"
+                           "https://angpaos.games/wp-content/uploads/2023/03/icbc.png"
                         }
-                        alt="scb"
+                        alt="icbc"
                         width={50}
                         height={50}
-                      />
-                    ) : item.bank_name === "ttb" ? (
-                      <Image
+                     />
+                  ) : item.bank_name === "tcd" ? (
+                     <Image
                         src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/ttb.png"
+                           "https://angpaos.games/wp-content/uploads/2023/03/tcd.png"
                         }
-                        alt="scb"
+                        alt="tcd"
                         width={50}
                         height={50}
-                      />
-                    ) : item.bank_name === "baac" ? (
-                      <Image
+                     />
+                  ) : item.bank_name === "citi" ? (
+                     <Image
                         src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/baac.png"
+                           "https://angpaos.games/wp-content/uploads/2023/03/citi.png"
                         }
-                        alt="scb"
+                        alt="citi"
                         width={50}
                         height={50}
-                      />
-                    ) : item.bank_name === "ICBC" ? (
-                      <Image
+                     />
+                  ) : item.bank_name === "scbt" ? (
+                     <Image
                         src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/icbc.png"
+                           "https://angpaos.games/wp-content/uploads/2023/03/scbt.png"
                         }
-                        alt="scb"
+                        alt="scbt"
                         width={50}
                         height={50}
-                      />
-                    ) : item.bank_name === "TCD" ? (
-                      <Image
+                     />
+                  ) : item.bank_name === "cimb" ? (
+                     <Image
                         src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/tcd.png"
+                           "https://angpaos.games/wp-content/uploads/2023/03/cimb.png"
                         }
-                        alt="scb"
+                        alt="cimb"
                         width={50}
                         height={50}
-                      />
-                    ) : item.bank_name === "CITI" ? (
-                      <Image
+                     />
+                  ) : item.bank_name === "uob" ? (
+                     <Image
                         src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/citi.png"
+                           "https://angpaos.games/wp-content/uploads/2023/03/uob.png"
                         }
-                        alt="scb"
+                        alt="uob"
                         width={50}
                         height={50}
-                      />
-                    ) : item.bank_name === "SCBT" ? (
-                      <Image
+                     />
+                  ) : item.bank_name === "hsbc" ? (
+                     <Image
                         src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/scbt.png"
+                           "https://angpaos.games/wp-content/uploads/2023/03/hsbc.png"
                         }
-                        alt="scb"
+                        alt="hsbc"
                         width={50}
                         height={50}
-                      />
-                    ) : item.bank_name === "CIMB" ? (
-                      <Image
+                     />
+                  ) : item.bank_name === "mizuho" ? (
+                     <Image
                         src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/cimb.png"
+                           "https://angpaos.games/wp-content/uploads/2023/03/mizuho.png"
                         }
-                        alt="scb"
+                        alt="mizuho"
                         width={50}
                         height={50}
-                      />
-                    ) : item.bank_name === "UOB" ? (
-                      <Image
+                     />
+                  ) : item.bank_name === "ghb" ? (
+                     <Image
                         src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/uob.png"
+                           "https://angpaos.games/wp-content/uploads/2023/03/ghb.png"
                         }
-                        alt="scb"
+                        alt="ghb"
                         width={50}
                         height={50}
-                      />
-                    ) : item.bank_name === "HSBC" ? (
-                      <Image
+                     />
+                  ) : item.bank_name === "lhbank" ? (
+                     <Image
                         src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/hsbc.png"
+                           "https://angpaos.games/wp-content/uploads/2023/03/lhbank.png"
                         }
-                        alt="scb"
+                        alt="lhbank"
                         width={50}
                         height={50}
-                      />
-                    ) : item.bank_name === "MIZUHO" ? (
-                      <Image
+                     />
+                  ) : item.bank_name === "tisco" ? (
+                     <Image
                         src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/mizuho.png"
+                           "https://angpaos.games/wp-content/uploads/2023/03/tisco.png"
                         }
-                        alt="scb"
+                        alt="tisco"
                         width={50}
                         height={50}
-                      />
-                    ) : item.bank_name === "GHB" ? (
-                      <Image
+                     />
+                  ) : item.bank_name === "kkba" ? (
+                     <Image
                         src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/ghb.png"
+                           "https://angpaos.games/wp-content/uploads/2023/03/kkba.png"
                         }
-                        alt="scb"
+                        alt="kkba"
                         width={50}
                         height={50}
-                      />
-                    ) : item.bank_name === "LHBANK" ? (
-                      <Image
+                     />
+                  ) : item.bank_name === "ibank" ? (
+                     <Image
                         src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/lhbank.png"
+                           "https://angpaos.games/wp-content/uploads/2023/03/ibank.png"
                         }
-                        alt="scb"
+                        alt="ibank"
                         width={50}
                         height={50}
-                      />
-                    ) : item.bank_name === "TISCO" ? (
-                      <Image
-                        src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/tisco.png"
-                        }
-                        alt="scb"
-                        width={50}
-                        height={50}
-                      />
-                    ) : item.bank_name === "kkba" ? (
-                      <Image
-                        src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/kkba.png"
-                        }
-                        alt="scb"
-                        width={50}
-                        height={50}
-                      />
-                    ) : item.bank_name === "IBANK" ? (
-                      <Image
-                        src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/ibank.png"
-                        }
-                        alt="scb"
-                        width={50}
-                        height={50}
-                      />
-                    ) : (
-                      ""
-                    )}
+                     />
+                  ) : (
+                     ""
+                  )}
                   </Grid>
                   <Grid sx={{ ml: 2, mt: 1, textAlign: "center" }}>
                     <CopyToClipboard text={item.bank_number}>
