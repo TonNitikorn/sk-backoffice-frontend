@@ -63,6 +63,7 @@ function home() {
                 item.create_at = moment(item.create_at).format("DD-MM-YYYY hh:mm")
                 item.bank_name = item.members?.bank_name
                 item.bank_number = item.members?.bank_number
+                item.username = item.members?.username
             });
             setDataLast(resData);
             setLoading(false);
@@ -110,184 +111,13 @@ function home() {
         }
     };
 
-    const approve = async () => {
-
-    }
+    console.log('dataLast', dataLast)
 
     useEffect(() => {
         getDataLast()
         getBank()
     }, [])
 
-    console.log('dataLast', dataLast)
-
-    const columns = [
-        {
-            field: "no",
-            maxWidth: 80,
-            align: "center",
-
-        },
-        {
-            title: "สถานะ",
-            align: "center",
-            render: (item) => (
-                <Chip label={
-                    item.status_transction === "FAIL" ?
-                        "ผิดพลาด" :
-                        item.status_transction === "CREATE" ?
-                            "รออนุมัติ" :
-                            item.status_transction === "APPROVE" ?
-                                "อนุมัติแล้ว" :
-                                item.status_transction === "PROCESS" ?
-                                    "รอทำรายการ" :
-                                    item.status_transction === "SUCCESS" ?
-                                        "สำเร็จ" :
-                                        item.status_transction === "OTP" ?
-                                            "OTP" :
-                                            item.status_transction === "REJECT" ?
-                                                "ยกเลิก" :
-                                                item.status_transction === "MANUAL" ?
-                                                    "ถอนมือ" :
-                                                    item.status_transction === "" ?
-                                                        "ทั้งหมด" :
-                                                        "-"
-                }
-                    size="small"
-                    style={
-                        {
-                            padding: 10,
-                            backgroundColor: item.status_transction === "FAIL" ?
-                                "#EB001B" :
-                                item.status_transction === "CREATE" ?
-                                    "#16539B" :
-                                    item.status_transction === "APPROVE" ?
-                                        "#16539B" :
-                                        item.status_transction === "PROCESS" ?
-                                            "#FFB946" :
-                                            item.status_transction === "SUCCESS" ?
-                                                "#129A50" :
-                                                item.status_transction === "OTP" ?
-                                                    "#FFB946" :
-                                                    item.status_transction === "REJECT" ?
-                                                        "#FD3B52" :
-                                                        item.status_transction === "MANUAL" ?
-                                                            "#E1772B" :
-                                                            item.status_transction === "" ?
-                                                                "gray" :
-                                                                "gray",
-                            // item.status_transction === 1 ? "#129A50" : "#FFB946",
-                            color: "#eee",
-                        }
-                    }
-                />
-            ),
-        },
-
-        {
-            field: "bank_number",
-            title: "ธนาคาร",
-            align: "center",
-            minWidth: "150px",
-        },
-        {
-            field: "bank_name",
-            title: "ชื่อผู้ใช้งาน",
-            align: "center",
-        },
-        {
-            title: "ยอดเงินถอน",
-            align: "center",
-            minWidth: "130px",
-            render: (item) => (
-                <>
-                    <Grid container justifyContent="center" >
-                        <Grid >
-                            <Typography sx={{ fontSize: "14px" }} >
-                                {Intl.NumberFormat("TH", { style: "currency", currency: "THB", }).format(parseInt(item.credit))}
-                            </Typography>
-                        </Grid>
-
-                    </Grid>
-                </>
-            ),
-        },
-        {
-            field: "create_at",
-            title: "วันที่ถอน",
-            align: "center",
-            minWidth: "120px",
-        },
-        {
-            field: "update_at",
-            title: "วันที่อัพเดท",
-            align: "center",
-            minWidth: "130px",
-            render: (item) => (
-                <>
-                    <Grid container justifyContent="center" >
-                        <Grid >
-                            <Typography sx={{ fontSize: "14px" }} > {item.update_at}</Typography>
-                        </Grid>
-                    </Grid>
-                </>
-            ),
-        },
-        {
-            field: "transfer_by",
-            title: "ทำโดย",
-            align: "center",
-            minWidth: "100px"
-        },
-
-        {
-            title: "เงินในบัญชี",
-            align: "center",
-            minWidth: "130px",
-            render: (item) => (
-                <>
-                    <Grid container justifyContent="center" >
-                        <Grid item xs={12}
-                            sx={
-                                { mb: 1 }} >
-                            <Chip label={
-                                item.credit_before ?
-                                    item.credit_before :
-                                    "0.00"
-                            }
-                                size="small"
-                                style={
-                                    {
-                                        padding: 10,
-                                        minWidth: "80px",
-                                        backgroundColor: "#FD3B52",
-                                        color: "#eee",
-                                    }
-                                }
-                            /> </Grid>
-                        <Grid item xs={12} >
-                            <Chip label={
-                                item.credit_after ?
-                                    item.credit_after :
-                                    "0.00"
-                            }
-                                size="small"
-                                style={
-                                    {
-                                        padding: 10,
-                                        minWidth: "80px",
-                                        backgroundColor: "#129A50",
-                                        color: "#eee",
-                                    }
-                                }
-                            /> </Grid> </Grid> </>
-            ),
-        },
-
-
-
-
-    ];
 
     return (
         <Layout title="home">
@@ -855,6 +685,7 @@ function home() {
                             title=""
                             columns={[
                                 { title: 'วัน/เวลา', field: 'create_at' },
+                                { title: 'ชื่อผู้ใช้', field: 'username' },
                                 { title: 'จำนวนเงิน', field: 'credit' },
                                 { title: 'เครดิตก่อนเติม	', field: 'credit_before' },
                                 { title: 'เครดิตหลังเติม', field: 'credit_after' },

@@ -54,6 +54,7 @@ function editError() {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [type, setType] = useState(0)
+  const [comment, setComment] = useState(0)
 
   const handleChangeData = async (e) => {
     setRowData({ ...rowData, [e.target.name]: e.target.value });
@@ -319,24 +320,25 @@ function editError() {
     getDataAdmin();
     getTotal()
   }, []);
+
   return (
     <Layout>
-      <Box>
-        <Paper sx={{ p: 3 }}>
-          <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px", mb: 1, }}> เติมเครดิตแบบ manual </Typography>
-          <FormControl>
-            <RadioGroup
-              row
-              defaultValue="auto"
-              name="radio-buttons-group"
-            >
-              <Typography sx={{ my: 3, mr: 3 }} variant="h6">เลือกรายการ</Typography>
-              <FormControlLabel value="auto" onClick={() => setType(0)} control={<Radio />} label={<Typography sx={{ fontSize: '20px' }}>ตัดเครดิต </Typography>} />
-              <FormControlLabel value="manual" onClick={() => setType(1)} control={<Radio />} label={<Typography sx={{ fontSize: '20px' }}>เติมเครดิต </Typography>} />
-            </RadioGroup>
-          </FormControl>
 
-          {/* <Typography sx={{ my: 3, mr: 3 }} variant="h6">เลือกรายการ</Typography>
+      <Paper sx={{ p: 3 }}>
+        <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px", mb: 1, }}> เติมเครดิตแบบ manual </Typography>
+        <FormControl>
+          <RadioGroup
+            row
+            defaultValue="auto"
+            name="radio-buttons-group"
+          >
+            <Typography sx={{ my: 3, mr: 3 }} variant="h6">เลือกรายการ</Typography>
+            <FormControlLabel value="auto" onClick={() => setType(0)} control={<Radio />} label={<Typography sx={{ fontSize: '20px' }}>ตัดเครดิต </Typography>} />
+            <FormControlLabel value="manual" onClick={() => setType(1)} control={<Radio />} label={<Typography sx={{ fontSize: '20px' }}>เติมเครดิต </Typography>} />
+          </RadioGroup>
+        </FormControl>
+
+        {/* <Typography sx={{ my: 3, mr: 3 }} variant="h6">เลือกรายการ</Typography>
           <Box sx={{ width: 400 }}>
             <TextField
               name="bank_name"
@@ -357,159 +359,236 @@ function editError() {
               <MenuItem value="DEPOSIT">เติมเครดิต</MenuItem>
             </TextField>
           </Box> */}
-        </Paper>
+      </Paper>
 
-        <Grid container spacing={3}>
-          {/* ----------ตัดเครดิต------------- */}
-          <Grid item xs={6}>
-            {/* <Paper sx={{ p: 3, mt: 3, backgroundColor: type === 0 ? '#fff' : '#DCDCDC' }}>
-              <Typography sx={{ mb: 3, color: type === 0 ? '#41A3E3' : '#A2A2A2', textDecoration:  type === 0 ?  "underline #41A3E3 3px": "underline #A2A2A2 3px", }} variant="h6">ตัดเครดิต</Typography>
-              <Grid container>
-                <Grid item xs={4}>
-                  <Stack spacing={4}>
-                    <Typography sx={{color: type === 0 ? 'black':'#A2A2A2' }}>ชื่อผู้ใช้ :</Typography>
-                    <Typography sx={{color: type === 0 ? 'black':'#A2A2A2' }}>จำนวนเครดิต :</Typography>
-                    <Typography sx={{color: type === 0 ? 'black':'#A2A2A2' }}>หมายเหตุ :</Typography>
-                  </Stack>
-                </Grid>
-                <Grid item xs={8}>
-                  <Stack spacing={2}>
-                    <TextField
-                      name="usernameWithdraw"
-                      type="text"
-                      disabled={type === 1}
-                      fullWidth
-                      value={rowData.usernameWithdraw || ""}
-                      size="small"
-                      placeholder="Username"
-                      onChange={(e) => handleChangeData(e)}
-                      variant="outlined"
-                    />
-                    <TextField
-                      name="amountWithdraw"
-                      type="number"
-                      fullWidth
-                      disabled={type === 1}
-                      value={rowData.amountWithdraw || ""}
-                      size="small"
-                      placeholder="จำนวนเครดิต"
-                      onChange={(e) => handleChangeData(e)}
-                      variant="outlined"
-                    />
-                    <TextField
-                      name="annotationWithdraw"
-                      type="text"
-                      fullWidth
-                      disabled={type === 1}
-                      placeholder="หมายเหตุ"
-                      value={rowData.annotationWithdraw || ""}
-                      size="small"
-                      onChange={(e) => handleChangeData(e)}
-                      variant="outlined"
-                    />
-                    <Button
-                      variant="contained"
-                      fullWidth
-                      disabled={type === 1}
-                      onClick={() => handleClickOpen('WITHDRAW')}
-                    >
-                      <Typography sx={{ color: '#fff' }}>ยืนยัน</Typography>
-                    </Button>
-                  </Stack>
-                </Grid>
-                
-              </Grid>
-            </Paper> */}
-            <Paper sx={{ p: 3, mt: 3 }}>
-              <Grid item xs={3}>
-              <FormControl>
+      {/* <Paper sx={{ p: 3, mt: 2 }}>
+
+        <Grid container spacing={2}>
+          <Grid item xs={3}> <FormControl>
             <RadioGroup
               row
               defaultValue="auto"
               name="radio-buttons-group"
             >
-              <Typography sx={{ my: 3, mr: 3 }} variant="h6">ประเภทรายการ</Typography>
-              <FormControlLabel value="auto" onClick={() => setType(0)} control={<Radio />} label={<Typography sx={{ fontSize: '20px' }}>ตัดเครดิต </Typography>} />
-              <FormControlLabel value="manual" onClick={() => setType(1)} control={<Radio />} label={<Typography sx={{ fontSize: '20px' }}>เติมเครดิต </Typography>} />
+              <Typography sx={{ my: 3, mr: 3 }} variant="h7">ประเภทรายการ</Typography>
+              <FormControlLabel value="auto" onClick={() => setType(0)} control={<Radio />} label={<Typography sx={{ fontSize: '14px' }}>ตัดเครดิต </Typography>} />
+              <FormControlLabel value="manual" onClick={() => setType(1)} control={<Radio />} label={<Typography sx={{ fontSize: '14px' }}>เติมเครดิต </Typography>} />
             </RadioGroup>
           </FormControl>
-              </Grid>
-              <Grid item xs={6}></Grid>
-              <Grid item xs={3}></Grid>
-            </Paper>
           </Grid>
-
-          {/* -----------เติมเครดิต------------- */}
           <Grid item xs={6}>
-            <Paper sx={{ p: 3, mt: 3, backgroundColor: type === 0 ? '#DCDCDC' : '#fff' }} >
-              <Typography sx={{ mb: 3, color: type === 1 ? '#41A3E3' : '#A2A2A2', textDecoration: type === 1 ? "underline #41A3E3 3px" : "underline #A2A2A2 3px", }} variant="h6">เติมเครดิต</Typography>
-              <Grid container>
-                <Grid item xs={4}>
-                  <Stack spacing={4}>
-                    <Typography sx={{ color: type === 1 ? 'black' : '#A2A2A2' }}>ชื่อผู้ใช้ :</Typography>
-                    <Typography sx={{ color: type === 1 ? 'black' : '#A2A2A2' }}>จำนวนเครดิต :</Typography>
-                    <Typography sx={{ color: type === 1 ? 'black' : '#A2A2A2' }}>หมายเหตุ :</Typography>
-                  </Stack>
-                </Grid>
-                <Grid item xs={8}>
-                  <Stack spacing={2}>
-                    <TextField
-                      name="usernameDeposit"
-                      type="text"
-                      fullWidth
-                      disabled={type === 0}
-                      value={rowData.usernameDeposit || ""}
-                      size="small"
-                      placeholder="Username"
-                      onChange={(e) => handleChangeData(e)}
-                      variant="outlined"
-                    />
-                    <TextField
-                      name="amountDeposit"
-                      type="text"
-                      disabled={type === 0}
-                      fullWidth
-                      value={rowData.amountDeposit || ""}
-                      size="small"
-                      placeholder="จำนวนเครดิต"
-                      onChange={(e) => handleChangeData(e)}
-                      variant="outlined"
-                    />
-                    <TextField
-                      name="annotationDeposit"
-                      type="text"
-                      fullWidth
-                      disabled={type === 0}
-                      placeholder="หมายเหตุ"
-                      value={rowData.annotationDeposit || ""}
-                      size="small"
-                      onChange={(e) => handleChangeData(e)}
-                      variant="outlined"
-                    />
-                  </Stack>
-                </Grid>
-                <Grid
-                  container
-                  direction="row"
-                  justifyContent="flex-end"
-                  alignItems="center"
-                  sx={{ mt: 2 }}
-                >
+            <TextField
+              name="usernameWithdraw"
+              type="text"
+              disabled={type === 1}
+              fullWidth
+              value={rowData.usernameWithdraw || ""}
+              size="small"
+              label={'ชื่อผู้ใช้'}
+              placeholder="ชื่อผู้ใช้"
+              onChange={(e) => handleChangeData(e)}
+              variant="outlined"
+              sx={{ mt: 2 }}
+              required
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <TextField
+              name="amountWithdraw"
+              type="number"
+              fullWidth
+              disabled={type === 1}
+              value={rowData.amountWithdraw || ""}
+              size="small"
+              placeholder="จำนวนเครดิต"
+              label="จำนวนเครดิต"
+              onChange={(e) => handleChangeData(e)}
+              variant="outlined"
+              sx={{ mt: 2 }}
+
+              required
+            />
+          </Grid>
+        </Grid>
+        <Grid container spacing={2}>
+          <Grid item xs={3}>
+
+          </Grid>
+          <Grid item xs={3}>
+            <TextField
+              name="annotationWithdraw"
+              type="text"
+              fullWidth
+              disabled={type === 1}
+              placeholder="หมายเหตุ"
+              value={rowData.annotationWithdraw || ""}
+              size="small"
+              onChange={(e) => handleChangeData(e)}
+              variant="outlined"
+              select
+              label={"หมายเหตุ"}
+            >
+              <MenuItem value="รายการไม่เข้าธนาคาร">รายการไม่เข้าธนาคาร</MenuItem>
+              <MenuItem value="เครดิตเข้าธนาคารไม่เข้าผู้ใช้">เครดิตเข้าธนาคาร ไม่เข้าผู้ใช้</MenuItem>
+              <MenuItem value="อื่นๆ">อื่นๆ</MenuItem>
+            </TextField>
+          </Grid>
+          <Grid item xs={6}>
+
+          </Grid>
+        </Grid>
+      </Paper> */}
+
+      <Grid container spacing={3}>
+        {/* ----------ตัดเครดิต------------- */}
+        <Grid item xs={6}>
+          <Paper sx={{ p: 3, mt: 3, backgroundColor: type === 0 ? '#fff' : '#E3E3E3' }}>
+            <Typography sx={{ mb: 3, color: type === 0 ? '#41A3E3' : '#A2A2A2', textDecoration: type === 0 ? "underline #41A3E3 3px" : "underline #A2A2A2 3px", }} variant="h6">ตัดเครดิต</Typography>
+            <Grid container>
+              <Grid item xs={4}>
+                <Stack spacing={4}>
+                  <Typography sx={{ color: type === 0 ? 'black' : '#A2A2A2' }}>ชื่อผู้ใช้ :</Typography>
+                  <Typography sx={{ color: type === 0 ? 'black' : '#A2A2A2' }}>จำนวนเครดิต :</Typography>
+                  <Typography sx={{ color: type === 0 ? 'black' : '#A2A2A2' }}>หมายเหตุ :</Typography>
+                </Stack>
+              </Grid>
+              <Grid item xs={8}>
+                <Stack spacing={2}>
+                  <TextField
+                    name="usernameWithdraw"
+                    type="text"
+                    disabled={type === 1}
+                    fullWidth
+                    value={rowData.usernameWithdraw || ""}
+                    size="small"
+                    placeholder="Username"
+                    onChange={(e) => handleChangeData(e)}
+                    variant="outlined"
+                  />
+                  <TextField
+                    name="amountWithdraw"
+                    type="number"
+                    fullWidth
+                    disabled={type === 1}
+                    value={rowData.amountWithdraw || ""}
+                    size="small"
+                    placeholder="จำนวนเครดิต"
+                    onChange={(e) => handleChangeData(e)}
+                    variant="outlined"
+                  />
+                  <TextField
+                    name="annotationWithdraw"
+                    type="text"
+                    fullWidth
+                    disabled={type === 1}
+                    placeholder="หมายเหตุ"
+                    value={rowData.annotationWithdraw || ""}
+                    size="small"
+                    onChange={(e) => handleChangeData(e)}
+                    variant="outlined"
+                    select
+                    label="หมายเหตุ"
+                  >
+                    <MenuItem selected disabled value>
+                      เลือกรายการ
+                    </MenuItem>
+                    <MenuItem value="รายการไม่เข้าธนาคาร" onChange={() => setComment(0)}>รายการไม่เข้าธนาคาร</MenuItem>
+                    <MenuItem value="เครดิตเข้าธนาคารไม่เข้าผู้ใช้" onChange={() => setComment(0)}>เครดิตเข้าธนาคาร ไม่เข้าผู้ใช้</MenuItem>
+                    <MenuItem value="อื่นๆ" onChange={() => setComment(1)}>อื่นๆ</MenuItem>
+                  </TextField>
+                  {rowData.annotationWithdraw === "อื่นๆ" ?
+                  <TextField
+                    name="amountWithdraw"
+                    type="number"
+                    fullWidth
+                    disabled={type === 1}
+                    value={rowData.amountWithdraw || ""}
+                    size="small"
+                    placeholder="จำนวนเครดิต"
+                    onChange={(e) => handleChangeData(e)}
+                    variant="outlined"
+                  />
+                : ''}
                   <Button
                     variant="contained"
+                    fullWidth
+                    disabled={type === 1}
+                    // onClick={() => submitFormCutCredit()}
+                    onClick={() => handleClickOpen('WITHDRAW')}
+                  >
+                    <Typography sx={{ color: '#fff' }}>ยืนยัน</Typography>
+                  </Button>
+                </Stack>
+              </Grid>
+
+            </Grid>
+          </Paper>
+        </Grid>
+
+        {/* -----------เติมเครดิต------------- */}
+        <Grid item xs={6}>
+          <Paper sx={{ p: 3, mt: 3, backgroundColor: type === 0 ? '#E3E3E3' : '#fff' }} >
+            <Typography sx={{ mb: 3, color: type === 1 ? '#41A3E3' : '#A2A2A2', textDecoration: type === 1 ? "underline #41A3E3 3px" : "underline #A2A2A2 3px", }} variant="h6">เติมเครดิต</Typography>
+            <Grid container>
+              <Grid item xs={4}>
+                <Stack spacing={4}>
+                  <Typography sx={{ color: type === 1 ? 'black' : '#A2A2A2' }}>ชื่อผู้ใช้ :</Typography>
+                  <Typography sx={{ color: type === 1 ? 'black' : '#A2A2A2' }}>จำนวนเครดิต :</Typography>
+                  <Typography sx={{ color: type === 1 ? 'black' : '#A2A2A2' }}>หมายเหตุ :</Typography>
+                </Stack>
+              </Grid>
+              <Grid item xs={8}>
+                <Stack spacing={2}>
+                  <TextField
+                    name="usernameDeposit"
+                    type="text"
+                    fullWidth
                     disabled={type === 0}
-                    // fullWidth
+                    value={rowData.usernameDeposit || ""}
+                    size="small"
+                    placeholder="Username"
+                    onChange={(e) => handleChangeData(e)}
+                    variant="outlined"
+                  />
+                  <TextField
+                    name="amountDeposit"
+                    type="text"
+                    disabled={type === 0}
+                    fullWidth
+                    value={rowData.amountDeposit || ""}
+                    size="small"
+                    placeholder="จำนวนเครดิต"
+                    onChange={(e) => handleChangeData(e)}
+                    variant="outlined"
+                  />
+                  <TextField
+                    name="annotationDeposit"
+                    type="text"
+                    fullWidth
+                    disabled={type === 0}
+                    placeholder="หมายเหตุ"
+                    value={rowData.annotationDeposit || ""}
+                    size="small"
+                    onChange={(e) => handleChangeData(e)}
+                    variant="outlined"
+                  />
+                  <Button
+                    variant="contained"
+                    fullWidth
+                    disabled={type === 0}
                     // onClick={() => submitFormCutCredit()}
                     onClick={() => handleClickOpen('DEPOSIT')}
                   >
                     <Typography sx={{ color: '#fff' }}>ยืนยัน</Typography>
                   </Button>
-                </Grid>
+                </Stack>
               </Grid>
-            </Paper>
-          </Grid>
 
-          {/* <Button
+            </Grid>
+          </Paper>
+        </Grid>
+
+        {/* <Button
               variant="contained"
               onClick={() => {
                 setPage(0);
@@ -524,7 +603,7 @@ function editError() {
             >
               <Typography>ตัดเครดิต</Typography>
             </Button> */}
-          {/* <Button
+        {/* <Button
               variant="contained"
               onClick={() => {
                 setPage(1);
@@ -539,7 +618,7 @@ function editError() {
             >
               <Typography>เพิ่มเครดิตโปรโมชั่น</Typography>
             </Button> */}
-          {/* <Button
+        {/* <Button
               variant="contained"
               onClick={() => {
                 setPage(2);
@@ -551,7 +630,7 @@ function editError() {
             </Button> */}
 
 
-          {/* {page === 0 ? (
+        {/* {page === 0 ? (
               <>
                 <Grid container sx={{ mt: 5, ml: 4 }}>
                   <Grid item xs={1} >
@@ -791,56 +870,56 @@ function editError() {
               </>
             )} */}
 
+      </Grid>
+
+      <Paper sx={{ p: 3, mt: 3 }}>
+        <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px", mb: 3, }} > ยอดรวม </Typography>
+
+        <Grid
+          container
+          direction="row"
+          justifyContent="space-between"
+          alignItems="flex-start"
+          sx={{ mt: 5 }}>
+
+          <Card sx={{ width: 400, bgcolor: "#101D35", }}>
+            <CardContent>
+              <Typography variant="h5" sx={{ color: "#eee" }}>เติมเครดิต</Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {total.sumDeposit || 0} </Typography>
+              <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
+            </CardContent>
+          </Card>
+
+          <Card sx={{ width: 400, bgcolor: "#101D35", }}>
+            <CardContent>
+              <Typography variant="h5" sx={{ color: "#eee" }}>ตัดเครดิต</Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {total.sumWithdraw || 0} </Typography>
+              <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
+            </CardContent>
+          </Card>
+
+          <Card sx={{ width: 400, bgcolor: "#101D35", }}>
+            <CardContent>
+              <Typography variant="h5" sx={{ color: "#eee" }}>เพิ่มเครดิตโปรโมชั่น</Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {addCreditTotal || 0} </Typography>
+              <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
+            </CardContent>
+          </Card>
+
         </Grid>
+        {/* <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px", mb: 3, }} > ยอดรวม </Typography> */}
 
-        <Paper sx={{ p: 3, mt: 3 }}>
-          <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px", mb: 3, }} > ยอดรวม </Typography>
+        <Button
+          variant="text"
+          onClick={() => { }}
+        >
+          <Typography variant="h6" sx={{ textDecoration: "underline #41A3E3 3px", mt: 3 }} onClick={() => router.push("/report/reportError")}>รายงานการการเติมเครดิตแบบ manual</Typography>
+        </Button>
 
-          <Grid
-            container
-            direction="row"
-            justifyContent="space-between"
-            alignItems="flex-start"
-            sx={{ mt: 5 }}>
-
-            <Card sx={{ width: 400, bgcolor: "#101D35", }}>
-              <CardContent>
-                <Typography variant="h5" sx={{ color: "#eee" }}>เติมเครดิต</Typography>
-                <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {total.sumDeposit || 0} </Typography>
-                <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
-              </CardContent>
-            </Card>
-
-            <Card sx={{ width: 400, bgcolor: "#101D35", }}>
-              <CardContent>
-                <Typography variant="h5" sx={{ color: "#eee" }}>ตัดเครดิต</Typography>
-                <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {total.sumWithdraw || 0} </Typography>
-                <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
-              </CardContent>
-            </Card>
-
-            <Card sx={{ width: 400, bgcolor: "#101D35", }}>
-              <CardContent>
-                <Typography variant="h5" sx={{ color: "#eee" }}>เพิ่มเครดิตโปรโมชั่น</Typography>
-                <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {addCreditTotal || 0} </Typography>
-                <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
-              </CardContent>
-            </Card>
-
-          </Grid>
-          {/* <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px", mb: 3, }} > ยอดรวม </Typography> */}
-
-          <Button
-            variant="text"
-            onClick={() => { }}
-          >
-            <Typography variant="h6" sx={{ textDecoration: "underline #41A3E3 3px", mt: 3 }} onClick={() => router.push("/report/reportError")}>รายงานการการเติมเครดิตแบบ manual</Typography>
-          </Button>
-
-        </Paper>
+      </Paper>
 
 
-        {/* <Paper sx={{ p: 3, mt: 3 }}>
+      {/* <Paper sx={{ p: 3, mt: 3 }}>
           <Grid container>
             <Typography variant="h5" sx={{ p: 3 }}>
               รายงานการผิดพลาด
@@ -1269,7 +1348,7 @@ function editError() {
             </TabPanel>
           </Grid>
         </Paper> */}
-      </Box>
+
 
       <Dialog
         open={open}
