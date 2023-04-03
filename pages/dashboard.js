@@ -187,7 +187,7 @@ function dashboard() {
       }
    };
 
-   
+
    const getPlatform = async () => {
       setLoading(true);
       try {
@@ -214,12 +214,11 @@ function dashboard() {
          console.log(error);
       }
    };
-   console.log('platform', platform)
 
    const options = {
       responsive: true,
       layout: {
-         padding: 10,
+         padding: 5,
       },
       plugins: {
          legend: {
@@ -229,6 +228,81 @@ function dashboard() {
             display: true,
          },
       },
+      scales: {
+         x: {
+            display: true,
+            title: {
+               display: true,
+               text: 'ชั่วโมง',
+               color: '#000',
+               font: {
+                  family: 'Times',
+                  size: 18,
+                  style: 'normal',
+                  lineHeight: 1.2
+               },
+            }
+         },
+         y: {
+            display: true,
+            title: {
+               display: true,
+               text: 'เครดิต',
+               color: '#000',
+               font: {
+                  family: 'Times',
+                  size: 18,
+                  style: 'normal',
+                  lineHeight: 1.2
+               },
+            }
+         }
+      }
+   };
+
+   const optionsCount = {
+      responsive: true,
+      layout: {
+         padding: 5,
+      },
+      plugins: {
+         legend: {
+            position: "top",
+         },
+         title: {
+            display: true,
+         },
+      },
+      scales: {
+         x: {
+            display: true,
+            title: {
+               display: true,
+               text: 'ชั่วโมง',
+               color: '#000',
+               font: {
+                  family: 'Times',
+                  size: 18,
+                  style: 'normal',
+                  lineHeight: 1.2
+               },
+            }
+         },
+         y: {
+            display: true,
+            title: {
+               display: true,
+               text: 'จำนวนครั้ง',
+               color: '#000',
+               font: {
+                  family: 'Times',
+                  size: 18,
+                  style: 'normal',
+                  lineHeight: 1.2
+               },
+            }
+         }
+      }
    };
 
    const labels = [...chartDeposit.map((item) => item.hour)]
@@ -549,19 +623,20 @@ function dashboard() {
 
 
          <Paper sx={{ p: 3, mt: 2 }}>
-         <Typography> ภาพรวมสรุปตั้งแต่วันที่ {selectedDateRange.start} ถึง {selectedDateRange.end}</Typography>
+            <Typography> ภาพรวมสรุปตั้งแต่วันที่ {selectedDateRange.start} ถึง {selectedDateRange.end}</Typography>
             <Grid
                container
                direction="row"
                justifyContent="center"
                alignItems="center"
             >
-              
+
                {/* <Box sx={{ width: "80%", mt: "20px", bgcolor: "#101D35" }}>
                 <Line options={options} data={data} height="100px" /> 
                
             </Box> */}
                <Grid item xs={6} >
+
                   <Bar options={options} data={{
                      labels,
                      datasets: [
@@ -584,7 +659,7 @@ function dashboard() {
                   }} />
                </Grid>
                <Grid item xs={6} >
-                  <Bar options={options} data={{
+                  <Bar options={optionsCount} data={{
                      labels,
                      datasets: [
                         {
@@ -610,7 +685,7 @@ function dashboard() {
                      labels,
                      datasets: [
                         {
-                           label: "ยอดการฝการายชั่วโมง",
+                           label: "ยอดการฝากรายชั่วโมง",
                            data: [...chartDeposit.map((item) => item.deposit_total)],
                            // borderColor: "#129A50",
                            backgroundColor: [
@@ -628,11 +703,11 @@ function dashboard() {
                   }} />
                </Grid>
                <Grid item xs={6} >
-                  <Bar options={options} data={{
+                  <Bar options={optionsCount} data={{
                      labels,
                      datasets: [
                         {
-                           label: "ยอดการฝากรายชั่วโมง",
+                           label: "จำนวนครั้งการฝากรายชั่วโมง",
                            data: [...chartDeposit.map((item) => item.deposit_count)],
                            // borderColor: "#129A50",
                            backgroundColor: [
@@ -676,14 +751,14 @@ function dashboard() {
 
 
 
-         <Grid container  direction="row"  sx={{ mt: 3 }}> 
+         <Grid container direction="row" sx={{ mt: 3 }}>
             <Card sx={{ minWidth: 250, maxWidth: 260, minHeight: 20, my: 2, bgcolor: "#101D35", }}>
                <CardContent>
                   <Typography component="div" sx={{ color: "#eee" }}> twitter </Typography>
                   <Grid container justifyContent="center">
                      <Grid item xs={3}></Grid>
                      <Grid item xs={5}>
-                        <Typography variant="h3" sx={{  textAlign: "center", color: "#eee" }} >
+                        <Typography variant="h3" sx={{ textAlign: "center", color: "#eee" }} >
                            {platform.twitter}
                         </Typography>
                      </Grid>
@@ -693,14 +768,14 @@ function dashboard() {
                   </Grid>
                </CardContent>
             </Card>
-            <Card sx={{ minWidth: 250, maxWidth: 260, minHeight: 20, my: 2, mx: 2,bgcolor: "#101D35", }}>
+            <Card sx={{ minWidth: 250, maxWidth: 260, minHeight: 20, my: 2, mx: 2, bgcolor: "#101D35", }}>
                <CardContent>
                   <Typography component="div" sx={{ color: "#eee" }}> friend </Typography>
                   <Grid container justifyContent="center">
                      <Grid item xs={3}></Grid>
                      <Grid item xs={5}>
-                        <Typography variant="h3" sx={{  textAlign: "center", color: "#eee" }} >
-                        {platform.friend}
+                        <Typography variant="h3" sx={{ textAlign: "center", color: "#eee" }} >
+                           {platform.friend}
                         </Typography>
                      </Grid>
                      <Grid item xs={4}>
@@ -715,8 +790,8 @@ function dashboard() {
                   <Grid container justifyContent="center">
                      <Grid item xs={3}></Grid>
                      <Grid item xs={5}>
-                        <Typography variant="h3" sx={{  textAlign: "center", color: "#eee" }} >
-                        {platform.posman}
+                        <Typography variant="h3" sx={{ textAlign: "center", color: "#eee" }} >
+                           {platform.posman}
                         </Typography>
                      </Grid>
                      <Grid item xs={4}>

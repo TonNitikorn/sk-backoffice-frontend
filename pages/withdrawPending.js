@@ -61,6 +61,7 @@ function withdrawpending() {
    const [bankData, setBankData] = useState([]);
    const [selectedBank, setSelectedBank] = useState();
    const [openDialogView, setOpenDialogView] = useState(false);
+   let temp
 
    const handleChange = (uuid) => {
       setSelectedBank(uuid);
@@ -80,7 +81,7 @@ function withdrawpending() {
    };
 
    const getDataWithdraw = async () => {
-      setLoading(true);
+      // setLoading(true);
       try {
          let res = await axios({
             headers: {
@@ -102,7 +103,11 @@ function withdrawpending() {
             item.update_at = moment(item.update_at).format('DD/MM/YYYY hh:mm')
             item.bank_account_name = item.members?.fname + ' ' + item.members?.lname
          })
+         temp = resData.length;
+
+        
          setDataWithdraw(resData)
+         // playAudio()
          setLoading(false);
       } catch (error) {
          console.log(error);
@@ -234,8 +239,26 @@ function withdrawpending() {
    useEffect(() => {
       getDataWithdraw()
       getBank()
+      if (!!temp) {
+         playAudio();
+         
+       }
    }, [])
 
+   useEffect(() => {
+      const interval = setInterval(() => {
+         getDataWithdraw()
+      }, 3000);
+      return () => clearInterval(interval);
+    }, []);
+
+
+    function playAudio() {
+      const audio = new Audio(
+        "https://angpaos.games/wp-content/uploads/2023/04/noti-sound.mp3"
+      );
+      audio.play();
+    }
 
    const columns = [
       {

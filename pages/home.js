@@ -704,12 +704,14 @@ function home() {
                                         />
                                     ),
                                 },
-
                             ]}
                             data={dataLast}
                             options={{
+                                exportButton: {
+                                    csv: true,
+                                    pdf: true,
+                                  },
                                 search: true,
-                                // filtering: true,
                                 columnsButton: true,
                                 columnResizable: true,
                                 rowStyle: {
@@ -718,18 +720,20 @@ function home() {
                                 headerStyle: {
                                     paddingTop: 5,
                                     paddingBottom: 5,
-                                    // paddingLeft: 15,
                                     align: "center",
                                     paddingRight: 0
                                 },
                                 pageSize: 20,
                                 pageSizeOptions: [10, 20, 100],
-                                padding: 0
+                                padding: 0,
                             }}
-
+                            localization={{
+                                toolbar: {
+                                  exportCSVName: "Export some excel format",
+                                  exportPDFName: "Export as pdf!!"
+                                }
+                              }}
                         />
-
-
                     </Paper>
                 </Grid>
             </Grid>
