@@ -73,8 +73,6 @@ function Layout({ children, page }) {
     }
   };
 
-
-
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -133,14 +131,19 @@ function Layout({ children, page }) {
 
                     {item.id === "member" ? open.member ? <ExpandLess /> : <ExpandMore /> :
                       item.id === "point" ? open.point ? <ExpandLess /> : <ExpandMore /> :
-                        item.id === "report" ? open.report ? <ExpandLess /> : <ExpandMore /> : 
-                        item.id === "rank" ? open.rank ? <ExpandLess /> : <ExpandMore /> : ''}
+                        item.id === "report" ? open.report ? <ExpandLess /> : <ExpandMore /> :
+                          item.id === "rank" ? open.rank ? <ExpandLess /> : <ExpandMore /> : ''}
                   </ListItemButton>
 
                   <Collapse in={open.member} timeout="auto" unmountOnExit>
                     {item.member?.map((e) => (
                       <List component="div" disablePadding>
-                        <ListItemButton sx={{ pl: 4 }} onClick={() => router.push(e.link)}>
+                        <ListItemButton
+                          sx={{
+                            pl: 4,
+                            borderRadius: "6px",
+                            backgroundColor: typeof window !== "undefined" ? window.location.pathname === `${e.link}` ? "#41A3E3" : '#eee' : ''
+                          }} onClick={() => router.push(e.link)}>
                           <ListItemIcon>
                             {e.icon}
                           </ListItemIcon>
@@ -176,7 +179,12 @@ function Layout({ children, page }) {
                 </>
               ) : (
                 <ListItem key={item} disablePadding>
-                  <ListItemButton onClick={() => router.push(item.link)}>
+                  <ListItemButton onClick={() => router.push(item.link)}
+                    sx={{
+                      borderRadius: "6px",
+                      backgroundColor: typeof window !== "undefined" ? window.location.pathname === `${item.link}` ? "#41A3E3" : '#eee' : ''
+                    }}
+                  >
                     <ListItemIcon >
                       {item.icon}
                     </ListItemIcon>
@@ -193,7 +201,11 @@ function Layout({ children, page }) {
         <Divider />
         <List>
           <ListItem disablePadding>
-            <ListItemButton onClick={() => router.push('/profile')}>
+            <ListItemButton onClick={() => router.push('/profile')}
+              sx={{
+                borderRadius: "6px",
+                backgroundColor: typeof window !== "undefined" ? window.location.pathname === '/profile' ? "#41A3E3" : '#eee' : ''
+              }}>
               <ListItemIcon>
                 <PersonIcon />
               </ListItemIcon>
