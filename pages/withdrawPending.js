@@ -104,18 +104,52 @@ function withdrawpending() {
             item.bank_account_name = item.members?.fname + ' ' + item.members?.lname
          })
          temp = resData.length;
-
-        
          setDataWithdraw(resData)
-         // playAudio()
-         setLoading(false);
+         // setLoading(false);
       } catch (error) {
          console.log(error);
       }
    }
+   
 
+   const pendingWithdraw = async () => {
+         // setLoading(true);
+      try {
+         let res = await axios({
+            headers: {
+               Authorization: "Bearer " + localStorage.getItem("access_token"),
+            },
+            method: "get",
+            url: `${hostname}/transaction/withdraw_list`,
+            data: {
+               start: selectedDateRange.start,
+               end: selectedDateRange.end
+            }
+         });
+         let resData = res.data
+
+         let no = 1
+         resData.map((item) => {
+            item.no = no++;
+            item.create_at = moment(item.create_at).format('DD/MM/YYYY hh:mm')
+            item.update_at = moment(item.update_at).format('DD/MM/YYYY hh:mm')
+            item.bank_account_name = item.members?.fname + ' ' + item.members?.lname
+         })
+
+         if (temp !== resData.length) {
+            playAudio();
+            setDataWithdraw(resData)
+            getDataWithdraw();
+          }
+
+         setDataWithdraw(resData)
+         // setLoading(false);
+      } catch (error) {
+         console.log(error);
+      }
+   }
    const getBank = async () => {
-      setLoading(true);
+      // setLoading(true);
       try {
          let res = await axios({
             headers: {
@@ -239,15 +273,12 @@ function withdrawpending() {
    useEffect(() => {
       getDataWithdraw()
       getBank()
-      if (!!temp) {
-         playAudio();
-         
-       }
+     
    }, [])
 
    useEffect(() => {
       const interval = setInterval(() => {
-         getDataWithdraw()
+         pendingWithdraw()
       }, 3000);
       return () => clearInterval(interval);
     }, []);

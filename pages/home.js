@@ -111,7 +111,6 @@ function home() {
         }
     };
 
-    console.log('dataLast', dataLast)
 
     useEffect(() => {
         getDataLast()
