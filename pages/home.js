@@ -33,9 +33,8 @@ import { useAppDispatch } from "../store/store";
 import { signOut } from "../store/slices/userSlice";
 import { useRouter } from "next/router";
 import MaterialTableForm from '../components/materialTableForm';
-import Pagination from '@mui/material/Pagination';
 import MaterialTable from '@material-table/core'
-
+import { ExportCsv, ExportPdf } from "@material-table/exporters";
 
 function home() {
     const dispatch = useAppDispatch();
@@ -706,10 +705,14 @@ function home() {
                             ]}
                             data={dataLast}
                             options={{
-                                exportButton: {
-                                    csv: true,
-                                    pdf: true,
-                                  },
+                                exportMenu: [
+                                    
+                                    {
+                                        label: "Export CSV",
+                                        exportFunc: (cols, datas) =>
+                                            ExportCsv(cols, datas, "รายการเดินบัญชี"),
+                                    },
+                                ],
                                 search: true,
                                 columnsButton: true,
                                 columnResizable: true,
@@ -728,10 +731,10 @@ function home() {
                             }}
                             localization={{
                                 toolbar: {
-                                  exportCSVName: "Export some excel format",
-                                  exportPDFName: "Export as pdf!!"
+                                    exportCSVName: "Export some excel format",
+                                    exportPDFName: "Export as pdf!!"
                                 }
-                              }}
+                            }}
                         />
                     </Paper>
                 </Grid>
