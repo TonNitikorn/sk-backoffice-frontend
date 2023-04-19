@@ -78,7 +78,7 @@ function Layout({ children, page }) {
       <CssBaseline />
       <AppBar
         position="fixed"
-        sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px`, height: 80 }}
+        sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px`, height: 73 }}
       >
         <Toolbar>
           <Grid container justifyContent="space-between">
@@ -108,12 +108,12 @@ function Layout({ children, page }) {
         variant="permanent"
         anchor="left"
       >
-        <Grid justifyContent="center" alignItems="center" sx={{ pl: 9, pt: 1 }}>
+        <Grid justifyContent="center" alignItems="center" sx={{ pl: 6, pt: 2 }}>
           <Image
-            src={logo_angpao}
+            src={"https://angpaos.games/wp-content/uploads/2023/04/2Long-Angpaogames.png"}
             alt="scb"
-            width={120}
-            height={65}
+            width={160}
+            height={50}
           />
         </Grid>
         <Divider />

@@ -62,24 +62,6 @@ function Login() {
       <>
          <div style={{ padding: "0 2rem" }} >
             <CssBaseline />
-            <AppBar position="fixed"
-               color="primary"
-               elevation={0}
-               sx={{ borderBottomLeftRadius: '30px', borderBottomRightRadius: '30px' }}>
-               <Container maxWidth="xl" >
-                  <Toolbar disableGutters >
-                     <Grid container >
-                        <Grid item xs={6} >
-                           <Image
-                              src={logo_angpao}
-                              alt="scb"
-                              width={80}
-                              height={50}
-                           />
-                        </Grid>
-                     </Grid>
-                  </Toolbar> </Container>
-            </AppBar>
             <Grid container >
                <Grid item xs={3} />
                <Grid item xs={6} >
@@ -98,6 +80,13 @@ function Login() {
                      <Grid container direction="column"
                         justifyContent="center"
                         alignItems="center" >
+                        <Grid justifyContent="center" alignItems="center" sx={{  mt: 2 }}>
+                           <Image
+                              src={"https://angpaos.games/wp-content/uploads/2023/04/2Long-Angpaogames.png"}
+                              width={160}
+                              height={50}
+                           />
+                        </Grid>
                         < Typography variant="h5"
                            sx={{ mt: 3, color: "#41A3E3" }}> เข้าสู่ระบบ </Typography>
                      </Grid>
