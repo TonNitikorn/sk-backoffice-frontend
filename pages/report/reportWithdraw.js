@@ -77,12 +77,11 @@ function reportDeposit() {
           Authorization: "Bearer " + localStorage.getItem("access_token"),
         },
         method: "post",
-        url: `${hostname}/report/get_transaction`,
+        url: `${hostname}/report/get_transaction_withdraw`,
         data: {
           "create_at_start":  type === undefined ? selectedDateRange.start : start,
           "create_at_end": type === undefined ? selectedDateRange.end : end,
           "transfer_type": "WITHDRAW",
-          "status_transction": search.type,
           "username": username
         }
       });
