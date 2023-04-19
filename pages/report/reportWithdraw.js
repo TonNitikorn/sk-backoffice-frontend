@@ -616,7 +616,22 @@ function reportDeposit() {
               title: "เครดิตหลังเติม",
               align: "center",
             },
-
+            {
+              field: "status_transction",
+              title: "สถานะ",
+              align: "center",
+              render: (item) => (
+                <Chip
+                  label={item.status_transction === 'SUCCESS' ? "สำเร็จ" : "ยกเลิก"}
+                  size="small"
+                  style={{
+                    padding: 10,
+                    backgroundColor: item.status_transction ==='SUCCESS' ? "#129A50" : "#BB2828",
+                    color: "#eee",
+                  }}
+                />
+              ),
+            },
             {
               field: "transfer_by",
               title: "ทำรายการโดย",

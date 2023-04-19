@@ -272,7 +272,7 @@ function reportError() {
               color="primary"
               size="large"
               onClick={() => {
-                getAllError();
+                getRerort();
               }}
             >
               <Typography sx={{ color: '#ffff' }}>ค้นหา</Typography>

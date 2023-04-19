@@ -104,16 +104,17 @@ function withdrawpending() {
             item.bank_account_name = item.members?.fname + ' ' + item.members?.lname
          })
          temp = resData.length;
+
          setDataWithdraw(resData)
          // setLoading(false);
       } catch (error) {
          console.log(error);
       }
    }
-   
+
 
    const pendingWithdraw = async () => {
-         // setLoading(true);
+      // setLoading(true);
       try {
          let res = await axios({
             headers: {
@@ -135,12 +136,17 @@ function withdrawpending() {
             item.update_at = moment(item.update_at).format('DD/MM/YYYY hh:mm')
             item.bank_account_name = item.members?.fname + ' ' + item.members?.lname
          })
+         console.log('temp 1 >> ', temp)
+         console.log('resData.length 2>> ', resData.length)
+            let tempRes =  temp + res.lresData.length
+            console.log('tempRes', tempRes)
 
-         if (temp !== resData.length) {
-            playAudio();
-            setDataWithdraw(resData)
-            getDataWithdraw();
-          }
+            if (temp != resData.length) {
+               playAudio();
+               setDataWithdraw(resData)
+               getDataWithdraw();
+            }
+         
 
          setDataWithdraw(resData)
          // setLoading(false);
@@ -148,6 +154,7 @@ function withdrawpending() {
          console.log(error);
       }
    }
+
    const getBank = async () => {
       // setLoading(true);
       try {
@@ -273,7 +280,7 @@ function withdrawpending() {
    useEffect(() => {
       getDataWithdraw()
       getBank()
-     
+
    }, [])
 
    useEffect(() => {
@@ -281,15 +288,15 @@ function withdrawpending() {
          pendingWithdraw()
       }, 3000);
       return () => clearInterval(interval);
-    }, []);
+   }, []);
 
 
-    function playAudio() {
+   function playAudio() {
       const audio = new Audio(
-        "https://angpaos.games/wp-content/uploads/2023/04/noti-sound.mp3"
+         "https://angpaos.games/wp-content/uploads/2023/04/noti-sound.mp3"
       );
       audio.play();
-    }
+   }
 
    const columns = [
       {
