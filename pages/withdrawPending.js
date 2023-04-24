@@ -1144,7 +1144,7 @@ function withdrawpending() {
                            } >
                               จำนวนครั้ง
                            </Typography>
-                           <Chip label={Intl.NumberFormat("TH").format(parseInt(item.bank_status))}
+                           <Chip label={Intl.NumberFormat("TH").format(parseInt("0"))}
                               size="small"
                               style={
                                  {

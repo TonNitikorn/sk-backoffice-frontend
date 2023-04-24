@@ -180,7 +180,6 @@ function memberTable() {
          field: "bank_name",
          title: "ธนาคาร",
          align: "center",
-
          minWidth: "220px",
          render: (item) => (
             <Grid container>
@@ -422,11 +421,11 @@ function memberTable() {
          ),
       },
       {
-         field: "sb_username",
+         field: "username",
          title: "Username",
          align: "center",
          render: (item) => (
-            <CopyToClipboard text={item.sb_username}>
+            <CopyToClipboard text={item.username}>
                <div style={{
                   "& .MuiButton-text": {
                      "&:hover": {
@@ -444,17 +443,11 @@ function memberTable() {
                      }}
                      onClick={handleClickSnackbar}
                   >
-                     {item.sb_username}
+                     {item.username}
                   </Button>
                </div>
             </CopyToClipboard>
          ),
-      },
-      {
-         field: "line_id",
-         title: "ID Line",
-         align: "center",
-
       },
       {
          field: "tel",
@@ -494,66 +487,14 @@ function memberTable() {
       },
 
       {
-         field: "role",
+         field: "points",
          title: "Point",
          align: "center",
       },
       {
-         field: "role",
+         field: "rank",
          title: "Rank",
          align: "center",
-      },
-      {
-         title: "รีเซ็ตรหัส",
-         align: "center",
-         render: (rowData) => {
-            return (
-               <Grid sx={{ textAlign: "center" }}>
-                  <IconButton
-                     onClick={() => {
-                        Swal.fire({
-                           title: "ยืนยันการเปลี่ยนรหัส",
-                           text: `ท่านการรีเซ็ตรหัสของ : ${rowData.username} ?`,
-                           icon: "info",
-                           showCancelButton: true,
-                           cancelButtonColor: "#EB001B",
-                           confirmButtonColor: "#129A50",
-                           cancelButtonText: "ยกเลิก",
-                           confirmButtonText: "ยืนยัน",
-
-                        }).then(async (result) => {
-                           if (result.isConfirmed) {
-                              setLoading(true);
-                              try {
-                                 let res = await axios({
-                                    headers: {
-                                       Authorization:
-                                          "Bearer " +
-                                          localStorage.getItem("access_token"),
-                                    },
-                                    method: "get",
-                                    url: `${hostname}/api/member/change-password/${rowData.uuid}`,
-                                 });
-                                 console.log("res.data.data", res.data.data);
-                                 let resData = res.data.data;
-                                 setLoading(false);
-                                 setOpenDialogPassword({
-                                    open: true,
-                                    name: rowData.sb_username,
-                                    pass: resData.new_password,
-                                 });
-                              } catch (error) {
-                                 console.log(error);
-                              }
-                           }
-                        });
-                     }}
-                  >
-                     <KeyIcon sx={{ color: "green" }} />
-                  </IconButton>
-               </Grid>
-            );
-         },
       },
       {
          title: "แก้ไข",

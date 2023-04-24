@@ -14,7 +14,7 @@ import {
 import Layout from "../../theme/Layout";
 import moment from "moment";
 import MaterialTableForm from "../../components/materialTableForm"
-
+import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import axios from "axios";
 import hostname from "../../utils/hostname";
 import { CopyToClipboard } from "react-copy-to-clipboard";
@@ -46,6 +46,7 @@ function reportDeposit() {
   const [open, setOpen] = useState(false);
   const [total, setTotal] = useState({})
   const [loading, setLoading] = useState(false);
+  const [typeList, setTypeList] = useState({})
   const [search, setSearch] = useState({
     data: "",
     type: "",
@@ -66,9 +67,9 @@ function reportDeposit() {
         },
         method: "post",
         url: `${hostname}/report/get_transaction`,
-       
+
         data: {
-          "create_at_start":  type === undefined ? selectedDateRange.start : start,
+          "create_at_start": type === undefined ? selectedDateRange.start : start,
           "create_at_end": type === undefined ? selectedDateRange.end : end,
           "transfer_type": "DEPOSIT",
           "status_transction": search.type,
@@ -85,11 +86,34 @@ function reportDeposit() {
         item.bank_name = item.members?.bank_name
         item.bank_number = item.members?.bank_number
         item.username = item.members?.username
+        // item.credit = Intl.NumberFormat("TH").format(parseInt(item.credit))
+        // item.credit_after = Intl.NumberFormat("TH").format(parseInt(item.credit_after))
+        // item.credit_before = Intl.NumberFormat("TH").format(parseInt(item.credit_before))
       });
+
+      let dataTypeManual = transaction.filter((item) => item.status_transction === "MANUAL")
+      let sumManual = []
+      for (const item of dataTypeManual) {
+        sumManual.push(parseInt(item.credit))
+      }
+      let manual = sumManual.reduce((a, b) => a + b, 0)
+
+      let dataTypeAuto = transaction.filter((item) => item.status_transction === "AUTO")
+      let sumAuto = []
+      for (const item of dataTypeAuto) {
+        sumAuto.push(parseInt(item.credit))
+      }
+      let auto = sumAuto.reduce((a, b) => a + b, 0)
+
+      setTypeList({
+        typeManual: dataTypeManual,
+        sumManual: manual,
+        typeAuto: dataTypeAuto,
+        sumAuto: auto
+      })
 
       let sumPrice = 0
       let price = []
-  
 
       for (const item of transaction) {
         price.push(item.amount)
@@ -99,8 +123,8 @@ function reportDeposit() {
 
       setTotal({
         totalList: transaction.length,
-        sumPrice: parseInt(sumPrice),
-        sumCredit: parseInt(res.data.sumCredit),
+        sumPrice: parseInt(Intl.NumberFormat("TH").format(parseInt(sumPrice))),
+        sumCredit: parseInt(Intl.NumberFormat("TH").format(parseInt(res.data.sumCredit))),
       })
 
       setReport(transaction);
@@ -117,6 +141,8 @@ function reportDeposit() {
       // }
     }
   };
+
+
   useEffect(() => {
     getReport();
   }, []);
@@ -124,15 +150,7 @@ function reportDeposit() {
   return (
     <Layout>
       <Paper sx={{ p: 3 }}>
-        <Typography
-          sx={{
-            fontSize: "24px",
-            textDecoration: "underline #129A50 3px",
-            mb: 2,
-          }}
-        >
-          รายการฝาก
-        </Typography>
+        <Typography  sx={{ fontSize: "24px", textDecoration: "underline #129A50 3px", mb: 2, }}> รายการฝาก</Typography>
 
         <Grid container>
           <Grid item={true} xs={12} sx={{ mb: 3 }}>
@@ -250,35 +268,82 @@ function reportDeposit() {
 
           <Card sx={{ width: 250, bgcolor: "#101D35", }}>
             <CardContent>
-              <Typography variant="h5" sx={{ color: "#eee" }}>จำนวนรายการ</Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}> {Intl.NumberFormat("THB").format('0')} </Typography>
-              <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
+              <Typography variant="h6" sx={{ color: "#eee" }}>จำนวนรายการ</Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}> {report.length} </Typography>
+              <Grid sx={{ textAlign: 'right' }}>
+                <Button
+                  sx={{ color: "#eee" }}
+                  onClick={() => { }}>
+                  <Typography >รายการ</Typography>
+                </Button>
+              </Grid>
             </CardContent>
           </Card>
 
           <Card sx={{ width: 250, bgcolor: "#101D35", }}>
             <CardContent>
-              <Typography variant="h5" sx={{ color: "#eee" }}>ยอดเงิน</Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}> {Intl.NumberFormat("THB").format('1')}</Typography>
-              <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
+              <Typography variant="h6" sx={{ color: "#eee" }}>รายการฝากแบบเติมให้</Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {Intl.NumberFormat("THB").format(typeList.typeManual?.length)} </Typography>
+              <Grid sx={{ textAlign: 'right' }}>
+                <Button
+                  sx={{ color: "#eee" }}
+                  onClick={() => {
+                    let data = report.filter((item) => item.status_transction === "MANUAL")
+                    setReport(data)
+                  }}>
+                  <Typography sx={{ textDecoration: "underline" }}>ดูเพิ่มเติม..</Typography>
+                </Button>
+              </Grid>
             </CardContent>
           </Card>
 
           <Card sx={{ width: 250, bgcolor: "#101D35", }}>
             <CardContent>
-              <Typography variant="h5" sx={{ color: "#eee" }}>เครดิตก่อนเติม</Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {Intl.NumberFormat("THB").format('2')}</Typography>
-              <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
+              <Typography variant="h6" sx={{ color: "#eee" }}>รายการฝากแบบอัตโนมัติ</Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {Intl.NumberFormat("THB").format(typeList.typeAuto?.length)} </Typography>
+              <Grid sx={{ textAlign: 'right' }}>
+                <Button
+                  sx={{ color: "#eee" }}
+                  onClick={() => {
+                    let data = report.filter((item) => item.status_transction === "AUTO")
+                    setReport(data)
+                  }}>
+                  <Typography sx={{ textDecoration: "underline" }}>ดูเพิ่มเติม..</Typography>
+                </Button>
+              </Grid>
             </CardContent>
           </Card>
 
           <Card sx={{ width: 250, bgcolor: "#101D35", }}>
             <CardContent>
-              <Typography variant="h5" sx={{ color: "#eee" }}>เครดิตหลังเติม</Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {Intl.NumberFormat("THB").format(2)} </Typography>
-              <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
+              <Typography variant="h6" sx={{ color: "#eee" }}>ยอดรวมฝากแบบเติมให้</Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}> {Intl.NumberFormat("THB").format(typeList.sumManual)}</Typography>
+              <Grid sx={{ textAlign: 'right' }}>
+                <Button
+                  sx={{ color: "#eee" }}
+                  onClick={() => { }}>
+                  <Typography >เครดิต</Typography>
+                </Button>
+              </Grid>
+
             </CardContent>
           </Card>
+
+          <Card sx={{ width: 250, bgcolor: "#101D35", }}>
+            <CardContent>
+              <Typography variant="h6" sx={{ color: "#eee" }}>ยอดรวมฝากแบบอัตโนมัติ</Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {Intl.NumberFormat("THB").format(typeList.sumAuto)}</Typography>
+              <Grid sx={{ textAlign: 'right' }}>
+                <Button
+                  sx={{ color: "#eee" }}
+                  onClick={() => { }}>
+                  <Typography >เครดิต</Typography>
+                </Button>
+              </Grid>
+            </CardContent>
+          </Card>
+
+
 
         </Grid>
 
@@ -302,207 +367,207 @@ function reportDeposit() {
               render: (item) => (
                 <Grid container>
                   <Grid item xs={3} sx={{ mt: 1 }}>
-                  {item.bank_name === "kbnk" ? (
-                     <Image
+                    {item.bank_name === "kbnk" ? (
+                      <Image
                         src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/kbnk.png"
+                          "https://angpaos.games/wp-content/uploads/2023/03/kbnk.png"
                         }
                         alt="kbnk"
                         width={50}
                         height={50}
-                     />
-                  ) : item.bank_name === "truemoney" ? (
-                     <Image
+                      />
+                    ) : item.bank_name === "truemoney" ? (
+                      <Image
                         src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/truemoney.png"
+                          "https://angpaos.games/wp-content/uploads/2023/03/truemoney.png"
                         }
                         alt="truemoney"
                         width={50}
                         height={50}
-                     />
-                  ) : item.bank_name === "ktba" ? (
-                     <Image
+                      />
+                    ) : item.bank_name === "ktba" ? (
+                      <Image
                         src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/ktba.png"
+                          "https://angpaos.games/wp-content/uploads/2023/03/ktba.png"
                         }
                         alt="ktba"
                         width={50}
                         height={50}
-                     />
-                  ) : item.bank_name === "scb" ? (
-                     <Image
+                      />
+                    ) : item.bank_name === "scb" ? (
+                      <Image
                         src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/scb.png"
+                          "https://angpaos.games/wp-content/uploads/2023/03/scb.png"
                         }
                         alt="scb"
                         width={50}
                         height={50}
-                     />
-                  ) : item.bank_name === "bay" ? (
-                     <Image
+                      />
+                    ) : item.bank_name === "bay" ? (
+                      <Image
                         src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/bay.png"
+                          "https://angpaos.games/wp-content/uploads/2023/03/bay.png"
                         }
                         alt="bay"
                         width={50}
                         height={50}
-                     />
-                  ) : item.bank_name === "bbla" ? (
-                     <Image
+                      />
+                    ) : item.bank_name === "bbla" ? (
+                      <Image
                         src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/bbl.png"
+                          "https://angpaos.games/wp-content/uploads/2023/03/bbl.png"
                         }
                         alt="bbla"
                         width={50}
                         height={50}
-                     />
-                  ) : item.bank_name === "gsb" ? (
-                     <Image
+                      />
+                    ) : item.bank_name === "gsb" ? (
+                      <Image
                         src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/gsb.png"
+                          "https://angpaos.games/wp-content/uploads/2023/03/gsb.png"
                         }
                         alt="gsb"
                         width={50}
                         height={50}
-                     />
-                  ) : item.bank_name === "ttb" ? (
-                     <Image
+                      />
+                    ) : item.bank_name === "ttb" ? (
+                      <Image
                         src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/ttb.png"
+                          "https://angpaos.games/wp-content/uploads/2023/03/ttb.png"
                         }
                         alt="ttb"
                         width={50}
                         height={50}
-                     />
-                  ) : item.bank_name === "bbac" ? (
-                     <Image
+                      />
+                    ) : item.bank_name === "bbac" ? (
+                      <Image
                         src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/baac.png"
+                          "https://angpaos.games/wp-content/uploads/2023/03/baac.png"
                         }
                         alt="bbac"
                         width={50}
                         height={50}
-                     />
-                  ) : item.bank_name === "icbc" ? (
-                     <Image
+                      />
+                    ) : item.bank_name === "icbc" ? (
+                      <Image
                         src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/icbc.png"
+                          "https://angpaos.games/wp-content/uploads/2023/03/icbc.png"
                         }
                         alt="icbc"
                         width={50}
                         height={50}
-                     />
-                  ) : item.bank_name === "tcd" ? (
-                     <Image
+                      />
+                    ) : item.bank_name === "tcd" ? (
+                      <Image
                         src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/tcd.png"
+                          "https://angpaos.games/wp-content/uploads/2023/03/tcd.png"
                         }
                         alt="tcd"
                         width={50}
                         height={50}
-                     />
-                  ) : item.bank_name === "citi" ? (
-                     <Image
+                      />
+                    ) : item.bank_name === "citi" ? (
+                      <Image
                         src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/citi.png"
+                          "https://angpaos.games/wp-content/uploads/2023/03/citi.png"
                         }
                         alt="citi"
                         width={50}
                         height={50}
-                     />
-                  ) : item.bank_name === "scbt" ? (
-                     <Image
+                      />
+                    ) : item.bank_name === "scbt" ? (
+                      <Image
                         src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/scbt.png"
+                          "https://angpaos.games/wp-content/uploads/2023/03/scbt.png"
                         }
                         alt="scbt"
                         width={50}
                         height={50}
-                     />
-                  ) : item.bank_name === "cimb" ? (
-                     <Image
+                      />
+                    ) : item.bank_name === "cimb" ? (
+                      <Image
                         src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/cimb.png"
+                          "https://angpaos.games/wp-content/uploads/2023/03/cimb.png"
                         }
                         alt="cimb"
                         width={50}
                         height={50}
-                     />
-                  ) : item.bank_name === "uob" ? (
-                     <Image
+                      />
+                    ) : item.bank_name === "uob" ? (
+                      <Image
                         src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/uob.png"
+                          "https://angpaos.games/wp-content/uploads/2023/03/uob.png"
                         }
                         alt="uob"
                         width={50}
                         height={50}
-                     />
-                  ) : item.bank_name === "hsbc" ? (
-                     <Image
+                      />
+                    ) : item.bank_name === "hsbc" ? (
+                      <Image
                         src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/hsbc.png"
+                          "https://angpaos.games/wp-content/uploads/2023/03/hsbc.png"
                         }
                         alt="hsbc"
                         width={50}
                         height={50}
-                     />
-                  ) : item.bank_name === "mizuho" ? (
-                     <Image
+                      />
+                    ) : item.bank_name === "mizuho" ? (
+                      <Image
                         src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/mizuho.png"
+                          "https://angpaos.games/wp-content/uploads/2023/03/mizuho.png"
                         }
                         alt="mizuho"
                         width={50}
                         height={50}
-                     />
-                  ) : item.bank_name === "ghb" ? (
-                     <Image
+                      />
+                    ) : item.bank_name === "ghb" ? (
+                      <Image
                         src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/ghb.png"
+                          "https://angpaos.games/wp-content/uploads/2023/03/ghb.png"
                         }
                         alt="ghb"
                         width={50}
                         height={50}
-                     />
-                  ) : item.bank_name === "lhbank" ? (
-                     <Image
+                      />
+                    ) : item.bank_name === "lhbank" ? (
+                      <Image
                         src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/lhbank.png"
+                          "https://angpaos.games/wp-content/uploads/2023/03/lhbank.png"
                         }
                         alt="lhbank"
                         width={50}
                         height={50}
-                     />
-                  ) : item.bank_name === "tisco" ? (
-                     <Image
+                      />
+                    ) : item.bank_name === "tisco" ? (
+                      <Image
                         src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/tisco.png"
+                          "https://angpaos.games/wp-content/uploads/2023/03/tisco.png"
                         }
                         alt="tisco"
                         width={50}
                         height={50}
-                     />
-                  ) : item.bank_name === "kkba" ? (
-                     <Image
+                      />
+                    ) : item.bank_name === "kkba" ? (
+                      <Image
                         src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/kkba.png"
+                          "https://angpaos.games/wp-content/uploads/2023/03/kkba.png"
                         }
                         alt="kkba"
                         width={50}
                         height={50}
-                     />
-                  ) : item.bank_name === "ibank" ? (
-                     <Image
+                      />
+                    ) : item.bank_name === "ibank" ? (
+                      <Image
                         src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/ibank.png"
+                          "https://angpaos.games/wp-content/uploads/2023/03/ibank.png"
                         }
                         alt="ibank"
                         width={50}
                         height={50}
-                     />
-                  ) : (
-                     ""
-                  )}
+                      />
+                    ) : (
+                      ""
+                    )}
                   </Grid>
                   <Grid sx={{ ml: 2, mt: 1, textAlign: "center" }}>
                     <CopyToClipboard text={item.bank_number}>
@@ -535,7 +600,7 @@ function reportDeposit() {
             },
             {
               field: "username",
-              title: "Username",
+              title: "ชื่อผู้ใช้งาน",
               align: "center",
               render: (item) => (
                 <CopyToClipboard text={item.username}>
@@ -565,6 +630,18 @@ function reportDeposit() {
               align: "center",
               width: '200px'
             },
+
+
+            {
+              field: "credit_before",
+              title: "เครดิตก่อนเติม",
+              align: "center",
+            },
+            {
+              field: "credit_after",
+              title: "เครดิตหลังเติม",
+              align: "center",
+            },
             {
               title: "โบนัส",
               align: "center",
@@ -580,18 +657,11 @@ function reportDeposit() {
                 />
               ),
             },
-
             {
-              field: "credit_before",
-              title: "เครดิตก่อนเติม",
+              field: "status_transction",
+              title: "สถานะทำรายการ",
               align: "center",
             },
-            {
-              field: "credit_after",
-              title: "เครดิตหลังเติม",
-              align: "center",
-            },
-
             {
               field: "transfer_by",
               title: "ทำรายการโดย",

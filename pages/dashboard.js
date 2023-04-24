@@ -309,13 +309,13 @@ function dashboard() {
 
    const textResult = <>
 
-      <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>สมัครสมาชิก </span>{result?.total_member} ยูสเซอร์</Typography>
-      <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>สมัครสมาชิกฝากเงิน</span> {result?.total_credit} บาท</Typography>
-      <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>สมัครสมาชิกฝากเงินรับโบนัส</span> {result?.register_deposit_bonus_total} บาท</Typography>
-      <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>สมัครสมาชิกฝากเงินรับโบนัส</span> {result?.register_deposit_bonus_length} รายการ</Typography>
-      <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>ฝากเงิน</span> {result?.deposit_total} บาท</Typography>
+      <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>สมัครสมาชิก </span>{result?.total_member} รายการ</Typography>
+      <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>สมัครสมาชิกฝากเงิน</span> {Intl.NumberFormat("TH").format(parseInt(result?.total_credit))} บาท</Typography>
+      <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>สมัครสมาชิกฝากเงินรับโบนัส</span> { result?.register_deposit_bonus_total !== "" ? Intl.NumberFormat("TH").format(parseInt(result?.register_deposit_bonus_total)) : '0'} บาท</Typography>
+      <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>สมัครสมาชิกฝากเงินรับโบนัส</span> {result?.register_deposit_bonus_length !== "" ? result?.register_deposit_bonus_length : '0'} รายการ</Typography>
+      <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>ฝากเงิน</span> {Intl.NumberFormat("TH").format(parseInt(result?.deposit_total))} บาท</Typography>
       <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>ฝากเงิน</span> {result?.deposit_length} รายการ</Typography>
-      <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>ฝากถอน</span> {result?.withdraw_total} บาท</Typography>
+      <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>ฝากถอน</span> {Intl.NumberFormat("TH").format(parseInt(result?.withdraw_total))} บาท</Typography>
       <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>ฝากถอน</span> {result?.withdraw_length} รายการ</Typography>
    </>
 

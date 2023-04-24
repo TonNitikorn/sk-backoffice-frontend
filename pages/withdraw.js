@@ -31,8 +31,7 @@ function withdraw() {
     };
 
     const searchUser = async () => {
-        setLoading(true);
-
+        // setLoading(true);
         try {
             let res = await axios({
                 headers: {
@@ -55,7 +54,7 @@ function withdraw() {
                 item.create_at = moment(item.create_at).format('DD/MM/YYYY hh:mm')
             })
             setTransaction(resTran)
-            setLoading(false);
+            // setLoading(false);
         } catch (error) {
             if (
                 error.response.data.error.status_code === 401 &&
@@ -93,8 +92,17 @@ function withdraw() {
                 setRowData({});
                 setDataUser({})
                 searchUser()
-                setLoading(false);
+                
             } else if (!!rowData.amount) {
+                 Swal.fire({
+                    position: "center",
+                    icon: "warning",
+                    title: "ยอดเครดิตไม่เพียงพอ",
+                    showConfirmButton: false,
+                    timer: 2500,
+                });
+            } else {
+               
                 Swal.fire({
                     position: "center",
                     icon: "warning",
@@ -102,15 +110,8 @@ function withdraw() {
                     showConfirmButton: false,
                     timer: 2500,
                 });
-            } else {
-                Swal.fire({
-                    position: "center",
-                    icon: "warning",
-                    title: "ยอดเครดิตไม่เพียงพอ",
-                    showConfirmButton: false,
-                    timer: 2500,
-                });
             }
+            setLoading(false);
         } catch (error) {
             console.log(error);
         }
@@ -149,6 +150,24 @@ function withdraw() {
         //     ),
         // },
         {
+            title: "เครดิตก่อนเติม",
+            field: "credit_before",
+            search: true,
+            // width: "10%",
+            align: "center",
+            render: (item) => (
+                <Chip
+                    label={item.credit_before}
+                    size="small"
+                    style={{
+                        background: "#FFB946",
+                        color: "#ffff",
+                        width: 150
+                    }}
+                />
+            ),
+        },
+        {
             title: "เครดิตหลังเติม",
             field: "credit_after",
             search: true,
@@ -167,26 +186,6 @@ function withdraw() {
                 />
             ),
         },
-        {
-            title: "เครดิตก่อนเติม",
-            field: "credit_before",
-            search: true,
-            // width: "10%",
-            align: "center",
-            render: (item) => (
-                <Chip
-                    label={item.credit_before}
-                    size="small"
-                    style={{
-                        background: "#FFB946",
-                        color: "#ffff",
-                        width: 150
-                    }}
-                />
-            ),
-        },
-
-        
 
         {
             title: "เวลา",
@@ -246,6 +245,7 @@ function withdraw() {
                                 <Button
                                     variant="contained"
                                     fullWidth
+                                    disabled={username === "" ? true : false}
                                     onClick={() => searchUser()}
                                 >
                                     <Typography sx={{ color: '#ffff' }}>ค้นหา</Typography>
