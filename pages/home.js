@@ -59,7 +59,7 @@ function home() {
             let no = 1;
             resData.map((item) => {
                 item.no = no++;
-                item.create_at = moment(item.create_at).format("DD-MM-YYYY hh:mm")
+                item.create_at = moment(item.create_at).format("DD-MM-YYYY HH:mm")
                 item.bank_name = item.members?.bank_name
                 item.bank_number = item.members?.bank_number
                 item.username = item.members?.username

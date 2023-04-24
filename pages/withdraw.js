@@ -9,7 +9,9 @@ import {
     TextField,
     Chip,
     Card,
-    CardContent
+    Snackbar,
+    CardContent,
+    Alert 
 } from "@mui/material";
 import axios from "axios";
 import hostname from "../utils/hostname";
@@ -18,6 +20,7 @@ import withAuth from "../routes/withAuth";
 import moment from "moment/moment";
 import Swal from "sweetalert2";
 import LoadingModal from "../theme/LoadingModal";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 
 function withdraw() {
     const [username, setUsername] = useState("");
@@ -25,7 +28,14 @@ function withdraw() {
     const [rowData, setRowData] = useState({});
     const [loading, setLoading] = useState(false);
     const [transaction, setTransaction] = useState([])
+    const [open, setOpen] = useState(false);
+    const handleClose = (event, reason) => {
+        setOpen(false);
+      };
 
+    const handleClickSnackbar = () => {
+        setOpen(true);
+    };
     const handleChangeData = async (e) => {
         setRowData({ ...rowData, [e.target.name]: e.target.value });
     };
@@ -45,13 +55,12 @@ function withdraw() {
             });
             let userData = res.data
             let lastDataUser = { ...userData, fullname: userData.fname + ' ' + userData.lname }
-
             setDataUser(lastDataUser);
             let resTran = res.data.transaction
             let no = 1
             resTran.map((item) => {
                 item.no = no++;
-                item.create_at = moment(item.create_at).format('DD/MM/YYYY hh:mm')
+                item.create_at = moment(item.create_at).format('DD/MM/YYYY HH:mm')
             })
             setTransaction(resTran)
             // setLoading(false);
@@ -67,11 +76,11 @@ function withdraw() {
             if (
                 error.response.status === 401 &&
                 error.response.data.error.message === "Invalid Token"
-             ) {
+            ) {
                 dispatch(signOut());
                 localStorage.clear();
                 router.push("/auth/login");
-             }
+            }
             console.log(error);
         }
     };
@@ -100,9 +109,9 @@ function withdraw() {
                 setRowData({});
                 setDataUser({})
                 searchUser()
-                
+
             } else if (!!rowData.amount) {
-                 Swal.fire({
+                Swal.fire({
                     position: "center",
                     icon: "warning",
                     title: "ยอดเครดิตไม่เพียงพอ",
@@ -110,7 +119,7 @@ function withdraw() {
                     timer: 2500,
                 });
             } else {
-               
+
                 Swal.fire({
                     position: "center",
                     icon: "warning",
@@ -133,11 +142,11 @@ function withdraw() {
             if (
                 error.response.status === 401 &&
                 error.response.data.error.message === "Invalid Token"
-             ) {
+            ) {
                 dispatch(signOut());
                 localStorage.clear();
                 router.push("/auth/login");
-             }
+            }
         }
     };
 
@@ -149,12 +158,25 @@ function withdraw() {
             width: "10%",
             align: "center",
         },
+   
         {
             title: "เงินฝาก",
             field: "credit",
             search: true,
             // width: "10%",
             align: "center",
+            render: (item) => (
+                <Chip
+                    label={Intl.NumberFormat("TH").format(parseInt(item.credit))}
+                    size="small"
+                    style={{
+                        background: "#41a3e3",
+                        color: "#ffff",
+                        width: 100
+
+                    }}
+                />
+            ),
         },
         // {
         //     title: "โบนัส",
@@ -181,12 +203,12 @@ function withdraw() {
             align: "center",
             render: (item) => (
                 <Chip
-                    label={item.credit_before}
+                    label={Intl.NumberFormat("TH").format(parseInt(item.credit_before))}
                     size="small"
                     style={{
                         background: "#FFB946",
                         color: "#ffff",
-                        width: 150
+                        width: 100
                     }}
                 />
             ),
@@ -199,12 +221,12 @@ function withdraw() {
             align: "center",
             render: (item) => (
                 <Chip
-                    label={item.credit_after}
+                    label={Intl.NumberFormat("TH").format(parseInt(item.credit_after))}
                     size="small"
                     style={{
-                        background: "#00B900",
+                        background: "#0b9f0b",
                         color: "#ffff",
-                        width: 150
+                        width: 100
 
                     }}
                 />
@@ -229,7 +251,7 @@ function withdraw() {
         },
     ];
 
-    useEffect(() => { 
+    useEffect(() => {
         // searchUser()
     }, [dataUser]);
 
@@ -430,6 +452,16 @@ function withdraw() {
                 <MaterialTableForm pageSize={20} data={transaction} columns={columns} />
             </Grid>
             <LoadingModal open={loading} />
+            <Snackbar
+                open={open}
+                autoHideDuration={3000}
+                onClose={handleClose}
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            >
+                <Alert severity="success" sx={{ width: "100%" }}>
+                    Copy success !
+                </Alert>
+            </Snackbar>
         </Layout>
     );
 }

@@ -88,7 +88,7 @@ function reportDeposit() {
       let no = 1;
       transaction.map((item) => {
         item.no = no++;
-        item.create_at = moment(item.create_at).format('DD/MM/YYYY hh:mm')
+        item.create_at = moment(item.create_at).format('DD/MM/YYYY HH:mm')
         item.bank_name = item.members?.bank_name
         item.bank_number = item.members?.bank_number
         item.username = item.members?.username
@@ -330,7 +330,9 @@ function reportDeposit() {
           <Card sx={{ width: 250, bgcolor: '#0072B1', }}>
             <CardContent>
               <Typography variant="h6" sx={{ color: "#eee" }}>จำนวนรายการ</Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", color: "#ffff", mt: 2 }}> {total.totalList} </Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#ffff", mt: 2 }}>
+                {Intl.NumberFormat("TH").format(parseInt(total.totalList))}
+              </Typography>
               <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
             </CardContent>
           </Card>
@@ -338,7 +340,8 @@ function reportDeposit() {
           <Card sx={{ width: 250, bgcolor: "#101D35" }}>
             <CardContent>
               <Typography variant="h6" sx={{ color: "#eee" }}>สถานะสำเร็จ</Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}> {total.totalSuccess}</Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>
+              {Intl.NumberFormat("TH").format(parseInt(total.totalSuccess))}</Typography>
               <Grid sx={{ textAlign: 'right' }}>
                 <Button
                   sx={{ color: "#eee" }}
@@ -352,7 +355,8 @@ function reportDeposit() {
           <Card sx={{ width: 250, bgcolor: "#101D35" }}>
             <CardContent>
               <Typography variant="h6" sx={{ color: "#eee" }}>สถานะยกเลิก</Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}> {total.totalCancel}</Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>
+              {Intl.NumberFormat("TH").format(parseInt(total.totalCancel))} </Typography>
               <Grid sx={{ textAlign: 'right' }}>
                 <Button
                   sx={{ color: "#eee" }}
@@ -366,7 +370,8 @@ function reportDeposit() {
           <Card sx={{ width: 250, bgcolor: "#101D35" }}>
             <CardContent>
               <Typography variant="h6" sx={{ color: "#eee" }}>ยอดรวมเงินสำเร็จ</Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}> {total.sumSuccess}</Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>
+              {Intl.NumberFormat("TH").format(parseInt(total.sumSuccess))}  </Typography>
               <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
             </CardContent>
           </Card>
@@ -374,7 +379,8 @@ function reportDeposit() {
           <Card sx={{ width: 250, bgcolor: "#101D35" }}>
             <CardContent>
               <Typography variant="h6" sx={{ color: "#eee" }}>ยอดรวมเงินยกเลิก</Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}> {total.sumCancel}</Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>
+              {Intl.NumberFormat("TH").format(parseInt(total.sumCancel))}   </Typography>
               <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
             </CardContent>
           </Card>
@@ -659,6 +665,13 @@ function reportDeposit() {
               field: "credit",
               title: "ยอดเงิน",
               align: "center",
+              render: (item) => (
+                <Typography
+                  style={{
+                    fontSize: '14px'
+                  }}
+                >{Intl.NumberFormat("TH").format(parseInt(item.credit))}</Typography>
+              ),
             },
             {
               field: "create_at",
@@ -683,13 +696,27 @@ function reportDeposit() {
 
             {
               field: "credit_before",
-              title: "เครดิตก่อนเติม",
+              title: "เครดิตก่อน",
               align: "center",
+              render: (item) => (
+                <Typography
+                  style={{
+                    fontSize: '14px'
+                  }}
+                >{Intl.NumberFormat("TH").format(parseInt(item.credit_before))}</Typography>
+              ),
             },
             {
               field: "credit_after",
-              title: "เครดิตหลังเติม",
+              title: "เครดิตหลัง",
               align: "center",
+              render: (item) => (
+                <Typography
+                  style={{
+                    fontSize: '14px'
+                  }}
+                >{Intl.NumberFormat("TH").format(parseInt(item.credit_after))}</Typography>
+              ),
             },
             {
               field: "status_transction",

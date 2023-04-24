@@ -106,7 +106,7 @@ function reportError() {
         item.no = noWith++
         // item.transfer_type = item.transfer_type === "DEPOSIT" ? 'เติมเครดิต' : 'ตัดเครดิต'
         item.username = item.members?.username
-        item.create_at = moment(item.create_at).format('DD/MM/YYYY hh:mm')
+        item.create_at = moment(item.create_at).format('DD/MM/YYYY HH:mm')
       })
       setWithdraw(dataWithdraw)
 
@@ -114,7 +114,7 @@ function reportError() {
         item.no = noDepo++
         // item.transfer_type = item.transfer_type === "DEPOSIT" ? 'เติมเครดิต' : 'ตัดเครดิต'
         item.username = item.members?.username
-        item.create_at = moment(item.create_at).format('DD/MM/YYYY hh:mm')
+        item.create_at = moment(item.create_at).format('DD/MM/YYYY HH:mm')
       })
       setDeposit(dataDeposit)
 
@@ -177,22 +177,50 @@ function reportError() {
       field: "amount",
       title: "ยอดเงิน",
       align: "center",
+      render: (item) => (
+        <Typography
+          style={{
+            fontSize: '14px'
+          }}
+        >{Intl.NumberFormat("TH").format(parseInt(item.amount))}</Typography>
+      ),
     },
     {
       field: "credit",
       title: "เครดิตที่ทำรายการ",
       align: "center",
+      render: (item) => (
+        <Typography
+          style={{
+            fontSize: '14px'
+          }}
+        >{Intl.NumberFormat("TH").format(parseInt(item.credit))}</Typography>
+      ),
     },
     {
       field: "credit_before",
       title: "เครดิตก่อนเติม",
       align: "center",
+      render: (item) => (
+        <Typography
+          style={{
+            fontSize: '14px'
+          }}
+        >{Intl.NumberFormat("TH").format(parseInt(item.credit_before))}</Typography>
+      ),
     },
 
     {
       field: "credit_after",
       title: "เครดิตหลังเติม",
       align: "center",
+      render: (item) => (
+        <Typography
+          style={{
+            fontSize: '14px'
+          }}
+        >{Intl.NumberFormat("TH").format(parseInt(item.credit_after))}</Typography>
+      ),
     },
     {
       field: "create_at",

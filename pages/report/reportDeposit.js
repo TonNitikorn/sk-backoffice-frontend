@@ -82,7 +82,7 @@ function reportDeposit() {
       let no = 1;
       transaction.map((item) => {
         item.no = no++;
-        item.create_at = moment(item.create_at).format('DD/MM/YYYY hh:mm')
+        item.create_at = moment(item.create_at).format('DD/MM/YYYY HH:mm')
         item.bank_name = item.members?.bank_name
         item.bank_number = item.members?.bank_number
         item.username = item.members?.username
@@ -158,7 +158,7 @@ function reportDeposit() {
   return (
     <Layout>
       <Paper sx={{ p: 3 }}>
-        <Typography  sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px", mb: 2, }}> รายการฝาก</Typography>
+        <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px", mb: 2, }}> รายการฝาก</Typography>
 
         <Grid container>
           <Grid item={true} xs={12} sx={{ mb: 3 }}>
@@ -277,7 +277,7 @@ function reportDeposit() {
           <Card sx={{ width: 250, bgcolor: "#101D35", }}>
             <CardContent>
               <Typography variant="h6" sx={{ color: "#eee" }}>จำนวนรายการ</Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}> {report.length} </Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>{Intl.NumberFormat("TH").format(parseInt(report.length))} </Typography>
               <Grid sx={{ textAlign: 'right' }}>
                 <Button
                   sx={{ color: "#eee" }}
@@ -631,6 +631,13 @@ function reportDeposit() {
               field: "credit",
               title: "ยอดเงิน",
               align: "center",
+              render: (item) => (
+                <Typography
+                  style={{
+                    fontSize: '14px'
+                  }}
+                >{Intl.NumberFormat("TH").format(parseInt(item.credit))}</Typography>
+              ),
             },
             {
               field: "create_at",
@@ -644,11 +651,25 @@ function reportDeposit() {
               field: "credit_before",
               title: "เครดิตก่อนเติม",
               align: "center",
+              render: (item) => (
+                <Typography
+                  style={{
+                    fontSize: '14px'
+                  }}
+                >{Intl.NumberFormat("TH").format(parseInt(item.credit_before))}</Typography>
+              ),
             },
             {
               field: "credit_after",
               title: "เครดิตหลังเติม",
               align: "center",
+              render: (item) => (
+                <Typography
+                  style={{
+                    fontSize: '14px'
+                  }}
+                >{Intl.NumberFormat("TH").format(parseInt(item.credit_after))}</Typography>
+              ),
             },
             {
               title: "โบนัส",
@@ -669,6 +690,17 @@ function reportDeposit() {
               field: "status_transction",
               title: "สถานะทำรายการ",
               align: "center",
+              render: (item) => (
+                <Chip
+                  label={item.status_transction === "MANUAL" ? "เติมมือ" : "AUTO"}
+                  size="small"
+                  style={{
+                    padding: 10,
+                    backgroundColor: item.status_transction === "MANUAL" ? "#4a5eb3" : "#129A50",
+                    color: "#eee",
+                  }}
+                />
+              ),
             },
             {
               field: "transfer_by",

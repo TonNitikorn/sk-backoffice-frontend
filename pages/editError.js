@@ -118,11 +118,11 @@ function editError() {
       if (
         error.response.status === 401 &&
         error.response.data.error.message === "Invalid Token"
-     ) {
+      ) {
         dispatch(signOut());
         localStorage.clear();
         router.push("/auth/login");
-     }
+      }
       console.log(error);
     }
     setOpen({
@@ -190,11 +190,11 @@ function editError() {
       if (
         error.response.status === 401 &&
         error.response.data.error.message === "Invalid Token"
-     ) {
+      ) {
         dispatch(signOut());
         localStorage.clear();
         router.push("/auth/login");
-     }
+      }
     }
   };
 
@@ -252,11 +252,11 @@ function editError() {
         if (
           error.response.status === 401 &&
           error.response.data.error.message === "Invalid Token"
-       ) {
+        ) {
           dispatch(signOut());
           localStorage.clear();
           router.push("/auth/login");
-       }
+        }
       }
     }
 
@@ -365,11 +365,11 @@ function editError() {
       if (
         error.response.status === 401 &&
         error.response.data.error.message === "Invalid Token"
-     ) {
+      ) {
         dispatch(signOut());
         localStorage.clear();
         router.push("/auth/login");
-     }
+      }
     }
   };
   useEffect(() => {
@@ -553,18 +553,18 @@ function editError() {
                     <MenuItem value="อื่นๆ" onChange={() => setComment(1)}>อื่นๆ</MenuItem>
                   </TextField>
                   {rowData.annotationWithdraw === "อื่นๆ" ?
-                  <TextField
-                    name="amountWithdraw"
-                    type="number"
-                    fullWidth
-                    disabled={type === 1}
-                    value={rowData.amountWithdraw || ""}
-                    size="small"
-                    placeholder="จำนวนเครดิต"
-                    onChange={(e) => handleChangeData(e)}
-                    variant="outlined"
-                  />
-                : ''}
+                    <TextField
+                      name="amountWithdraw"
+                      type="number"
+                      fullWidth
+                      disabled={type === 1}
+                      value={rowData.amountWithdraw || ""}
+                      size="small"
+                      placeholder="จำนวนเครดิต"
+                      onChange={(e) => handleChangeData(e)}
+                      variant="outlined"
+                    />
+                    : ''}
                   <Button
                     variant="contained"
                     fullWidth
@@ -941,7 +941,7 @@ function editError() {
           <Card sx={{ width: 400, bgcolor: "#101D35", }}>
             <CardContent>
               <Typography variant="h5" sx={{ color: "#eee" }}>เติมเครดิต</Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {total.sumDeposit || 0} </Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}> {Intl.NumberFormat("TH").format(parseInt(total.sumDeposit || 0))}  </Typography>
               <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
             </CardContent>
           </Card>
@@ -949,7 +949,7 @@ function editError() {
           <Card sx={{ width: 400, bgcolor: "#101D35", }}>
             <CardContent>
               <Typography variant="h5" sx={{ color: "#eee" }}>ตัดเครดิต</Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {total.sumWithdraw || 0} </Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}> {Intl.NumberFormat("TH").format(parseInt(total.sumWithdraw || 0))} </Typography>
               <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
             </CardContent>
           </Card>
@@ -957,7 +957,7 @@ function editError() {
           <Card sx={{ width: 400, bgcolor: "#101D35", }}>
             <CardContent>
               <Typography variant="h5" sx={{ color: "#eee" }}>เพิ่มเครดิตโปรโมชั่น</Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {addCreditTotal || 0} </Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}> {Intl.NumberFormat("TH").format(parseInt(total.addCreditTotal || 0))} </Typography>
               <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
             </CardContent>
           </Card>
@@ -1439,7 +1439,7 @@ function editError() {
                     ? Intl.NumberFormat("THB").format(parseInt(dataUser.credit) - parseInt(rowData.amountWithdraw))
                     : Intl.NumberFormat("THB").format(parseInt(dataUser.credit) + parseInt(rowData.amountDeposit))
                 }</Typography>
-                <Typography>{moment().format("DD/MM/YYYY hh:mm")}</Typography>
+                <Typography>{moment().format("DD/MM/YYYY HH:mm")}</Typography>
                 <Typography>{rowData.annotationDeposit}</Typography>
               </Stack>
             </Grid>
