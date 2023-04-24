@@ -142,6 +142,14 @@ function reportDeposit() {
         localStorage.clear();
         router.push("/auth/login");
       }
+      if (
+        error.response.status === 401 &&
+        error.response.data.error.message === "Invalid Token"
+      ) {
+        dispatch(signOut());
+        localStorage.clear();
+        router.push("/auth/login");
+      }
     }
   };
 
@@ -169,7 +177,7 @@ function reportDeposit() {
         <Typography
           sx={{
             fontSize: "24px",
-            textDecoration: "underline #129A50 3px",
+            textDecoration: "underline #41A3E3 3px",
             mb: 2,
           }}
         >

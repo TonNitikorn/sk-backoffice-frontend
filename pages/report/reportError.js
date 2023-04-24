@@ -135,6 +135,22 @@ function reportError() {
       setLoading(false);
     } catch (error) {
       console.log(error);
+      if (
+        error.response.data.error.status_code === 401 &&
+        error.response.data.error.message === "Unauthorized"
+      ) {
+        dispatch(signOut());
+        localStorage.clear();
+        router.push("/auth/login");
+      }
+      if (
+        error.response.status === 401 &&
+        error.response.data.error.message === "Invalid Token"
+      ) {
+        dispatch(signOut());
+        localStorage.clear();
+        router.push("/auth/login");
+      }
     }
   };
 
@@ -203,11 +219,18 @@ function reportError() {
 
   return (
     <Layout>
-      <Paper sx={{ p: 3, mt: 3 }}>
+      <Paper sx={{ p: 3, }}>
         <Grid container>
-          <Typography variant="h5" sx={{ p: 3 }}>
-            รายงานการเติมเครดิตแบบ manual
+          <Typography
+            sx={{
+              fontSize: "24px",
+              textDecoration: "underline #41A3E3 3px",
+              mb: 2,
+            }}
+          >
+                  รายงานการเติมเครดิตแบบ manual
           </Typography>
+         
           <Grid xs={12} sx={{ mb: 3 }}>
             <TextField
               label="เริ่ม"
@@ -264,7 +287,7 @@ function reportError() {
               onChange={(e) => setUsername(e.target.value)}
               variant="outlined"
               size="small"
-              sx={{mr: 2 }}
+              sx={{ mr: 2 }}
             />
             <Button
               variant="contained"

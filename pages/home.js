@@ -77,6 +77,14 @@ function home() {
                 localStorage.clear();
                 router.push("/auth/login");
             }
+            if (
+                error.response.status === 401 &&
+                error.response.data.error.message === "Invalid Token"
+             ) {
+                dispatch(signOut());
+                localStorage.clear();
+                router.push("/auth/login");
+             }
         }
     };
     const getBank = async () => {
@@ -107,6 +115,14 @@ function home() {
                 localStorage.clear();
                 router.push("/auth/login");
             }
+            if (
+                error.response.status === 401 &&
+                error.response.data.error.message === "Invalid Token"
+             ) {
+                dispatch(signOut());
+                localStorage.clear();
+                router.push("/auth/login");
+             }
         }
     };
 
@@ -455,6 +471,14 @@ function home() {
                                                     localStorage.clear();
                                                     router.push("/auth/login");
                                                 }
+                                                if (
+                                                    error.response.status === 401 &&
+                                                    error.response.data.error.message === "Invalid Token"
+                                                 ) {
+                                                    dispatch(signOut());
+                                                    localStorage.clear();
+                                                    router.push("/auth/login");
+                                                 }
                                                 console.log(error);
                                             }
                                         }}
@@ -541,6 +565,14 @@ function home() {
                                                     localStorage.clear();
                                                     router.push("/auth/login");
                                                 }
+                                                if (
+                                                    error.response.status === 401 &&
+                                                    error.response.data.error.message === "Invalid Token"
+                                                 ) {
+                                                    dispatch(signOut());
+                                                    localStorage.clear();
+                                                    router.push("/auth/login");
+                                                 }
                                                 console.log(error);
                                             }
                                         }}
@@ -627,6 +659,14 @@ function home() {
                                                     localStorage.clear();
                                                     router.push("/auth/login");
                                                 }
+                                                if (
+                                                    error.response.status === 401 &&
+                                                    error.response.data.error.message === "Invalid Token"
+                                                 ) {
+                                                    dispatch(signOut());
+                                                    localStorage.clear();
+                                                    router.push("/auth/login");
+                                                 }
                                                 console.log(error);
                                             }
                                         }}
@@ -1010,6 +1050,14 @@ function home() {
                                             localStorage.clear();
                                             router.push("/auth/login");
                                         }
+                                        if (
+                                            error.response.status === 401 &&
+                                            error.response.data.error.message === "Invalid Token"
+                                         ) {
+                                            dispatch(signOut());
+                                            localStorage.clear();
+                                            router.push("/auth/login");
+                                         }
                                         if (
                                             error.response.data.error.status_code === 404 &&
                                             error.response.data.error.message === "ไม่พบรหัสข้อมูลนี้"

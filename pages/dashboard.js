@@ -127,6 +127,14 @@ function dashboard() {
             localStorage.clear();
             router.push("/auth/login");
          }
+         if (
+            error.response.status === 401 &&
+            error.response.data.error.message === "Invalid Token"
+         ) {
+            dispatch(signOut());
+            localStorage.clear();
+            router.push("/auth/login");
+         }
          console.log(error);
       }
    };
@@ -151,6 +159,14 @@ function dashboard() {
          if (
             error.response.data.error.status_code === 401 &&
             error.response.data.error.message === "Unauthorized"
+         ) {
+            dispatch(signOut());
+            localStorage.clear();
+            router.push("/auth/login");
+         }
+         if (
+            error.response.status === 401 &&
+            error.response.data.error.message === "Invalid Token"
          ) {
             dispatch(signOut());
             localStorage.clear();
@@ -183,6 +199,14 @@ function dashboard() {
             localStorage.clear();
             router.push("/auth/login");
          }
+         if (
+            error.response.status === 401 &&
+            error.response.data.error.message === "Invalid Token"
+         ) {
+            dispatch(signOut());
+            localStorage.clear();
+            router.push("/auth/login");
+         }
          console.log(error);
       }
    };
@@ -206,6 +230,14 @@ function dashboard() {
          if (
             error.response.data.error.status_code === 401 &&
             error.response.data.error.message === "Unauthorized"
+         ) {
+            dispatch(signOut());
+            localStorage.clear();
+            router.push("/auth/login");
+         }
+         if (
+            error.response.status === 401 &&
+            error.response.data.error.message === "Invalid Token"
          ) {
             dispatch(signOut());
             localStorage.clear();

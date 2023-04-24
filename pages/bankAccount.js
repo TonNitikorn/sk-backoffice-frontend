@@ -114,6 +114,14 @@ function bankAccount() {
         localStorage.clear();
         router.push("/auth/login");
       }
+      if (
+        error.response.status === 401 &&
+        error.response.data.error.message === "Invalid Token"
+      ) {
+        dispatch(signOut());
+        localStorage.clear();
+        router.push("/auth/login");
+      }
     }
   };
 
@@ -171,6 +179,14 @@ function bankAccount() {
         localStorage.clear();
         router.push("/auth/login");
       }
+      if (
+        error.response.status === 401 &&
+        error.response.data.error.message === "Invalid Token"
+      ) {
+        dispatch(signOut());
+        localStorage.clear();
+        router.push("/auth/login");
+      }
     }
   };
 
@@ -223,6 +239,14 @@ function bankAccount() {
       if (
         error.response.data.error.status_code === 401 &&
         error.response.data.error.message === "Unauthorized"
+      ) {
+        dispatch(signOut());
+        localStorage.clear();
+        router.push("/auth/login");
+      }
+      if (
+        error.response.status === 401 &&
+        error.response.data.error.message === "Invalid Token"
       ) {
         dispatch(signOut());
         localStorage.clear();
@@ -580,6 +604,22 @@ function bankAccount() {
                       }
                     } catch (error) {
                       console.log(error);
+                      if (
+                        error.response.data.error.status_code === 401 &&
+                        error.response.data.error.message === "Unauthorized"
+                      ) {
+                        dispatch(signOut());
+                        localStorage.clear();
+                        router.push("/auth/login");
+                      }
+                      if (
+                        error.response.status === 401 &&
+                        error.response.data.error.message === "Invalid Token"
+                      ) {
+                        dispatch(signOut());
+                        localStorage.clear();
+                        router.push("/auth/login");
+                      }
                     }
                   }
                 });

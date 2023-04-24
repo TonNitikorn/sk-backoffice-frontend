@@ -115,6 +115,14 @@ function editError() {
         localStorage.clear();
         router.push("/auth/login");
       }
+      if (
+        error.response.status === 401 &&
+        error.response.data.error.message === "Invalid Token"
+     ) {
+        dispatch(signOut());
+        localStorage.clear();
+        router.push("/auth/login");
+     }
       console.log(error);
     }
     setOpen({
@@ -171,6 +179,22 @@ function editError() {
       setLoading(false);
     } catch (error) {
       console.log(error);
+      if (
+        error.response.data.error.status_code === 401 &&
+        error.response.data.error.message === "Unauthorized"
+      ) {
+        dispatch(signOut());
+        localStorage.clear();
+        router.push("/auth/login");
+      }
+      if (
+        error.response.status === 401 &&
+        error.response.data.error.message === "Invalid Token"
+     ) {
+        dispatch(signOut());
+        localStorage.clear();
+        router.push("/auth/login");
+     }
     }
   };
 
@@ -217,6 +241,22 @@ function editError() {
         }
       } catch (error) {
         console.log(error);
+        if (
+          error.response.data.error.status_code === 401 &&
+          error.response.data.error.message === "Unauthorized"
+        ) {
+          dispatch(signOut());
+          localStorage.clear();
+          router.push("/auth/login");
+        }
+        if (
+          error.response.status === 401 &&
+          error.response.data.error.message === "Invalid Token"
+       ) {
+          dispatch(signOut());
+          localStorage.clear();
+          router.push("/auth/login");
+       }
       }
     }
 
@@ -314,6 +354,22 @@ function editError() {
       }
     } catch (error) {
       console.log(error);
+      if (
+        error.response.data.error.status_code === 401 &&
+        error.response.data.error.message === "Unauthorized"
+      ) {
+        dispatch(signOut());
+        localStorage.clear();
+        router.push("/auth/login");
+      }
+      if (
+        error.response.status === 401 &&
+        error.response.data.error.message === "Invalid Token"
+     ) {
+        dispatch(signOut());
+        localStorage.clear();
+        router.push("/auth/login");
+     }
     }
   };
   useEffect(() => {

@@ -131,14 +131,22 @@ function reportDeposit() {
       setLoading(false);
     } catch (error) {
       console.log(error);
-      // if (
-      //   error.response.data.error.status_code === 401 &&
-      //   error.response.data.error.message === "Unauthorized"
-      // ) {
-      //   dispatch(signOut());
-      //   localStorage.clear();
-      //   router.push("/auth/login");
-      // }
+      if (
+        error.response.data.error.status_code === 401 &&
+        error.response.data.error.message === "Unauthorized"
+      ) {
+        dispatch(signOut());
+        localStorage.clear();
+        router.push("/auth/login");
+      }
+      if (
+        error.response.status === 401 &&
+        error.response.data.error.message === "Invalid Token"
+      ) {
+        dispatch(signOut());
+        localStorage.clear();
+        router.push("/auth/login");
+      }
     }
   };
 
@@ -150,7 +158,7 @@ function reportDeposit() {
   return (
     <Layout>
       <Paper sx={{ p: 3 }}>
-        <Typography  sx={{ fontSize: "24px", textDecoration: "underline #129A50 3px", mb: 2, }}> รายการฝาก</Typography>
+        <Typography  sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px", mb: 2, }}> รายการฝาก</Typography>
 
         <Grid container>
           <Grid item={true} xs={12} sx={{ mb: 3 }}>
