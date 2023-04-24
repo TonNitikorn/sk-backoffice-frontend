@@ -17,11 +17,11 @@ export default function LoadingModal(props) {
         position: "relative",
       }}>
         <Fab aria-label="save" color="neutral">
-          <Image
-            src={logo_angpao}
+          <img
+            src={"https://angpaos.games/wp-content/uploads/2023/04/Angpaos-Logo1.png"}
             alt="mascot"
-            width={120}
-            height={65}
+            width="40px"
+            height="35px"
           />
         </Fab>
         <CircularProgress
