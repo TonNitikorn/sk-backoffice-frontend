@@ -288,9 +288,9 @@ function reportDeposit() {
             </CardContent>
           </Card>
 
-          <Card sx={{ width: 250, bgcolor: "#101D35", }}>
+          <Card sx={{ width: 250, bgcolor: "#101D35", }} >
             <CardContent>
-              <Typography variant="h6" sx={{ color: "#eee" }}>รายการฝากแบบเติมให้</Typography>
+              <Typography variant="h6" sx={{ color: "#eee" }}>รายการฝากแบบเติมมือ</Typography>
               <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {Intl.NumberFormat("THB").format(typeList.typeManual?.length)} </Typography>
               <Grid sx={{ textAlign: 'right' }}>
                 <Button
@@ -324,13 +324,13 @@ function reportDeposit() {
 
           <Card sx={{ width: 250, bgcolor: "#101D35", }}>
             <CardContent>
-              <Typography variant="h6" sx={{ color: "#eee" }}>ยอดรวมฝากแบบเติมให้</Typography>
+              <Typography variant="h6" sx={{ color: "#eee" }}>ยอดรวมฝากแบบเติมมือ</Typography>
               <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}> {Intl.NumberFormat("THB").format(typeList.sumManual)}</Typography>
               <Grid sx={{ textAlign: 'right' }}>
                 <Button
                   sx={{ color: "#eee" }}
                   onClick={() => { }}>
-                  <Typography >เครดิต</Typography>
+                  <Typography >บาท</Typography>
                 </Button>
               </Grid>
 
@@ -345,7 +345,7 @@ function reportDeposit() {
                 <Button
                   sx={{ color: "#eee" }}
                   onClick={() => { }}>
-                  <Typography >เครดิต</Typography>
+                  <Typography >บาท</Typography>
                 </Button>
               </Grid>
             </CardContent>
