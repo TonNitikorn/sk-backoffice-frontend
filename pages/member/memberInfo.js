@@ -51,6 +51,7 @@ function memberInfo() {
   // const [rowData, setRowData] = useState()
   const [loading, setLoading] = useState(false)
   const [username, setUsername] = useState()
+  const [transaction, setTransaction] = useState([])
 
   const getMember = async (type, start, end) => {
     setLoading(true);
@@ -62,12 +63,12 @@ function memberInfo() {
         method: "post",
         url: `${hostname}/member/get_member`,
         data: {
-          // username : username
-          uuid: "56b816e1-4350-42f9-b582-cd084dc418da"
+          username : username
         }
       });
 
       let resData = res.data;
+      console.log('resData', resData)
       // let no = 1;
       // resData.map((item) => {
       //   item.no = no++;
@@ -167,31 +168,6 @@ function memberInfo() {
       align: "center",
     },
   ];
-
-  const data = [
-    {
-      no: 1,
-      type: "deposit",
-      amount: 1000,
-      credit_before: 0,
-      credit_after: 1000,
-      create_date: "2023-01-18 23:59",
-      create_by: 'Admin Ton',
-      annotation: '-',
-      ref: 'adxx'
-    },
-    {
-      no: 2,
-      type: "withdraw",
-      amount: 500,
-      credit_before: 500,
-      credit_after: 0,
-      create_date: "2023-01-18 20:30",
-      create_by: 'Admin Ton',
-      annotation: '-',
-      ref: 'adxx'
-    }
-  ]
 
 
   return (
@@ -391,7 +367,7 @@ function memberInfo() {
         </Grid>
       </Paper>
 
-      <MaterialTableForm data={data} columns={columns} pageSize="10" title="รายชื่อลูกค้า" />
+      <MaterialTableForm data={transaction} columns={columns} pageSize="10" title="รายชื่อลูกค้า" />
 
       <LoadingModal open={loading} />
     </Layout>

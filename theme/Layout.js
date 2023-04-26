@@ -71,6 +71,11 @@ function Layout({ children, page }) {
         rank: !open.rank,
       });
     }
+    if (id === "bank") {
+      setOpen({
+        bank: !open.bank,
+      });
+    }
   };
 
   return (
@@ -132,7 +137,9 @@ function Layout({ children, page }) {
                     {item.id === "member" ? open.member ? <ExpandLess /> : <ExpandMore /> :
                       item.id === "point" ? open.point ? <ExpandLess /> : <ExpandMore /> :
                         item.id === "report" ? open.report ? <ExpandLess /> : <ExpandMore /> :
-                          item.id === "rank" ? open.rank ? <ExpandLess /> : <ExpandMore /> : ''}
+                          item.id === "rank" ? open.rank ? <ExpandLess /> : <ExpandMore /> :
+                            item.id === "bank" ? open.bank ? <ExpandLess /> : <ExpandMore /> : ''}
+
                   </ListItemButton>
 
                   <Collapse in={open.member} timeout="auto" unmountOnExit>
@@ -152,6 +159,7 @@ function Layout({ children, page }) {
                       </List>
                     ))}
                   </Collapse>
+
                   <Collapse in={open.point} timeout="auto" unmountOnExit>
                     {item.point?.map((e) => (
                       <List component="div" disablePadding>
@@ -164,6 +172,7 @@ function Layout({ children, page }) {
                       </List>
                     ))}
                   </Collapse>
+
                   <Collapse in={open.report} timeout="auto" unmountOnExit>
                     {item.report?.map((e) => (
                       <List component="div" disablePadding>
@@ -176,6 +185,20 @@ function Layout({ children, page }) {
                       </List>
                     ))}
                   </Collapse>
+
+                  <Collapse in={open.bank} timeout="auto" unmountOnExit>
+                    {item.bank?.map((e) => (
+                      <List component="div" disablePadding>
+                        <ListItemButton sx={{ pl: 4 }} onClick={() => router.push(e.link)}>
+                          <ListItemIcon>
+                            {e.icon}
+                          </ListItemIcon>
+                          <ListItemText primary={e.name} />
+                        </ListItemButton>
+                      </List>
+                    ))}
+                  </Collapse>
+
                 </>
               ) : (
                 <ListItem key={item} disablePadding>

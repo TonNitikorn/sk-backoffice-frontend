@@ -26,7 +26,7 @@ export const menuSuperAdmin = [
   },
   
   {
-    name: "เติมเครดิตแบบ manual",
+    name: "จัดการเครดิต",
     link: "/editError",
     icon: <EditLocationAltIcon />,
   },
@@ -73,8 +73,27 @@ export const menuSuperAdmin = [
   
   {
     name: "บัญชีธนาคาร",
-    link: "/bankAccount",
+    // link: "/bankAccount",
     icon: <AccountBalanceIcon />,
+    type: 'collapse',
+    id: 'bank',
+    bank:[
+      {
+        name: "บัญชีทั้งหมด",
+        link: "/bankAccount",
+        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
+      },
+      {
+        name: "บัญชีฝาก",
+        link: "/bank/bankDeposit",
+        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
+      },
+      {
+        name: "บัญชีถอน",
+        link: "/bank/bankWithdraw",
+        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
+      },
+    ]
   },
   // {
   //   name: "โปรโมชัน",

@@ -26,23 +26,12 @@ import axios from "axios";
 import hostname from "../../utils/hostname";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import Image from "next/image";
-// import { makeStyles } from "@mui/styles";
 import withAuth from "../../routes/withAuth";
 import LoadingModal from "../../theme/LoadingModal";
 import ManageSearchIcon from "@mui/icons-material/ManageSearch";
 import { useTheme } from '@mui/material/styles';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-// const useStyles = makeStyles({
-//   copy: {
-//     "& .MuiButton-text": {
-//       "&:hover": {
-//         // backgroundColor: "#9CE1BC",
-//         // color: "blue",
-//         textDecoration: "underline blue 1px",
-//       },
-//     },
-//   },
-// });
+
 
 function reportDeposit() {
   // const classes = useStyles();
@@ -57,7 +46,8 @@ function reportDeposit() {
   const [loading, setLoading] = useState(false);
   const [openDialogView, setOpenDialogView] = useState(false);
   const [total, setTotal] = useState({})
-  const [filter, setFilter] = useState([]);
+  const [filterSuccess, setFilterSuccess] = useState([]);
+  const [filterCancel, setFilterCancel] = useState([])
 
   const handleClickSnackbar = () => {
     setOpen(true);
@@ -83,7 +73,6 @@ function reportDeposit() {
         }
       });
 
-      let resData = res.data;
       let transaction = res.data.transaction
       let no = 1;
       transaction.map((item) => {
@@ -94,41 +83,7 @@ function reportDeposit() {
         item.username = item.members?.username
       });
 
-      let dataSuccess = transaction.filter((item) => item.status_transction === 'SUCCESS')
-      let dataCancel = transaction.filter((item) => item.status_transction === 'CANCEL')
-
-
-      let sumSuccess = []
-      for (const item of dataSuccess) {
-        sumSuccess.push(parseInt(item.credit))
-      }
-      let success = sumSuccess.reduce((a, b) => a + b, 0)
-
-      let sumCancel = []
-      for (const item of dataCancel) {
-        sumCancel.push(parseInt(item.credit))
-      }
-      let cancel = sumCancel.reduce((a, b) => a + b, 0)
-
-
-
-      let sumPrice = 0
-      let price = []
-      for (const item of transaction) {
-        price.push(item.amount)
-      }
-      sumPrice = price.reduce((a, b) => a + b, 0)
-
-      setTotal({
-        totalList: transaction.length,
-        sumPrice: Intl.NumberFormat("TH").format(parseInt(parseInt(sumPrice))),
-        sumCredit: Intl.NumberFormat("TH").format(parseInt(parseInt(res.data.sumCredit))),
-        totalSuccess: dataSuccess.length,
-        totalCancel: dataCancel.length,
-        sumSuccess: Intl.NumberFormat("TH").format(parseInt(success)),
-        sumCancel: Intl.NumberFormat("TH").format(parseInt(cancel))
-      })
-
+      sumData(transaction, res.data.sumCredit)
       setReport(transaction);
 
       setLoading(false);
@@ -153,18 +108,53 @@ function reportDeposit() {
     }
   };
 
-  const filterData = (type) => {
-    if (type === "success") {
-      // getReport()
-      let data = report.filter((item) => item.status_transction === "SUCCESS")
-      setReport(data)
-    }
-    if (type === "cancel") {
-      // getReport()
-      let data = report.filter((item) => item.status_transction === "CANCEL")
-      setReport(data)
+  const sumData = (transaction, sumCredit) => {
+    let dataSuccess = transaction.filter((item) => item.status_transction === 'SUCCESS')
+    let dataCancel = transaction.filter((item) => item.status_transction === 'CANCEL')
+    let sumSuccess = []
+    let sumCancel = []
+    let sumPrice = 0
+    let price = []
+
+    for (const item of dataSuccess) {
+      sumSuccess.push(parseInt(item.credit))
     }
 
+    let success = sumSuccess.reduce((a, b) => a + b, 0)
+
+    for (const item of dataCancel) {
+      sumCancel.push(parseInt(item.credit))
+    }
+
+    let cancel = sumCancel.reduce((a, b) => a + b, 0)
+
+    for (const item of transaction) {
+      price.push(item.amount)
+    }
+    sumPrice = price.reduce((a, b) => a + b, 0)
+
+    setTotal({
+      totalList: transaction.length,
+      sumPrice: Intl.NumberFormat("TH").format(parseInt(parseInt(sumPrice))),
+      sumCredit: Intl.NumberFormat("TH").format(parseInt(parseInt(sumCredit))),
+      totalSuccess: dataSuccess.length,
+      totalCancel: dataCancel.length,
+      sumSuccess: Intl.NumberFormat("TH").format(parseInt(success)),
+      sumCancel: Intl.NumberFormat("TH").format(parseInt(cancel))
+    })
+  }
+
+  const filterData = (type) => {
+    if (type === "success") {
+      setFilterCancel([])
+      let data = report.filter((item) => item.status_transction === "SUCCESS")
+      setFilterSuccess(data)
+    }
+    if (type === "cancel") {
+      setFilterSuccess([])
+      let data = report.filter((item) => item.status_transction === "CANCEL")
+      setFilterCancel(data)
+    }
   }
 
   useEffect(() => {
@@ -275,30 +265,12 @@ function reportDeposit() {
               color="primary"
               size="large"
               onClick={() => {
+                setFilterSuccess([])
+                setFilterCancel([])
                 getReport();
               }}
             >
               <Typography sx={{ color: '#ffff' }}>ค้นหา</Typography>
-            </Button>
-            <Button
-              variant="contained"
-              style={{
-                marginRight: "8px",
-                marginTop: "8px",
-                backgroundColor: "#FFB946",
-              }}
-              size="large"
-              onClick={async () => {
-                let start = moment()
-                  .subtract(1, "days")
-                  .format("YYYY-MM-DD 00:00");
-                let end = moment()
-                  .subtract(1, "days")
-                  .format("YYYY-MM-DD 23:59");
-                getReport("yesterday", start, end);
-              }}
-            >
-              <Typography sx={{ color: '#ffff' }}>เมื่อวาน</Typography>
             </Button>
             <Button
               variant="contained"
@@ -311,11 +283,32 @@ function reportDeposit() {
               onClick={async () => {
                 let start = moment().format("YYYY-MM-DD 00:00");
                 let end = moment().format("YYYY-MM-DD 23:59");
+                setFilterSuccess([])
+                setFilterCancel([])
                 getReport("today", start, end);
               }}
             >
               <Typography sx={{ color: '#ffff' }}>วันนี้</Typography>
             </Button>
+            <Button
+              variant="contained"
+              style={{
+                marginRight: "8px",
+                marginTop: "8px",
+                backgroundColor: "#FFB946",
+              }}
+              size="large"
+              onClick={async () => {
+                let start = moment().subtract(1, "days").format("YYYY-MM-DD 00:00");
+                let end = moment().subtract(1, "days").format("YYYY-MM-DD 23:59");
+                setFilterSuccess([])
+                setFilterCancel([])
+                getReport("yesterday", start, end);
+              }}
+            >
+              <Typography sx={{ color: '#ffff' }}>เมื่อวาน</Typography>
+            </Button>
+
           </Grid>
         </Grid>
 
@@ -333,7 +326,12 @@ function reportDeposit() {
               <Typography variant="h5" sx={{ textAlign: "center", color: "#ffff", mt: 2 }}>
                 {Intl.NumberFormat("TH").format(parseInt(total.totalList))}
               </Typography>
-              <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
+              <Grid sx={{ textAlign: 'right' }}>
+                <Button
+                  sx={{ color: "#eee" }}>
+                  <Typography>เครดิต</Typography>
+                </Button>
+              </Grid>
             </CardContent>
           </Card>
 
@@ -341,7 +339,7 @@ function reportDeposit() {
             <CardContent>
               <Typography variant="h6" sx={{ color: "#eee" }}>สถานะสำเร็จ</Typography>
               <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>
-              {Intl.NumberFormat("TH").format(parseInt(total.totalSuccess))}</Typography>
+                {Intl.NumberFormat("TH").format(parseInt(total.totalSuccess))}</Typography>
               <Grid sx={{ textAlign: 'right' }}>
                 <Button
                   sx={{ color: "#eee" }}
@@ -356,7 +354,7 @@ function reportDeposit() {
             <CardContent>
               <Typography variant="h6" sx={{ color: "#eee" }}>สถานะยกเลิก</Typography>
               <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>
-              {Intl.NumberFormat("TH").format(parseInt(total.totalCancel))} </Typography>
+                {Intl.NumberFormat("TH").format(parseInt(total.totalCancel))} </Typography>
               <Grid sx={{ textAlign: 'right' }}>
                 <Button
                   sx={{ color: "#eee" }}
@@ -371,8 +369,13 @@ function reportDeposit() {
             <CardContent>
               <Typography variant="h6" sx={{ color: "#eee" }}>ยอดรวมเงินสำเร็จ</Typography>
               <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>
-              {Intl.NumberFormat("TH").format(parseInt(total.sumSuccess))}  </Typography>
-              <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
+                {Intl.NumberFormat("TH").format(parseInt(total.sumSuccess))}  </Typography>
+              <Grid sx={{ textAlign: 'right' }}>
+                <Button
+                  sx={{ color: "#eee" }}>
+                  <Typography>เครดิต</Typography>
+                </Button>
+              </Grid>
             </CardContent>
           </Card>
 
@@ -380,8 +383,13 @@ function reportDeposit() {
             <CardContent>
               <Typography variant="h6" sx={{ color: "#eee" }}>ยอดรวมเงินยกเลิก</Typography>
               <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>
-              {Intl.NumberFormat("TH").format(parseInt(total.sumCancel))}   </Typography>
-              <Typography sx={{ color: "#eee", textAlign: "right" }}>เครดิต</Typography>
+                {Intl.NumberFormat("TH").format(parseInt(total.sumCancel))}   </Typography>
+              <Grid sx={{ textAlign: 'right' }}>
+                <Button
+                  sx={{ color: "#eee" }}>
+                  <Typography>เครดิต</Typography>
+                </Button>
+              </Grid>
             </CardContent>
           </Card>
 
@@ -392,9 +400,7 @@ function reportDeposit() {
 
         <MaterialTableForm
           pageSize={10}
-          // actions={actions}
-          data={report}
-          // setData={setDataPurpose}
+          data={filterSuccess.length > 0 ? filterSuccess : filterCancel.length > 0 ? filterCancel : report}
           columns={[
             {
               field: "no",
