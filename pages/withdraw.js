@@ -11,7 +11,7 @@ import {
     Card,
     Snackbar,
     CardContent,
-    Alert 
+    Alert
 } from "@mui/material";
 import axios from "axios";
 import hostname from "../utils/hostname";
@@ -31,7 +31,7 @@ function withdraw() {
     const [open, setOpen] = useState(false);
     const handleClose = (event, reason) => {
         setOpen(false);
-      };
+    };
 
     const handleClickSnackbar = () => {
         setOpen(true);
@@ -158,7 +158,7 @@ function withdraw() {
             width: "10%",
             align: "center",
         },
-   
+
         {
             title: "เงินฝาก",
             field: "credit",
@@ -376,6 +376,11 @@ function withdraw() {
                                         onChange={(e) => handleChangeData(e)}
                                         variant="outlined"
                                         sx={{ mb: 3 }}
+                                        InputProps={{
+                                            inputProps: {
+                                                min: 0
+                                            }
+                                        }}
                                     // disabled
                                     />{" "}
                                     <Box sx={{ textAlign: "right" }}>
