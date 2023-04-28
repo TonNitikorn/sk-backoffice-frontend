@@ -399,6 +399,11 @@ function withdraw() {
                                         onChange={(e) => handleChangeData(e)}
                                         variant="outlined"
                                         sx={{ mb: 3 }}
+                                        InputProps={{
+                                            inputProps: {
+                                                min: 0
+                                            }
+                                        }}
                                     // disabled
                                     />{" "}
                                     <Box sx={{ textAlign: "right" }}>

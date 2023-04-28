@@ -343,7 +343,7 @@ function dashboard() {
 
       <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>สมัครสมาชิก </span>{result?.total_member} รายการ</Typography>
       <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>สมัครสมาชิกฝากเงิน</span> {Intl.NumberFormat("TH").format(parseInt(result?.total_credit))} บาท</Typography>
-      <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>สมัครสมาชิกฝากเงินรับโบนัส</span> { result?.register_deposit_bonus_total !== "" ? Intl.NumberFormat("TH").format(parseInt(result?.register_deposit_bonus_total)) : '0'} บาท</Typography>
+      <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>สมัครสมาชิกฝากเงินรับโบนัส</span> {result?.register_deposit_bonus_total !== "" ? Intl.NumberFormat("TH").format(parseInt(result?.register_deposit_bonus_total)) : '0'} บาท</Typography>
       <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>สมัครสมาชิกฝากเงินรับโบนัส</span> {result?.register_deposit_bonus_length !== "" ? result?.register_deposit_bonus_length : '0'} รายการ</Typography>
       <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>ฝากเงิน</span> {Intl.NumberFormat("TH").format(parseInt(result?.deposit_total))} บาท</Typography>
       <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>ฝากเงิน</span> {result?.deposit_length} รายการ</Typography>
@@ -365,15 +365,10 @@ function dashboard() {
             <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px" }}> Dashboard สรุปภาพรวม</Typography>
          </Paper>
 
-
-
-
-         {/* <Paper sx={{ p: 3, mt: 2 }}>
+         <Paper sx={{ p: 3, mt: 2 }}>
             <Box sx={{ textAlign: 'center' }}>
                <Typography variant="h5">สรุปภาพรวมตามช่วงเวลา</Typography>
             </Box>
-
-            
             <Grid container sx={{ mt: 3 }}>
                <Grid item container xs={12} sx={{ mb: 3 }}>
                   <TextField
@@ -431,228 +426,261 @@ function dashboard() {
                      color="primary"
                      size="small"
                      onClick={() => {
-                        getUser();
-                        getReport();
+                        getChart()
+                        getResult()
                      }}
                   >
                      <Typography>ค้นหา</Typography>
                   </Button>
                </Grid>
             </Grid>
-         </Paper> */}
-         <Grid container
-            direction="row"
-            justifyContent="center"
-            alignItems="center" spacing={2}>
+         </Paper>
+         <Paper sx={{ p: 3, mt: 3 }}>
 
-            <Grid item xs={4}>
-               <Paper sx={{ p: 2, mt: 2, }}>
-                  <Grid container spacing={1}>
-                     <Grid item xs={8}>
-                        <TextField
-                           fullWidth
-                           label=""
-                           style={{
-                              marginRight: "8px",
-                              marginTop: "8px",
-                              backgroundColor: "white",
-                              borderRadius: 4,
-                           }}
-                           variant="outlined"
-                           size="small"
-                           disabled
-                           type="datetime-local"
-                           name="start"
-                           value={selectedDateRange.end}
-                           onChange={(e) => {
-                              setSelectedDateRange({
-                                 ...selectedDateRange,
-                                 [e.target.name]: e.target.value,
-                              });
-                           }}
-                           InputLabelProps={{
-                              shrink: true,
-                           }}
-                        />
-                     </Grid>
-                     <Grid item xs={4}>
-                        <Button
-                           fullWidth
-                           variant="contained"
-                           style={{ marginRight: "8px", marginTop: 9, color: '#fff', }}
-                           color="primary"
-                           size=""
-                           onClick={() => {
-                              getChart()
-                              getResult()
-                           }}
-                        >
-                           <Typography>ค้นหา</Typography>
-                        </Button>
-                     </Grid>
 
-                  </Grid>
+            {/* ================ card =============== */}
 
-                  <Box sx={{ borderColor: 'divider' }}>
-                     <Tabs
-                        value={value}
-                        variant="fullWidth"
-                        onChange={handleChange} >
-                        <Tab
-                           label="วันนี้" {...a11yProps(0)}
-                           onClick={() =>
-                              setSelectedDateRange({
-                                 start: moment().format("YYYY-MM-DD 00:00:00"),
-                                 end: moment().format("YYYY-MM-DD 23:59:00")
-                              })} />
-                        <Tab
-                           label="เมื่อวาน" {...a11yProps(1)}
-                           onClick={() =>
-                              setSelectedDateRange({
-                                 start: moment().subtract(1, "days").format("YYYY-MM-DD 00:00:00"),
-                                 end: moment().format("YYYY-MM-DD 23:59:00")
-                              })} />
-
-                        <Tab label="สัปดาห์" {...a11yProps(2)}
-                           onClick={() =>
-                              setSelectedDateRange({
-                                 start: moment().subtract(7, "days").format("YYYY-MM-DD 00:00:00"),
-                                 end: moment().format("YYYY-MM-DD 23:59:00")
-                              })} />
-
-                        <Tab label="เดือน" {...a11yProps(3)}
-                           onClick={() =>
-                              setSelectedDateRange({
-                                 start: moment().subtract(30, "days").format("YYYY-MM-DD 00:00:00"),
-                                 end: moment().format("YYYY-MM-DD 23:59:00")
-                              })} />
-
-                     </Tabs>
-                  </Box>
-                  <TabPanel value={value} index={0} sx={{ width: 199 }}>
-                     <Grid container>
-                        <Grid item xs={12}>
-                           {textResult}
+            <Grid container direction="row" >
+               <Card sx={{ minWidth: 242, maxWidth: 242, minHeight: 20, my: 2, bgcolor: "#101D35", }}>
+                  <CardContent>
+                     <Typography component="div" sx={{ color: "#41A3E3" }}> สมัครสมาชิก </Typography>
+                     <Grid container justifyContent="center">
+                        <Grid item xs={3}></Grid>
+                        <Grid item xs={5}>
+                           <Typography variant="h5" sx={{ textAlign: "center", color: "#eee", mt: 2 }} >
+                              {result?.total_member}
+                           </Typography>
+                        </Grid>
+                        <Grid item xs={4}>
+                           <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}> รายการ</Typography>
                         </Grid>
                      </Grid>
-                  </TabPanel>
-                  <TabPanel value={value} index={1}>
-                     <Grid container>
-                        <Grid item xs={12}>
-                           {textResult}
+                  </CardContent>
+               </Card>
 
+               <Card sx={{ minWidth: 242, maxWidth: 242, minHeight: 20, my: 2, mx: 2, bgcolor: "#101D35", }}>
+                  <CardContent>
+                     <Typography component="div" sx={{ color: "#41A3E3" }}> สมัครสมาชิกฝากเงิน </Typography>
+                     <Grid container justifyContent="center">
+                        <Grid item xs={3}></Grid>
+                        <Grid item xs={5}>
+                           <Typography variant="h5" sx={{ textAlign: "center", color: "#eee", mt: 2 }} >
+                              {Intl.NumberFormat("TH").format(parseInt(result?.total_credit))}
+                           </Typography>
+                        </Grid>
+                        <Grid item xs={4}>
+                           <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}> บาท</Typography>
                         </Grid>
                      </Grid>
-                  </TabPanel>
-                  <TabPanel value={value} index={2}>
-                     <Grid container>
-                        <Grid item xs={12}>
-                           {textResult}
+                  </CardContent>
+               </Card>
 
+               <Card sx={{ minWidth: 242, maxWidth: 242, minHeight: 20, my: 2, bgcolor: "#101D35", }}>
+                  <CardContent>
+                     <Typography component="div" sx={{ color: "#4ECF3C" }}> ฝากเงิน </Typography>
+                     <Grid container justifyContent="center">
+                        <Grid item xs={3}></Grid>
+                        <Grid item xs={5}>
+                           <Typography variant="h5" sx={{ textAlign: "center", color: "#eee", mt: 2 }} >
+                              {Intl.NumberFormat("TH").format(parseInt(result?.deposit_total))}
+                           </Typography>
+                        </Grid>
+                        <Grid item xs={4}>
+                           <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}> บาท</Typography>
                         </Grid>
                      </Grid>
-                  </TabPanel>
-                  <TabPanel value={value} index={3}>
-                     <Grid container>
-                        <Grid item xs={12}>
-                           {textResult}
+                  </CardContent>
+               </Card>
+
+               <Card sx={{ minWidth: 242, maxWidth: 242, minHeight: 20, my: 2, ml: 2, bgcolor: "#101D35", }}>
+                  <CardContent>
+                     <Typography component="div" sx={{ color: "#4ECF3C" }}> รายการฝาก </Typography>
+                     <Grid container justifyContent="center">
+                        <Grid item xs={3}></Grid>
+                        <Grid item xs={5}>
+                           <Typography variant="h5" sx={{ textAlign: "center", color: "#eee", mt: 2 }} >
+                              {result?.deposit_length}
+                           </Typography>
+                        </Grid>
+                        <Grid item xs={4}>
+                           <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}> ครั้ง</Typography>
                         </Grid>
                      </Grid>
-                  </TabPanel>
-               </Paper>
+                  </CardContent>
+               </Card>
+
+               <Card sx={{ minWidth: 242, maxWidth: 242, minHeight: 20, my: 2, mx: 2, bgcolor: "#101D35", }}>
+                  <CardContent>
+                     <Typography component="div" sx={{ color: "#DF4827 " }}> ถอนเงิน </Typography>
+                     <Grid container justifyContent="center">
+                        <Grid item xs={3}></Grid>
+                        <Grid item xs={5}>
+                           <Typography variant="h5" sx={{ textAlign: "center", color: "#eee", mt: 2 }} >
+                              {Intl.NumberFormat("TH").format(parseInt(result?.withdraw_total))}
+                           </Typography>
+                        </Grid>
+                        <Grid item xs={4}>
+                           <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}> บาท</Typography>
+                        </Grid>
+                     </Grid>
+                  </CardContent>
+               </Card>
+
+               <Card sx={{ minWidth: 242, maxWidth: 242, minHeight: 20, my: 2, bgcolor: "#101D35", }}>
+                  <CardContent>
+                     <Typography component="div" sx={{ color: "#DF4827 " }}> รายการถอน </Typography>
+                     <Grid container justifyContent="center">
+                        <Grid item xs={3}></Grid>
+                        <Grid item xs={5}>
+                           <Typography variant="h5" sx={{ textAlign: "center", color: "#eee", mt: 2 }} >
+                              {result?.withdraw_length}
+                           </Typography>
+                        </Grid>
+                        <Grid item xs={4}>
+                           <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}> ครั้ง</Typography>
+                        </Grid>
+                     </Grid>
+                  </CardContent>
+               </Card>
+
+
+            </Grid>
+         </Paper>
+
+
+         <Paper sx={{ p: 3, mt: 2 }}>
+            <Grid
+               container
+               direction="row"
+               justifyContent="space-between"
+               alignItems="center"
+            >
+               <Typography variant="h5">บัญชีธนาคาร</Typography>
+               <Button variant="text">
+                  <Typography variant="h6" sx={{ textDecoration: 'underline' }}>ดูทั้งหมด..</Typography>
+               </Button>
+
             </Grid>
 
-            <Grid item xs={8}>
-               <Paper sx={{ p: 3, mt: 2, ml: 2 }}>
-                  <Grid container
-                     direction="row"
-                     justifyContent="center"
-                     alignItems="center" spacing={3}>
-                     <Grid item xs={6} >
-                        {bank.map((item) =>
-                           <Card sx={{ minWidth: 300, maxWidth: 460, minHeight: 20, maxHeight: 110, my: 2, bgcolor: "#101D35", mt: 1 }}>
-                              <CardContent>
-                                 <Grid container justifyContent="center">
-                                    <Grid item xs={4}>
-                                       <Typography component="div" sx={{ color: "#41A3E3" }}>ยอดเงินคงเหลือ</Typography>
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                       <Typography variant="h5" sx={{ mt: 3, textAlign: "center", color: "#C3C3C3" }}>
-                                          {Intl.NumberFormat("THB").format(item.bank_total)}
-                                       </Typography>
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                       <Typography sx={{ mt: 5, textAlign: "end", color: "#C3C3C3" }}> บาท </Typography>
-                                    </Grid>
-                                 </Grid>
-                                 <Divider sx={{ bgcolor: '#41A3E3' }} />
-                                 <Typography sx={{ color: "#C3C3C3", fontSize: '12px', p: 1 }}> ธนาคาร {item.bank_name} บัญชี {item.bank_number} </Typography>
-                              </CardContent>
-                           </Card>
-                        )}
-                     </Grid>
+            <Divider sx={{ bgcolor: '#C3C3C3', my: 2 }} />
+            <Grid
+               container
+               direction="row"
+               justifyContent="flex-start"
+               alignItems="center"
+            >
 
-                     <Grid item xs={6} >
-                        <Card sx={{ minWidth: 300, maxWidth: 460, minHeight: 20, maxHeight: 110, my: 2, bgcolor: "#101D35", mt: 1 }}>
-                           <CardContent>
-                              <Grid container justifyContent="center">
-                                 <Grid item xs={4}>
-                                    <Typography component="div" sx={{ color: "#41A3E3" }}>ลูกค้าทั้งหมด</Typography>
-                                 </Grid>
-                                 <Grid item xs={4}>
-                                    <Typography variant="h5" sx={{ mt: 3, textAlign: "center", color: "#eee" }}>
-                                       {member?.total_member}
-                                    </Typography>
-                                 </Grid>
-                                 <Grid item xs={4}>
-                                    <Typography sx={{ mt: 5, textAlign: "end", color: "#eee", mb: 1 }}> ยูสเซอร์ </Typography>
-                                 </Grid>
-                              </Grid>
-                              <Typography sx={{ color: "#eeee", fontSize: '12px', p: 1 }}> </Typography>
-                           </CardContent>
-                        </Card>
-                        <Card sx={{ minWidth: 300, maxWidth: 460, minHeight: 20, maxHeight: 110, my: 2, bgcolor: "#101D35", }}>
-                           <CardContent>
-                              <Grid container justifyContent="center">
-                                 <Grid item xs={4}>
-                                    <Typography component="div" sx={{ color: "#41A3E3" }}>สมัครใหม่วันนี้</Typography>
-                                 </Grid>
-                                 <Grid item xs={4}>
-                                    <Typography variant="h5" sx={{ mt: 3, textAlign: "center", color: "#eee" }}>
-                                       {member?.member_regiser_today}
-                                    </Typography>
-                                 </Grid>
-                                 <Grid item xs={4}>
-                                    <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}> ยูสเซอร์ </Typography>
-                                 </Grid>
-                              </Grid>
-                              <Typography sx={{ color: "#eeee", fontSize: '12px', p: 1 }}> </Typography>
-                           </CardContent>
-                        </Card>
-                        <Card sx={{ minWidth: 300, maxWidth: 460, minHeight: 20, maxHeight: 110, my: 2, bgcolor: "#101D35", }}>
-                           <CardContent>
-                              <Grid container justifyContent="center">
-                                 <Grid item xs={4}>
-                                    <Typography component="div" sx={{ color: "#41A3E3" }}>สมัครใหม่วันนี้เงินฝาก</Typography>
-                                 </Grid>
-                                 <Grid item xs={4}>
-                                    <Typography variant="h5" sx={{ mt: 3, textAlign: "center", color: "#eee" }}>
-                                       {member?.sum_deposit_day || 0}
-                                    </Typography>
-                                 </Grid>
-                                 <Grid item xs={4}>
-                                    <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}> บาท </Typography>
-                                 </Grid>
-                              </Grid>
-                              <Typography sx={{ color: "#eeee", fontSize: '12px', p: 1 }}> </Typography>
-                           </CardContent>
-                        </Card>
-                     </Grid>
-                  </Grid>
-               </Paper>
+               {bank.map((item) =>
+                  <Card sx={{ minWidth: 300, maxWidth: 460, minHeight: 20, maxHeight: 150, my: 2, bgcolor: "#101D35", mt: 1, ml: 2 }}>
+                     <CardContent>
+                        <Grid >
+                           <Typography sx={{ color: "#41A3E3", }}> ธนาคาร {item.bank_name} บัญชี {item.bank_number} </Typography>
+                        </Grid>
+                        <Grid container justifyContent="center">
+                           <Grid item xs={4}>
+                           </Grid>
+                           <Grid item xs={4}>
+                              <Typography variant="h5" sx={{ mt: 3, textAlign: "center", color: "#C3C3C3" }}>
+                                 {Intl.NumberFormat("THB").format(item.bank_total)}
+                              </Typography>
+                           </Grid>
+                           <Grid item xs={4}>
+                              <Typography sx={{ mt: 5, textAlign: "end", color: "#C3C3C3" }}> บาท </Typography>
+                           </Grid>
+                        </Grid>
+                        <Divider sx={{ bgcolor: '#41A3E3', mt: 1 }} />
+                        <Box sx={{ textAlign: 'right' }}>
+                           <Button variant="text">
+                              ดูเพิ่มเติม...
+                           </Button>
+                        </Box>
+
+                     </CardContent>
+                  </Card>
+               )}
             </Grid>
-         </Grid>
+         </Paper>
 
+         <Paper sx={{ p: 3, mt: 2 }}>
+         <Grid
+               container
+               direction="row"
+               justifyContent="space-between"
+               alignItems="center"
+            >
+               <Typography variant="h5">สมาชิก</Typography>
+               <Button variant="text">
+                  <Typography variant="h6" sx={{ textDecoration: 'underline' }}>ดูทั้งหมด..</Typography>
+               </Button>
+
+            </Grid>
+
+            <Divider sx={{ bgcolor: '#C3C3C3', my: 2 }} />
+            <Grid container
+               direction="row"
+               justifyContent="flex-start"
+               alignItems="center">
+               <Card sx={{ minWidth: 300, maxWidth: 460, minHeight: 20, maxHeight: 160, my: 2, bgcolor: "#101D35", mt: 1, ml: 2 }}>
+                  <CardContent>
+                     <Typography sx={{ color: "#41A3E3" }}>ลูกค้าทั้งหมด</Typography>
+                     <Grid container justifyContent="center">
+                        <Grid item xs={4}></Grid>
+                        <Grid item xs={4}>
+                           <Typography variant="h5" sx={{ mt: 3, textAlign: "center", color: "#eee" }}>
+                              {member?.total_member}
+                           </Typography>
+                        </Grid>
+                        <Grid item xs={4}>
+                           <Typography sx={{ mt: 5, textAlign: "end", color: "#eee", mb: 1 }}> ยูสเซอร์ </Typography>
+                        </Grid>
+                     </Grid>
+                     <Divider sx={{ bgcolor: '#41A3E3', mt: 1 }} />
+                        <Box sx={{ textAlign: 'right' }}>
+                           <Button variant="text" sx={{p:1}}>
+                              ดูเพิ่มเติม...
+                           </Button>
+                        </Box>
+                  </CardContent>
+               </Card>
+
+
+               <Card sx={{ minWidth: 300, maxWidth: 460, minHeight: 20, maxHeight: 150, my: 2, bgcolor: "#101D35", mt: 1, ml: 2 }}>
+                  <CardContent>
+                     <Typography sx={{ color: "#41A3E3" }}>สมัครใหม่วันนี้</Typography>
+                     <Grid container justifyContent="center">
+                        <Grid item xs={4}></Grid>
+                        <Grid item xs={4}>
+                           <Typography variant="h5" sx={{ mt: 3, textAlign: "center", color: "#eee" }}>
+                              {member?.member_regiser_today}
+                           </Typography>
+                        </Grid>
+                        <Grid item xs={4}>
+                           <Typography sx={{ mt: 5, textAlign: "end", color: "#eee", mb: 1 }}> คน </Typography>
+                        </Grid>
+                     </Grid>
+                     
+                  </CardContent>
+               </Card>
+               <Card sx={{ minWidth: 300, maxWidth: 460, minHeight: 20, maxHeight: 150, my: 2, bgcolor: "#101D35", mt: 1, ml: 2 }}>
+                  <CardContent>
+                     <Typography sx={{ color: "#41A3E3" }}>สมัครใหม่วันนี้เงินฝาก</Typography>
+                     <Grid container justifyContent="center">
+                        <Grid item xs={4}></Grid>
+                        <Grid item xs={4}>
+                           <Typography variant="h5" sx={{ mt: 3, textAlign: "center", color: "#eee" }}>
+                              {member?.sum_deposit_day || 0}
+                           </Typography>
+                        </Grid>
+                        <Grid item xs={4}>
+                           <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}> บาท </Typography>
+                        </Grid>
+                     </Grid>
+                     
+                  </CardContent>
+               </Card>
+            </Grid>
+
+         </Paper>
 
          <Paper sx={{ p: 3, mt: 2 }}>
             <Typography> ภาพรวมสรุปตั้งแต่วันที่ {selectedDateRange.start} ถึง {selectedDateRange.end}</Typography>
@@ -784,13 +812,13 @@ function dashboard() {
 
 
          <Grid container direction="row" sx={{ mt: 3 }}>
-            <Card sx={{ minWidth: 250, maxWidth: 260, minHeight: 20, my: 2, bgcolor: "#101D35", }}>
+            <Card sx={{ minWidth: 250, maxWidth: 230, minHeight: 20, my: 2, bgcolor: "#101D35", }}>
                <CardContent>
                   <Typography component="div" sx={{ color: "#eee" }}> twitter </Typography>
                   <Grid container justifyContent="center">
                      <Grid item xs={3}></Grid>
                      <Grid item xs={5}>
-                        <Typography variant="h3" sx={{ textAlign: "center", color: "#eee" }} >
+                        <Typography variant="h5" sx={{ textAlign: "center", color: "#eee" }} >
                            {platform.twitter}
                         </Typography>
                      </Grid>
@@ -800,13 +828,13 @@ function dashboard() {
                   </Grid>
                </CardContent>
             </Card>
-            <Card sx={{ minWidth: 250, maxWidth: 260, minHeight: 20, my: 2, mx: 2, bgcolor: "#101D35", }}>
+            <Card sx={{ minWidth: 250, maxWidth: 230, minHeight: 20, my: 2, mx: 2, bgcolor: "#101D35", }}>
                <CardContent>
                   <Typography component="div" sx={{ color: "#eee" }}> friend </Typography>
                   <Grid container justifyContent="center">
                      <Grid item xs={3}></Grid>
                      <Grid item xs={5}>
-                        <Typography variant="h3" sx={{ textAlign: "center", color: "#eee" }} >
+                        <Typography variant="h5" sx={{ textAlign: "center", color: "#eee" }} >
                            {platform.friend}
                         </Typography>
                      </Grid>
@@ -816,13 +844,13 @@ function dashboard() {
                   </Grid>
                </CardContent>
             </Card>
-            <Card sx={{ minWidth: 250, maxWidth: 260, minHeight: 20, my: 2, bgcolor: "#101D35", }}>
+            <Card sx={{ minWidth: 250, maxWidth: 230, minHeight: 20, my: 2, bgcolor: "#101D35", }}>
                <CardContent>
                   <Typography component="div" sx={{ color: "#eee" }}> posman </Typography>
                   <Grid container justifyContent="center">
                      <Grid item xs={3}></Grid>
                      <Grid item xs={5}>
-                        <Typography variant="h3" sx={{ textAlign: "center", color: "#eee" }} >
+                        <Typography variant="h5" sx={{ textAlign: "center", color: "#eee" }} >
                            {platform.posman}
                         </Typography>
                      </Grid>

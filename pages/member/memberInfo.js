@@ -63,21 +63,22 @@ function memberInfo() {
         method: "post",
         url: `${hostname}/member/get_member`,
         data: {
-          username : username
+          username: username
         }
       });
 
-      let resData = res.data;
-      console.log('resData', resData)
-      // let no = 1;
-      // resData.map((item) => {
-      //   item.no = no++;
-      //   item.create_at = moment(item.create_at).format('DD/MM/YYYY HH:mm')
-      // });
+      
+      let resTran = res.data.transaction
+      // setTransaction(resData.transaction)
+      let no = 1;
 
-      console.log('resData', resData)
+      resTran.map((item) => {
+        item.no = no++;
+        item.create_at = moment(item.create_at).format('DD/MM/YYYY HH:mm')
+      });
 
-      setDataMember(resData);
+      setTransaction(resTran)
+      setDataMember(resTran);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -91,6 +92,7 @@ function memberInfo() {
       }
     }
   };
+  console.log('transantion', transaction)
 
   const columns = [
     {
@@ -108,7 +110,7 @@ function memberInfo() {
           label={item.type === "deposit" ? "ฝาก" : "ถอน"}
           // size="small"
           style={{
-            padding: 10,
+            // padding: 5,
             backgroundColor: item.type === "deposit" ? "#129A50" : "#FFB946",
             color: "#fff",
             minWidth: "120px"
