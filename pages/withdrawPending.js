@@ -251,6 +251,7 @@ function withdrawpending() {
                showConfirmButton: false,
                timer: 2000,
             });
+            getBank()
             setOpenDialogApprove(false)
             setRowData({})
             setSelectedBank()

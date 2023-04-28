@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Layout from "../theme/Layout";
 import {
    Grid,
@@ -9,9 +9,12 @@ import {
    Card,
    CardContent,
    Paper,
-   Tab,
-   Tabs,
-   Divider
+   MenuItem,
+   Snackbar,
+   Divider,
+   Alert,
+   IconButton,
+   Chip
 } from "@mui/material";
 import {
    Chart as ChartJS,
@@ -22,6 +25,8 @@ import {
    Tooltip,
    Legend,
 } from "chart.js";
+import EditIcon from "@mui/icons-material/Edit";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 import { Bar, Line } from "react-chartjs-2";
 import axios from "axios";
 import hostname from "../utils/hostname";
@@ -31,8 +36,13 @@ import { useAppDispatch } from "../store/store";
 import { signOut } from "../store/slices/userSlice";
 import LoadingModal from "../theme/LoadingModal";
 import moment from "moment/moment";
-import PropTypes from 'prop-types';
-import AssessmentIcon from '@mui/icons-material/Assessment';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import ManageSearchIcon from '@mui/icons-material/ManageSearch';
+import { Table, Input, Space, } from 'antd';
+import SearchIcon from '@mui/icons-material/Search';
+import CloseIcon from '@mui/icons-material/Close';
+import Image from "next/image";
 
 ChartJS.register(
    CategoryScale,
@@ -43,38 +53,6 @@ ChartJS.register(
    Legend
 );
 
-function TabPanel(props) {
-   const { children, value, index, ...other } = props;
-
-   return (
-      <div
-         role="tabpanel"
-         hidden={value !== index}
-         id={`simple-tabpanel-${index}`}
-         aria-labelledby={`simple-tab-${index}`}
-         {...other}
-      >
-         {value === index && (
-            <Box sx={{ p: 3 }}>
-               <Typography>{children}</Typography>
-            </Box>
-         )}
-      </div>
-   );
-}
-
-TabPanel.propTypes = {
-   children: PropTypes.node,
-   index: PropTypes.number.isRequired,
-   value: PropTypes.number.isRequired,
-};
-
-function a11yProps(index) {
-   return {
-      id: `simple-tab-${index}`,
-      'aria-controls': `simple-tabpanel-${index}`,
-   };
-}
 
 function dashboard() {
    const router = useRouter();
@@ -84,9 +62,6 @@ function dashboard() {
       end: moment().format("YYYY-MM-DD 23:59"),
    });
    const [loading, setLoading] = useState(false);
-   const [user, setUser] = useState([]);
-   const [report, setReport] = useState({});
-   const [value, setValue] = useState(0);
    const [chartDeposit, setChartDeposit] = useState([])
    const [chartWithdraw, setChartWithdraw] = useState([])
    const [chartMember, setChartMember] = useState([])
@@ -94,9 +69,21 @@ function dashboard() {
    const [bank, setBank] = useState([])
    const [member, setMember] = useState()
    const [platform, setPlatform] = useState([])
+   const [bankTransaction, setBankTransaction] = useState([])
+   const [page, setPage] = useState(1)
+   const [pageSize, setPageSize] = useState(10)
+   const [dataMember, setDataMember] = useState([])
+   const [open, setOpen] = useState(false)
+   const [boxMember, setBoxMember] = useState(0)
+   const [boxBank, setBoxBank] = useState({})
+   const [search, setSearch] = useState({
+      data: "",
+      type: "",
+   });
 
-   const handleChange = (event, newValue) => {
-      setValue(newValue);
+
+   const handleClickSnackbar = () => {
+      setOpen(true);
    };
 
    const getChart = async () => {
@@ -175,6 +162,7 @@ function dashboard() {
          console.log(error);
       }
    };
+
    const getBank = async () => {
       setLoading(true);
       try {
@@ -211,6 +199,53 @@ function dashboard() {
       }
    };
 
+   const getMemberList = async (type, start, end) => {
+      setLoading(true);
+      try {
+         let res = await axios({
+            headers: {
+               Authorization: "Bearer " + localStorage.getItem("access_token"),
+            },
+            method: "post",
+            url: `${hostname}/member/member_list`,
+            data: {
+               create_at_start: selectedDateRange.start,
+               create_at_end: selectedDateRange.end,
+               type: search.type === "all" ? "" : search.type,
+               data_search: search.data
+            }
+         });
+
+         let resData = res.data;
+         let no = 1;
+         resData.map((item) => {
+            item.no = no++;
+            item.create_at = moment(item.create_at).format('DD/MM/YYYY HH:mm')
+         });
+
+         setDataMember(resData);
+         setLoading(false);
+         setBoxMember(1)
+      } catch (error) {
+         console.log(error);
+         if (
+            error.response.data.error.status_code === 401 &&
+            error.response.data.error.message === "Unauthorized"
+         ) {
+            dispatch(signOut());
+            localStorage.clear();
+            router.push("/auth/login");
+         }
+         if (
+            error.response.status === 401 &&
+            error.response.data.error.message === "Invalid Token"
+         ) {
+            dispatch(signOut());
+            localStorage.clear();
+            router.push("/auth/login");
+         }
+      }
+   };
 
    const getPlatform = async () => {
       setLoading(true);
@@ -246,6 +281,57 @@ function dashboard() {
          console.log(error);
       }
    };
+
+   const getTransactionBank = async (uuid) => {
+      setLoading(false);
+
+      try {
+         let res = await axios({
+            headers: {
+               Authorization: "Bearer " + localStorage.getItem("access_token"),
+            },
+            method: "post",
+            url: `${hostname}/bank/bank_transaction_by_uuid`,
+            data: {
+               "bank_uuid": uuid,
+               "start_date": selectedDateRange.start,
+               "end_date": selectedDateRange.end
+            }
+         });
+         let resData = res.data.transaction;
+         let no = 1;
+         resData.map((item) => {
+            item.no = no++;
+            item.create_at = moment(item.create_at).format('DD/MM/YYYY HH:mm')
+         });
+         let uuidBank = res.data.bank.uuid
+
+         setBoxBank({
+            open: 1,
+            uuid: uuidBank
+         })
+         setBankTransaction(resData)
+         setLoading(false);
+      } catch (error) {
+         if (
+            error.response.data.error.status_code === 401 &&
+            error.response.data.error.message === "Unauthorized"
+         ) {
+            dispatch(signOut());
+            localStorage.clear();
+            router.push("/auth/login");
+         }
+         if (
+            error.response.status === 401 &&
+            error.response.data.error.message === "Invalid Token"
+         ) {
+            dispatch(signOut());
+            localStorage.clear();
+            router.push("/auth/login");
+         }
+         console.log(error);
+      }
+   }
 
    const options = {
       responsive: true,
@@ -339,18 +425,577 @@ function dashboard() {
 
    const labels = [...chartDeposit.map((item) => item.hour)]
 
-   const textResult = <>
+   const searchInput = useRef(null);
+   const handleSearch = (selectedKeys, confirm, dataIndex) => {
+      confirm();
+   };
 
-      <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>สมัครสมาชิก </span>{result?.total_member} รายการ</Typography>
-      <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>สมัครสมาชิกฝากเงิน</span> {Intl.NumberFormat("TH").format(parseInt(result?.total_credit))} บาท</Typography>
-      <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>สมัครสมาชิกฝากเงินรับโบนัส</span> {result?.register_deposit_bonus_total !== "" ? Intl.NumberFormat("TH").format(parseInt(result?.register_deposit_bonus_total)) : '0'} บาท</Typography>
-      <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>สมัครสมาชิกฝากเงินรับโบนัส</span> {result?.register_deposit_bonus_length !== "" ? result?.register_deposit_bonus_length : '0'} รายการ</Typography>
-      <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>ฝากเงิน</span> {Intl.NumberFormat("TH").format(parseInt(result?.deposit_total))} บาท</Typography>
-      <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>ฝากเงิน</span> {result?.deposit_length} รายการ</Typography>
-      <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>ฝากถอน</span> {Intl.NumberFormat("TH").format(parseInt(result?.withdraw_total))} บาท</Typography>
-      <Typography sx={{ mt: 1 }}><span style={{ fontWeight: 'bold' }}>ฝากถอน</span> {result?.withdraw_length} รายการ</Typography>
-   </>
+   const handleReset = (clearFilters) => {
+      clearFilters();
+   };
 
+   const getColumnSearchProps = (dataIndex) => ({
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+         <div
+            style={{
+               padding: 8,
+            }}
+            onKeyDown={(e) => e.stopPropagation()}
+         >
+            <Input
+               ref={searchInput}
+               placeholder={`Search ${dataIndex}`}
+               value={selectedKeys[0]}
+               onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+               onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+               style={{
+                  marginBottom: 8,
+                  display: 'block',
+               }}
+            />
+            <Space>
+               <Button
+                  onClick={() => clearFilters && handleReset(clearFilters)}
+                  size="small"
+                  style={{
+                     width: 90,
+                  }}
+               >
+                  Reset
+               </Button>
+               <Button
+                  type="primary"
+                  onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                  size="small"
+                  style={{
+                     width: 90,
+                  }}
+               >
+                  <SearchIcon />
+                  Search
+               </Button>
+               {/* <Button
+             type="link"
+             size="small"
+             onClick={() => {
+               confirm({
+                 closeDropdown: false,
+               });
+               setSearchText(selectedKeys[0]);
+               setSearchedColumn(dataIndex);
+             }}
+           >
+             Filter
+           </Button> */}
+               {/* <Button
+             type="link"
+             size="small"
+             onClick={() => {
+               close();
+             }}
+           >
+             close
+           </Button> */}
+            </Space>
+         </div>
+      ),
+      filterIcon: (filtered) => (
+         <SearchIcon
+            style={{
+               color: filtered ? '#1890ff' : undefined,
+            }}
+         />
+      ),
+      onFilter: (value, record) =>
+         record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+      onFilterDropdownOpenChange: (visible) => {
+         if (visible) {
+            setTimeout(() => searchInput.current?.select(), 100);
+         }
+      },
+   });
+
+   const columnsMember = [
+      {
+         title: 'ลำดับ',
+         dataIndex: 'no',
+         align: 'center',
+         sorter: (record1, record2) => record1.no - record2.no,
+         render: (item, data) => (
+            <Typography sx={{ fontSize: '14px', textAlign: 'center' }} >{item}</Typography>
+         )
+      },
+      {
+         title: 'ธนาคาร',
+         dataIndex: 'bank_name',
+         width: '200px',
+         ...getColumnSearchProps('bank_number'),
+         render: (item, data) => <Grid container>
+            <Grid item xs={3} sx={{ mt: 1 }}>
+               {item === "kbnk" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/kbnk.png"
+                     }
+                     alt="kbnk"
+                     width={50}
+                     height={50}
+                  />
+               ) : item === "truemoney" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/truemoney.png"
+                     }
+                     alt="truemoney"
+                     width={50}
+                     height={50}
+                  />
+               ) : item === "ktba" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/ktba.png"
+                     }
+                     alt="ktba"
+                     width={50}
+                     height={50}
+                  />
+               ) : item === "scb" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/scb.png"
+                     }
+                     alt="scb"
+                     width={50}
+                     height={50}
+                  />
+               ) : item === "bay" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/bay.png"
+                     }
+                     alt="bay"
+                     width={50}
+                     height={50}
+                  />
+               ) : item === "bbla" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/bbl.png"
+                     }
+                     alt="bbla"
+                     width={50}
+                     height={50}
+                  />
+               ) : item === "gsb" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/gsb.png"
+                     }
+                     alt="gsb"
+                     width={50}
+                     height={50}
+                  />
+               ) : item === "ttb" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/ttb.png"
+                     }
+                     alt="ttb"
+                     width={50}
+                     height={50}
+                  />
+               ) : item === "bbac" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/baac.png"
+                     }
+                     alt="bbac"
+                     width={50}
+                     height={50}
+                  />
+               ) : item === "icbc" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/icbc.png"
+                     }
+                     alt="icbc"
+                     width={50}
+                     height={50}
+                  />
+               ) : item === "tcd" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/tcd.png"
+                     }
+                     alt="tcd"
+                     width={50}
+                     height={50}
+                  />
+               ) : item === "citi" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/citi.png"
+                     }
+                     alt="citi"
+                     width={50}
+                     height={50}
+                  />
+               ) : item === "scbt" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/scbt.png"
+                     }
+                     alt="scbt"
+                     width={50}
+                     height={50}
+                  />
+               ) : item === "cimb" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/cimb.png"
+                     }
+                     alt="cimb"
+                     width={50}
+                     height={50}
+                  />
+               ) : item === "uob" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/uob.png"
+                     }
+                     alt="uob"
+                     width={50}
+                     height={50}
+                  />
+               ) : item === "hsbc" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/hsbc.png"
+                     }
+                     alt="hsbc"
+                     width={50}
+                     height={50}
+                  />
+               ) : item === "mizuho" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/mizuho.png"
+                     }
+                     alt="mizuho"
+                     width={50}
+                     height={50}
+                  />
+               ) : item === "ghb" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/ghb.png"
+                     }
+                     alt="ghb"
+                     width={50}
+                     height={50}
+                  />
+               ) : item === "lhbank" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/lhbank.png"
+                     }
+                     alt="lhbank"
+                     width={50}
+                     height={50}
+                  />
+               ) : item === "tisco" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/tisco.png"
+                     }
+                     alt="tisco"
+                     width={50}
+                     height={50}
+                  />
+               ) : item === "kkba" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/kkba.png"
+                     }
+                     alt="kkba"
+                     width={50}
+                     height={50}
+                  />
+               ) : item === "ibank" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/ibank.png"
+                     }
+                     alt="ibank"
+                     width={50}
+                     height={50}
+                  />
+               ) : (
+                  ""
+               )}
+            </Grid>
+            <Grid item xs={9}>
+               <Grid sx={{ ml: 2, mt: 1 }}>
+                  <CopyToClipboard text={data.bank_number}>
+                     <div style={{
+                        "& .MuiButton-text": {
+                           "&:hover": {
+                              // backgroundColor: "#9CE1BC",
+                              // color: "blue",
+                              textDecoration: "underline blue 1px",
+                           }
+                        }
+                     }} >
+                        <Button
+                           sx={{
+                              fontSize: "14px",
+                              p: 0,
+                              color: "blue",
+                           }}
+                           onClick={handleClickSnackbar}
+                        >
+                           {data.bank_number}
+                        </Button>
+                     </div>
+                  </CopyToClipboard>
+               </Grid>
+               <Grid>
+                  <Typography sx={{ fontSize: "14px" }}>
+                     {data.name}
+                  </Typography>
+               </Grid>
+            </Grid>
+         </Grid >,
+      },
+      {
+         title: 'Username',
+         dataIndex: 'username',
+         ...getColumnSearchProps('username'),
+         render: (item, data) => (
+            <CopyToClipboard text={item}>
+               <div style={{
+                  "& .MuiButton-text": {
+                     "&:hover": {
+                        // backgroundColor: "#9CE1BC",
+                        // color: "blue",
+                        textDecoration: "underline blue 1px",
+                     }
+                  }
+               }} >
+                  <Button
+                     sx={{
+                        fontSize: "14px",
+                        p: 0,
+                        color: "blue",
+                     }}
+                     onClick={handleClickSnackbar}
+                  >
+                     {item}
+                  </Button>
+               </div>
+            </CopyToClipboard>
+         ),
+      },
+      {
+         dataIndex: "tel",
+         title: "โทรศัพท์",
+         align: "center",
+         ...getColumnSearchProps('tel'),
+         render: (item) => (
+            <Typography
+               style={{
+                  fontSize: '14px'
+               }}
+            >{item}</Typography>
+         ),
+      },
+      {
+         dataIndex: "credit",
+         title: "เครดิต",
+         align: "center",
+         defaultSortOrder: 'descend',
+         sorter: (record1, record2) => record1.credit - record2.credit,
+         render: (item) => (
+            <Typography
+               style={{
+                  fontSize: '14px'
+               }}
+            >{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
+         ),
+      },
+
+      {
+         dataIndex: "platform",
+         title: "Platform",
+         align: "center",
+         render: (item) => (
+            <Typography
+               style={{
+                  fontSize: '14px'
+               }}
+            >{item}</Typography>
+         ),
+         filters: [
+            { text: 'postman', value: 'postman' },
+            { text: 'google', value: 'google' },
+
+         ],
+         onFilter: (value, record) => record.platform.indexOf(value) === 0,
+         filterSearch: true,
+         ...getColumnSearchProps('platform'),
+
+      },
+      {
+         dataIndex: "affiliate_by",
+         title: "ผู้แนะนำ",
+         align: "center",
+         render: (item) => (
+            <Typography
+               style={{
+                  fontSize: '14px'
+               }}
+            >{item}</Typography>
+         ),
+      },
+
+      {
+         dataIndex: "create_at",
+         title: "วันที่สมัคร",
+         align: "center",
+         render: (item) => (
+            <Typography
+               style={{
+                  fontSize: '14px'
+               }}
+            >{item}</Typography>
+         ),
+      },
+
+
+   ];
+
+   const columnsBank = [
+      {
+         title: 'ลำดับ',
+         dataIndex: 'no',
+         align: 'center',
+         sorter: (record1, record2) => record1.no - record2.no,
+         render: (item, data) => (
+            <Typography sx={{ fontSize: '14px', textAlign: 'center' }} >{item}</Typography>
+         )
+      },
+      {
+         title: 'Username',
+         dataIndex: 'username',
+         ...getColumnSearchProps('username'),
+         render: (item, data) => (
+            <CopyToClipboard text={item}>
+               <div style={{
+                  "& .MuiButton-text": {
+                     "&:hover": {
+                        textDecoration: "underline blue 1px",
+                     }
+                  }
+               }} >
+                  <Button
+                     sx={{ fontSize: "14px", p: 0, color: "blue", }}
+                     onClick={handleClickSnackbar}
+                  >
+                     {item}
+                  </Button>
+               </div>
+            </CopyToClipboard>
+         ),
+      },
+      {
+         title: 'ประเภทการทำรายการ',
+         dataIndex: 'transfer_type',
+         align: "center",
+         ...getColumnSearchProps('transfer_type'),
+         render: (item) => (
+            <Typography style={{ fontSize: '14px' }}>{item === "WITHDRAW" ? 'รายการถอน' : 'รายการฝาก'}</Typography>
+         ),
+      },
+
+      {
+         dataIndex: "credit",
+         title: "เครดิต",
+         align: "center",
+         defaultSortOrder: 'descend',
+         sorter: (record1, record2) => record1.credit - record2.credit,
+         render: (item) => (
+            <Typography style={{ fontSize: '14px' }} >{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
+         ),
+      },
+
+      {
+         dataIndex: "credit_before",
+         title: "เครดิตก่อน",
+         align: "center",
+         defaultSortOrder: 'descend',
+         sorter: (record1, record2) => record1.credit_before - record2.credit_before,
+         render: (item) => (
+            <Typography style={{ fontSize: '14px' }}>{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
+         ),
+      },
+      {
+         dataIndex: "credit_after",
+         title: "เครดิตหลัง",
+         align: "center",
+         defaultSortOrder: 'descend',
+         sorter: (record1, record2) => record1.credit_after - record2.credit_after,
+         render: (item) => (
+            <Typography style={{ fontSize: '14px' }}>{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
+         ),
+
+      },
+      {
+         dataIndex: "status_transction",
+         title: "สถานะ",
+         align: "center",
+         filters: [
+            {
+              text: 'สำเร็จ',
+              value: 'SUCCESS',
+            },
+            {
+               text: 'ไม่สำเร็จ',
+               value: 'UNSUCCESS',
+             },
+            
+         ],
+         render: (item) => (
+            <Chip
+               label={item === 'SUCCESS' ? "สำเร็จ" : 'ไม่สำเร็จ'}
+               size="small"
+               style={{ padding: 10, backgroundColor: item === 'SUCCESS' ? "#129A50" : "#BB2828", color: "#eee", }}
+            />
+         ),
+      },
+      {
+         dataIndex: "transfer_by",
+         title: "ทำรายการโดย",
+         align: "center",
+         ...getColumnSearchProps('transfer_by'),
+         render: (item) => (
+            <Typography style={{ fontSize: '14px' }}>{item}</Typography>
+         ),
+      },
+      {
+         dataIndex: "create_at",
+         title: "วันที่ทำรายการ",
+         align: "center",
+         render: (item) => (
+            <Typography style={{ fontSize: '14px' }}>{item}</Typography>
+         ),
+      },
+
+
+   ];
+
+   const onChange = (pagination, filters, sorter, extra) => {
+      console.log('params', pagination, filters, sorter, extra);
+   };
 
    useEffect(() => {
       getChart();
@@ -358,7 +1003,6 @@ function dashboard() {
       getBank()
       getPlatform()
    }, []);
-
    return (
       <Layout>
          <Paper sx={{ p: 3, textAlign: 'start', mb: 2 }}>
@@ -547,6 +1191,218 @@ function dashboard() {
             </Grid>
          </Paper>
 
+         <Paper sx={{ p: 3, mt: 2 }}>
+            <Grid
+               container
+               direction="row"
+               justifyContent="space-between"
+               alignItems="center"
+            >
+               <Typography variant="h5">สมาชิก</Typography>
+               <Button variant="text">
+                  <Typography variant="h6" sx={{ textDecoration: 'underline' }}>ดูทั้งหมด..</Typography>
+               </Button>
+
+            </Grid>
+
+            <Divider sx={{ bgcolor: '#C3C3C3', my: 2 }} />
+            <Grid container
+               direction="row"
+               justifyContent="flex-start"
+               alignItems="center">
+               <Card sx={{ minWidth: 300, maxWidth: 460, minHeight: 20, maxHeight: 160, height: 160, my: 2, bgcolor: "#101D35", mt: 1, ml: 2 }}>
+                  <CardContent>
+                     <Typography sx={{ color: "#41A3E3" }}>ลูกค้าทั้งหมด</Typography>
+                     <Grid container justifyContent="center">
+                        <Grid item xs={4}></Grid>
+                        <Grid item xs={4}>
+                           <Typography variant="h5" sx={{ mt: 3, textAlign: "center", color: "#eee" }}>
+                              {member?.total_member}
+                           </Typography>
+                        </Grid>
+                        <Grid item xs={4}>
+                           <Typography sx={{ mt: 5, textAlign: "end", color: "#eee", mb: 1 }}> ยูสเซอร์ </Typography>
+                        </Grid>
+                     </Grid>
+                     <Divider sx={{ bgcolor: '#41A3E3', mt: 1 }} />
+                     <Box sx={{ textAlign: 'right' }}>
+                        <Button variant="text" sx={{ p: 1 }} onClick={() => getMemberList()}>
+                           ดูเพิ่มเติม...
+                        </Button>
+                     </Box>
+                  </CardContent>
+               </Card>
+               <Card sx={{ minWidth: 300, maxWidth: 460, minHeight: 20, maxHeight: 160, height: 160, my: 2, bgcolor: "#101D35", mt: 1, ml: 2 }}>
+                  <CardContent>
+                     <Typography sx={{ color: "#41A3E3" }}>สมัครใหม่วันนี้</Typography>
+                     <Grid container justifyContent="center">
+                        <Grid item xs={4}></Grid>
+                        <Grid item xs={4}>
+                           <Typography variant="h5" sx={{ mt: 3, textAlign: "center", color: "#eee" }}>
+                              {member?.member_regiser_today}
+                           </Typography>
+                        </Grid>
+                        <Grid item xs={4}>
+                           <Typography sx={{ mt: 5, textAlign: "end", color: "#eee", mb: 1 }}> คน </Typography>
+                        </Grid>
+                     </Grid>
+                     <Divider sx={{ bgcolor: '#41A3E3', mt: 1 }} />
+                  </CardContent>
+               </Card>
+               <Card sx={{ minWidth: 300, maxWidth: 460, minHeight: 20, maxHeight: 160, height: 160, my: 2, bgcolor: "#101D35", mt: 1, ml: 2 }}>
+                  <CardContent>
+                     <Typography sx={{ color: "#41A3E3" }}>สมัครใหม่วันนี้เงินฝาก</Typography>
+                     <Grid container justifyContent="center">
+                        <Grid item xs={4}></Grid>
+                        <Grid item xs={4}>
+                           <Typography variant="h5" sx={{ mt: 3, textAlign: "center", color: "#eee" }}>
+                              {member?.sum_deposit_day || 0}
+                           </Typography>
+                        </Grid>
+                        <Grid item xs={4}>
+                           <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}> บาท </Typography>
+                        </Grid>
+                     </Grid>
+                     <Divider sx={{ bgcolor: '#41A3E3', mt: 1 }} />
+                  </CardContent>
+               </Card>
+            </Grid>
+
+         </Paper>
+
+
+
+         {boxMember === 1 ?
+            <Paper sx={{ p: 3, mt: 2 }}>
+               <Grid
+                  container
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center" sx={{ mt: 3 }}>
+                  <Grid item sx={{ mb: 3 }}>
+                     <TextField
+                        label="เริ่ม"
+                        style={{
+                           marginRight: "8px",
+                           marginTop: "8px",
+                           backgroundColor: "white",
+                           borderRadius: 4,
+                        }}
+                        variant="outlined"
+                        size="small"
+                        type="datetime-local"
+                        name="start"
+                        value={selectedDateRange.start}
+                        onChange={(e) => {
+                           setSelectedDateRange({
+                              ...selectedDateRange,
+                              [e.target.name]: e.target.value,
+                           });
+                        }}
+                        InputLabelProps={{
+                           shrink: true,
+                        }}
+                     />
+                     <TextField
+                        label="สิ้นสุด"
+                        style={{
+                           marginRight: "8px",
+                           marginTop: "8px",
+                           color: "white",
+                           backgroundColor: "white",
+                           borderRadius: 4,
+                        }}
+                        variant="outlined"
+                        size="small"
+                        type="datetime-local"
+                        name="end"
+                        value={selectedDateRange.end}
+                        onChange={(e) => {
+                           setSelectedDateRange({
+                              ...selectedDateRange,
+                              [e.target.name]: e.target.value,
+                           });
+                        }}
+                        InputLabelProps={{
+                           shrink: true,
+                        }}
+                        required
+                     />
+                     <TextField
+                        variant="outlined"
+                        type="text"
+                        name="type"
+                        size="small"
+                        value={search.type}
+                        onChange={(e) => {
+                           setSearch({
+                              ...search,
+                              [e.target.name]: e.target.value,
+                           });
+                        }}
+                        sx={{ mt: 1, mr: 1, width: "220px", bgcolor: '#fff' }}
+                        select
+                        label="ประเภทการค้นหา"
+                        InputLabelProps={{
+                           shrink: true,
+                        }}
+                     >
+                        <MenuItem value="all">ทั้งหมด</MenuItem>
+                        <MenuItem value="username">Username</MenuItem>
+                        <MenuItem value="tel">หมายเลขโทรศัพท์</MenuItem>
+                        <MenuItem value="bank_number">เลขบัญชีธนาคาร</MenuItem>
+                        <MenuItem value="fname">ชื่อจริง</MenuItem>
+                        <MenuItem value="sname">นามสุกล</MenuItem>
+                     </TextField>
+
+                     <TextField
+                        variant="outlined"
+                        type="text"
+                        name="data"
+                        size="small"
+                        value={search.data}
+                        onChange={(e) => {
+                           setSearch({
+                              ...search,
+                              [e.target.name]: e.target.value,
+                           });
+                        }}
+                        placeholder="ค้นหาข้อมูลที่ต้องการ"
+                        sx={{ mt: 1, mr: 2, width: "220px", bgcolor: '#fff' }}
+                     />
+
+                     <Button
+                        variant="contained"
+                        style={{ marginRight: "8px", marginTop: 8, color: '#fff' }}
+                        color="primary"
+                        onClick={() => {
+                           getMemberList();
+                        }}
+                     >
+                        <Typography>ค้นหา</Typography>
+                     </Button>
+                  </Grid>
+                  <Grid item>
+                     <Button variant="text" onClick={() => setBoxMember(0)}><CloseIcon /></Button>
+                  </Grid>
+               </Grid>
+               <Table
+                  columns={columnsMember}
+                  dataSource={dataMember}
+                  onChange={onChange}
+                  pagination={{
+                     current: page,
+                     pageSize: pageSize,
+                     onChange: (page, pageSize) => {
+                        setPage(page)
+                        setPageSize(pageSize)
+                     }
+                  }} />
+            </Paper>
+            : ''
+         }
+
+
 
          <Paper sx={{ p: 3, mt: 2 }}>
             <Grid
@@ -590,7 +1446,7 @@ function dashboard() {
                         </Grid>
                         <Divider sx={{ bgcolor: '#41A3E3', mt: 1 }} />
                         <Box sx={{ textAlign: 'right' }}>
-                           <Button variant="text">
+                           <Button variant="text" onClick={() => getTransactionBank(item.uuid)}>
                               ดูเพิ่มเติม...
                            </Button>
                         </Box>
@@ -601,86 +1457,93 @@ function dashboard() {
             </Grid>
          </Paper>
 
-         <Paper sx={{ p: 3, mt: 2 }}>
-         <Grid
-               container
-               direction="row"
-               justifyContent="space-between"
-               alignItems="center"
-            >
-               <Typography variant="h5">สมาชิก</Typography>
-               <Button variant="text">
-                  <Typography variant="h6" sx={{ textDecoration: 'underline' }}>ดูทั้งหมด..</Typography>
-               </Button>
+         {boxBank.open === 1 ?
+            <Paper sx={{ p: 3, mt: 2 }}>
+               <Grid
+                  container
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center" sx={{ mt: 3 }}>
+                  <Grid item sx={{ mb: 3 }}>
+                     <TextField
+                        label="เริ่ม"
+                        style={{
+                           marginRight: "8px",
+                           marginTop: "8px",
+                           backgroundColor: "white",
+                           borderRadius: 4,
+                        }}
+                        variant="outlined"
+                        size="small"
+                        type="datetime-local"
+                        name="start"
+                        value={selectedDateRange.start}
+                        onChange={(e) => {
+                           setSelectedDateRange({
+                              ...selectedDateRange,
+                              [e.target.name]: e.target.value,
+                           });
+                        }}
+                        InputLabelProps={{
+                           shrink: true,
+                        }}
+                     />
+                     <TextField
+                        label="สิ้นสุด"
+                        style={{
+                           marginRight: "8px",
+                           marginTop: "8px",
+                           color: "white",
+                           backgroundColor: "white",
+                           borderRadius: 4,
+                        }}
+                        variant="outlined"
+                        size="small"
+                        type="datetime-local"
+                        name="end"
+                        value={selectedDateRange.end}
+                        onChange={(e) => {
+                           setSelectedDateRange({
+                              ...selectedDateRange,
+                              [e.target.name]: e.target.value,
+                           });
+                        }}
+                        InputLabelProps={{
+                           shrink: true,
+                        }}
+                        required
+                     />
+                     <Button
+                        variant="contained"
+                        style={{ marginRight: "8px", marginTop: 8, color: '#fff' }}
+                        color="primary"
+                        onClick={() => {
+                           getTransactionBank(boxBank.uuid);
+                        }}
+                     >
+                        <Typography>ค้นหา</Typography>
+                     </Button>
+                  </Grid>
+                  <Grid item>
+                     <Button variant="text" onClick={() => setBoxBank({open: 0})}><CloseIcon /></Button>
+                  </Grid>
+               </Grid>
+               <Table
+                  columns={columnsBank}
+                  dataSource={bankTransaction}
+                  onChange={onChange}
+                  pagination={{
+                     current: page,
+                     pageSize: pageSize,
+                     onChange: (page, pageSize) => {
+                        setPage(page)
+                        setPageSize(pageSize)
+                     }
+                  }} />
+            </Paper>
+            : ''}
 
-            </Grid>
 
-            <Divider sx={{ bgcolor: '#C3C3C3', my: 2 }} />
-            <Grid container
-               direction="row"
-               justifyContent="flex-start"
-               alignItems="center">
-               <Card sx={{ minWidth: 300, maxWidth: 460, minHeight: 20, maxHeight: 160, my: 2, bgcolor: "#101D35", mt: 1, ml: 2 }}>
-                  <CardContent>
-                     <Typography sx={{ color: "#41A3E3" }}>ลูกค้าทั้งหมด</Typography>
-                     <Grid container justifyContent="center">
-                        <Grid item xs={4}></Grid>
-                        <Grid item xs={4}>
-                           <Typography variant="h5" sx={{ mt: 3, textAlign: "center", color: "#eee" }}>
-                              {member?.total_member}
-                           </Typography>
-                        </Grid>
-                        <Grid item xs={4}>
-                           <Typography sx={{ mt: 5, textAlign: "end", color: "#eee", mb: 1 }}> ยูสเซอร์ </Typography>
-                        </Grid>
-                     </Grid>
-                     <Divider sx={{ bgcolor: '#41A3E3', mt: 1 }} />
-                        <Box sx={{ textAlign: 'right' }}>
-                           <Button variant="text" sx={{p:1}}>
-                              ดูเพิ่มเติม...
-                           </Button>
-                        </Box>
-                  </CardContent>
-               </Card>
-
-
-               <Card sx={{ minWidth: 300, maxWidth: 460, minHeight: 20, maxHeight: 150, my: 2, bgcolor: "#101D35", mt: 1, ml: 2 }}>
-                  <CardContent>
-                     <Typography sx={{ color: "#41A3E3" }}>สมัครใหม่วันนี้</Typography>
-                     <Grid container justifyContent="center">
-                        <Grid item xs={4}></Grid>
-                        <Grid item xs={4}>
-                           <Typography variant="h5" sx={{ mt: 3, textAlign: "center", color: "#eee" }}>
-                              {member?.member_regiser_today}
-                           </Typography>
-                        </Grid>
-                        <Grid item xs={4}>
-                           <Typography sx={{ mt: 5, textAlign: "end", color: "#eee", mb: 1 }}> คน </Typography>
-                        </Grid>
-                     </Grid>
-                     
-                  </CardContent>
-               </Card>
-               <Card sx={{ minWidth: 300, maxWidth: 460, minHeight: 20, maxHeight: 150, my: 2, bgcolor: "#101D35", mt: 1, ml: 2 }}>
-                  <CardContent>
-                     <Typography sx={{ color: "#41A3E3" }}>สมัครใหม่วันนี้เงินฝาก</Typography>
-                     <Grid container justifyContent="center">
-                        <Grid item xs={4}></Grid>
-                        <Grid item xs={4}>
-                           <Typography variant="h5" sx={{ mt: 3, textAlign: "center", color: "#eee" }}>
-                              {member?.sum_deposit_day || 0}
-                           </Typography>
-                        </Grid>
-                        <Grid item xs={4}>
-                           <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}> บาท </Typography>
-                        </Grid>
-                     </Grid>
-                     
-                  </CardContent>
-               </Card>
-            </Grid>
-
-         </Paper>
 
          <Paper sx={{ p: 3, mt: 2 }}>
             <Typography> ภาพรวมสรุปตั้งแต่วันที่ {selectedDateRange.start} ถึง {selectedDateRange.end}</Typography>
@@ -863,6 +1726,16 @@ function dashboard() {
 
 
          </Grid>
+         <Snackbar
+            open={open}
+            autoHideDuration={3000}
+            onClose={() => setOpen(false)}
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+         >
+            <Alert severity="success" sx={{ width: "100%" }}>
+               Copy success !
+            </Alert>
+         </Snackbar>
          <LoadingModal open={loading} />
       </Layout>
    );

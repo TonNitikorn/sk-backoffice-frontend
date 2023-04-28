@@ -65,7 +65,6 @@ function memberTable() {
    const [transaction, setTransaction] = useState([])
    const [page, setPage] = useState(1)
    const [pageSize, setPageSize] = useState(10)
-
    const [rowData, setRowData] = useState()
    const [bonus, setBonus] = useState(true);
    const [selectedDateRange, setSelectedDateRange] = useState({
@@ -304,9 +303,11 @@ function memberTable() {
    const handleSearch = (selectedKeys, confirm, dataIndex) => {
      confirm();
    };
+
    const handleReset = (clearFilters) => {
      clearFilters();
    };
+
    const getColumnSearchProps = (dataIndex) => ({
      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
        <div
@@ -819,9 +820,6 @@ function memberTable() {
    const onChange = (pagination, filters, sorter, extra) => {
       console.log('params', pagination, filters, sorter, extra);
    };
-
-
-   console.log('dataMember', dataMember)
 
 
    return (
