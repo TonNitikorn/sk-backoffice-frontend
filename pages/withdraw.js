@@ -11,7 +11,7 @@ import {
     Card,
     Snackbar,
     CardContent,
-    Alert 
+    Alert
 } from "@mui/material";
 import axios from "axios";
 import hostname from "../utils/hostname";
@@ -31,7 +31,7 @@ function withdraw() {
     const [open, setOpen] = useState(false);
     const handleClose = (event, reason) => {
         setOpen(false);
-      };
+    };
 
     const handleClickSnackbar = () => {
         setOpen(true);
@@ -158,78 +158,101 @@ function withdraw() {
             width: "10%",
             align: "center",
         },
-   
+
         {
-            title: "เงินฝาก",
+            title: "ยอดเงิน",
             field: "credit",
             search: true,
             // width: "10%",
             align: "center",
-            render: (item) => (
-                <Chip
-                    label={Intl.NumberFormat("TH").format(parseInt(item.credit))}
-                    size="small"
-                    style={{
-                        background: "#41a3e3",
-                        color: "#ffff",
-                        width: 100
+            // render: (item) => (
+            //     <Chip
+            //         label={Intl.NumberFormat("TH").format(parseInt(item.credit))}
+            //         size="small"
+            //         style={{
+            //             background: "#41a3e3",
+            //             color: "#ffff",
+            //             width: 100
 
+            //         }}
+            //     />
+            // ),
+            render: (item) => (
+                <Typography
+                    style={{
+                        fontSize: '14px'
                     }}
-                />
+                >{Intl.NumberFormat("TH").format(parseInt(item.credit))}</Typography>
             ),
         },
-        // {
-        //     title: "โบนัส",
-        //     field: "bonus_credit",
-        //     search: true,
-        //     // width: "10%",
-        //     align: "center",
-        //     render: (item) => (
-        //         <Chip
-        //             label={item.bonus_credit}
-        //             size="small"
-        //             style={{
-        //                 background: "#109CF1",
-        //                 color: "#ffff",
-        //             }}
-        //         />
-        //     ),
-        // },
         {
-            title: "เครดิตก่อนเติม",
-            field: "credit_before",
+            title: "ประเภท",
             search: true,
             // width: "10%",
             align: "center",
             render: (item) => (
                 <Chip
-                    label={Intl.NumberFormat("TH").format(parseInt(item.credit_before))}
+                    label={item.transfer_type === "DEPOSIT" ? "ฝากเงิน" : "ถอนเงิน"}
                     size="small"
                     style={{
-                        background: "#FFB946",
-                        color: "#ffff",
-                        width: 100
-                    }}
-                />
-            ),
-        },
-        {
-            title: "เครดิตหลังเติม",
-            field: "credit_after",
-            search: true,
-            // width: "30%",
-            align: "center",
-            render: (item) => (
-                <Chip
-                    label={Intl.NumberFormat("TH").format(parseInt(item.credit_after))}
-                    size="small"
-                    style={{
-                        background: "#0b9f0b",
+                        background:  item.transfer_type === "DEPOSIT" ? "#3d813d" : "#db9d40",
                         color: "#ffff",
                         width: 100
 
                     }}
                 />
+            ),
+
+        },
+        {
+            title: "เครดิตก่อนทำรายการ",
+            field: "credit_before",
+            search: true,
+            // width: "10%",
+            align: "center",
+            // render: (item) => (
+            //     <Chip
+            //         label={Intl.NumberFormat("TH").format(parseInt(item.credit_before))}
+            //         size="small"
+            //         style={{
+            //             background: "#FFB946",
+            //             color: "#ffff",
+            //             width: 100
+            //         }}
+            //     />
+            // ),
+            render: (item) => (
+                <Typography
+                    style={{
+                        fontSize: '14px'
+                    }}
+                >{Intl.NumberFormat("TH").format(parseInt(item.credit_before))}</Typography>
+            ),
+        },
+        {
+            title: "เครดิตหลังทำรายการ",
+            field: "credit_after",
+            search: true,
+            // width: "30%",
+            align: "center",
+            // render: (item) => (
+            //     <Chip
+            //         label={Intl.NumberFormat("TH").format(parseInt(item.credit_after))}
+            //         size="small"
+            //         style={{
+            //             background: "#0b9f0b",
+            //             color: "#ffff",
+            //             width: 100
+
+            //         }}
+            //     />
+            // ),
+            render: (item) => (
+                <Typography
+                    style={{
+                        fontSize: '14px'
+                    }}
+                >{Intl.NumberFormat("TH").format(parseInt(item.credit_after))}</Typography>
             ),
         },
 
