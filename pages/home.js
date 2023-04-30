@@ -377,9 +377,9 @@ function home() {
 
                                 <Grid item xs={4} >
                                     <Typography sx={{ fontSize: "14px", mt: "5px", ml: "5px", color: "#EEEEEE", }} >
-                                        จำนวนครั้ง
+                                        จำนวนครั้ง / วัน
                                     </Typography>
-                                    <Chip label={Intl.NumberFormat("TH").format(parseInt(item.bank_status))}
+                                    <Chip label={Intl.NumberFormat("TH").format(parseInt(item.count_transaction))}
                                         size="small"
                                         style={{ marginTop: "10px", padding: 10, width: 120, backgroundColor: "#129A50", color: "#EEEEEE", }} />
                                     <Typography sx={{ fontSize: "14px", mt: "5px", ml: "5px", color: "#EEEEEE", }} >

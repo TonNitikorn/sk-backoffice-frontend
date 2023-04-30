@@ -889,7 +889,7 @@ function dashboard() {
          dataIndex: 'username',
          ...getColumnSearchProps('username'),
          render: (item, data) => (
-            <CopyToClipboard text={item}>
+            <CopyToClipboard text={data.members?.username}>
                <div style={{
                   "& .MuiButton-text": {
                      "&:hover": {
@@ -901,7 +901,7 @@ function dashboard() {
                      sx={{ fontSize: "14px", p: 0, color: "blue", }}
                      onClick={handleClickSnackbar}
                   >
-                     {item}
+                     {data.members?.username}
                   </Button>
                </div>
             </CopyToClipboard>

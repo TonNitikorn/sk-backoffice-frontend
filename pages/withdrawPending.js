@@ -1215,9 +1215,9 @@ function withdrawpending() {
                                  color: "#EEEEEE",
                               }
                            } >
-                              จำนวนครั้ง
+                              จำนวนครั้ง / วัน
                            </Typography>
-                           <Chip label={Intl.NumberFormat("TH").format(parseInt("0"))}
+                           <Chip label={Intl.NumberFormat("TH").format(parseInt(item.count_transaction))}
                               size="small"
                               style={
                                  {
