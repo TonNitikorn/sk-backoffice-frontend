@@ -691,33 +691,55 @@ function memberTable() {
             </Grid>
          </Grid >,
       },
+      // {
+      //    title: 'Username',
+      //    dataIndex: 'username',
+      //    // render: (item, data) => (
+           
+      //    //    <CopyToClipboard text={item}>
+      //    //       <div style={{
+      //    //          "& .MuiButton-text": {
+      //    //             "&:hover": {
+      //    //                // backgroundColor: "#9CE1BC",
+      //    //                // color: "blue",
+      //    //                textDecoration: "underline blue 1px",
+      //    //             }
+      //    //          }
+      //    //       }} >
+      //    //          <Button
+      //    //             sx={{
+      //    //                fontSize: "14px",
+      //    //                p: 0,
+      //    //                color: "blue",
+      //    //             }}
+      //    //             onClick={handleClickSnackbar}
+      //    //          >
+      //    //             {item}
+      //    //          </Button>
+      //    //       </div>
+      //    //    </CopyToClipboard>
+      //    // ),
+      //    render: (item) => (
+      //       <Typography
+      //          style={{
+      //             fontSize: '14px'
+      //          }}
+      //       >{item}</Typography>
+      //    ),
+      //    ...getColumnSearchProps('username'),
+
+      // },
       {
-         title: 'Username',
-         dataIndex: 'username',
-         ...getColumnSearchProps('username'),
-         render: (item, data) => (
-            <CopyToClipboard text={item}>
-               <div style={{
-                  "& .MuiButton-text": {
-                     "&:hover": {
-                        // backgroundColor: "#9CE1BC",
-                        // color: "blue",
-                        textDecoration: "underline blue 1px",
-                     }
-                  }
-               }} >
-                  <Button
-                     sx={{
-                        fontSize: "14px",
-                        p: 0,
-                        color: "blue",
-                     }}
-                     onClick={handleClickSnackbar}
-                  >
-                     {item}
-                  </Button>
-               </div>
-            </CopyToClipboard>
+         dataIndex: "username",
+         title: "Username",
+         align: "center",
+         ...getColumnSearchProps('tel'),
+         render: (item) => (
+            <Typography
+               style={{
+                  fontSize: '14px'
+               }}
+            >{item}</Typography>
          ),
       },
       {
@@ -784,13 +806,13 @@ function memberTable() {
                }}
             >{item}</Typography>
          ),
-         filters: [
-            { text: 'postman', value: 'postman' },
-            { text: 'google', value: 'google' },
+         // filters: [
+         //    { text: 'postman', value: 'postman' },
+         //    { text: 'google', value: 'google' },
 
-         ],
-         onFilter: (value, record) => record.platform.indexOf(value) === 0,
-         filterSearch: true,
+         // ],
+         // onFilter: (value, record) => record.platform.indexOf(value) === 0,
+         // filterSearch: true,
          ...getColumnSearchProps('platform'),
 
       },
