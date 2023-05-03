@@ -12,7 +12,7 @@ import {
   Menu,
   MenuItem,
   Grid,
-  Button, AppBar, Drawer, Toolbar, Collapse
+  Button, AppBar, Drawer, Toolbar, Collapse,MenuIcon
 } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
 import { menuSuperAdmin } from "../routes/menu";
@@ -42,12 +42,21 @@ function Layout({ children, page }) {
   const [dataProfile, setDataProfile] = useState([]);
   const [open, setOpen] = useState(false);
 
+ 
 
   const handleClickAcc = (event) => {
     setAnchorEl(event.currentTarget);
   };
   const handleCloseAcc = () => {
     setAnchorEl(null);
+  };
+
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
   };
 
   const handleClick = (id) => {
@@ -91,6 +100,49 @@ function Layout({ children, page }) {
 
             </Typography>
           </Grid>
+
+          
+          <Grid container justifyContent="flex-end">
+            <Button
+              onClick={handleClickAcc}
+              variant="contained"
+              size="small"
+              sx={{ ml: 2, bgcolor: "#eee" }}
+              aria-controls={open ? "account-menu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? "true" : undefined}
+            >
+              <AccountCircleIcon sx={{ width: 35, height: 35, mr: 2 }} />
+              <Typography>ADMIN</Typography>
+              <ArrowDropDownIcon />
+            </Button>
+            <Menu
+              anchorEl={anchorEl}
+              id="account-menu"
+              open={openAcc}
+              onClose={() => setAnchorEl(null)}
+              onClick={() => setAnchorEl(null)}
+              transformOrigin={{ horizontal: "right", vertical: "top" }}
+              anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+            >
+              <MenuItem
+                onClick={async () => {
+                  await dispatch(signOut());
+                  localStorage.clear();
+                  router.push("/auth/login");
+                }}
+              >
+                <ListItemIcon>
+                  <Logout fontSize="small" />
+                </ListItemIcon>
+                ออกจากระบบ
+              </MenuItem>
+
+
+            </Menu>
+          </Grid>
+
+
 
         </Toolbar>
       </AppBar>
