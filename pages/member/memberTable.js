@@ -1,4 +1,4 @@
-import React, { useState, useEffect , useRef} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import {
    Grid,
@@ -12,6 +12,7 @@ import {
    DialogTitle,
    DialogActions,
    // Table,
+   TableContainer,
    TableRow,
    TableCell,
    DialogContent,
@@ -44,7 +45,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import CloseIcon from '@mui/icons-material/Close';
-import { Table , Input, Space, } from 'antd';
+import { Table, Input, Space, } from 'antd';
 import SearchIcon from '@mui/icons-material/Search';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -105,6 +106,53 @@ function memberTable() {
             data: {
                create_at_start: selectedDateRange.start,
                create_at_end: selectedDateRange.end,
+               type: search.type === "all" ? "" : search.type,
+               data_search: search.data
+            }
+         });
+
+         let resData = res.data;
+         let no = 1;
+         resData.map((item) => {
+            item.no = no++;
+            item.create_at = moment(item.create_at).format('DD/MM/YYYY HH:mm')
+         });
+
+         setDataMember(resData);
+         setLoading(false);
+      } catch (error) {
+         console.log(error);
+         if (
+            error.response.data.error.status_code === 401 &&
+            error.response.data.error.message === "Unauthorized"
+         ) {
+            dispatch(signOut());
+            localStorage.clear();
+            router.push("/auth/login");
+         }
+         if (
+            error.response.status === 401 &&
+            error.response.data.error.message === "Invalid Token"
+         ) {
+            dispatch(signOut());
+            localStorage.clear();
+            router.push("/auth/login");
+         }
+      }
+   };
+
+   const getMemberAll = async (type, start, end) => {
+      setLoading(true);
+      try {
+         let res = await axios({
+            headers: {
+               Authorization: "Bearer " + localStorage.getItem("access_token"),
+            },
+            method: "post",
+            url: `${hostname}/member/member_list`,
+            data: {
+               // create_at_start: selectedDateRange.start,
+               // create_at_end: selectedDateRange.end,
                type: search.type === "all" ? "" : search.type,
                data_search: search.data
             }
@@ -295,60 +343,60 @@ function memberTable() {
 
 
    useEffect(() => {
-      getMemberList()
+      getMemberAll()
    }, [])
 
    ////////////////////// search table /////////////////////
    const searchInput = useRef(null);
    const handleSearch = (selectedKeys, confirm, dataIndex) => {
-     confirm();
+      confirm();
    };
 
    const handleReset = (clearFilters) => {
-     clearFilters();
+      clearFilters();
    };
 
    const getColumnSearchProps = (dataIndex) => ({
-     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
-       <div
-         style={{
-           padding: 8,
-         }}
-         onKeyDown={(e) => e.stopPropagation()}
-       >
-         <Input
-           ref={searchInput}
-           placeholder={`Search ${dataIndex}`}
-           value={selectedKeys[0]}
-           onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-           onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
-           style={{
-             marginBottom: 8,
-             display: 'block',
-           }}
-         />
-         <Space>
-           <Button
-             onClick={() => clearFilters && handleReset(clearFilters)}
-             size="small"
-             style={{
-               width: 90,
-             }}
-           >
-             Reset
-           </Button>
-           <Button
-             type="primary"
-             onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
-             size="small"
-             style={{
-               width: 90,
-             }}
-           >
-            <SearchIcon />
-             Search
-           </Button>
-           {/* <Button
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+         <div
+            style={{
+               padding: 8,
+            }}
+            onKeyDown={(e) => e.stopPropagation()}
+         >
+            <Input
+               ref={searchInput}
+               placeholder={`Search ${dataIndex}`}
+               value={selectedKeys[0]}
+               onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+               onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+               style={{
+                  marginBottom: 8,
+                  display: 'block',
+               }}
+            />
+            <Space>
+               <Button
+                  onClick={() => clearFilters && handleReset(clearFilters)}
+                  size="small"
+                  style={{
+                     width: 90,
+                  }}
+               >
+                  Reset
+               </Button>
+               <Button
+                  type="primary"
+                  onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                  size="small"
+                  style={{
+                     width: 90,
+                  }}
+               >
+                  <SearchIcon />
+                  Search
+               </Button>
+               {/* <Button
              type="link"
              size="small"
              onClick={() => {
@@ -361,7 +409,7 @@ function memberTable() {
            >
              Filter
            </Button> */}
-           {/* <Button
+               {/* <Button
              type="link"
              size="small"
              onClick={() => {
@@ -370,26 +418,26 @@ function memberTable() {
            >
              close
            </Button> */}
-         </Space>
-       </div>
-     ),
-     filterIcon: (filtered) => (
-       <SearchIcon
-         style={{
-           color: filtered ? '#1890ff' : undefined,
-         }}
-       />
-     ),
-     onFilter: (value, record) =>
-       record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
-     onFilterDropdownOpenChange: (visible) => {
-       if (visible) {
-         setTimeout(() => searchInput.current?.select(), 100);
-       }
-     },
+            </Space>
+         </div>
+      ),
+      filterIcon: (filtered) => (
+         <SearchIcon
+            style={{
+               color: filtered ? '#1890ff' : undefined,
+            }}
+         />
+      ),
+      onFilter: (value, record) =>
+         record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+      onFilterDropdownOpenChange: (visible) => {
+         if (visible) {
+            setTimeout(() => searchInput.current?.select(), 100);
+         }
+      },
    });
 
-    ////////////////////// search table /////////////////////
+   ////////////////////// search table /////////////////////
 
    const columns = [
       {
@@ -736,10 +784,10 @@ function memberTable() {
                }}
             >{item}</Typography>
          ),
-         filters:[
-            {text: 'postman' , value : 'postman'},
-            {text: 'google' , value : 'google'},
-            
+         filters: [
+            { text: 'postman', value: 'postman' },
+            { text: 'google', value: 'google' },
+
          ],
          onFilter: (value, record) => record.platform.indexOf(value) === 0,
          filterSearch: true,
@@ -875,7 +923,7 @@ function memberTable() {
                   }}
                   required
                />
-               <TextField
+               {/* <TextField
                   variant="outlined"
                   type="text"
                   name="type"
@@ -916,7 +964,7 @@ function memberTable() {
                   }}
                   placeholder="ค้นหาข้อมูลที่ต้องการ"
                   sx={{ mt: 1, mr: 2, width: "220px", bgcolor: '#fff' }}
-               />
+               /> */}
 
                <Button
                   variant="contained"
@@ -934,9 +982,9 @@ function memberTable() {
          </Grid>
 
          <Table columns={columns} dataSource={dataMember} onChange={onChange} pagination={{
-            current:page,
+            current: page,
             pageSize: pageSize,
-            onChange: (page, pageSize)=>{
+            onChange: (page, pageSize) => {
                setPage(page)
                setPageSize(pageSize)
             }
@@ -1211,7 +1259,7 @@ function memberTable() {
             <DialogContent>
                <Grid container justifyContent="center" spacing={2}>
                   <Grid item xs={6}>
-                     <Table sx={{ border: '1px solid #eee' }}>
+                     <TableContainer >
                         <TableRow>
                            <TableCell
                               sx={{ fontWeight: "bold", width: "150px", border: '1px solid #eee' }}
@@ -1219,7 +1267,7 @@ function memberTable() {
                            >
                               ชื่อผู้ใช้งาน
                            </TableCell>
-                           <TableCell>{userData.username}</TableCell>
+                           <TableCell sx={{ fontWeight: "bold", width: "200px", border: '1px solid #eee' }}>{userData.username}</TableCell>
                         </TableRow>
                         <TableRow>
                            <TableCell
@@ -1228,7 +1276,7 @@ function memberTable() {
                            >
                               ธนาคาร
                            </TableCell>
-                           <TableCell >
+                           <TableCell sx={{ fontWeight: "bold", width: "200px", border: '1px solid #eee' }}>
                               <Typography sx={{ fontSize: '14px' }} >
                                  {userData.bank_name === "kbnk"
                                     ? "กสิกรไทย"
@@ -1285,7 +1333,7 @@ function memberTable() {
                            >
                               เครดิต
                            </TableCell>
-                           <TableCell >{userData.credit}</TableCell>
+                           <TableCell sx={{ fontWeight: "bold", width: "200px", border: '1px solid #eee' }}>{userData.credit}</TableCell>
                         </TableRow>
                         <TableRow>
                            <TableCell
@@ -1294,7 +1342,7 @@ function memberTable() {
                            >
                               เลขบัญชี
                            </TableCell>
-                           <TableCell >{userData.bank_number}</TableCell>
+                           <TableCell sx={{ fontWeight: "bold", width: "200px", border: '1px solid #eee' }}>{userData.bank_number}</TableCell>
                         </TableRow>
                         <TableRow>
                            <TableCell
@@ -1303,9 +1351,9 @@ function memberTable() {
                            >
                               ชื่อ นามสกุล
                            </TableCell>
-                           <TableCell >{userData.name}</TableCell>
+                           <TableCell sx={{ fontWeight: "bold", width: "200px", border: '1px solid #eee' }}>{userData.name}</TableCell>
                         </TableRow>
-                     </Table>
+                     </TableContainer >
                   </Grid>
 
                   <Grid item xs={6}>
