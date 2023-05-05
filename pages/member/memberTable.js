@@ -659,7 +659,7 @@ function memberTable() {
                )}
             </Grid>
             <Grid item xs={9}>
-               <Grid sx={{ ml: 2, mt: 1 }}>
+               <Grid sx={{ ml: 3, mt: 1 }}>
                   <CopyToClipboard text={data.bank_number}>
                      <div style={{
                         "& .MuiButton-text": {
@@ -683,7 +683,7 @@ function memberTable() {
                      </div>
                   </CopyToClipboard>
                </Grid>
-               <Grid>
+               <Grid sx={{ ml: 3, }}>
                   <Typography sx={{ fontSize: "14px" }}>
                      {data.name}
                   </Typography>
@@ -691,57 +691,37 @@ function memberTable() {
             </Grid>
          </Grid >,
       },
-      // {
-      //    title: 'Username',
-      //    dataIndex: 'username',
-      //    // render: (item, data) => (
-           
-      //    //    <CopyToClipboard text={item}>
-      //    //       <div style={{
-      //    //          "& .MuiButton-text": {
-      //    //             "&:hover": {
-      //    //                // backgroundColor: "#9CE1BC",
-      //    //                // color: "blue",
-      //    //                textDecoration: "underline blue 1px",
-      //    //             }
-      //    //          }
-      //    //       }} >
-      //    //          <Button
-      //    //             sx={{
-      //    //                fontSize: "14px",
-      //    //                p: 0,
-      //    //                color: "blue",
-      //    //             }}
-      //    //             onClick={handleClickSnackbar}
-      //    //          >
-      //    //             {item}
-      //    //          </Button>
-      //    //       </div>
-      //    //    </CopyToClipboard>
-      //    // ),
-      //    render: (item) => (
-      //       <Typography
-      //          style={{
-      //             fontSize: '14px'
-      //          }}
-      //       >{item}</Typography>
-      //    ),
-      //    ...getColumnSearchProps('username'),
-
-      // },
       {
-         dataIndex: "username",
-         title: "Username",
-         align: "center",
-         ...getColumnSearchProps('tel'),
-         render: (item) => (
-            <Typography
-               style={{
-                  fontSize: '14px'
-               }}
-            >{item}</Typography>
+         title: 'Username',
+         dataIndex: 'username',
+         render: (item, data) => (
+            <CopyToClipboard text={item}>
+               <div style={{
+                  "& .MuiButton-text": {
+                     "&:hover": {
+                        // backgroundColor: "#9CE1BC",
+                        // color: "blue",
+                        textDecoration: "underline blue 1px",
+                     }
+                  }
+               }} >
+                  <Button
+                     sx={{
+                        fontSize: "14px",
+                        p: 0,
+                        color: "blue",
+                     }}
+                     onClick={handleClickSnackbar}
+                  >
+                     {item}
+                  </Button>
+               </div>
+            </CopyToClipboard>
          ),
+         ...getColumnSearchProps('tel'),
+
       },
+
       {
          dataIndex: "tel",
          title: "โทรศัพท์",
@@ -759,7 +739,6 @@ function memberTable() {
          dataIndex: "credit",
          title: "เครดิต",
          align: "center",
-         defaultSortOrder: 'descend',
          sorter: (record1, record2) => record1.credit - record2.credit,
          render: (item) => (
             <Typography
@@ -895,18 +874,17 @@ function memberTable() {
    return (
       <Layout>
          <CssBaseline />
-         <Grid container sx={{ mt: 2 }}>
-            <Grid item container xs={12} sx={{ mb: 3 }}>
+         <Grid container>
+            <Grid item={true} xs={12} sx={{ mb: 3 }}>
                <TextField
                   label="เริ่ม"
                   style={{
                      marginRight: "8px",
-                     marginTop: "8px",
                      backgroundColor: "white",
                      borderRadius: 4,
                   }}
                   variant="outlined"
-                  size=""
+                  size="small"
                   type="datetime-local"
                   name="start"
                   value={selectedDateRange.start}
@@ -924,13 +902,12 @@ function memberTable() {
                   label="สิ้นสุด"
                   style={{
                      marginRight: "8px",
-                     marginTop: "8px",
                      color: "white",
                      backgroundColor: "white",
                      borderRadius: 4,
                   }}
                   variant="outlined"
-                  size=""
+                  size="small"
                   type="datetime-local"
                   name="end"
                   value={selectedDateRange.end}
@@ -945,72 +922,68 @@ function memberTable() {
                   }}
                   required
                />
-               {/* <TextField
-                  variant="outlined"
-                  type="text"
-                  name="type"
-
-                  value={search.type}
-                  onChange={(e) => {
-                     setSearch({
-                        ...search,
-                        [e.target.name]: e.target.value,
-                     });
-                  }}
-                  sx={{ mt: 1, mr: 1, width: "220px", bgcolor: '#fff' }}
-                  select
-                  label="ประเภทการค้นหา"
-                  InputLabelProps={{
-                     shrink: true,
-                  }}
-               >
-                  <MenuItem value="all">ทั้งหมด</MenuItem>
-                  <MenuItem value="username">Username</MenuItem>
-                  <MenuItem value="tel">หมายเลขโทรศัพท์</MenuItem>
-                  <MenuItem value="bank_number">เลขบัญชีธนาคาร</MenuItem>
-                  <MenuItem value="fname">ชื่อจริง</MenuItem>
-                  <MenuItem value="sname">นามสุกล</MenuItem>
-               </TextField>
-
-               <TextField
-                  variant="outlined"
-                  type="text"
-                  name="data"
-
-                  value={search.data}
-                  onChange={(e) => {
-                     setSearch({
-                        ...search,
-                        [e.target.name]: e.target.value,
-                     });
-                  }}
-                  placeholder="ค้นหาข้อมูลที่ต้องการ"
-                  sx={{ mt: 1, mr: 2, width: "220px", bgcolor: '#fff' }}
-               /> */}
 
                <Button
                   variant="contained"
-                  style={{ marginRight: "8px", marginTop: 8, color: '#fff' }}
+                  style={{ marginRight: "8px", }}
                   color="primary"
                   size="large"
                   onClick={() => {
                      getMemberList();
                   }}
                >
-                  <Typography>ค้นหา</Typography>
+                  <Typography sx={{ color: '#ffff' }}>ค้นหา</Typography>
                </Button>
-
+               <Button
+                  variant="contained"
+                  size="large"
+                  style={{
+                     marginRight: "8px",
+                     backgroundColor: "#129A50",
+                  }}
+                  onClick={async () => {
+                     getMemberAll();
+                  }}
+               >
+                  <Typography sx={{ color: '#ffff' }}>ค้นหาทั้งหมด</Typography>
+               </Button>
             </Grid>
          </Grid>
 
-         <Table columns={columns} dataSource={dataMember} onChange={onChange} pagination={{
-            current: page,
-            pageSize: pageSize,
-            onChange: (page, pageSize) => {
-               setPage(page)
-               setPageSize(pageSize)
-            }
-         }} />
+
+         <Table columns={columns} dataSource={dataMember} onChange={onChange}
+            size="small"
+            pagination={{
+               current: page,
+               pageSize: pageSize,
+               onChange: (page, pageSize) => {
+                  setPage(page)
+                  setPageSize(pageSize)
+               }
+            }}
+            summary={(pageData) => {
+               let totalBorrow = 0;
+               let totalRepayment = 0;
+               pageData.forEach(({ borrow, repayment }) => {
+                  totalBorrow += borrow;
+                  totalRepayment += repayment;
+               });
+               return (
+                  <>
+                     <Table.Summary.Row>
+                        <Table.Summary.Cell> <Typography >Total</Typography></Table.Summary.Cell>
+                        <Table.Summary.Cell />
+                        <Table.Summary.Cell />
+                        <Table.Summary.Cell />
+                        <Table.Summary.Cell >
+                           <Typography align="center">{totalBorrow}</Typography>
+                        </Table.Summary.Cell>
+
+                     </Table.Summary.Row>
+                  </>
+               );
+            }}
+         />
 
          <Dialog
             open={openDialogEdit.open}

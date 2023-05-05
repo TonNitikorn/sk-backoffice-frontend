@@ -15,21 +15,20 @@ import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 
 export const menuSuperAdmin = [
   {
-    name: "รายการเดินบัญชี",
-    link: "/home",
-    icon: <HomeIcon />,
-  },
-  {
     name: "Dashboard",
     link: "/dashboard",
     icon: <InsertChartIcon />,
   },
-  
   {
-    name: "จัดการเครดิต",
-    link: "/editError",
-    icon: <EditLocationAltIcon />,
+    name: "รายการเดินบัญชี",
+    link: "/home",
+    icon: <HomeIcon />,
   },
+  // {
+  //   name: "จัดการเครดิต",
+  //   link: "/editError",
+  //   icon: <EditLocationAltIcon />,
+  // },
   {
     name: "สร้างรายการถอน",
     link: "/withdraw",
@@ -65,11 +64,6 @@ export const menuSuperAdmin = [
     ],
   },
 
-  {
-    name: "จัดการหน้าเว็บ",
-    link: "/manageWebPages",
-    icon: <LibraryBooksIcon />,
-  },
   
   {
     name: "บัญชีธนาคาร",
@@ -211,6 +205,12 @@ export const menuSuperAdmin = [
     name: "รายชื่อพนักงาน",
     link: "/employee/employee",
     icon: <GroupIcon />,
+  },
+  
+  {
+    name: "จัดการหน้าเว็บ",
+    link: "/manageWebPages",
+    icon: <LibraryBooksIcon />,
   },
   // {
   //   name: "คู่มือการใช้งาน",
