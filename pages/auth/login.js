@@ -97,7 +97,7 @@ function Login() {
                      <TextField name="username"
                         type="text"
                         value={rowData.username || ""}
-                        placeholder="000-000-000"
+                        placeholder="username"
                         fullWidth size="small"
                         onChange={
                            (e) => handleChangeData(e)}
