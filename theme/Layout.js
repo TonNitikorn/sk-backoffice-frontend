@@ -78,6 +78,25 @@ function Layout({ children, page }) {
     }
   };
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      console.log(' window.location.pathname', window.location.pathname)
+      if (window.location.pathname.includes('/member')) {
+        setOpen({ 'member': true })
+      }
+      if (window.location.pathname.includes('/bank')) {
+        setOpen({ 'bank': true })
+      }
+      if (window.location.pathname.includes('/report')) {
+        setOpen({ 'report': true })
+      }
+      // '/bank'
+      // '/report'
+    }
+  }, [])
+
+
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -86,9 +105,9 @@ function Layout({ children, page }) {
         sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px`, height: 73 }}
       >
         <Toolbar>
-          <Grid container justifyContent="space-between">
+          <Grid container justifyContent="flex-end">
             <Typography variant="h6" component="div">
-
+              asdasd
             </Typography>
           </Grid>
 
@@ -150,7 +169,9 @@ function Layout({ children, page }) {
                             pl: 4,
                             borderRadius: "6px",
                             backgroundColor: typeof window !== "undefined" ? window.location.pathname === `${e.link}` ? "#41A3E3" : '#eee' : ''
-                          }} onClick={() => router.push(e.link)}>
+                          }} onClick={() => {
+                            router.push(e.link)
+                          }}>
                           <ListItemIcon>
                             {e.icon}
                           </ListItemIcon>
@@ -163,7 +184,13 @@ function Layout({ children, page }) {
                   <Collapse in={open.point} timeout="auto" unmountOnExit>
                     {item.point?.map((e) => (
                       <List component="div" disablePadding>
-                        <ListItemButton sx={{ pl: 4 }} onClick={() => router.push(e.link)}>
+                        <ListItemButton sx={{
+                          pl: 4,
+                          borderRadius: "6px",
+                          backgroundColor: typeof window !== "undefined" ? window.location.pathname === `${e.link}` ? "#41A3E3" : '#eee' : ''
+                        }} onClick={() => {
+                          router.push(e.link)
+                        }}>
                           <ListItemIcon>
                             {e.icon}
                           </ListItemIcon>
@@ -176,7 +203,13 @@ function Layout({ children, page }) {
                   <Collapse in={open.report} timeout="auto" unmountOnExit>
                     {item.report?.map((e) => (
                       <List component="div" disablePadding>
-                        <ListItemButton sx={{ pl: 4 }} onClick={() => router.push(e.link)}>
+                        <ListItemButton sx={{
+                          pl: 4,
+                          borderRadius: "6px",
+                          backgroundColor: typeof window !== "undefined" ? window.location.pathname === `${e.link}` ? "#41A3E3" : '#eee' : ''
+                        }} onClick={() => {
+                          router.push(e.link)
+                        }}>
                           <ListItemIcon>
                             {e.icon}
                           </ListItemIcon>
@@ -189,7 +222,13 @@ function Layout({ children, page }) {
                   <Collapse in={open.bank} timeout="auto" unmountOnExit>
                     {item.bank?.map((e) => (
                       <List component="div" disablePadding>
-                        <ListItemButton sx={{ pl: 4 }} onClick={() => router.push(e.link)}>
+                        <ListItemButton sx={{
+                          pl: 4,
+                          borderRadius: "6px",
+                          backgroundColor: typeof window !== "undefined" ? window.location.pathname === `${e.link}` ? "#41A3E3" : '#eee' : ''
+                        }} onClick={() => {
+                          router.push(e.link)
+                        }}>
                           <ListItemIcon>
                             {e.icon}
                           </ListItemIcon>
