@@ -28,7 +28,6 @@ import logo_angpao from "../../assets/logo_ap.png"
 
 function Login() {
    const router = useRouter();
-   const line = 'line'
    const dispatch = useAppDispatch();
    const [rowData, setRowData] = useState({});
    const [values, setValues] = useState({
@@ -38,6 +37,8 @@ function Login() {
       weightRange: "",
       showPassword: false,
    });
+   const [first, setFirst] = useState('');
+   const [last, setLast] = useState('');
 
    const handleChangeData = async (e) => {
       setRowData({ ...rowData, [e.target.name]: e.target.value });
@@ -58,6 +59,20 @@ function Login() {
       event.preventDefault();
    };
 
+   const handleSubmit = async (event) => {
+      event.preventDefault();
+
+      const response = await dispatch(
+         signIn({ username: rowData.username, password: values.password })
+      );
+      if (response.meta.requestStatus === "rejected") {
+         // alert("Login failed");
+
+      } else {
+         router.push("/home");
+      }
+   };
+
    return (
       <>
          <div style={{ padding: "0 2rem" }} >
@@ -65,8 +80,8 @@ function Login() {
             <Grid container >
                <Grid item xs={3} />
                <Grid item xs={6} >
-                  <Box sx={
-                     {
+                  <Box
+                     sx={{
                         display: { xs: "none", md: "block" },
                         flexGrow: 1,
                         mt: 20,
@@ -75,88 +90,83 @@ function Login() {
                         borderRadius: 5,
                         boxShadow: '2px 2px 5px #C1B9B9',
                         border: "1px solid #C1B9B9"
-                     }
-                  } >
-                     <Grid container direction="column"
-                        justifyContent="center"
-                        alignItems="center" >
-                        <Grid justifyContent="center" alignItems="center" sx={{  mt: 2 }}>
-                           <Image
-                              src={"https://angpaos.games/wp-content/uploads/2023/04/2Long-Angpaogames.png"}
-                              width={160}
-                              height={50}
-                           />
-                        </Grid>
-                        < Typography variant="h5"
-                           sx={{ mt: 3, color: "#41A3E3" }}> เข้าสู่ระบบ </Typography>
-                     </Grid>
-                     <Typography
-                        sx={{ mt: 3, color: "#707070", fontSize: "14px" }} >
-                        Username
-                     </Typography>
-                     <TextField name="username"
-                        type="text"
-                        value={rowData.username || ""}
-                        placeholder="username"
-                        fullWidth size="small"
-                        onChange={
-                           (e) => handleChangeData(e)}
-                        variant="outlined"
-                        sx={
-                           { bgcolor: "white" }}
-                        inputProps={
-                           { maxLength: 10 }}
-                     />
-                     <Typography sx={{ mt: 2, color: "#707070", fontSize: "14px" }} > Password </Typography>
+                     }} >
                      <div>
-                        <FormControl fullWidth variant="outlined" size="small" >
-                           <OutlinedInput id="outlined-adornment-password"
-                              type={values.showPassword ? "text" : "password"}
-                              value={values.password}
-                              placeholder="password"
-                              onChange={handleChange("password")}
-                              endAdornment={<InputAdornment position="end" >
-                                 <IconButton
-                                    aria-label="toggle password visibility"
-                                    onClick={handleClickShowPassword}
-                                    onMouseDown={handleMouseDownPassword}
-                                    edge="end" >
-                                    {values.showPassword ? < VisibilityOff /> : < Visibility />}
-                                 </IconButton>
-                              </InputAdornment>
-                              }
+                        <form onSubmit={handleSubmit}>
+                           <Grid
+                              container
+                              direction="column"
+                              justifyContent="center"
+                              alignItems="center" >
+                              <Grid
+                                 justifyContent="center"
+                                 alignItems="center"
+                                 sx={{ mt: 2 }}>
+                                 <Image
+                                    src={"https://angpaos.games/wp-content/uploads/2023/04/2Long-Angpaogames.png"}
+                                    width={160}
+                                    height={50}
+                                 />
+                              </Grid>
+                              <Typography variant="h5"
+                                 sx={{ mt: 3, color: "#41A3E3" }}> เข้าสู่ระบบ </Typography>
+                           </Grid>
+                           <Typography
+                              sx={{ mt: 3, color: "#707070", fontSize: "14px" }} >
+                              Username
+                           </Typography>
+                           <TextField name="username"
+                              type="text"
+                              value={rowData.username || ""}
+                              placeholder="username"
+                              fullWidth size="small"
+                              onChange={(e) => handleChangeData(e)}
+                              variant="outlined"
                               sx={{ bgcolor: "white" }}
+                              inputProps={{ maxLength: 10 }}
                            />
-                        </FormControl>
+                           <Typography sx={{ mt: 2, color: "#707070", fontSize: "14px" }} > Password </Typography>
+                           <div>
+                              <FormControl fullWidth variant="outlined" size="small" >
+                                 <OutlinedInput id="outlined-adornment-password"
+                                    type={values.showPassword ? "text" : "password"}
+                                    value={values.password}
+                                    placeholder="password"
+                                    onChange={handleChange("password")}
+                                    endAdornment={<InputAdornment position="end" >
+                                       <IconButton
+                                          aria-label="toggle password visibility"
+                                          onClick={handleClickShowPassword}
+                                          onMouseDown={handleMouseDownPassword}
+                                          edge="end" >
+                                          {values.showPassword ? < VisibilityOff /> : < Visibility />}
+                                       </IconButton>
+                                    </InputAdornment>
+                                    }
+                                    sx={{ bgcolor: "white" }}
+                                 />
+                              </FormControl>
+                           </div>
+                           <Button
+                              variant="contained"
+                              fullWidth
+                              sx={{
+                                 my: 5,
+                                 bgcolor: '#41A3E3',
+                                 borderRadius: 5,
+                                 color: '#fff'
+                              }}
+                              type="submit"
+                              >
+                              เข้าสู่ระบบ
+                           </Button>
+                        </form>
                      </div>
-                     <Button variant="contained"
-                        fullWidth sx={{
-                           my: 5,
-                           bgcolor: '#41A3E3',
-                           borderRadius: 5,
-                           color: '#fff'
-                        }}
-                        onClick={
-                           async () => {
-                              const response = await dispatch(
-                                 signIn({ username: rowData.username, password: values.password })
-                              );
-                              if (response.meta.requestStatus === "rejected") {
-                                 // alert("Login failed");
-
-                              } else {
-                                 router.push("/home");
-                              }
-                           }
-                        } >
-                        เข้าสู่ระบบ </Button>
-
                   </Box>
                </Grid>
                < Grid item xs={3} /> </Grid>
-
-
-         </div> </>
+         </div>
+      </>
    );
 }
 

@@ -295,7 +295,7 @@ function reportDeposit() {
 
           <Card sx={{ width: 250, bgcolor: "#101D35", }}>
             <CardContent>
-              <Typography variant="h6" sx={{ color: "#FFB946" }}>จำนวนรายการ</Typography>
+              <Typography variant="h7" sx={{ color: "#FFB946" }}>จำนวนรายการ</Typography>
               <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>{total.totalList} </Typography>
               <Grid sx={{ textAlign: 'right' }}>
                 <Button
@@ -309,7 +309,7 @@ function reportDeposit() {
 
           <Card sx={{ width: 250, bgcolor: "#101D35", }} >
             <CardContent>
-              <Typography variant="h6" sx={{ color: "#FFB946" }}>รายการฝากแบบเติมมือ</Typography>
+              <Typography variant="h7" sx={{ color: "#FFB946" }}>จำนวนรายการฝากแบบเติมมือ</Typography>
               <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {total.typeManual} </Typography>
               <Grid sx={{ textAlign: 'right' }}>
                 <Button
@@ -323,7 +323,7 @@ function reportDeposit() {
 
           <Card sx={{ width: 250, bgcolor: "#101D35", }}>
             <CardContent>
-              <Typography variant="h6" sx={{ color: "#FFB946" }}>รายการฝากแบบอัตโนมัติ</Typography>
+              <Typography variant="h7" sx={{ color: "#FFB946" }}>จำนวนรายการฝากแบบอัตโนมัติ</Typography>
               <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {total.typeAuto} </Typography>
               <Grid sx={{ textAlign: 'right' }}>
                 <Button
@@ -337,7 +337,7 @@ function reportDeposit() {
 
           <Card sx={{ width: 250, bgcolor: "#101D35", }}>
             <CardContent>
-              <Typography variant="h6" sx={{color : '#2ECC71'}}>ยอดรวมทั้งหมด</Typography>
+              <Typography variant="h7" sx={{color : '#2ECC71'}}>ยอดรวมฝากทั้งหมด</Typography>
               <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}> {total.sumTotal}</Typography>
               <Grid sx={{ textAlign: 'right' }}>
                 <Button
@@ -352,7 +352,7 @@ function reportDeposit() {
 
           <Card sx={{ width: 250, bgcolor: "#101D35", }}>
             <CardContent>
-              <Typography variant="h6" sx={{ color: "#2ECC71" }}>ยอดรวมฝากแบบเติมมือ</Typography>
+              <Typography variant="h7" sx={{ color: "#2ECC71" }}>ยอดรวมฝากแบบเติมมือ</Typography>
               <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}> {total.sumManual}</Typography>
               <Grid sx={{ textAlign: 'right' }}>
                 <Button
@@ -367,7 +367,7 @@ function reportDeposit() {
 
           <Card sx={{ width: 250, bgcolor: "#101D35", }}>
             <CardContent>
-              <Typography variant="h6" sx={{ color: "#2ECC71" }}>ยอดรวมฝากแบบอัตโนมัติ</Typography>
+              <Typography variant="h7" sx={{ color: "#2ECC71" }}>ยอดรวมฝากแบบอัตโนมัติ</Typography>
               <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {total.sumAuto}</Typography>
               <Grid sx={{ textAlign: 'right' }}>
                 <Button

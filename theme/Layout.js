@@ -114,11 +114,7 @@ function Layout({ children, page }) {
         sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px`, height: 73 }}
       >
         <Toolbar>
-          <Grid container justifyContent="flex-end">
-            <Typography variant="h6" component="div">
-              asdasd
-            </Typography>
-          </Grid>
+          
 
           
           <Grid container justifyContent="flex-end">
