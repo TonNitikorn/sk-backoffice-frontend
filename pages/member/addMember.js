@@ -45,8 +45,8 @@ function addMember() {
         method: "post",
         url: `${hostname}/member/create_member`,
         data: {
-          fname: rowData.fname,
-          lname: rowData.lname,
+          // fname: rowData.fname,
+          // lname: rowData.lname,
           name: `${rowData.fname} ${rowData.lname}`,
           tel: rowData.tel,
           // bonus: bonus,
@@ -134,7 +134,7 @@ function addMember() {
 
         <Grid container justifyContent="center" sx={{ mt: 3 }}>
           <Grid container spacing={2} >
-            <Grid container item xs={6}>
+            {/* <Grid container item xs={6}>
               <Typography>ชื่อ *</Typography>
               <TextField
                 name="fname"
@@ -162,7 +162,8 @@ function addMember() {
                 variant="outlined"
                 sx={{ bgcolor: "white" }}
               />
-            </Grid>
+            </Grid> */}
+
             <Grid container item xs={6}>
               <Typography>หมายเลขโทรศัพท์*</Typography>
               <TextField
@@ -179,7 +180,7 @@ function addMember() {
                 inputProps={{ maxLength: 10 }}
               />
             </Grid>
-            <Grid container item xs={6}>
+            {/* <Grid container item xs={6}>
               <Typography>รหัสผ่าน*</Typography>
               <TextField
                 name="password"
@@ -194,9 +195,10 @@ function addMember() {
                 sx={{ bgcolor: "white" }}
                 inputProps={{ maxLength: 10 }}
               />
-            </Grid>
+            </Grid> */}
+            <Grid container item xs={6} /> 
 
-            <Grid container item xs={6}>
+            {/* <Grid container item xs={6}>
               <Typography>Line ID*</Typography>
               <TextField
                 name="line_id"
@@ -212,7 +214,8 @@ function addMember() {
                 inputProps={{ maxLength: 10 }}
               />
             </Grid>
-            <Grid container item xs={6} />
+
+            <Grid container item xs={6} /> */}
 
             <Grid container item xs={6}>
               <Typography>โปรดเลือกบัญชีธนาคาร*</Typography>

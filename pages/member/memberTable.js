@@ -962,21 +962,22 @@ function memberTable() {
                }
             }}
             summary={(pageData) => {
-               let totalBorrow = 0;
-               let totalRepayment = 0;
-               pageData.forEach(({ borrow, repayment }) => {
-                  totalBorrow += borrow;
-                  totalRepayment += repayment;
+               let totalCredit = 0;
+
+               pageData.forEach(({ credit }) => {
+                  totalCredit += parseInt(credit);
+
+
                });
                return (
                   <>
                      <Table.Summary.Row>
-                        <Table.Summary.Cell> <Typography >Total</Typography></Table.Summary.Cell>
+                        <Table.Summary.Cell> <Typography ></Typography></Table.Summary.Cell>
                         <Table.Summary.Cell />
                         <Table.Summary.Cell />
                         <Table.Summary.Cell />
                         <Table.Summary.Cell >
-                           <Typography align="center">{totalBorrow}</Typography>
+                           <Typography align="center">{totalCredit}</Typography>
                         </Table.Summary.Cell>
 
                      </Table.Summary.Row>

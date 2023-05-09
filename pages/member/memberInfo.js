@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import {
   Grid,
@@ -11,7 +11,7 @@ import {
   IconButton,
   DialogTitle,
   DialogActions,
-  Table,
+  // Table,
   TableRow,
   TableCell,
   DialogContent,
@@ -39,6 +39,8 @@ import { useAppDispatch } from "../../store/store";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import ArticleIcon from "@mui/icons-material/Article";
+import { Table, Input, Space, } from 'antd';
+import SearchIcon from '@mui/icons-material/Search';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -52,6 +54,8 @@ function memberInfo() {
   const [loading, setLoading] = useState(false)
   const [username, setUsername] = useState()
   const [transaction, setTransaction] = useState([])
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(10)
 
   const getMember = async (type, start, end) => {
     setLoading(true);
@@ -67,18 +71,29 @@ function memberInfo() {
         }
       });
 
-      
+      let resData = res.data
       let resTran = res.data.transaction
       // setTransaction(resData.transaction)
-      let no = 1;
+      if (resTran !== null) {
+        let no = 1;
 
-      resTran.map((item) => {
-        item.no = no++;
-        item.create_at = moment(item.create_at).format('DD/MM/YYYY HH:mm')
-      });
+        resTran.map((item) => {
+          item.no = no++;
+          item.create_at = moment(item.create_at).format('DD/MM/YYYY HH:mm')
+        });
 
-      setTransaction(resTran)
-      setDataMember(resTran);
+        setTransaction(resTran)
+        setDataMember(resData);
+      } else {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "ไม่มีผู้ใช้นี้",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      }
+
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -90,199 +105,222 @@ function memberInfo() {
         localStorage.clear();
         router.push("/auth/login");
       }
+      if (
+        error.response.status === 401 &&
+        error.response.data.error.message === "Invalid Token"
+      ) {
+        dispatch(signOut());
+        localStorage.clear();
+        router.push("/auth/login");
+      }
     }
   };
   console.log('transantion', transaction)
 
+  ////////////////////// search table /////////////////////
+  const searchInput = useRef(null);
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+  };
+
+  const handleReset = (clearFilters) => {
+    clearFilters();
+  };
+
+  const getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <Input
+          ref={searchInput}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{
+            marginBottom: 8,
+            display: 'block',
+          }}
+        />
+        <Space>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Reset
+          </Button>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            <SearchIcon />
+            Search
+          </Button>
+          {/* <Button
+               type="link"
+               size="small"
+               onClick={() => {
+                 confirm({
+                   closeDropdown: false,
+                 });
+                 setSearchText(selectedKeys[0]);
+                 setSearchedColumn(dataIndex);
+               }}
+             >
+               Filter
+             </Button> */}
+          {/* <Button
+               type="link"
+               size="small"
+               onClick={() => {
+                 close();
+               }}
+             >
+               close
+             </Button> */}
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchIcon
+        style={{
+          color: filtered ? '#1890ff' : undefined,
+        }}
+      />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+  });
+
+  const onChange = (pagination, filters, sorter, extra) => {
+    console.log('params', pagination, filters, sorter, extra);
+  };
+
+  ////////////////////// search table /////////////////////
+
   const columns = [
     {
-      field: "no",
-      title: "ลำดับ",
-      maxWidth: 80,
-      align: "center",
+      title: 'ลำดับ',
+      dataIndex: 'no',
+      align: 'center',
+      sorter: (record1, record2) => record1.no - record2.no,
+      render: (item, data) => (
+        <Typography sx={{ fontSize: '14px', textAlign: 'center' }} >{item}</Typography>
+      )
     },
+
     {
-      field: "type",
+      dataIndex: 'transfer_type',
       title: "ประเภท",
       align: "center",
       render: (item) => (
         <Chip
-          label={item.type === "deposit" ? "ฝาก" : "ถอน"}
-          // size="small"
+          label={item === "DEPOSIT" ? "ฝาก" : "ถอน"}
+          size="small"
           style={{
             // padding: 5,
-            backgroundColor: item.type === "deposit" ? "#129A50" : "#FFB946",
+            backgroundColor: item === "DEPOSIT" ? "#129A50" : "#FFB946",
             color: "#fff",
             minWidth: "120px"
           }}
         />
       ),
+      filters: [
+        { text: 'ถอน', value: 'WITHDRAW' },
+        { text: 'ฝาก', value: 'DEPOSIT' },
+      ],
+      onFilter: (value, record) => record.transfer_type.indexOf(value) === 0,
     },
     {
-      field: "amount",
+      dataIndex: 'credit',
       title: "ยอดเงิน",
       align: "center",
+      sorter: (record1, record2) => record1.credit - record2.credit,
       render: (item) => (
-        <Typography sx={{ fontSize: '14px', fontWeight: 'bold' }}>
-          {Intl.NumberFormat("TH").format(parseInt(item.amount))}
+        <Typography sx={{ fontSize: '14px', }}>
+          {Intl.NumberFormat("TH").format(parseInt(item))}
         </Typography>
       ),
     },
     {
-      field: "credit_before",
+      dataIndex: 'credit_before',
       title: "Credit Before",
       align: "center",
       render: (item) => (
-        <Typography sx={{ color: 'red', fontSize: '14px', fontWeight: 'bold' }}>
-          {Intl.NumberFormat("TH").format(parseInt(item.credit_before))}
+        <Typography sx={{ color: 'red', fontSize: '14px', }}>
+          {Intl.NumberFormat("TH").format(parseInt(item))}
         </Typography>
       ),
     },
     {
-      field: "credit_after",
+      dataIndex: 'credit_after',
       title: "Credit After",
       align: "center",
       render: (item) => (
-        <Typography sx={{ color: '#129A50', fontSize: '14px', fontWeight: 'bold' }}>
-          {Intl.NumberFormat("TH").format(parseInt(item.credit_after))}
+        <Typography sx={{ color: '#129A50', fontSize: '14px', }}>
+          {Intl.NumberFormat("TH").format(parseInt(item))}
         </Typography>
       ),
     },
     {
-      field: "create_date",
+      dataIndex: "create_at",
       title: "วันที่ทำรายการ",
       align: "center",
+      render: (item) => (
+        <Typography
+          style={{
+            fontSize: '14px'
+          }}
+        >{item}</Typography>
+      ),
     },
     {
-      field: "create_by",
+      dataIndex: "transfer_by",
       title: "ทำโดย",
       align: "center",
+      render: (item) => (
+        <Typography
+          style={{
+            fontSize: '14px'
+          }}
+        >{item}</Typography>
+      ),
     },
     {
-      field: "annotation",
+      dataIndex: "content",
       title: "หมายเหตุ",
       align: "center",
+      render: (item) => (
+        <Typography
+          style={{
+            fontSize: '14px'
+          }}
+        >{item}</Typography>
+      ),
     },
 
-    {
-      field: "ref",
-      title: "Ref",
-      align: "center",
-    },
   ];
 
 
   return (
     <Layout>
       <CssBaseline />
-      {/* <Grid container sx={{ mt: 2 }}>
-        <Grid item container xs={12} sx={{ mb: 3 }}>
-          <TextField
-            label="เริ่ม"
-            style={{
-              marginRight: "8px",
-              marginTop: "8px",
-              backgroundColor: "white",
-              borderRadius: 4,
-            }}
-            variant="outlined"
-            size=""
-            type="datetime-local"
-            name="start"
-            value={selectedDateRange.start}
-            onChange={(e) => {
-              setSelectedDateRange({
-                ...selectedDateRange,
-                [e.target.name]: e.target.value,
-              });
-            }}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-          <TextField
-            label="สิ้นสุด"
-            style={{
-              marginRight: "8px",
-              marginTop: "8px",
-              color: "white",
-              backgroundColor: "white",
-              borderRadius: 4,
-            }}
-            variant="outlined"
-            size=""
-            type="datetime-local"
-            name="end"
-            value={selectedDateRange.end}
-            onChange={(e) => {
-              setSelectedDateRange({
-                ...selectedDateRange,
-                [e.target.name]: e.target.value,
-              });
-            }}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            required
-          />
-          <TextField
-            variant="outlined"
-            type="text"
-            name="type"
-
-            value={search.type}
-            onChange={(e) => {
-              setSearch({
-                ...search,
-                [e.target.name]: e.target.value,
-              });
-            }}
-            sx={{ mt: 1, mr: 1, width: "220px", bgcolor: '#fff' }}
-            select
-            label="ประเภทการค้นหา"
-            InputLabelProps={{
-              shrink: true,
-            }}
-          >
-            <MenuItem value="">ทั้งหมด</MenuItem>
-            <MenuItem value="username">Username</MenuItem>
-            <MenuItem value="tel">หมายเลขโทรศัพท์</MenuItem>
-            <MenuItem value="bankNumber">เลขบัญชีธนาคาร</MenuItem>
-            <MenuItem value="fname">ชื่อจริง</MenuItem>
-            <MenuItem value="sname">นามสุกล</MenuItem>
-          </TextField>
-
-          <TextField
-            variant="outlined"
-            type="text"
-            name="username"
-
-            value={search.username}
-            onChange={(e) => {
-              setSearch({
-                ...search,
-                [e.target.name]: e.target.value,
-              });
-            }}
-            placeholder="ค้นหาข้อมูลที่ต้องการ"
-            sx={{ mt: 1, mr: 2, width: "220px", bgcolor: '#fff' }}
-          />
-
-          <Button
-            variant="contained"
-            style={{ marginRight: "8px", marginTop: 8, color: '#fff' }}
-            color="primary"
-            size="large"
-            onClick={() => {
-              getUser();
-            }}
-          >
-            <Typography>ค้นหา</Typography>
-          </Button>
-
-        </Grid>
-      </Grid> */}
-
       <Paper sx={{ p: 3, mb: 2 }}>
         <Typography
           sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px" }}
@@ -369,7 +407,44 @@ function memberInfo() {
         </Grid>
       </Paper>
 
-      <MaterialTableForm data={transaction} columns={columns} pageSize="10" title="รายชื่อลูกค้า" />
+      <Table columns={columns} dataSource={transaction} onChange={onChange}
+        size="small"
+        pagination={{
+          current: page,
+          pageSize: pageSize,
+          onChange: (page, pageSize) => {
+            setPage(page)
+            setPageSize(pageSize)
+          }
+        }}
+        summary={(pageData) => {
+          let totalCredit = 0;
+          let totalBefore = 0;
+          let totalAfter = 0;
+
+          pageData.forEach(({ credit, credit_before, credit_after }) => {
+            totalCredit += parseInt(credit);
+            totalBefore += parseInt(credit_before);
+            totalAfter += parseInt(credit_after);
+
+
+          });
+          return (
+            <>
+              <Table.Summary.Row>
+                <Table.Summary.Cell />
+                <Table.Summary.Cell />
+                <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold" }} >{Intl.NumberFormat("TH").format(parseInt(totalCredit))}</Typography> </Table.Summary.Cell>
+                <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold", color: 'red' }} >{Intl.NumberFormat("TH").format(parseInt(totalBefore))}</Typography> </Table.Summary.Cell>
+                <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold", color: '#129A50' }} >{Intl.NumberFormat("TH").format(parseInt(totalAfter))}</Typography>  </Table.Summary.Cell>
+
+              </Table.Summary.Row>
+            </>
+          );
+        }}
+      />
+
+      {/* <MaterialTableForm data={transaction} columns={columns} pageSize="10" title="รายชื่อลูกค้า" /> */}
 
       <LoadingModal open={loading} />
     </Layout>
