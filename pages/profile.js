@@ -24,21 +24,21 @@ function profile() {
           Authorization: "Bearer " + localStorage.getItem("access_token"),
         },
         method: "get",
-        url: `${hostname}/api/user/profile`,
+        url: `${hostname}/admin/profile`,
       });
-      let resData = res.data.data;
+      let resData = res.data;
 
       setData(resData);
       setLoading(false);
     } catch (error) {
-      // if (
-      //   error.response.data.error.status_code === 401 &&
-      //   error.response.data.error.message === "Unauthorized"
-      // ) {
-      //   dispatch(signOut());
-      //   localStorage.clear();
-      //   router.push("/auth/login");
-      // }
+      if (
+        error.response.data.error.status_code === 401 &&
+        error.response.data.error.message === "Unauthorized"
+      ) {
+        dispatch(signOut());
+        localStorage.clear();
+        router.push("/auth/login");
+      }
       console.log(error);
     }
   };
@@ -51,7 +51,7 @@ function profile() {
           Authorization: "Bearer " + localStorage.getItem("access_token"),
         },
         method: "put",
-        url: `${hostname}/api/user/${data.uuid}`,
+        url: `${hostname}/admin/${data.uuid}`,
         data: {
           info_name: data.info_name,
           password: data.password,
@@ -114,7 +114,7 @@ function profile() {
   }
 
   useEffect(() => {
-    // getProfile();
+    getProfile();
   }, []);
 
   return (
@@ -135,11 +135,11 @@ function profile() {
         </Grid>
         <Grid container justifyContent="center" alignItems="center" spacing={2}>
           <Grid item xs={8}>
-            <Typography sx={{ mt: 2 }}>ชื่อ: (Info) *</Typography>
+            <Typography sx={{ mt: 2 }}>ชื่อผู้ใช้ : *</Typography>
             <TextField
               name="info_name"
               type="text"
-              value={data.info_name || ""}
+              value={data.username || ""}
               placeholder="ชื่อ"
               fullWidth
               size="small"

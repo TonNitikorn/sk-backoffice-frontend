@@ -3,14 +3,11 @@ import {
   Box,
   Divider,
   Typography,
-  IconButton,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Menu,
-  MenuItem,
   Grid,
   Button, AppBar, Drawer, Toolbar, Collapse
 } from "@mui/material";
@@ -21,15 +18,9 @@ import Router, { useRouter } from "next/router";
 import { signOut } from "../store/slices/userSlice";
 import Image from "next/image";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import Logout from "@mui/icons-material/Logout";
-import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import axios from "axios";
-import hostname from "../utils/hostname";
-import logo_angpao from "../assets/logo_ap.png"
-import PersonIcon from "@mui/icons-material/Person";
+
 import LogoutIcon from '@mui/icons-material/Logout';
 
 const drawerWidth = 260;
@@ -37,18 +28,9 @@ const drawerWidth = 260;
 function Layout({ children, page }) {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const [anchorEl, setAnchorEl] = useState(null);
-  const openAcc = Boolean(anchorEl);
-  const [dataProfile, setDataProfile] = useState([]);
   const [open, setOpen] = useState(false);
+  const [username, setUsername] = useState('')
 
-
-  const handleClickAcc = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleCloseAcc = () => {
-    setAnchorEl(null);
-  };
 
   const handleClick = (id) => {
     if (id === "member") {
@@ -80,7 +62,7 @@ function Layout({ children, page }) {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      console.log(' window.location.pathname', window.location.pathname)
+      setUsername(localStorage.getItem('username'))
       if (window.location.pathname.includes('/member')) {
         setOpen({ 'member': true })
       }
@@ -90,8 +72,6 @@ function Layout({ children, page }) {
       if (window.location.pathname.includes('/report')) {
         setOpen({ 'report': true })
       }
-      // '/bank'
-      // '/report'
     }
   }, [])
 
@@ -105,9 +85,10 @@ function Layout({ children, page }) {
         sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px`, height: 73 }}
       >
         <Toolbar>
-          <Grid container justifyContent="flex-end">
-            <Typography variant="h6" component="div">
-              asdasd
+          <Grid container justifyContent="flex-end" onClick={() => router.push('/profile')}>
+            <AccountCircleIcon fontSize="large" sx={{ color: '#fff', mt: 1.5, mr: 1 }} />
+            <Typography sx={{ color: '#fff', fontSize: '20px', mt: 2 }}>
+              {username}
             </Typography>
           </Grid>
 
@@ -262,7 +243,7 @@ function Layout({ children, page }) {
 
         <Divider />
         <List>
-          <ListItem disablePadding>
+          {/* <ListItem disablePadding>
             <ListItemButton onClick={() => router.push('/profile')}
               sx={{
                 borderRadius: "6px",
@@ -273,7 +254,7 @@ function Layout({ children, page }) {
               </ListItemIcon>
               <ListItemText primary="โปรไฟล์" />
             </ListItemButton>
-          </ListItem>
+          </ListItem> */}
           <ListItem disablePadding>
             <ListItemButton
               onClick={async () => {

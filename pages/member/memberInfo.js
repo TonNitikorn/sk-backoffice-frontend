@@ -20,7 +20,7 @@ import {
   Paper
 } from "@mui/material";
 import Layout from '../../theme/Layout'
-import MaterialTableForm from "../../components/materialTableForm"
+// import MaterialTableForm from "../../components/materialTableForm"
 import axios from "axios";
 import hostname from "../../utils/hostname";
 import LoadingModal from "../../theme/LoadingModal";
@@ -115,7 +115,6 @@ function memberInfo() {
       }
     }
   };
-  console.log('transantion', transaction)
 
   ////////////////////// search table /////////////////////
   const searchInput = useRef(null);

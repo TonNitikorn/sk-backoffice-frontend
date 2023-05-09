@@ -16,6 +16,17 @@ export const signIn = async (user) => {
       }
     });
     localStorage.setItem("access_token", res.data.access_token);
+
+    let profile = await axios({
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("access_token"),
+      },
+      method: "get",
+      url: `${hostname}/admin/profile`,
+    });
+    let resData = profile.data;
+    localStorage.setItem("username", resData.username);
+
     return res.data;
 
 

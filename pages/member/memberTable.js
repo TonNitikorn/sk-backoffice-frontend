@@ -1482,77 +1482,210 @@ function memberTable() {
 
             <DialogContent>
                <Grid>
-                  <MaterialTableForm data={transaction} columns={[
+                  <Table columns={[
                      {
-                        field: "no",
-                        title: "ลำดับ",
-                        maxWidth: 80,
-                        align: "center",
+                        title: 'ลำดับ',
+                        dataIndex: 'no',
+                        align: 'center',
+                        sorter: (record1, record2) => record1.no - record2.no,
+                        render: (item, data) => (
+                           <Typography sx={{ fontSize: '14px', textAlign: 'center' }} >{item}</Typography>
+                        )
                      },
                      {
-                        field: "credit",
+                        dataIndex: "credit",
                         title: "ยอดเงิน",
                         align: "center",
+                        sorter: (record1, record2) => record1.credit - record2.credit,
                         render: (item) => (
                            <Typography
                               style={{
                                  fontSize: '14px'
                               }}
-                           >{Intl.NumberFormat("TH").format(parseInt(item.credit))}</Typography>
+                           >{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
                         ),
                      },
                      {
+                        dataIndex: 'transfer_type',
                         title: "ประเภท",
-                        search: true,
-                        // width: "10%",
                         align: "center",
                         render: (item) => (
                            <Chip
-                              label={item.transfer_type === "DEPOSIT" ? "ฝากเงิน" : "ถอนเงิน"}
+                              label={item === "DEPOSIT" ? "ฝากเงิน" : "ถอนเงิน"}
                               size="small"
                               style={{
-                                 background: item.transfer_type === "DEPOSIT" ? "#3d813d" : "#db9d40",
-                                 color: "#ffff",
-                                 width: 100
+                                 // padding: 5,
+                                 backgroundColor: item === "DEPOSIT" ? "#129A50" : "#FFB946",
+                                 color: "#fff",
+                                 minWidth: "120px"
                               }}
                            />
                         ),
-
+                        filters: [
+                           { text: 'ถอนเงิน', value: 'WITHDRAW' },
+                           { text: 'ฝากเงิน', value: 'DEPOSIT' },
+                        ],
+                        onFilter: (value, record) => record.transfer_type.indexOf(value) === 0,
                      },
+
                      {
+                        dataIndex: 'credit_before',
                         title: "เครดิตก่อนทำรายการ",
                         align: "center",
                         render: (item) => (
-                           <Typography
-                              style={{
-                                 fontSize: '14px'
-                              }}
-                           >{Intl.NumberFormat("TH").format(parseInt(item.credit_before))}</Typography>
+                           <Typography sx={{ color: 'red', fontSize: '14px', }}>
+                              {Intl.NumberFormat("TH").format(parseInt(item))}
+                           </Typography>
                         ),
                      },
                      {
+                        dataIndex: 'credit_after',
                         title: "เครดิตหลังทำรายการ",
+                        align: "center",
+                        render: (item) => (
+                           <Typography sx={{ color: '#129A50', fontSize: '14px', }}>
+                              {Intl.NumberFormat("TH").format(parseInt(item))}
+                           </Typography>
+                        ),
+                     },
+
+                     {
+                        dataIndex: "create_at",
+                        title: "วันที่ทำรายการ",
                         align: "center",
                         render: (item) => (
                            <Typography
                               style={{
                                  fontSize: '14px'
                               }}
-                           >{Intl.NumberFormat("TH").format(parseInt(item.credit_after))}</Typography>
+                           >{item}</Typography>
                         ),
                      },
+                    
                      {
-                        field: "create_at",
-                        title: "เวลา",
-                        align: "center",
-                     },
-                     {
-                        field: "no",
+                        dataIndex: "content",
                         title: "หมายเหตุ",
                         align: "center",
+                        render: (item) => (
+                           <Typography
+                              style={{
+                                 fontSize: '14px'
+                              }}
+                           >{item}</Typography>
+                        ),
                      },
 
-                  ]} pageSize="10" title="20 รายการล่าสุด" />
+                  ]} dataSource={transaction} onChange={onChange}
+                     size="small"
+                     pagination={{
+                        current: page,
+                        pageSize: pageSize,
+                        onChange: (page, pageSize) => {
+                           setPage(page)
+                           setPageSize(pageSize)
+                        }
+                     }}
+                     summary={(pageData) => {
+                        let totalCredit = 0;
+                        let totalBefore = 0;
+                        let totalAfter = 0;
+
+                        pageData.forEach(({ credit, credit_before, credit_after }) => {
+                           totalCredit += parseInt(credit);
+                           totalBefore += parseInt(credit_before);
+                           totalAfter += parseInt(credit_after);
+
+
+                        });
+                        return (
+                           <>
+                              <Table.Summary.Row>
+                                 <Table.Summary.Cell />
+                                 <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold" }} >{Intl.NumberFormat("TH").format(parseInt(totalCredit))}</Typography> </Table.Summary.Cell>
+
+                                 <Table.Summary.Cell />
+
+                                 <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold", color: 'red' }} >{Intl.NumberFormat("TH").format(parseInt(totalBefore))}</Typography> </Table.Summary.Cell>
+                                 <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold", color: '#129A50' }} >{Intl.NumberFormat("TH").format(parseInt(totalAfter))}</Typography>  </Table.Summary.Cell>
+
+                              </Table.Summary.Row>
+                           </>
+                        );
+                     }}
+                  />
+                  <MaterialTableForm data={transaction}
+                     columns={[
+                        {
+                           field: "no",
+                           title: "ลำดับ",
+                           maxWidth: 80,
+                           align: "center",
+                        },
+                        {
+                           field: "credit",
+                           title: "ยอดเงิน",
+                           align: "center",
+                           render: (item) => (
+                              <Typography
+                                 style={{
+                                    fontSize: '14px'
+                                 }}
+                              >{Intl.NumberFormat("TH").format(parseInt(item.credit))}</Typography>
+                           ),
+                        },
+                        {
+                           title: "ประเภท",
+                           search: true,
+                           // width: "10%",
+                           align: "center",
+                           render: (item) => (
+                              <Chip
+                                 label={item.transfer_type === "DEPOSIT" ? "ฝากเงิน" : "ถอนเงิน"}
+                                 size="small"
+                                 style={{
+                                    background: item.transfer_type === "DEPOSIT" ? "#3d813d" : "#db9d40",
+                                    color: "#ffff",
+                                    width: 100
+                                 }}
+                              />
+                           ),
+
+                        },
+                        {
+                           title: "เครดิตก่อนทำรายการ",
+                           align: "center",
+                           render: (item) => (
+                              <Typography
+                                 style={{
+                                    fontSize: '14px'
+                                 }}
+                              >{Intl.NumberFormat("TH").format(parseInt(item.credit_before))}</Typography>
+                           ),
+                        },
+                        {
+                           title: "เครดิตหลังทำรายการ",
+                           align: "center",
+                           render: (item) => (
+                              <Typography
+                                 style={{
+                                    fontSize: '14px'
+                                 }}
+                              >{Intl.NumberFormat("TH").format(parseInt(item.credit_after))}</Typography>
+                           ),
+                        },
+                        {
+                           field: "create_at",
+                           title: "เวลา",
+                           align: "center",
+                        },
+                        {
+                           field: "no",
+                           title: "หมายเหตุ",
+                           align: "center",
+                        },
+
+                     ]}
+                     pageSize="10" title="20 รายการล่าสุด" />
 
                </Grid>
             </DialogContent>

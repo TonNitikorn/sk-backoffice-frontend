@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Layout from "../theme/Layout";
 import {
   Grid,
@@ -32,12 +32,13 @@ import Swal from "sweetalert2";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteIcon from "@mui/icons-material/Delete";
 import LoadingModal from "../theme/LoadingModal";
-import MaterialTableForm from "../components/materialTableForm";
+// import MaterialTableForm from "../components/materialTableForm";
 import moment from "moment/moment";
 import { signOut } from "../store/slices/userSlice";
 import { useRouter } from "next/router";
 import { useAppDispatch } from "../store/store";
-
+import { Table, Input, Space, } from 'antd';
+import SearchIcon from '@mui/icons-material/Search';
 
 // const useStyles = makeStyles({
 //   copy: {
@@ -70,6 +71,8 @@ function bankAccount() {
   const [selectedDateRange, setSelectedDateRange] = useState({
     birthdate: moment().format("YYYY-MM-DD"),
   });
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(10)
 
   const handleChangeData = async (e) => {
     setRowData({ ...rowData, [e.target.name]: e.target.value });
@@ -255,299 +258,435 @@ function bankAccount() {
     }
   };
 
+
+  ////////////////////// search table /////////////////////
+  const searchInput = useRef(null);
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+  };
+
+  const handleReset = (clearFilters) => {
+    clearFilters();
+  };
+
+  const getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <Input
+          ref={searchInput}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{
+            marginBottom: 8,
+            display: 'block',
+          }}
+        />
+        <Space>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Reset
+          </Button>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            <SearchIcon />
+            Search
+          </Button>
+          {/* <Button
+                type="link"
+                size="small"
+                onClick={() => {
+                  confirm({
+                    closeDropdown: false,
+                  });
+                  setSearchText(selectedKeys[0]);
+                  setSearchedColumn(dataIndex);
+                }}
+              >
+                Filter
+              </Button> */}
+          {/* <Button
+                type="link"
+                size="small"
+                onClick={() => {
+                  close();
+                }}
+              >
+                close
+              </Button> */}
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchIcon
+        style={{
+          color: filtered ? '#1890ff' : undefined,
+        }}
+      />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+  });
+
+  const onChange = (pagination, filters, sorter, extra) => {
+    console.log('params', pagination, filters, sorter, extra);
+  };
+
+  ////////////////////// search table /////////////////////
+
+
   const columns = [
     {
-      title: "ลำดับที่",
-      field: "no",
-      align: "center",
+      title: 'ลำดับ',
+      dataIndex: 'no',
+      align: 'center',
+      sorter: (record1, record2) => record1.no - record2.no,
+      render: (item, data) => (
+        <Typography sx={{ fontSize: '14px', textAlign: 'center' }} >{item}</Typography>
+      )
     },
+
     {
-      field: "bank_name",
-      title: "ธนาคาร",
-      align: "center",
-      minWidth: "220px",
-      render: (item) => (
-        <Grid container>
-          <Grid item xs={3} sx={{ mt: 1 }}>
-            {item.bank_name === "kbnk" ? (
-              <Image
-                src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/kbnk.png"
+      title: 'ธนาคาร',
+      dataIndex: 'bank_name',
+      width: '200px',
+      ...getColumnSearchProps('bank_number'),
+      render: (item, data) => <Grid container>
+        <Grid item xs={3} sx={{ mt: 1 }}>
+          {item === "kbnk" ? (
+            <Image
+              src={
+                "https://angpaos.games/wp-content/uploads/2023/03/kbnk.png"
+              }
+              alt="kbnk"
+              width={50}
+              height={50}
+            />
+          ) : item === "truemoney" ? (
+            <Image
+              src={
+                "https://angpaos.games/wp-content/uploads/2023/03/truemoney.png"
+              }
+              alt="truemoney"
+              width={50}
+              height={50}
+            />
+          ) : item === "ktba" ? (
+            <Image
+              src={
+                "https://angpaos.games/wp-content/uploads/2023/03/ktba.png"
+              }
+              alt="ktba"
+              width={50}
+              height={50}
+            />
+          ) : item === "scb" ? (
+            <Image
+              src={
+                "https://angpaos.games/wp-content/uploads/2023/03/scb.png"
+              }
+              alt="scb"
+              width={50}
+              height={50}
+            />
+          ) : item === "bay" ? (
+            <Image
+              src={
+                "https://angpaos.games/wp-content/uploads/2023/03/bay.png"
+              }
+              alt="bay"
+              width={50}
+              height={50}
+            />
+          ) : item === "bbla" ? (
+            <Image
+              src={
+                "https://angpaos.games/wp-content/uploads/2023/03/bbl.png"
+              }
+              alt="bbla"
+              width={50}
+              height={50}
+            />
+          ) : item === "gsb" ? (
+            <Image
+              src={
+                "https://angpaos.games/wp-content/uploads/2023/03/gsb.png"
+              }
+              alt="gsb"
+              width={50}
+              height={50}
+            />
+          ) : item === "ttb" ? (
+            <Image
+              src={
+                "https://angpaos.games/wp-content/uploads/2023/03/ttb.png"
+              }
+              alt="ttb"
+              width={50}
+              height={50}
+            />
+          ) : item === "bbac" ? (
+            <Image
+              src={
+                "https://angpaos.games/wp-content/uploads/2023/03/baac.png"
+              }
+              alt="bbac"
+              width={50}
+              height={50}
+            />
+          ) : item === "icbc" ? (
+            <Image
+              src={
+                "https://angpaos.games/wp-content/uploads/2023/03/icbc.png"
+              }
+              alt="icbc"
+              width={50}
+              height={50}
+            />
+          ) : item === "tcd" ? (
+            <Image
+              src={
+                "https://angpaos.games/wp-content/uploads/2023/03/tcd.png"
+              }
+              alt="tcd"
+              width={50}
+              height={50}
+            />
+          ) : item === "citi" ? (
+            <Image
+              src={
+                "https://angpaos.games/wp-content/uploads/2023/03/citi.png"
+              }
+              alt="citi"
+              width={50}
+              height={50}
+            />
+          ) : item === "scbt" ? (
+            <Image
+              src={
+                "https://angpaos.games/wp-content/uploads/2023/03/scbt.png"
+              }
+              alt="scbt"
+              width={50}
+              height={50}
+            />
+          ) : item === "cimb" ? (
+            <Image
+              src={
+                "https://angpaos.games/wp-content/uploads/2023/03/cimb.png"
+              }
+              alt="cimb"
+              width={50}
+              height={50}
+            />
+          ) : item === "uob" ? (
+            <Image
+              src={
+                "https://angpaos.games/wp-content/uploads/2023/03/uob.png"
+              }
+              alt="uob"
+              width={50}
+              height={50}
+            />
+          ) : item === "hsbc" ? (
+            <Image
+              src={
+                "https://angpaos.games/wp-content/uploads/2023/03/hsbc.png"
+              }
+              alt="hsbc"
+              width={50}
+              height={50}
+            />
+          ) : item === "mizuho" ? (
+            <Image
+              src={
+                "https://angpaos.games/wp-content/uploads/2023/03/mizuho.png"
+              }
+              alt="mizuho"
+              width={50}
+              height={50}
+            />
+          ) : item === "ghb" ? (
+            <Image
+              src={
+                "https://angpaos.games/wp-content/uploads/2023/03/ghb.png"
+              }
+              alt="ghb"
+              width={50}
+              height={50}
+            />
+          ) : item === "lhbank" ? (
+            <Image
+              src={
+                "https://angpaos.games/wp-content/uploads/2023/03/lhbank.png"
+              }
+              alt="lhbank"
+              width={50}
+              height={50}
+            />
+          ) : item === "tisco" ? (
+            <Image
+              src={
+                "https://angpaos.games/wp-content/uploads/2023/03/tisco.png"
+              }
+              alt="tisco"
+              width={50}
+              height={50}
+            />
+          ) : item === "kkba" ? (
+            <Image
+              src={
+                "https://angpaos.games/wp-content/uploads/2023/03/kkba.png"
+              }
+              alt="kkba"
+              width={50}
+              height={50}
+            />
+          ) : item === "ibank" ? (
+            <Image
+              src={
+                "https://angpaos.games/wp-content/uploads/2023/03/ibank.png"
+              }
+              alt="ibank"
+              width={50}
+              height={50}
+            />
+          ) : (
+            ""
+          )}
+        </Grid>
+        <Grid item xs={9}>
+          <Grid sx={{ ml: 3, mt: 1 }}>
+            <CopyToClipboard text={data.bank_number}>
+              <div style={{
+                "& .MuiButton-text": {
+                  "&:hover": {
+                    // backgroundColor: "#9CE1BC",
+                    // color: "blue",
+                    textDecoration: "underline blue 1px",
+                  }
                 }
-                alt="scb"
-                width={50}
-                height={50}
-              />
-            ) : item.bank_name === "truemoney" ? (
-              <Image
-                src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/truemoney.png"
-                }
-                alt="scb"
-                width={50}
-                height={50}
-              />
-            ) : item.bank_name === "ktba" ? (
-              <Image
-                src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/ktba.png"
-                }
-                alt="scb"
-                width={50}
-                height={50}
-              />
-            ) : item.bank_name === "scb" ? (
-              <Image
-                src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/scb.png"
-                }
-                alt="scb"
-                width={50}
-                height={50}
-              />
-            ) : item.bank_name === "bay" ? (
-              <Image
-                src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/bay.png"
-                }
-                alt="scb"
-                width={50}
-                height={50}
-              />
-            ) : item.bank_name === "bbla" ? (
-              <Image
-                src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/bbl.png"
-                }
-                alt="scb"
-                width={50}
-                height={50}
-              />
-            ) : item.bank_name === "gsb" ? (
-              <Image
-                src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/gsb.png"
-                }
-                alt="scb"
-                width={50}
-                height={50}
-              />
-            ) : item.bank_name === "ttb" ? (
-              <Image
-                src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/ttb.png"
-                }
-                alt="scb"
-                width={50}
-                height={50}
-              />
-            ) : item.bank_name === "BAAC" ? (
-              <Image
-                src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/baac.png"
-                }
-                alt="scb"
-                width={50}
-                height={50}
-              />
-            ) : item.bank_name === "ICBC" ? (
-              <Image
-                src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/icbc.png"
-                }
-                alt="scb"
-                width={50}
-                height={50}
-              />
-            ) : item.bank_name === "TCD" ? (
-              <Image
-                src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/tcd.png"
-                }
-                alt="scb"
-                width={50}
-                height={50}
-              />
-            ) : item.bank_name === "CITI" ? (
-              <Image
-                src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/citi.png"
-                }
-                alt="scb"
-                width={50}
-                height={50}
-              />
-            ) : item.bank_name === "SCBT" ? (
-              <Image
-                src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/scbt.png"
-                }
-                alt="scb"
-                width={50}
-                height={50}
-              />
-            ) : item.bank_name === "CIMB" ? (
-              <Image
-                src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/cimb.png"
-                }
-                alt="scb"
-                width={50}
-                height={50}
-              />
-            ) : item.bank_name === "UOB" ? (
-              <Image
-                src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/uob.png"
-                }
-                alt="scb"
-                width={50}
-                height={50}
-              />
-            ) : item.bank_name === "HSBC" ? (
-              <Image
-                src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/hsbc.png"
-                }
-                alt="scb"
-                width={50}
-                height={50}
-              />
-            ) : item.bank_name === "MIZUHO" ? (
-              <Image
-                src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/mizuho.png"
-                }
-                alt="scb"
-                width={50}
-                height={50}
-              />
-            ) : item.bank_name === "GHB" ? (
-              <Image
-                src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/ghb.png"
-                }
-                alt="scb"
-                width={50}
-                height={50}
-              />
-            ) : item.bank_name === "LHBANK" ? (
-              <Image
-                src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/lhbank.png"
-                }
-                alt="scb"
-                width={50}
-                height={50}
-              />
-            ) : item.bank_name === "TISCO" ? (
-              <Image
-                src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/tisco.png"
-                }
-                alt="scb"
-                width={50}
-                height={50}
-              />
-            ) : item.bank_name === "kkba" ? (
-              <Image
-                src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/kkba.png"
-                }
-                alt="scb"
-                width={50}
-                height={50}
-              />
-            ) : item.bank_name === "IBANK" ? (
-              <Image
-                src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/ibank.png"
-                }
-                alt="scb"
-                width={50}
-                height={50}
-              />
-            ) : (
-              ""
-            )}
+              }} >
+                <Button
+                  sx={{
+                    fontSize: "14px",
+                    p: 0,
+                    color: "blue",
+                  }}
+                  onClick={handleClickSnackbar}
+                >
+                  {data.bank_number}
+                </Button>
+              </div>
+            </CopyToClipboard>
           </Grid>
-          <Grid item xs={9}>
-            <Grid sx={{ ml: 2, mt: 1 }}>
-              <CopyToClipboard text={item.bank_number}>
-                <div >
-                  <Button
-                    sx={{
-                      fontSize: "14px",
-                      p: 0,
-                      color: "blue",
-                    }}
-                    onClick={handleClickSnackbar}
-                  >
-                    {item.bank_number}
-                  </Button>
-                </div>
-              </CopyToClipboard>
-            </Grid>
-            <Grid>
-              <Typography sx={{ fontSize: "14px" }}>
-                {item.bank_account_name}
-              </Typography>
-            </Grid>
+          <Grid sx={{ ml: 3, }}>
+            <Typography sx={{ fontSize: "14px" }}>
+              {data.name}
+            </Typography>
           </Grid>
         </Grid>
+      </Grid >,
+    },
+    {
+      dataIndex: "tel",
+      title: "โทรศัพท์",
+      align: "center",
+      ...getColumnSearchProps('tel'),
+      render: (item) => (
+        <Typography
+          style={{
+            fontSize: '14px'
+          }}
+        >{item}</Typography>
       ),
     },
     {
-      title: "เบอร์โทร",
+      dataIndex: "birthdate",
+      title: "วัน/เดือน/ปีเกิด",
       align: "center",
-      field: "tel",
+      render: (item) => (
+        <Typography
+          style={{
+            fontSize: '14px'
+          }}
+        >{item}</Typography>
+      ),
     },
+
     {
-      title: "วัน/เดือน/ปี เกิด",
-      align: "center",
-      field: "birthdate",
-    },
-    {
+      dataIndex: 'status',
       title: "สถานะ",
       align: "center",
       render: (item) => (
         <Chip
-          label={item.status === "ACTIVE" ? "เปิดใช้งาน" : "ปิดใช้งาน"}
-          // size="small"
+          label={item === "ACTIVE" ? "เปิดใช้งาน" : "ปิดใช้งาน"}
+          size="small"
           style={{
-            padding: 10,
-            backgroundColor: item.status === "ACTIVE" ? "#129A50" : "#FFB946",
+            // padding: 5,
+            backgroundColor: item  === "ACTIVE" ? "#129A50" : "#FFB946",
             color: "#fff",
             minWidth: "120px"
           }}
         />
       ),
+      // filters: [
+      //   { text: 'ถอน', value: 'WITHDRAW' },
+      //   { text: 'ฝาก', value: 'DEPOSIT' },
+      // ],
+      // onFilter: (value, record) => record.transfer_type.indexOf(value) === 0,
     },
+
     {
+      dataIndex: 'type',
       title: "ประเภท",
       align: "center",
       render: (item) => (
         <Chip
-          label={item.type === "DEPOSIT" ? "สำหรับฝาก" : "สำหรับถอน"}
-          // size="small"
+          label={item === "DEPOSIT" ? "สำหรับฝาก" : "สำหรับถอน"}
+          size="small"
           style={{
-            padding: 10,
-            backgroundColor: item.status === "DEPOSIT" ? "#129A50" : "#FFB946",
+            // padding: 5,
+            backgroundColor: item === "DEPOSIT" ? "#129A50" : "#FFB946",
             color: "#fff",
             minWidth: "120px"
           }}
         />
       ),
     },
+
+
     {
       title: "แก้ไข",
       align: "center",
-      render: (item) => {
+      render: (item, data) => {
         return (
           <>
             <IconButton
               onClick={async () => {
-                setRowData(item);
+                setRowData(data);
                 setOpenDialogAdd({
                   open: true,
                   type: "edit",
@@ -560,9 +699,10 @@ function bankAccount() {
         );
       },
     },
+
     {
-      title: "ลบ", field: "availability", align: "center",
-      render: (item) => {
+      title: "ลบ", align: "center",
+      render: (item, data) => {
         return (
           <>
             <IconButton
@@ -587,7 +727,7 @@ function bankAccount() {
                         method: "Post",
                         url: `${hostname}/bank/delete_bank`,
                         data: {
-                          uuid: item.uuid
+                          uuid: data.uuid
                         }
                       });
                       if (
@@ -633,6 +773,9 @@ function bankAccount() {
     },
   ]
 
+
+
+
   useEffect(() => {
     getBank();
   }, []);
@@ -640,7 +783,6 @@ function bankAccount() {
   return (
     <Layout title="bank">
       <CssBaseline />
-
       <Paper sx={{ p: 3 }}>
         <Typography
           sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px" }}
@@ -679,12 +821,17 @@ function bankAccount() {
             </Button>
           </Box>
         </Grid>
-        <MaterialTableForm
-          data={bank}
-          columns={columns}
-          pageSize="10"
-          title=""
-        />
+    
+        <Table columns={columns} dataSource={bank} onChange={onChange}
+          size="small"
+          pagination={{
+            current: page,
+            pageSize: pageSize,
+            onChange: (page, pageSize) => {
+              setPage(page)
+              setPageSize(pageSize)
+            }
+          }} />
 
       </Paper>
 
