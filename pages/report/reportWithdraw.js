@@ -321,9 +321,9 @@ function reportDeposit() {
           sx={{ mt: 2, mb: 3 }}
         >
 
-          <Card sx={{ width: 250, bgcolor: '#0072B1', }}>
+          <Card sx={{ width: 250, bgcolor: '#101D35', }}>
             <CardContent>
-              <Typography variant="h6" sx={{ color: "#eee" }}>จำนวนรายการ</Typography>
+              <Typography variant="h7" sx={{ color: "#FFB946" }}>จำนวนรายการ</Typography>
               <Typography variant="h5" sx={{ textAlign: "center", color: "#ffff", mt: 2 }}>
                 {Intl.NumberFormat("TH").format(parseInt(total.totalList))}
               </Typography>
@@ -338,7 +338,7 @@ function reportDeposit() {
 
           <Card sx={{ width: 250, bgcolor: "#101D35" }}>
             <CardContent>
-              <Typography variant="h6" sx={{ color: "#eee" }}>สถานะสำเร็จ</Typography>
+              <Typography variant="h7" sx={{ color: "#FFB946" }}>สถานะสำเร็จทั้งหมด</Typography>
               <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>
                 {Intl.NumberFormat("TH").format(parseInt(total.totalSuccess))}</Typography>
               <Grid sx={{ textAlign: 'right' }}>
@@ -353,7 +353,7 @@ function reportDeposit() {
 
           <Card sx={{ width: 250, bgcolor: "#101D35" }}>
             <CardContent>
-              <Typography variant="h6" sx={{ color: "#eee" }}>สถานะยกเลิก</Typography>
+              <Typography variant="h7" sx={{ color: "#FFB946" }}>สถานะยกเลิกทั้งหมด</Typography>
               <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>
                 {Intl.NumberFormat("TH").format(parseInt(total.totalCancel))} </Typography>
               <Grid sx={{ textAlign: 'right' }}>
@@ -368,7 +368,7 @@ function reportDeposit() {
 
           <Card sx={{ width: 250, bgcolor: "#101D35" }}>
             <CardContent>
-              <Typography variant="h6" sx={{ color: "#eee" }}>ยอดรวมเงินทั้งหมด</Typography>
+              <Typography variant="h7" sx={{ color : '#2ECC71' }}>ยอดรวมเงินทั้งหมด</Typography>
               <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>
                 {Intl.NumberFormat("TH").format(parseInt(total.sumTotal))}  </Typography>
               <Grid sx={{ textAlign: 'right' }}>
@@ -382,7 +382,7 @@ function reportDeposit() {
 
           <Card sx={{ width: 250, bgcolor: "#101D35" }}>
             <CardContent>
-              <Typography variant="h6" sx={{ color: "#eee" }}>ยอดรวมเงินสำเร็จ</Typography>
+              <Typography variant="h7" sx={{ color : '#2ECC71' }}>ยอดรวมเงินสำเร็จทั้งหมด</Typography>
               <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>
                 {Intl.NumberFormat("TH").format(parseInt(total.sumSuccess))}  </Typography>
               <Grid sx={{ textAlign: 'right' }}>
@@ -396,7 +396,7 @@ function reportDeposit() {
 
           <Card sx={{ width: 250, bgcolor: "#101D35" }}>
             <CardContent>
-              <Typography variant="h6" sx={{ color: "#eee" }}>ยอดรวมเงินยกเลิก</Typography>
+              <Typography variant="h7" sx={{ color : '#2ECC71' }}>ยอดรวมเงินยกเลิกทั้งหมด</Typography>
               <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>
                 {Intl.NumberFormat("TH").format(parseInt(total.sumCancel))}   </Typography>
               <Grid sx={{ textAlign: 'right' }}>

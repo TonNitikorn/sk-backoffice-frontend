@@ -646,17 +646,17 @@ function bankAccount() {
           size="small"
           style={{
             // padding: 5,
-            backgroundColor: item  === "ACTIVE" ? "#129A50" : "#FFB946",
+            backgroundColor: item === "ACTIVE" ? "#129A50" : "#FFB946",
             color: "#fff",
             minWidth: "120px"
           }}
         />
       ),
-      // filters: [
-      //   { text: 'ถอน', value: 'WITHDRAW' },
-      //   { text: 'ฝาก', value: 'DEPOSIT' },
-      // ],
-      // onFilter: (value, record) => record.transfer_type.indexOf(value) === 0,
+      filters: [
+        { text: 'ถอน', value: 'WITHDRAW' },
+        { text: 'ฝาก', value: 'DEPOSIT' },
+      ],
+      onFilter: (value, record) => record.transfer_type.indexOf(value) === 0,
     },
 
     {
@@ -773,9 +773,6 @@ function bankAccount() {
     },
   ]
 
-
-
-
   useEffect(() => {
     getBank();
   }, []);
@@ -821,8 +818,11 @@ function bankAccount() {
             </Button>
           </Box>
         </Grid>
-    
-        <Table columns={columns} dataSource={bank} onChange={onChange}
+
+        <Table
+          columns={columns}
+          dataSource={bank}
+          onChange={onChange}
           size="small"
           pagination={{
             current: page,

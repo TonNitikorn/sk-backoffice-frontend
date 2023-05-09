@@ -13,8 +13,11 @@ import {
    Snackbar,
    Divider,
    Alert,
-   IconButton,
-   Chip
+   Dialog,
+   DialogContent,
+   DialogTitle,
+   Chip,
+   IconButton
 } from "@mui/material";
 import {
    Chart as ChartJS,
@@ -25,7 +28,7 @@ import {
    Tooltip,
    Legend,
 } from "chart.js";
-import EditIcon from "@mui/icons-material/Edit";
+import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { Bar, Line } from "react-chartjs-2";
 import axios from "axios";
@@ -36,13 +39,11 @@ import { useAppDispatch } from "../store/store";
 import { signOut } from "../store/slices/userSlice";
 import LoadingModal from "../theme/LoadingModal";
 import moment from "moment/moment";
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import { Table, Input, Space, } from 'antd';
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 import Image from "next/image";
+import Swal from "sweetalert2";
 
 ChartJS.register(
    CategoryScale,
@@ -65,7 +66,7 @@ function dashboard() {
    const [chartDeposit, setChartDeposit] = useState([])
    const [chartWithdraw, setChartWithdraw] = useState([])
    const [chartMember, setChartMember] = useState([])
-   const [result, setResult] = useState()
+   const [result, setResult] = useState({})
    const [bank, setBank] = useState([])
    const [member, setMember] = useState()
    const [platform, setPlatform] = useState([])
@@ -76,11 +77,16 @@ function dashboard() {
    const [open, setOpen] = useState(false)
    const [boxMember, setBoxMember] = useState(0)
    const [boxBank, setBoxBank] = useState({})
+   const [openDialogTrans, setOpenDialogTrans] = useState(false)
    const [search, setSearch] = useState({
       data: "",
       type: "",
    });
-
+   const [rowData, setRowData] = useState({})
+   const [transaction, setTransaction] = useState([])
+   const [total, setTotal] = useState({})
+   const [report, setReport] = useState([])
+   const [username, setUsername] = useState('')
 
    const handleClickSnackbar = () => {
       setOpen(true);
@@ -125,6 +131,7 @@ function dashboard() {
          console.log(error);
       }
    };
+
    const getResult = async () => {
       setLoading(true);
       try {
@@ -139,8 +146,32 @@ function dashboard() {
                "end_date": selectedDateRange.end
             }
          });
-         let resData = res.data.total_member;
-         setResult(resData)
+         let resDataDeposit = res.data.DepositTransaction;
+         let resDataWithdraw = res.data.WithdrawTransaction;
+         
+
+         let sumCreditDeposit = []
+         let sumCreditWithdraw = []
+
+         for (const item of resDataDeposit?.transactionDeposit) {
+            sumCreditDeposit.push(parseInt(item.credit))
+         }
+         let total_credit_deposit = sumCreditDeposit.reduce((a, b) => a + b, 0)
+
+         for (const item of resDataWithdraw?.transactionWithdraw) {
+            sumCreditWithdraw.push(parseInt(item.credit))
+         }
+         let total_credit_withdarw = sumCreditWithdraw.reduce((a, b) => a + b, 0)
+
+
+         setResult({
+            sumCreditDeposit: total_credit_deposit,
+            sumCreditWithdraw: total_credit_withdarw,
+            lengthDeposit: resDataDeposit.Deposit_length,
+            lengthWithdraw: resDataWithdraw.Withdraw_length,
+            listMemberRegister: 0,
+            listMemberDeposit : 0
+         })
          setLoading(false);
       } catch (error) {
          if (
@@ -955,14 +986,14 @@ function dashboard() {
          align: "center",
          filters: [
             {
-              text: 'สำเร็จ',
-              value: 'SUCCESS',
+               text: 'สำเร็จ',
+               value: 'SUCCESS',
             },
             {
                text: 'ไม่สำเร็จ',
                value: 'UNSUCCESS',
-             },
-            
+            },
+
          ],
          render: (item) => (
             <Chip
@@ -996,6 +1027,93 @@ function dashboard() {
    const onChange = (pagination, filters, sorter, extra) => {
       console.log('params', pagination, filters, sorter, extra);
    };
+   const handleOpenDetail = (type) => {
+      setOpenDialogTrans(true)
+      getReport(type)
+   }
+
+   const getReport = async (type) => {
+      setLoading(true);
+      try {
+         let res = await axios({
+            headers: {
+               Authorization: "Bearer " + localStorage.getItem("access_token"),
+            },
+            method: "post",
+            url: `${hostname}/report/get_transaction`,
+
+            data: {
+               "create_at_start": selectedDateRange.start,
+               "create_at_end": selectedDateRange.end,
+               "transfer_type": type,
+               "username": username
+            }
+         });
+
+         let transaction = res.data.transaction
+         let no = 1;
+         transaction.map((item) => {
+            item.no = no++;
+            item.create_at = moment(item.create_at).format('DD/MM/YYYY HH:mm')
+            item.bank_name = item.members?.bank_name
+            item.bank_number = item.members?.bank_number
+            item.username = item.members?.username
+         });
+
+         sumData(transaction, res.data.sumCredit)
+         setReport(transaction);
+         setLoading(false);
+      } catch (error) {
+         console.log(error);
+         if (
+            error.response.data.error.status_code === 401 &&
+            error.response.data.error.message === "Unauthorized"
+         ) {
+            dispatch(signOut());
+            localStorage.clear();
+            router.push("/auth/login");
+         }
+         if (
+            error.response.status === 401 &&
+            error.response.data.error.message === "Invalid Token"
+         ) {
+            dispatch(signOut());
+            localStorage.clear();
+            router.push("/auth/login");
+         }
+      }
+   };
+
+   const sumData = (transaction, sumCredit) => {
+      let dataTypeManual = transaction.filter((item) => item.status_transction === "MANUAL")
+      let dataTypeAuto = transaction.filter((item) => item.status_transction === "AUTO")
+      let sumManual = []
+      let sumAuto = []
+      let sumPrice = 0
+      let price = []
+      for (const item of dataTypeManual) {
+         sumManual.push(parseInt(item.credit))
+      }
+      let manual = sumManual.reduce((a, b) => a + b, 0)
+      for (const item of dataTypeAuto) {
+         sumAuto.push(parseInt(item.credit))
+      }
+      let auto = sumAuto.reduce((a, b) => a + b, 0)
+      for (const item of transaction) {
+         price.push(item.amount)
+      }
+      sumPrice = price.reduce((a, b) => a + b, 0)
+      setTotal({
+         totalList: transaction.length,
+         sumPrice: parseInt(Intl.NumberFormat("TH").format(parseInt(sumPrice))),
+         sumCredit: parseInt(Intl.NumberFormat("TH").format(parseInt(sumCredit))),
+         typeManual: dataTypeManual.length,
+         typeAuto: dataTypeAuto.length,
+         sumManual: Intl.NumberFormat("TH").format(parseInt(manual)),
+         sumAuto: Intl.NumberFormat("TH").format(parseInt(auto)),
+         sumTotal: Intl.NumberFormat("TH").format(parseInt(manual, auto))
+      })
+   }
 
    useEffect(() => {
       getChart();
@@ -1084,110 +1202,154 @@ function dashboard() {
 
             {/* ================ card =============== */}
 
-            <Grid container direction="row" >
-               <Card sx={{ minWidth: 242, maxWidth: 242, minHeight: 20, my: 2, ml: 2, bgcolor: "#101D35", }}>
+            <Grid
+               container
+               direction="row"
+               justifyContent="flex-start"
+               alignItems="center" >
+
+               <Card sx={{ minWidth: 242, maxWidth: 242, minHeight: 20, maxHeight: 160, my: 2, ml: 2, bgcolor: "#101D35", }}>
                   <CardContent>
                      <Typography component="div" sx={{ color: "#41A3E3" }}> จำนวนสมัครสมาชิกที่สมัคร </Typography>
                      <Grid container justifyContent="center">
-                        <Grid item xs={3}></Grid>
-                        <Grid item xs={5}>
+                        <Grid item xs={4}></Grid>
+                        <Grid item xs={4}>
                            <Typography variant="h5" sx={{ textAlign: "center", color: "#eee", mt: 2 }} >
-                              {result?.total_member}
+                              {result?.listMemberRegister}
                            </Typography>
                         </Grid>
                         <Grid item xs={4}>
-                           <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}> รายการ</Typography>
+                           <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}>คน</Typography>
                         </Grid>
                      </Grid>
+                     <Divider sx={{ bgcolor: '#41A3E3', mt: 1 }} />
+                     <Box sx={{ textAlign: 'right' }}>
+                        <Button variant="text" sx={{ p: 1 }} >
+
+                        </Button>
+                     </Box>
+
                   </CardContent>
                </Card>
 
-               <Card sx={{ minWidth: 242, maxWidth: 242, minHeight: 20, my: 2, ml: 2, bgcolor: "#101D35", }}>
+               <Card sx={{ minWidth: 242, maxWidth: 242, minHeight: 20, maxHeight: 160, my: 2, ml: 2, bgcolor: "#101D35", }}>
                   <CardContent>
                      <Typography component="div" sx={{ color: "#41A3E3" }}> สมัครสมาชิกใหม่ที่ฝากเงินวันนี้ </Typography>
                      <Grid container justifyContent="center">
                         <Grid item xs={3}></Grid>
                         <Grid item xs={5}>
                            <Typography variant="h5" sx={{ textAlign: "center", color: "#eee", mt: 2 }} >
-                              {Intl.NumberFormat("TH").format(parseInt(result?.total_credit))}
+                              {Intl.NumberFormat("TH").format(parseInt(result?.listMemberDeposit))}
                            </Typography>
                         </Grid>
                         <Grid item xs={4}>
                            <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}> บาท</Typography>
                         </Grid>
                      </Grid>
+                     <Divider sx={{ bgcolor: '#41A3E3', mt: 1 }} />
+                     <Box sx={{ textAlign: 'right' }}>
+                        <Button variant="text" sx={{ p: 1 }} >
+
+                        </Button>
+                     </Box>
                   </CardContent>
                </Card>
 
-               <Card sx={{ minWidth: 242, maxWidth: 242, minHeight: 20, my: 2, ml: 2, bgcolor: "#101D35", }}>
-                  <CardContent>
-                     <Typography component="div" sx={{ color: "#4ECF3C" }}> ฝากเงินทั้งหมด </Typography>
-                     <Grid container justifyContent="center">
-                        <Grid item xs={3}></Grid>
-                        <Grid item xs={5}>
-                           <Typography variant="h5" sx={{ textAlign: "center", color: "#eee", mt: 2 }} >
-                              {Intl.NumberFormat("TH").format(parseInt(result?.deposit_total))}
-                           </Typography>
-                        </Grid>
-                        <Grid item xs={4}>
-                           <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}> บาท</Typography>
-                        </Grid>
-                     </Grid>
-                  </CardContent>
-               </Card>
+             
 
-               <Card sx={{ minWidth: 242, maxWidth: 242, minHeight: 20, my: 2, ml: 2, bgcolor: "#101D35", }}>
+               <Card sx={{ minWidth: 242, maxWidth: 242, minHeight: 20, maxHeight: 160, my: 2, ml: 2, bgcolor: "#101D35", }}>
                   <CardContent>
                      <Typography component="div" sx={{ color: "#4ECF3C" }}> จำนวนครั้งในการฝาก </Typography>
                      <Grid container justifyContent="center">
                         <Grid item xs={3}></Grid>
                         <Grid item xs={5}>
                            <Typography variant="h5" sx={{ textAlign: "center", color: "#eee", mt: 2 }} >
-                              {result?.deposit_length}
+                              {result?.lengthDeposit}
                            </Typography>
                         </Grid>
                         <Grid item xs={4}>
                            <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}> ครั้ง</Typography>
                         </Grid>
                      </Grid>
+                     <Divider sx={{ bgcolor: '#41A3E3', mt: 1 }} />
+                     <Box sx={{ textAlign: 'right' }}>
+                        <Button variant="text" sx={{ p: 1 }} onClick={() => handleOpenDetail('DEPOSIT')}>
+                        ดูเพิ่มเติม...
+                        </Button>
+                     </Box>
                   </CardContent>
                </Card>
 
-               <Card sx={{ minWidth: 242, maxWidth: 242, minHeight: 20, my: 2,  ml: 2, bgcolor: "#101D35", }}>
+               <Card sx={{ minWidth: 242, maxWidth: 242, minHeight: 20, maxHeight: 160, my: 2, ml: 2, bgcolor: "#101D35", }}>
                   <CardContent>
-                     <Typography component="div" sx={{ color: "#DF4827 " }}> ถอนเงินทั้งหมด </Typography>
+                     <Typography component="div" sx={{ color: "#4ECF3C" }}> ฝากเงินทั้งหมด </Typography>
                      <Grid container justifyContent="center">
                         <Grid item xs={3}></Grid>
                         <Grid item xs={5}>
                            <Typography variant="h5" sx={{ textAlign: "center", color: "#eee", mt: 2 }} >
-                              {Intl.NumberFormat("TH").format(parseInt(result?.withdraw_total))}
+                              {Intl.NumberFormat("TH").format(parseInt(result?.sumCreditDeposit))}
                            </Typography>
                         </Grid>
                         <Grid item xs={4}>
                            <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}> บาท</Typography>
                         </Grid>
                      </Grid>
+                     <Divider sx={{ bgcolor: '#41A3E3', mt: 1 }} />
+                     <Box sx={{ textAlign: 'right' }}>
+                        <Button variant="text" sx={{ p: 1 }} >
+                     
+                        </Button>
+                     </Box>
                   </CardContent>
                </Card>
 
-               <Card sx={{ minWidth: 242, maxWidth: 242, minHeight: 20, my: 2, ml: 2, bgcolor: "#101D35", }}>
+             
+
+               <Card sx={{ minWidth: 242, maxWidth: 242, minHeight: 20, maxHeight: 160, my: 2, ml: 2, bgcolor: "#101D35", }}>
                   <CardContent>
                      <Typography component="div" sx={{ color: "#DF4827 " }}> จำนวนครั้งในการถอน </Typography>
                      <Grid container justifyContent="center">
                         <Grid item xs={3}></Grid>
                         <Grid item xs={5}>
                            <Typography variant="h5" sx={{ textAlign: "center", color: "#eee", mt: 2 }} >
-                              {result?.withdraw_length}
+                              {result?.lengthWithdraw}
                            </Typography>
                         </Grid>
                         <Grid item xs={4}>
                            <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}> ครั้ง</Typography>
                         </Grid>
                      </Grid>
+                     <Divider sx={{ bgcolor: '#41A3E3', mt: 1 }} />
+                     <Box sx={{ textAlign: 'right' }}>
+                        <Button variant="text" sx={{ p: 1 }} onClick={() => handleOpenDetail('WITHDRAW')}>
+                        ดูเพิ่มเติม...
+                        </Button>
+                     </Box>
                   </CardContent>
                </Card>
 
-
+               <Card sx={{ minWidth: 242, maxWidth: 242, minHeight: 20, maxHeight: 160, my: 2, ml: 2, bgcolor: "#101D35", }}>
+                  <CardContent>
+                     <Typography component="div" sx={{ color: "#DF4827 " }}> ถอนเงินทั้งหมด </Typography>
+                     <Grid container justifyContent="center">
+                        <Grid item xs={3}></Grid>
+                        <Grid item xs={5}>
+                           <Typography variant="h5" sx={{ textAlign: "center", color: "#eee", mt: 2 }} >
+                              {Intl.NumberFormat("TH").format(parseInt(result?.sumCreditWithdraw))}
+                           </Typography>
+                        </Grid>
+                        <Grid item xs={4}>
+                           <Typography sx={{ mt: 5, textAlign: "end", color: "#eee" }}> บาท</Typography>
+                        </Grid>
+                     </Grid>
+                     <Divider sx={{ bgcolor: '#41A3E3', mt: 1 }} />
+                     <Box sx={{ textAlign: 'right' }}>
+                        <Button variant="text" sx={{ p: 1 }} >
+                           
+                        </Button>
+                     </Box>
+                  </CardContent>
+               </Card>
             </Grid>
          </Paper>
 
@@ -1269,7 +1431,6 @@ function dashboard() {
             </Grid>
 
          </Paper>
-
 
 
          {boxMember === 1 ?
@@ -1402,8 +1563,6 @@ function dashboard() {
             : ''
          }
 
-
-
          <Paper sx={{ p: 3, mt: 2 }}>
             <Grid
                container
@@ -1525,7 +1684,7 @@ function dashboard() {
                      </Button>
                   </Grid>
                   <Grid item>
-                     <Button variant="text" onClick={() => setBoxBank({open: 0})}><CloseIcon /></Button>
+                     <Button variant="text" onClick={() => setBoxBank({ open: 0 })}><CloseIcon /></Button>
                   </Grid>
                </Grid>
                <Table
@@ -1542,8 +1701,6 @@ function dashboard() {
                   }} />
             </Paper>
             : ''}
-
-
 
          <Paper sx={{ p: 3, mt: 2 }}>
             <Typography> ภาพรวมสรุปตั้งแต่วันที่ {selectedDateRange.start} ถึง {selectedDateRange.end}</Typography>
@@ -1672,8 +1829,6 @@ function dashboard() {
             </Grid>
          </Paper>
 
-
-
          <Grid container direction="row" sx={{ mt: 3 }}>
             <Card sx={{ minWidth: 250, maxWidth: 230, minHeight: 20, my: 2, bgcolor: "#101D35", }}>
                <CardContent>
@@ -1726,6 +1881,164 @@ function dashboard() {
 
 
          </Grid>
+
+         <Dialog
+            open={openDialogTrans}
+            onClose={() => setOpenDialogTrans(false)}
+            fullWidth
+            maxWidth="lg"
+         >
+            <DialogTitle sx={{ mt: 1 }} >
+               <Grid container direction="row" justifyContent="space-between" alignItems="center">
+                  <Grid item>
+                     <Typography> ประวัติการทำรายการ </Typography>
+                  </Grid>
+                  <Grid item>
+                     <IconButton aria-label="delete" size="large" onClick={() => setOpenDialogTrans(false)}>
+                        <CloseIcon fontSize="inherit" />
+                     </IconButton>
+
+                  </Grid>
+               </Grid>
+            </DialogTitle>
+
+            <DialogContent>
+               <Grid>
+                  <Table
+                     dataSource={report}
+                     onChange={onChange}
+                     size="small"
+                     pagination={{
+                        current: page,
+                        pageSize: 20,
+                        onChange: (page, pageSize) => {
+                           setPage(page)
+                           setPageSize(pageSize)
+                        }
+                     }}
+                     
+                     columns={[
+                        {
+                           title: 'ลำดับ',
+                           dataIndex: 'no',
+                           align: 'center',
+                           sorter: (record1, record2) => record1.no - record2.no,
+                           render: (item, data) => (
+                              <Typography sx={{ fontSize: '14px', textAlign: 'center' }} >{item}</Typography>
+                           )
+                        },
+                        {
+                           dataIndex: 'transfer_type',
+                           title: "ประเภท",
+                           align: "center",
+                           render: (item) => (
+                              <Chip
+                                 label={item === "DEPOSIT" ? "ฝากเงิน" : "ถอนเงิน"}
+                                 size="small"
+                                 style={{
+                                    // padding: 5,
+                                    backgroundColor: item === "DEPOSIT" ? "#129A50" : "#FFB946",
+                                    color: "#fff",
+                                    minWidth: "120px"
+                                 }}
+                              />
+                           ),
+                           filters: [
+                              { text: 'ถอนเงิน', value: 'WITHDRAW' },
+                              { text: 'ฝากเงิน', value: 'DEPOSIT' },
+                           ],
+                           onFilter: (value, record) => record.transfer_type.indexOf(value) === 0,
+                        },
+                        {
+                           title: 'Username',
+                           dataIndex: 'username',
+                           ...getColumnSearchProps('username'),
+                           render: (item, data) => (
+                              <CopyToClipboard text={item}>
+                                 <div style={{
+                                    "& .MuiButton-text": { "&:hover": { textDecoration: "underline blue 1px", } }
+                                 }} >
+                                    <Button
+                                       sx={{
+                                          fontSize: "14px",
+                                          p: 0,
+                                          color: "blue",
+                                       }}
+                                       onClick={handleClickSnackbar}
+                                    >
+                                       {item}
+                                    </Button>
+                                 </div>
+                              </CopyToClipboard>
+                           ),
+                        },
+                        {
+                           dataIndex: "create_at",
+                           title: "วันที่ทำรายการ",
+                           align: "center",
+                           render: (item) => (
+                              <Typography
+                                 style={{
+                                    fontSize: '14px'
+                                 }}
+                              >{item}</Typography>
+                           ),
+                        },
+                        {
+                           dataIndex: "credit",
+                           title: "ยอดเงิน",
+                           align: "center",
+                           sorter: (record1, record2) => record1.credit - record2.credit,
+                           render: (item) => (
+                              <Typography
+                                 style={{
+                                    fontSize: '14px'
+                                 }}
+                              >{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
+                           ),
+                        },
+                        {
+                           dataIndex: 'credit_before',
+                           title: "เครดิตก่อนทำรายการ",
+                           align: "center",
+                           render: (item) => (
+                              <Typography sx={{ color: 'red', fontSize: '14px', }}>
+                                 {Intl.NumberFormat("TH").format(parseInt(item))}
+                              </Typography>
+                           ),
+                        },
+                        {
+                           dataIndex: 'credit_after',
+                           title: "เครดิตหลังทำรายการ",
+                           align: "center",
+                           render: (item) => (
+                              <Typography sx={{ color: '#129A50', fontSize: '14px', }}>
+                                 {Intl.NumberFormat("TH").format(parseInt(item))}
+                              </Typography>
+                           ),
+                        },
+                        {
+                           dataIndex: "content",
+                           title: "หมายเหตุ",
+                           align: "center",
+                           render: (item) => (
+                              <Typography
+                                 style={{
+                                    fontSize: '14px'
+                                 }}
+                              >{item}</Typography>
+                           ),
+                        },
+
+                     ]}
+
+                  />
+
+
+               </Grid>
+            </DialogContent>
+         </Dialog>
+
          <Snackbar
             open={open}
             autoHideDuration={3000}
@@ -1742,4 +2055,4 @@ function dashboard() {
 }
 
 // export default (dashboard);
-export default (dashboard);
+export default withAuth(dashboard);

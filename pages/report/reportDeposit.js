@@ -46,7 +46,6 @@ function reportDeposit() {
   const [open, setOpen] = useState(false);
   const [total, setTotal] = useState({})
   const [loading, setLoading] = useState(false);
-  const [typeList, setTypeList] = useState({})
   const [filterSuccess, setFilterSuccess] = useState([]);
   const [filterCancel, setFilterCancel] = useState([])
 
@@ -293,7 +292,7 @@ function reportDeposit() {
           alignItems="flex-start"
           sx={{ mt: 4, mb: 4 }}>
 
-          <Card sx={{ width: 250, bgcolor: "#101D35", }}>
+          <Card sx={{ width: 250, bgcolor: "#101D35", mt:2}}>
             <CardContent>
               <Typography variant="h7" sx={{ color: "#FFB946" }}>จำนวนรายการ</Typography>
               <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>{total.totalList} </Typography>
@@ -307,7 +306,7 @@ function reportDeposit() {
             </CardContent>
           </Card>
 
-          <Card sx={{ width: 250, bgcolor: "#101D35", }} >
+          <Card sx={{ width: 250, bgcolor: "#101D35",mt:2 }} >
             <CardContent>
               <Typography variant="h7" sx={{ color: "#FFB946" }}>จำนวนรายการฝากแบบเติมมือ</Typography>
               <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {total.typeManual} </Typography>
@@ -321,7 +320,7 @@ function reportDeposit() {
             </CardContent>
           </Card>
 
-          <Card sx={{ width: 250, bgcolor: "#101D35", }}>
+          <Card sx={{ width: 250, bgcolor: "#101D35",mt:2 }}>
             <CardContent>
               <Typography variant="h7" sx={{ color: "#FFB946" }}>จำนวนรายการฝากแบบอัตโนมัติ</Typography>
               <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {total.typeAuto} </Typography>
@@ -335,7 +334,7 @@ function reportDeposit() {
             </CardContent>
           </Card>
 
-          <Card sx={{ width: 250, bgcolor: "#101D35", }}>
+          <Card sx={{ width: 250, bgcolor: "#101D35", mt:2}}>
             <CardContent>
               <Typography variant="h7" sx={{color : '#2ECC71'}}>ยอดรวมฝากทั้งหมด</Typography>
               <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}> {total.sumTotal}</Typography>
@@ -350,7 +349,7 @@ function reportDeposit() {
             </CardContent>
           </Card>
 
-          <Card sx={{ width: 250, bgcolor: "#101D35", }}>
+          <Card sx={{ width: 250, bgcolor: "#101D35", mt:2}}>
             <CardContent>
               <Typography variant="h7" sx={{ color: "#2ECC71" }}>ยอดรวมฝากแบบเติมมือ</Typography>
               <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}> {total.sumManual}</Typography>
@@ -365,7 +364,7 @@ function reportDeposit() {
             </CardContent>
           </Card>
 
-          <Card sx={{ width: 250, bgcolor: "#101D35", }}>
+          <Card sx={{ width: 250, bgcolor: "#101D35",mt:2 }}>
             <CardContent>
               <Typography variant="h7" sx={{ color: "#2ECC71" }}>ยอดรวมฝากแบบอัตโนมัติ</Typography>
               <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {total.sumAuto}</Typography>

@@ -951,7 +951,10 @@ function memberTable() {
          </Grid>
 
 
-         <Table columns={columns} dataSource={dataMember} onChange={onChange}
+         <Table
+            columns={columns}
+            dataSource={dataMember}
+            onChange={onChange}
             size="small"
             pagination={{
                current: page,
@@ -1561,7 +1564,7 @@ function memberTable() {
                            >{item}</Typography>
                         ),
                      },
-                    
+
                      {
                         dataIndex: "content",
                         title: "หมายเหตุ",
