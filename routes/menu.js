@@ -155,6 +155,16 @@ export const menuSuperAdmin = [
         link: "/report/reportError",
         icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
       },
+      {
+        name: "รายงานการตัดเครดิต",
+        link: "/report/reportCutCredit",
+        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
+      },
+      {
+        name: "รายงานการเติมเครดิต",
+        link: "/report/reportAddCredit",
+        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
+      },
     ],
   },
 

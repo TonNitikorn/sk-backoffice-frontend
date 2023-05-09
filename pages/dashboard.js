@@ -1085,9 +1085,9 @@ function dashboard() {
             {/* ================ card =============== */}
 
             <Grid container direction="row" >
-               <Card sx={{ minWidth: 242, maxWidth: 242, minHeight: 20, my: 2, bgcolor: "#101D35", }}>
+               <Card sx={{ minWidth: 242, maxWidth: 242, minHeight: 20, my: 2, ml: 2, bgcolor: "#101D35", }}>
                   <CardContent>
-                     <Typography component="div" sx={{ color: "#41A3E3" }}> สมัครสมาชิก </Typography>
+                     <Typography component="div" sx={{ color: "#41A3E3" }}> จำนวนสมัครสมาชิกที่สมัคร </Typography>
                      <Grid container justifyContent="center">
                         <Grid item xs={3}></Grid>
                         <Grid item xs={5}>
@@ -1102,9 +1102,9 @@ function dashboard() {
                   </CardContent>
                </Card>
 
-               <Card sx={{ minWidth: 242, maxWidth: 242, minHeight: 20, my: 2, mx: 2, bgcolor: "#101D35", }}>
+               <Card sx={{ minWidth: 242, maxWidth: 242, minHeight: 20, my: 2, ml: 2, bgcolor: "#101D35", }}>
                   <CardContent>
-                     <Typography component="div" sx={{ color: "#41A3E3" }}> สมัครสมาชิกฝากเงิน </Typography>
+                     <Typography component="div" sx={{ color: "#41A3E3" }}> สมัครสมาชิกใหม่ที่ฝากเงินวันนี้ </Typography>
                      <Grid container justifyContent="center">
                         <Grid item xs={3}></Grid>
                         <Grid item xs={5}>
@@ -1119,9 +1119,9 @@ function dashboard() {
                   </CardContent>
                </Card>
 
-               <Card sx={{ minWidth: 242, maxWidth: 242, minHeight: 20, my: 2, bgcolor: "#101D35", }}>
+               <Card sx={{ minWidth: 242, maxWidth: 242, minHeight: 20, my: 2, ml: 2, bgcolor: "#101D35", }}>
                   <CardContent>
-                     <Typography component="div" sx={{ color: "#4ECF3C" }}> ฝากเงิน </Typography>
+                     <Typography component="div" sx={{ color: "#4ECF3C" }}> ฝากเงินทั้งหมด </Typography>
                      <Grid container justifyContent="center">
                         <Grid item xs={3}></Grid>
                         <Grid item xs={5}>
@@ -1138,7 +1138,7 @@ function dashboard() {
 
                <Card sx={{ minWidth: 242, maxWidth: 242, minHeight: 20, my: 2, ml: 2, bgcolor: "#101D35", }}>
                   <CardContent>
-                     <Typography component="div" sx={{ color: "#4ECF3C" }}> รายการฝาก </Typography>
+                     <Typography component="div" sx={{ color: "#4ECF3C" }}> จำนวนครั้งในการฝาก </Typography>
                      <Grid container justifyContent="center">
                         <Grid item xs={3}></Grid>
                         <Grid item xs={5}>
@@ -1153,9 +1153,9 @@ function dashboard() {
                   </CardContent>
                </Card>
 
-               <Card sx={{ minWidth: 242, maxWidth: 242, minHeight: 20, my: 2, mx: 2, bgcolor: "#101D35", }}>
+               <Card sx={{ minWidth: 242, maxWidth: 242, minHeight: 20, my: 2,  ml: 2, bgcolor: "#101D35", }}>
                   <CardContent>
-                     <Typography component="div" sx={{ color: "#DF4827 " }}> ถอนเงิน </Typography>
+                     <Typography component="div" sx={{ color: "#DF4827 " }}> ถอนเงินทั้งหมด </Typography>
                      <Grid container justifyContent="center">
                         <Grid item xs={3}></Grid>
                         <Grid item xs={5}>
@@ -1170,9 +1170,9 @@ function dashboard() {
                   </CardContent>
                </Card>
 
-               <Card sx={{ minWidth: 242, maxWidth: 242, minHeight: 20, my: 2, bgcolor: "#101D35", }}>
+               <Card sx={{ minWidth: 242, maxWidth: 242, minHeight: 20, my: 2, ml: 2, bgcolor: "#101D35", }}>
                   <CardContent>
-                     <Typography component="div" sx={{ color: "#DF4827 " }}> รายการถอน </Typography>
+                     <Typography component="div" sx={{ color: "#DF4827 " }}> จำนวนครั้งในการถอน </Typography>
                      <Grid container justifyContent="center">
                         <Grid item xs={3}></Grid>
                         <Grid item xs={5}>
@@ -1232,7 +1232,7 @@ function dashboard() {
                      </Box>
                   </CardContent>
                </Card>
-               <Card sx={{ minWidth: 300, maxWidth: 460, minHeight: 20, maxHeight: 160, height: 160, my: 2, bgcolor: "#101D35", mt: 1, ml: 2 }}>
+               {/* <Card sx={{ minWidth: 300, maxWidth: 460, minHeight: 20, maxHeight: 160, height: 160, my: 2, bgcolor: "#101D35", mt: 1, ml: 2 }}>
                   <CardContent>
                      <Typography sx={{ color: "#41A3E3" }}>สมัครใหม่วันนี้</Typography>
                      <Grid container justifyContent="center">
@@ -1265,7 +1265,7 @@ function dashboard() {
                      </Grid>
                      <Divider sx={{ bgcolor: '#41A3E3', mt: 1 }} />
                   </CardContent>
-               </Card>
+               </Card> */}
             </Grid>
 
          </Paper>
