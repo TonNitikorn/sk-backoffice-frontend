@@ -1,444 +1,516 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
-    Paper,
-    Button,
-    Grid,
-    Typography,
-    Box,
-    TextField,
-    Card,
-    CardContent
+  Paper,
+  Button,
+  Grid,
+  Typography,
+  TextField,
+  Chip,
+  Snackbar,
 } from "@mui/material";
 import axios from "axios";
 import hostname from "../../utils/hostname";
 import moment from "moment/moment";
-import PropTypes from "prop-types";
 import withAuth from "../../routes/withAuth";
 import LoadingModal from "../../theme/LoadingModal";
-import Swal from "sweetalert2";
 import Layout from '../../theme/Layout'
-import MaterialTableForm from "../../components/materialTableForm";
+import { Table, Input, Space, } from 'antd';
+import SearchIcon from '@mui/icons-material/Search';
+import { CopyToClipboard } from "react-copy-to-clipboard";
 
-
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 function reportAddCredit() {
-    const [selectedDateRange, setSelectedDateRange] = useState({
-        start: moment().format("YYYY-MM-DD 00:00"),
-        end: moment().format("YYYY-MM-DD 23:59"),
-    });
-    const [rowData, setRowData] = useState({});
-    const [username, setUsername] = useState("");
-    const [allError, setAllError] = useState([]);
-    const [withdraw, setWithdraw] = useState([]);
-    const [deposit, setDeposit] = useState([]);
-    const [total, setTotal] = useState({})
-    const [loading, setLoading] = useState(false);
-    const [filterDeposit, setFilterDeposit] = useState([]);
-    const [filterWithdraw, setFilterWithdraw] = useState([])
-    const [report, setReport] = useState([]);
+  const [selectedDateRange, setSelectedDateRange] = useState({
+    start: moment().format("YYYY-MM-DD 00:00"),
+    end: moment().format("YYYY-MM-DD 23:59"),
+  });
+  const [open, setOpen] = useState(false)
+  const [username, setUsername] = useState("");
+  const [withdraw, setWithdraw] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(10)
+
+  ////////////////////// search table /////////////////////
+  const searchInput = useRef(null);
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+  };
+
+  const handleClickSnackbar = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    setOpen(false);
+  };
+
+  const handleReset = (clearFilters) => {
+    clearFilters();
+  };
+
+  const getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <Input
+          ref={searchInput}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{
+            marginBottom: 8,
+            display: 'block',
+          }}
+        />
+        <Space>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Reset
+          </Button>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            <SearchIcon />
+            Search
+          </Button>
+          {/* <Button
+                type="link"
+                size="small"
+                onClick={() => {
+                  confirm({
+                    closeDropdown: false,
+                  });
+                  setSearchText(selectedKeys[0]);
+                  setSearchedColumn(dataIndex);
+                }}
+              >
+                Filter
+              </Button> */}
+          {/* <Button
+                type="link"
+                size="small"
+                onClick={() => {
+                  close();
+                }}
+              >
+                close
+              </Button> */}
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchIcon
+        style={{
+          color: filtered ? '#1890ff' : undefined,
+        }}
+      />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+  });
+
+  const onChange = (pagination, filters, sorter, extra) => {
+    console.log('params', pagination, filters, sorter, extra);
+  };
+
+  ////////////////////// search table /////////////////////
+
+  const getRerort = async (type, start, end) => {
+    setLoading(true);
+    try {
+      let res = await axios({
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("access_token"),
+        },
+        method: "post",
+        url: `${hostname}/report/manual_transaction`,
+        data: {
+          "status_transction": "MANUAL",
+          "start_date": type === undefined ? selectedDateRange.start : start,
+          "end_date": type === undefined ? selectedDateRange.end : end,
+        },
+      });
+
+
+      let data = res.data.listDeposit
+      let dataWithdraw = data.filter((item) => item.transfer_type === "DEPOSIT")
+
+      let noWith = 1
+      dataWithdraw.map(item => {
+        item.no = noWith++
+        item.transfer_type = item.transfer_type === "DEPOSIT" ? 'เติมเครดิต' : 'ตัดเครดิต'
+        item.username = item.members?.username
+        item.create_at = moment(item.create_at).format('DD/MM/YYYY HH:mm')
+      })
+      setWithdraw(dataWithdraw)
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      if (
+        error.response.data.error.status_code === 401 &&
+        error.response.data.error.message === "Unauthorized"
+      ) {
+        dispatch(signOut());
+        localStorage.clear();
+        router.push("/auth/login");
+      }
+      if (
+        error.response.status === 401 &&
+        error.response.data.error.message === "Invalid Token"
+      ) {
+        dispatch(signOut());
+        localStorage.clear();
+        router.push("/auth/login");
+      }
+    }
+  };
+
+  const columns = [
+    {
+      title: 'ลำดับ',
+      dataIndex: 'no',
+      align: 'center',
+      sorter: (record1, record2) => record1.no - record2.no,
+      render: (item, data) => (
+        <Typography sx={{ fontSize: '14px', textAlign: 'center' }} >{item}</Typography>
+      )
+    },
+    {
+      dataIndex: 'transfer_type',
+      title: "สถานะ",
+      align: "center",
+      render: (item) => (
+        <Chip
+          label={item}
+          size="small"
+          style={{
+            // padding: 5,
+            backgroundColor: "#129A50",
+            color: "#fff",
+            minWidth: "120px"
+          }}
+        />
+      ),
+      filters: [
+        { text: 'ถอน', value: 'WITHDRAW' },
+        { text: 'ฝาก', value: 'DEPOSIT' },
+      ],
+      onFilter: (value, record) => record.transfer_type.indexOf(value) === 0,
+    },
+    {
+      title: 'Username',
+      dataIndex: 'username',
+      render: (item, data) => (
+        <CopyToClipboard text={item}>
+          <div style={{
+            "& .MuiButton-text": {
+              "&:hover": {
+                // backgroundColor: "#9CE1BC",
+                // color: "blue",
+                textDecoration: "underline blue 1px",
+              }
+            }
+          }} >
+            <Button
+              sx={{
+                fontSize: "14px",
+                p: 0,
+                color: "blue",
+              }}
+              onClick={handleClickSnackbar}
+            >
+              {item}
+            </Button>
+          </div>
+        </CopyToClipboard>
+      ),
+      ...getColumnSearchProps('tel'),
+
+    },
+
+    {
+      dataIndex: "credit",
+      title: "เครดิตที่ทำรายการ",
+      align: "center",
+      ...getColumnSearchProps('credit'),
+      render: (item) => (
+        <Typography
+          style={{
+            fontSize: '14px'
+          }}
+        >{item}</Typography>
+      ),
+    },
+    {
+      dataIndex: "credit",
+      title: "เครดิตก่อนเติม",
+      align: "center",
+      ...getColumnSearchProps('credit'),
+      render: (item) => (
+        <Typography
+          style={{
+            fontSize: '14px'
+          }}
+        >{item}</Typography>
+      ),
+    },
+    {
+      dataIndex: "credit",
+      title: "เครดิตหลังเติม",
+      align: "center",
+      ...getColumnSearchProps('credit'),
+      render: (item) => (
+        <Typography
+          style={{
+            fontSize: '14px'
+          }}
+        >{item}</Typography>
+      ),
+    },
+    {
+      dataIndex: "birthdate",
+      title: "วัน/เดือน/ปีเกิด",
+      align: "center",
+      render: (item) => (
+        <Typography
+          style={{
+            fontSize: '14px'
+          }}
+        >{item}</Typography>
+      ),
+    },
+    {
+      dataIndex: "transfer_by",
+      title: "ทำรายการโดย",
+      align: "center",
+      render: (item) => (
+        <Typography
+          style={{
+            fontSize: '14px'
+          }}
+        >{item}</Typography>
+      ),
+    },
+    {
+      dataIndex: "content",
+      title: "หมายเหตุ",
+      align: "center",
+      render: (item) => (
+        <Typography
+          style={{
+            fontSize: '14px'
+          }}
+        >{item}</Typography>
+      ),
+    },
+  ]
+
+  useEffect(() => {
+    getRerort()
+  }, [])
+
+
+  return (
+    <Layout>
+      <Paper sx={{ p: 3, }}>
+        <Grid container>
+          <Typography
+            sx={{
+              fontSize: "24px",
+              textDecoration: "underline #41A3E3 3px",
+              my: 3,
+            }}
+          >
+            รายงานการเติมเครดิตแบบ manual
+          </Typography>
+
+          <Grid xs={12} sx={{ mb: 3 }}>
+            <TextField
+              label="เริ่ม"
+              style={{
+                marginRight: "8px",
+                backgroundColor: "white",
+                borderRadius: 4,
+              }}
+              variant="outlined"
+              size="small"
+              type="datetime-local"
+              name="start"
+              value={selectedDateRange.start}
+              onChange={(e) => {
+                setSelectedDateRange({
+                  ...selectedDateRange,
+                  [e.target.name]: e.target.value,
+                });
+              }}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+            <TextField
+              label="สิ้นสุด"
+              style={{
+                marginRight: "8px",
+                color: "white",
+                backgroundColor: "white",
+                borderRadius: 4,
+              }}
+              variant="outlined"
+              size="small"
+              type="datetime-local"
+              name="end"
+              value={selectedDateRange.end}
+              onChange={(e) => {
+                setSelectedDateRange({
+                  ...selectedDateRange,
+                  [e.target.name]: e.target.value,
+                });
+              }}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              required
+            />
+            <TextField
+              name="username"
+              type="text"
+              value={username || ""}
+              label="ค้นหาโดยใช้ Username"
+              placeholder="ค้นหาโดยใช้ Username"
+              onChange={(e) => setUsername(e.target.value)}
+              variant="outlined"
+              size="small"
+              sx={{ mr: 2 }}
+            />
+            <Button
+              variant="contained"
+              style={{ marginRight: "8px" }}
+              color="primary"
+              size="large"
+              onClick={() => {
+                getRerort();
+              }}
+            >
+              <Typography sx={{ color: '#ffff' }}>ค้นหา</Typography>
+            </Button>
+            <Button
+              variant="contained"
+              style={{
+                marginRight: "8px",
+                backgroundColor: "#FFB946",
+              }}
+              size="large"
+              onClick={async () => {
+                let start = moment()
+                  .subtract(1, "days")
+                  .format("YYYY-MM-DD 00:00");
+                let end = moment()
+                  .subtract(1, "days")
+                  .format("YYYY-MM-DD 23:59");
+                getAllError("yesterday", start, end);
+              }}
+            >
+              <Typography sx={{ color: '#ffff' }}>เมื่อวาน</Typography>
+            </Button>
+            <Button
+              variant="contained"
+              style={{
+                marginRight: "8px",
+                backgroundColor: "#129A50",
+              }}
+              size="large"
+              onClick={async () => {
+                let start = moment().format("YYYY-MM-DD 00:00");
+                let end = moment().format("YYYY-MM-DD 23:59");
+                getAllError("today", start, end);
+              }}
+            >
+              <Typography sx={{ color: '#ffff' }}>วันนี้</Typography>
+            </Button>
+          </Grid>
+        </Grid>
 
 
 
-    const getRerort = async () => {
-        setLoading(true);
-        try {
-            let res = await axios({
-                headers: {
-                    Authorization: "Bearer " + localStorage.getItem("access_token"),
-                },
-                method: "post",
-                url: `${hostname}/report/manual_transaction`,
-                data: {
-                    "status_transction": "MANUAL"
-                },
+        <Table
+          columns={columns}
+          dataSource={withdraw}
+          onChange={onChange}
+          size="small"
+          pagination={{
+            current: page,
+            pageSize: pageSize,
+            onChange: (page, pageSize) => {
+              setPage(page)
+              setPageSize(pageSize)
+            }
+          }}
+          summary={(pageData) => {
+            let totalCredit = 0;
+
+            pageData.forEach(({ credit }) => {
+              totalCredit += parseInt(credit);
+
+
             });
-            let dataWithdraw = res.data.listWithdraw
-            let dataDeposit = res.data.listDeposit
+            return (
+              <>
+                <Table.Summary.Row>
+                  <Table.Summary.Cell> <Typography >ผลรวม</Typography></Table.Summary.Cell>
+                  <Table.Summary.Cell />
+                  <Table.Summary.Cell />
+                  <Table.Summary.Cell ><Typography align="center" sx={{color: '#129A50',fontWeight:'bold'}}>{Intl.NumberFormat("TH").format(parseInt(parseInt(totalCredit)))}</Typography></Table.Summary.Cell>
+                  <Table.Summary.Cell ></Table.Summary.Cell>
+                  <Table.Summary.Cell />
+                  <Table.Summary.Cell />
+                  <Table.Summary.Cell />
+                  <Table.Summary.Cell />
 
-            setReport(res.data)
+                </Table.Summary.Row>
+              </>
+            );
+          }}
+        />
 
-            // sumData(res.data, res.data.sumCredit)
+        <Snackbar
+          open={open}
+          autoHideDuration={3000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        >
+          <Alert severity="success" sx={{ width: "100%" }}>
+            Copy success !
+          </Alert>
+        </Snackbar>
 
-            setLoading(false);
-        } catch (error) {
-            console.log(error);
-            if (
-                error.response.data.error.status_code === 401 &&
-                error.response.data.error.message === "Unauthorized"
-            ) {
-                dispatch(signOut());
-                localStorage.clear();
-                router.push("/auth/login");
-            }
-            if (
-                error.response.status === 401 &&
-                error.response.data.error.message === "Invalid Token"
-            ) {
-                dispatch(signOut());
-                localStorage.clear();
-                router.push("/auth/login");
-            }
-        }
-    };
-    console.log('report', report)
-
-    const sumData = (transaction, sumCredit) => {
-        let dataSuccess = transaction.filter((item) => item.status_transction === 'SUCCESS')
-        let dataCancel = transaction.filter((item) => item.status_transction === 'CANCEL')
-        let sumSuccess = []
-        let sumCancel = []
-        let sumPrice = 0
-        let price = []
-
-        for (const item of dataSuccess) {
-            sumSuccess.push(parseInt(item.credit))
-        }
-
-        let success = sumSuccess.reduce((a, b) => a + b, 0)
-
-        for (const item of dataCancel) {
-            sumCancel.push(parseInt(item.credit))
-        }
-
-        let cancel = sumCancel.reduce((a, b) => a + b, 0)
-
-        for (const item of transaction) {
-            price.push(item.amount)
-        }
-        sumPrice = price.reduce((a, b) => a + b, 0)
-
-        setTotal({
-            totalList: transaction.length,
-            sumPrice: Intl.NumberFormat("TH").format(parseInt(parseInt(sumPrice))),
-            sumCredit: Intl.NumberFormat("TH").format(parseInt(parseInt(sumCredit))),
-            totalSuccess: dataSuccess.length,
-            totalCancel: dataCancel.length,
-            sumSuccess: Intl.NumberFormat("TH").format(parseInt(success)),
-            sumCancel: Intl.NumberFormat("TH").format(parseInt(cancel)),
-            sumTotal: Intl.NumberFormat("TH").format(parseInt(cancel + success))
-        })
-    }
-
-    const filterData = (type) => {
-        if (type === "deposit") {
-            setFilterWithdraw([])
-            setFilterDeposit(report.listDeposit)
-        }
-        if (type === "withdraw") {
-            setFilterDeposit([])
-            setFilterWithdraw(report.listWithdraw)
-        }
-    }
-
-    const columns = [
-        {
-            field: "no",
-            title: "ลำดับ",
-            maxWidth: 80,
-            align: "center",
-        },
-        {
-            field: "transfer_type",
-            title: "รายการ",
-            align: "center",
-            minWidth: "120px",
-        },
-        {
-            field: "username",
-            title: "Username",
-            align: "center",
-        },
-
-
-        {
-            field: "credit",
-            title: "เครดิตที่ทำรายการ",
-            align: "center",
-            render: (item) => (
-                <Typography
-                    style={{
-                        fontSize: '14px'
-                    }}
-                >{Intl.NumberFormat("TH").format(parseInt(item.credit))}</Typography>
-            ),
-        },
-        {
-            field: "credit_before",
-            title: "เครดิตก่อนเติม",
-            align: "center",
-            render: (item) => (
-                <Typography
-                    style={{
-                        fontSize: '14px'
-                    }}
-                >{Intl.NumberFormat("TH").format(parseInt(item.credit_before))}</Typography>
-            ),
-        },
-
-        {
-            field: "credit_after",
-            title: "เครดิตหลังเติม",
-            align: "center",
-            render: (item) => (
-                <Typography
-                    style={{
-                        fontSize: '14px'
-                    }}
-                >{Intl.NumberFormat("TH").format(parseInt(item.credit_after))}</Typography>
-            ),
-        },
-        {
-            field: "create_at",
-            title: "วันที่",
-            align: "center",
-        },
-        {
-            field: "transfer_by",
-            title: "ทำรายการโดย",
-            align: "center",
-        },
-        {
-            field: "content",
-            title: "หมายเหตุ",
-            align: "center",
-        }
-
-    ]
-
-    useEffect(() => {
-        getRerort()
-    }, [])
-
-
-    return (
-        <Layout>
-            <Paper sx={{ p: 3, }}>
-                <Grid container>
-                    <Typography
-                        sx={{
-                            fontSize: "24px",
-                            textDecoration: "underline #41A3E3 3px",
-                            mb: 2,
-                        }}
-                    >
-                        รายงานการเติมเครดิตโดยแอดมิน
-                    </Typography>
-
-                    <Grid xs={12} sx={{ mb: 3 }}>
-                        <TextField
-                            label="เริ่ม"
-                            style={{
-                                marginRight: "8px",
-                                backgroundColor: "white",
-                                borderRadius: 4,
-                            }}
-                            variant="outlined"
-                            size="small"
-                            type="datetime-local"
-                            name="start"
-                            value={selectedDateRange.start}
-                            onChange={(e) => {
-                                setSelectedDateRange({
-                                    ...selectedDateRange,
-                                    [e.target.name]: e.target.value,
-                                });
-                            }}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                        />
-                        <TextField
-                            label="สิ้นสุด"
-                            style={{
-                                marginRight: "8px",
-                                color: "white",
-                                backgroundColor: "white",
-                                borderRadius: 4,
-                            }}
-                            variant="outlined"
-                            size="small"
-                            type="datetime-local"
-                            name="end"
-                            value={selectedDateRange.end}
-                            onChange={(e) => {
-                                setSelectedDateRange({
-                                    ...selectedDateRange,
-                                    [e.target.name]: e.target.value,
-                                });
-                            }}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            required
-                        />
-                        <TextField
-                            name="username"
-                            type="text"
-                            value={username || ""}
-                            label="ค้นหาโดยใช้ Username"
-                            placeholder="ค้นหาโดยใช้ Username"
-                            onChange={(e) => setUsername(e.target.value)}
-                            variant="outlined"
-                            size="small"
-                            sx={{ mr: 2 }}
-                        />
-                        <Button
-                            variant="contained"
-                            style={{ marginRight: "8px" }}
-                            color="primary"
-                            size="large"
-                            onClick={() => {
-                                getRerort();
-                            }}
-                        >
-                            <Typography sx={{ color: '#ffff' }}>ค้นหา</Typography>
-                        </Button>
-                        <Button
-                            variant="contained"
-                            style={{
-                                marginRight: "8px",
-                                backgroundColor: "#FFB946",
-                            }}
-                            size="large"
-                            onClick={async () => {
-                                let start = moment()
-                                    .subtract(1, "days")
-                                    .format("YYYY-MM-DD 00:00");
-                                let end = moment()
-                                    .subtract(1, "days")
-                                    .format("YYYY-MM-DD 23:59");
-                                getAllError("yesterday", start, end);
-                            }}
-                        >
-                            <Typography sx={{ color: '#ffff' }}>เมื่อวาน</Typography>
-                        </Button>
-                        <Button
-                            variant="contained"
-                            style={{
-                                marginRight: "8px",
-                                backgroundColor: "#129A50",
-                            }}
-                            size="large"
-                            onClick={async () => {
-                                let start = moment().format("YYYY-MM-DD 00:00");
-                                let end = moment().format("YYYY-MM-DD 23:59");
-                                getAllError("today", start, end);
-                            }}
-                        >
-                            <Typography sx={{ color: '#ffff' }}>วันนี้</Typography>
-                        </Button>
-                    </Grid>
-                </Grid>
-
-                <Grid
-                    container
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="flex-start"
-                    sx={{ mt: 2, mb: 3 }}
-                >
-
-                    <Card sx={{ width: 250, bgcolor: '#0072B1', }}>
-                        <CardContent>
-                            <Typography variant="h6" sx={{ color: "#eee" }}>จำนวนรายการ</Typography>
-                            <Typography variant="h5" sx={{ textAlign: "center", color: "#ffff", mt: 2 }}>
-                                {Intl.NumberFormat("TH").format(parseInt(total.totalList))}
-                            </Typography>
-                            <Grid sx={{ textAlign: 'right' }}>
-                                <Button
-                                    sx={{ color: "#eee" }}>
-                                    <Typography>เครดิต</Typography>
-                                </Button>
-                            </Grid>
-                        </CardContent>
-                    </Card>
-
-                    <Card sx={{ width: 250, bgcolor: "#101D35" }}>
-                        <CardContent>
-                            <Typography variant="h6" sx={{ color: "#eee" }}>การเติมเครดิต</Typography>
-                            <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>
-                                {Intl.NumberFormat("TH").format(parseInt(total.totalSuccess))}</Typography>
-                            <Grid sx={{ textAlign: 'right' }}>
-                                <Button
-                                    sx={{ color: "#eee" }}
-                                    onClick={() => filterData('deposit')}>
-                                    <Typography sx={{ textDecoration: "underline" }}>ดูเพิ่มเติม..</Typography>
-
-                                </Button>
-                            </Grid>
-                        </CardContent>
-                    </Card>
-
-                    <Card sx={{ width: 250, bgcolor: "#101D35" }}>
-                        <CardContent>
-                            <Typography variant="h6" sx={{ color: "#eee" }}>การตัดเครดิต</Typography>
-                            <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>
-                                {Intl.NumberFormat("TH").format(parseInt(total.totalCancel))} </Typography>
-                            <Grid sx={{ textAlign: 'right' }}>
-                                <Button
-                                    sx={{ color: "#eee" }}
-                                    onClick={() => filterData('withadraw')}>
-                                    <Typography sx={{ textDecoration: "underline" }}>ดูเพิ่มเติม..</Typography>
-                                </Button>
-                            </Grid>
-                        </CardContent>
-                    </Card>
-
-                    <Card sx={{ width: 250, bgcolor: "#101D35" }}>
-                        <CardContent>
-                            <Typography variant="h6" sx={{ color: "#eee" }}>ยอดรวมเงินทั้งหมด</Typography>
-                            <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>
-                                {Intl.NumberFormat("TH").format(parseInt(total.sumTotal))}  </Typography>
-                            <Grid sx={{ textAlign: 'right' }}>
-                                <Button
-                                    sx={{ color: "#eee" }}>
-                                    <Typography>เครดิต</Typography>
-                                </Button>
-                            </Grid>
-                        </CardContent>
-                    </Card>
-
-                    <Card sx={{ width: 250, bgcolor: "#101D35" }}>
-                        <CardContent>
-                            <Typography variant="h6" sx={{ color: "#eee" }}>ยอดรวมเงินสำเร็จ</Typography>
-                            <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>
-                                {Intl.NumberFormat("TH").format(parseInt(total.sumSuccess))}  </Typography>
-                            <Grid sx={{ textAlign: 'right' }}>
-                                <Button
-                                    sx={{ color: "#eee" }}>
-                                    <Typography>เครดิต</Typography>
-                                </Button>
-                            </Grid>
-                        </CardContent>
-                    </Card>
-
-                    <Card sx={{ width: 250, bgcolor: "#101D35" }}>
-                        <CardContent>
-                            <Typography variant="h6" sx={{ color: "#eee" }}>ยอดรวมเงินยกเลิก</Typography>
-                            <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>
-                                {Intl.NumberFormat("TH").format(parseInt(total.sumCancel))}   </Typography>
-                            <Grid sx={{ textAlign: 'right' }}>
-                                <Button
-                                    sx={{ color: "#eee" }}>
-                                    <Typography>เครดิต</Typography>
-                                </Button>
-                            </Grid>
-                        </CardContent>
-                    </Card>
-                </Grid>
-
-                <MaterialTableForm
-                    // title="รายการฝาก"
-                    pageSize={10}
-                    data={filterDeposit.length > 0 ? filterDeposit : filterWithdraw.length > 0 ? filterWithdraw : report}
-
-                    columns={columns}
-                />
-
-
-            </Paper>
-        </Layout>
-    )
+      </Paper>
+      <LoadingModal open={loading} />
+    </Layout>
+  )
 }
 
-export default reportAddCredit
+export default withAuth(reportAddCredit)
