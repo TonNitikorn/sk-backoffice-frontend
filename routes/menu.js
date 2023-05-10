@@ -24,11 +24,11 @@ export const menuSuperAdmin = [
     link: "/home",
     icon: <HomeIcon />,
   },
-  // {
-  //   name: "จัดการเครดิต",
-  //   link: "/editError",
-  //   icon: <EditLocationAltIcon />,
-  // },
+  {
+    name: "จัดการเครดิต/ข้อมูลลูกค้า",
+    link: "/member/memberTable",
+    icon: <EditLocationAltIcon />,
+  },
   {
     name: "สร้างรายการถอน",
     link: "/withdraw",
@@ -39,32 +39,6 @@ export const menuSuperAdmin = [
     link: "/withdrawPending",
     icon: <FormatListBulletedIcon />,
   },
-  {
-    name: "ลูกค้า",
-    // link: "/DepositWithdrawalSystem/CreditManual",
-    icon: <GroupsIcon />,
-    type: 'collapse',
-    id: 'member',
-    member: [
-      {
-        name: "สมัครสมาชิกลูกค้า",
-        link: "/member/addMember",
-        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
-      },
-      {
-        name: "ตรวจสอบข้อมูลลูกค้า",
-        link: "/member/memberInfo",
-        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
-      },
-      {
-        name: "รายชื่อลูกค้า",
-        link: "/member/memberTable",
-        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
-      },
-    ],
-  },
-
-  
   {
     name: "บัญชีธนาคาร",
     // link: "/bankAccount",
@@ -88,6 +62,30 @@ export const menuSuperAdmin = [
         icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
       },
     ]
+  },
+  {
+    name: "ลูกค้า",
+    // link: "/DepositWithdrawalSystem/CreditManual",
+    icon: <GroupsIcon />,
+    type: 'collapse',
+    id: 'member',
+    member: [
+      {
+        name: "สมัครสมาชิกลูกค้า",
+        link: "/member/addMember",
+        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
+      },
+      {
+        name: "ตรวจสอบข้อมูลลูกค้า",
+        link: "/member/memberInfo",
+        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
+      },
+      // {
+      //   name: "รายชื่อลูกค้า",
+      //   link: "/member/memberTable",
+      //   icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
+      // },
+    ],
   },
   // {
   //   name: "โปรโมชัน",
@@ -123,50 +121,7 @@ export const menuSuperAdmin = [
   //   link: "rank/ranking",
   //   icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
   // },
-  {
-    name: "รายงาน",
-    // link: "/DepositWithdrawalSystem/CreditManual",
-    icon: <FormatListBulletedIcon />,
-    type: 'collapse',
-    id: 'report',
-    report: [
-      {
-        name: "รายงานการฝาก",
-        link: "/report/reportDeposit",
-        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
-      },
-      {
-        name: "รายงานการถอน",
-        link: "/report/reportWithdraw",
-        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
-      },
-      // {
-      //   name: "รายงานการฝากทศนิยม",
-      //   link: "/report/reportDepositDecimal",
-      //   icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
-      // },
-      // {
-      //   name: "รายงานการสร้างรายการฝาก",
-      //   link: "/report/reportMakeDeposit",
-      //   icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
-      // },
-      {
-        name: "รายงานการเติมเครดิต(Admin)",
-        link: "/report/reportError",
-        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
-      },
-      {
-        name: "รายงานการตัดเครดิต",
-        link: "/report/reportCutCredit",
-        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
-      },
-      {
-        name: "รายงานการเติมเครดิต",
-        link: "/report/reportAddCredit",
-        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
-      },
-    ],
-  },
+  
 
   // {
   //   name: "สรุป",
@@ -221,6 +176,50 @@ export const menuSuperAdmin = [
     name: "จัดการหน้าเว็บ",
     link: "/manageWebPages",
     icon: <LibraryBooksIcon />,
+  },
+  {
+    name: "รายงาน",
+    // link: "/DepositWithdrawalSystem/CreditManual",
+    icon: <FormatListBulletedIcon />,
+    type: 'collapse',
+    id: 'report',
+    report: [
+      {
+        name: "รายงานการฝาก",
+        link: "/report/reportDeposit",
+        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
+      },
+      {
+        name: "รายงานการถอน",
+        link: "/report/reportWithdraw",
+        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
+      },
+      // {
+      //   name: "รายงานการฝากทศนิยม",
+      //   link: "/report/reportDepositDecimal",
+      //   icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
+      // },
+      // {
+      //   name: "รายงานการสร้างรายการฝาก",
+      //   link: "/report/reportMakeDeposit",
+      //   icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
+      // },
+      {
+        name: "รายงานการเติมเครดิต(Admin)",
+        link: "/report/reportError",
+        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
+      },
+      {
+        name: "รายงานการตัดเครดิต",
+        link: "/report/reportCutCredit",
+        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
+      },
+      {
+        name: "รายงานการเติมเครดิต",
+        link: "/report/reportAddCredit",
+        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
+      },
+    ],
   },
   // {
   //   name: "คู่มือการใช้งาน",

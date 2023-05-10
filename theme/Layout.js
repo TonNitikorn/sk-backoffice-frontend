@@ -108,8 +108,8 @@ function Layout({ children, page }) {
           },
           "& .MuiListItemButton-root": {
             "&:hover": {
-              backgroundColor: "#41A3E3",
-              borderRadius: "6px",
+              backgroundColor: "#AED6F1",
+              // borderRadius: "6px",
             },
           },
         }}
@@ -151,8 +151,8 @@ function Layout({ children, page }) {
                         <ListItemButton
                           sx={{
                             pl: 4,
-                            borderRadius: "6px",
-                            backgroundColor: typeof window !== "undefined" ? window.location.pathname === `${e.link}` ? "#41A3E3" : '#eee' : ''
+                            // borderRadius: "6px",
+                            backgroundColor: typeof window !== "undefined" ? window.location.pathname === `${e.link}` ? "#AED6F1" : '#eee' : ''
                           }} onClick={() => {
                             router.push(e.link)
                           }}>
@@ -170,8 +170,8 @@ function Layout({ children, page }) {
                       <List component="div" disablePadding>
                         <ListItemButton sx={{
                           pl: 4,
-                          borderRadius: "6px",
-                          backgroundColor: typeof window !== "undefined" ? window.location.pathname === `${e.link}` ? "#41A3E3" : '#eee' : ''
+                          // borderRadius: "6px",
+                          backgroundColor: typeof window !== "undefined" ? window.location.pathname === `${e.link}` ? "#AED6F1" : '#eee' : ''
                         }} onClick={() => {
                           router.push(e.link)
                         }}>
@@ -189,8 +189,8 @@ function Layout({ children, page }) {
                       <List component="div" disablePadding>
                         <ListItemButton sx={{
                           pl: 4,
-                          borderRadius: "6px",
-                          backgroundColor: typeof window !== "undefined" ? window.location.pathname === `${e.link}` ? "#41A3E3" : '#eee' : ''
+                          // borderRadius: "6px",
+                          backgroundColor: typeof window !== "undefined" ? window.location.pathname === `${e.link}` ? "#AED6F1" : '#eee' : ''
                         }} onClick={() => {
                           router.push(e.link)
                         }}>
@@ -208,8 +208,8 @@ function Layout({ children, page }) {
                       <List component="div" disablePadding>
                         <ListItemButton sx={{
                           pl: 4,
-                          borderRadius: "6px",
-                          backgroundColor: typeof window !== "undefined" ? window.location.pathname === `${e.link}` ? "#41A3E3" : '#eee' : ''
+                          // borderRadius: "6px",
+                          backgroundColor: typeof window !== "undefined" ? window.location.pathname === `${e.link}` ? "#AED6F1" : '#eee' : ''
                         }} onClick={() => {
                           router.push(e.link)
                         }}>
@@ -227,8 +227,8 @@ function Layout({ children, page }) {
                 <ListItem key={item} disablePadding>
                   <ListItemButton onClick={() => router.push(item.link)}
                     sx={{
-                      borderRadius: "6px",
-                      backgroundColor: typeof window !== "undefined" ? window.location.pathname === `${item.link}` ? "#41A3E3" : '#eee' : ''
+                      // borderRadius: "6px",
+                      backgroundColor: typeof window !== "undefined" ? window.location.pathname === `${item.link}` ? "#AED6F1" : '#eee' : ''
                     }}
                   >
                     <ListItemIcon >
@@ -250,7 +250,7 @@ function Layout({ children, page }) {
             <ListItemButton onClick={() => router.push('/profile')}
               sx={{
                 borderRadius: "6px",
-                backgroundColor: typeof window !== "undefined" ? window.location.pathname === '/profile' ? "#41A3E3" : '#eee' : ''
+                backgroundColor: typeof window !== "undefined" ? window.location.pathname === '/profile' ? "#AED6F1" : '#eee' : ''
               }}>
               <ListItemIcon>
                 <PersonIcon />

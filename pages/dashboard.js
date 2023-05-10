@@ -148,6 +148,7 @@ function dashboard() {
          });
          let resDataDeposit = res.data.DepositTransaction;
          let resDataWithdraw = res.data.WithdrawTransaction;
+         let resDataMember = res.data.newMember
          
 
          let sumCreditDeposit = []
@@ -169,8 +170,8 @@ function dashboard() {
             sumCreditWithdraw: total_credit_withdarw,
             lengthDeposit: resDataDeposit.Deposit_length,
             lengthWithdraw: resDataWithdraw.Withdraw_length,
-            listMemberRegister: 0,
-            listMemberDeposit : 0
+            listMemberRegister: resDataMember.newMember_length,
+            listMemberDeposit : resDataMember.sumDeposit
          })
          setLoading(false);
       } catch (error) {
@@ -230,7 +231,7 @@ function dashboard() {
       }
    };
 
-   const getMemberList = async (type, start, end) => {
+   const getMemberList = async () => {
       setLoading(true);
       try {
          let res = await axios({
@@ -1024,6 +1025,8 @@ function dashboard() {
 
    ];
 
+   console.log('result', result)
+
    const onChange = (pagination, filters, sorter, extra) => {
       console.log('params', pagination, filters, sorter, extra);
    };
@@ -1239,7 +1242,7 @@ function dashboard() {
                         <Grid item xs={3}></Grid>
                         <Grid item xs={5}>
                            <Typography variant="h5" sx={{ textAlign: "center", color: "#eee", mt: 2 }} >
-                              {Intl.NumberFormat("TH").format(parseInt(result?.listMemberDeposit))}
+                              {result?.listMemberDeposit === null ? 0 : Intl.NumberFormat("TH").format(parseInt(result?.listMemberDeposit)) }
                            </Typography>
                         </Grid>
                         <Grid item xs={4}>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useRef } from "react";
 import Layout from "../../theme/Layout";
 import {
   Grid,
@@ -32,7 +32,8 @@ import moment from "moment/moment";
 import { signOut } from "../../store/slices/userSlice";
 import { useRouter } from "next/router";
 import { useAppDispatch } from "../../store/store";
-
+import { Table, Input, Space, } from 'antd';
+import SearchIcon from '@mui/icons-material/Search';
 
 // const useStyles = makeStyles({
 //   copy: {
@@ -62,6 +63,8 @@ function bankWithdraw() {
   const [openDialogAdd, setOpenDialogAdd] = useState(false);
   const [openDialogAddSCB, setOpenDialogAddSCB] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(10)
   const [selectedDateRange, setSelectedDateRange] = useState({
     birthdate: moment().format("YYYY-MM-DD"),
   });
@@ -251,215 +254,317 @@ function bankWithdraw() {
     }
   };
 
-  const columns = [
-    {
-      title: "ลำดับที่",
-      field: "no",
-      align: "center",
-    },
-    {
-      field: "bank_name",
-      title: "ธนาคาร",
-      align: "center",
-      minWidth: "220px",
-      render: (item) => (
-        <Grid container>
+    ////////////////////// search table /////////////////////
+    const searchInput = useRef(null);
+    const handleSearch = (selectedKeys, confirm, dataIndex) => {
+      confirm();
+    };
+  
+    const handleReset = (clearFilters) => {
+      clearFilters();
+    };
+  
+    const getColumnSearchProps = (dataIndex) => ({
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+        <div
+          style={{
+            padding: 8,
+          }}
+          onKeyDown={(e) => e.stopPropagation()}
+        >
+          <Input
+            ref={searchInput}
+            placeholder={`Search ${dataIndex}`}
+            value={selectedKeys[0]}
+            onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+            onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            style={{
+              marginBottom: 8,
+              display: 'block',
+            }}
+          />
+          <Space>
+            <Button
+              onClick={() => clearFilters && handleReset(clearFilters)}
+              size="small"
+              style={{
+                width: 90,
+              }}
+            >
+              Reset
+            </Button>
+            <Button
+              type="primary"
+              onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+              size="small"
+              style={{
+                width: 90,
+              }}
+            >
+              <SearchIcon />
+              Search
+            </Button>
+            {/* <Button
+                  type="link"
+                  size="small"
+                  onClick={() => {
+                    confirm({
+                      closeDropdown: false,
+                    });
+                    setSearchText(selectedKeys[0]);
+                    setSearchedColumn(dataIndex);
+                  }}
+                >
+                  Filter
+                </Button> */}
+            {/* <Button
+                  type="link"
+                  size="small"
+                  onClick={() => {
+                    close();
+                  }}
+                >
+                  close
+                </Button> */}
+          </Space>
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchIcon
+          style={{
+            color: filtered ? '#1890ff' : undefined,
+          }}
+        />
+      ),
+      onFilter: (value, record) =>
+        record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+      onFilterDropdownOpenChange: (visible) => {
+        if (visible) {
+          setTimeout(() => searchInput.current?.select(), 100);
+        }
+      },
+    });
+  
+    const onChange = (pagination, filters, sorter, extra) => {
+      console.log('params', pagination, filters, sorter, extra);
+    };
+  
+    ////////////////////// search table /////////////////////
+  
+  
+    const columns = [
+      {
+        title: 'ลำดับ',
+        dataIndex: 'no',
+        align: 'center',
+        sorter: (record1, record2) => record1.no - record2.no,
+        render: (item, data) => (
+          <Typography sx={{ fontSize: '14px', textAlign: 'center' }} >{item}</Typography>
+        )
+      },
+  
+      {
+        title: 'ธนาคาร',
+        dataIndex: 'bank_name',
+        width: '200px',
+        ...getColumnSearchProps('bank_number'),
+        render: (item, data) => <Grid container>
           <Grid item xs={3} sx={{ mt: 1 }}>
-            {item.bank_name === "kbnk" ? (
+            {item === "kbnk" ? (
               <Image
                 src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/kbnk.png"
+                  "https://angpaos.games/wp-content/uploads/2023/03/kbnk.png"
+                }
+                alt="kbnk"
+                width={50}
+                height={50}
+              />
+            ) : item === "truemoney" ? (
+              <Image
+                src={
+                  "https://angpaos.games/wp-content/uploads/2023/03/truemoney.png"
+                }
+                alt="truemoney"
+                width={50}
+                height={50}
+              />
+            ) : item === "ktba" ? (
+              <Image
+                src={
+                  "https://angpaos.games/wp-content/uploads/2023/03/ktba.png"
+                }
+                alt="ktba"
+                width={50}
+                height={50}
+              />
+            ) : item === "scb" ? (
+              <Image
+                src={
+                  "https://angpaos.games/wp-content/uploads/2023/03/scb.png"
                 }
                 alt="scb"
                 width={50}
                 height={50}
               />
-            ) : item.bank_name === "truemoney" ? (
+            ) : item === "bay" ? (
               <Image
                 src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/truemoney.png"
+                  "https://angpaos.games/wp-content/uploads/2023/03/bay.png"
                 }
-                alt="scb"
+                alt="bay"
                 width={50}
                 height={50}
               />
-            ) : item.bank_name === "ktba" ? (
+            ) : item === "bbla" ? (
               <Image
                 src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/ktba.png"
+                  "https://angpaos.games/wp-content/uploads/2023/03/bbl.png"
                 }
-                alt="scb"
+                alt="bbla"
                 width={50}
                 height={50}
               />
-            ) : item.bank_name === "scb" ? (
+            ) : item === "gsb" ? (
               <Image
                 src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/scb.png"
+                  "https://angpaos.games/wp-content/uploads/2023/03/gsb.png"
                 }
-                alt="scb"
+                alt="gsb"
                 width={50}
                 height={50}
               />
-            ) : item.bank_name === "bay" ? (
+            ) : item === "ttb" ? (
               <Image
                 src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/bay.png"
+                  "https://angpaos.games/wp-content/uploads/2023/03/ttb.png"
                 }
-                alt="scb"
+                alt="ttb"
                 width={50}
                 height={50}
               />
-            ) : item.bank_name === "bbla" ? (
+            ) : item === "bbac" ? (
               <Image
                 src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/bbl.png"
+                  "https://angpaos.games/wp-content/uploads/2023/03/baac.png"
                 }
-                alt="scb"
+                alt="bbac"
                 width={50}
                 height={50}
               />
-            ) : item.bank_name === "gsb" ? (
+            ) : item === "icbc" ? (
               <Image
                 src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/gsb.png"
+                  "https://angpaos.games/wp-content/uploads/2023/03/icbc.png"
                 }
-                alt="scb"
+                alt="icbc"
                 width={50}
                 height={50}
               />
-            ) : item.bank_name === "ttb" ? (
+            ) : item === "tcd" ? (
               <Image
                 src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/ttb.png"
+                  "https://angpaos.games/wp-content/uploads/2023/03/tcd.png"
                 }
-                alt="scb"
+                alt="tcd"
                 width={50}
                 height={50}
               />
-            ) : item.bank_name === "BAAC" ? (
+            ) : item === "citi" ? (
               <Image
                 src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/baac.png"
+                  "https://angpaos.games/wp-content/uploads/2023/03/citi.png"
                 }
-                alt="scb"
+                alt="citi"
                 width={50}
                 height={50}
               />
-            ) : item.bank_name === "ICBC" ? (
+            ) : item === "scbt" ? (
               <Image
                 src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/icbc.png"
+                  "https://angpaos.games/wp-content/uploads/2023/03/scbt.png"
                 }
-                alt="scb"
+                alt="scbt"
                 width={50}
                 height={50}
               />
-            ) : item.bank_name === "TCD" ? (
+            ) : item === "cimb" ? (
               <Image
                 src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/tcd.png"
+                  "https://angpaos.games/wp-content/uploads/2023/03/cimb.png"
                 }
-                alt="scb"
+                alt="cimb"
                 width={50}
                 height={50}
               />
-            ) : item.bank_name === "CITI" ? (
+            ) : item === "uob" ? (
               <Image
                 src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/citi.png"
+                  "https://angpaos.games/wp-content/uploads/2023/03/uob.png"
                 }
-                alt="scb"
+                alt="uob"
                 width={50}
                 height={50}
               />
-            ) : item.bank_name === "SCBT" ? (
+            ) : item === "hsbc" ? (
               <Image
                 src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/scbt.png"
+                  "https://angpaos.games/wp-content/uploads/2023/03/hsbc.png"
                 }
-                alt="scb"
+                alt="hsbc"
                 width={50}
                 height={50}
               />
-            ) : item.bank_name === "CIMB" ? (
+            ) : item === "mizuho" ? (
               <Image
                 src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/cimb.png"
+                  "https://angpaos.games/wp-content/uploads/2023/03/mizuho.png"
                 }
-                alt="scb"
+                alt="mizuho"
                 width={50}
                 height={50}
               />
-            ) : item.bank_name === "UOB" ? (
+            ) : item === "ghb" ? (
               <Image
                 src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/uob.png"
+                  "https://angpaos.games/wp-content/uploads/2023/03/ghb.png"
                 }
-                alt="scb"
+                alt="ghb"
                 width={50}
                 height={50}
               />
-            ) : item.bank_name === "HSBC" ? (
+            ) : item === "lhbank" ? (
               <Image
                 src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/hsbc.png"
+                  "https://angpaos.games/wp-content/uploads/2023/03/lhbank.png"
                 }
-                alt="scb"
+                alt="lhbank"
                 width={50}
                 height={50}
               />
-            ) : item.bank_name === "MIZUHO" ? (
+            ) : item === "tisco" ? (
               <Image
                 src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/mizuho.png"
+                  "https://angpaos.games/wp-content/uploads/2023/03/tisco.png"
                 }
-                alt="scb"
+                alt="tisco"
                 width={50}
                 height={50}
               />
-            ) : item.bank_name === "GHB" ? (
+            ) : item === "kkba" ? (
               <Image
                 src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/ghb.png"
+                  "https://angpaos.games/wp-content/uploads/2023/03/kkba.png"
                 }
-                alt="scb"
+                alt="kkba"
                 width={50}
                 height={50}
               />
-            ) : item.bank_name === "LHBANK" ? (
+            ) : item === "ibank" ? (
               <Image
                 src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/lhbank.png"
+                  "https://angpaos.games/wp-content/uploads/2023/03/ibank.png"
                 }
-                alt="scb"
-                width={50}
-                height={50}
-              />
-            ) : item.bank_name === "TISCO" ? (
-              <Image
-                src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/tisco.png"
-                }
-                alt="scb"
-                width={50}
-                height={50}
-              />
-            ) : item.bank_name === "kkba" ? (
-              <Image
-                src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/kkba.png"
-                }
-                alt="scb"
-                width={50}
-                height={50}
-              />
-            ) : item.bank_name === "IBANK" ? (
-              <Image
-                src={
-                  "https://the1pg.com/wp-content/uploads/2022/10/ibank.png"
-                }
-                alt="scb"
+                alt="ibank"
                 width={50}
                 height={50}
               />
@@ -468,9 +573,17 @@ function bankWithdraw() {
             )}
           </Grid>
           <Grid item xs={9}>
-            <Grid sx={{ ml: 2, mt: 1 }}>
-              <CopyToClipboard text={item.bank_number}>
-                <div >
+            <Grid sx={{ ml: 3, mt: 1 }}>
+              <CopyToClipboard text={data.bank_number}>
+                <div style={{
+                  "& .MuiButton-text": {
+                    "&:hover": {
+                      // backgroundColor: "#9CE1BC",
+                      // color: "blue",
+                      textDecoration: "underline blue 1px",
+                    }
+                  }
+                }} >
                   <Button
                     sx={{
                       fontSize: "14px",
@@ -479,155 +592,181 @@ function bankWithdraw() {
                     }}
                     onClick={handleClickSnackbar}
                   >
-                    {item.bank_number}
+                    {data.bank_number}
                   </Button>
                 </div>
               </CopyToClipboard>
             </Grid>
-            <Grid>
+            <Grid sx={{ ml: 3, }}>
               <Typography sx={{ fontSize: "14px" }}>
-                {item.bank_account_name}
+                {data.name}
               </Typography>
             </Grid>
           </Grid>
-        </Grid>
-      ),
-    },
-    {
-      title: "เบอร์โทร",
-      align: "center",
-      field: "tel",
-    },
-    {
-      title: "วัน/เดือน/ปี เกิด",
-      align: "center",
-      field: "birthdate",
-    },
-    {
-      title: "สถานะ",
-      align: "center",
-      render: (item) => (
-        <Chip
-          label={item.status === "ACTIVE" ? "เปิดใช้งาน" : "ปิดใช้งาน"}
-          // size="small"
-          style={{
-            padding: 10,
-            backgroundColor: item.status === "ACTIVE" ? "#129A50" : "#FFB946",
-            color: "#fff",
-            minWidth: "120px"
-          }}
-        />
-      ),
-    },
-    {
-      title: "ประเภท",
-      align: "center",
-      render: (item) => (
-        <Chip
-          label={item.type === "DEPOSIT" ? "สำหรับฝาก" : "สำหรับถอน"}
-          // size="small"
-          style={{
-            padding: 10,
-            backgroundColor: item.status === "DEPOSIT" ? "#129A50" : "#FFB946",
-            color: "#fff",
-            minWidth: "120px"
-          }}
-        />
-      ),
-    },
-    {
-      title: "แก้ไข",
-      align: "center",
-      render: (item) => {
-        return (
-          <>
-            <IconButton
-              onClick={async () => {
-                setRowData(item);
-                setOpenDialogAdd({
-                  open: true,
-                  type: "edit",
-                });
-              }}
-            >
-              <EditIcon />
-            </IconButton>
-          </>
-        );
+        </Grid >,
       },
-    },
-    {
-      title: "ลบ", field: "availability", align: "center",
-      render: (item) => {
-        return (
-          <>
-            <IconButton
-              onClick={async () => {
-                Swal.fire({
-                  title: "ยืนยันการลบข้อมูล",
-                  icon: "info",
-                  showCancelButton: true,
-                  cancelButtonColor: "#EB001B",
-                  confirmButtonColor: "#129A50",
-                  cancelButtonText: "ยกเลิก",
-                  confirmButtonText: "ยืนยัน",
-                }).then(async (result) => {
-                  if (result.isConfirmed) {
-                    try {
-                      let res = await axios({
-                        headers: {
-                          Authorization:
-                            "Bearer " +
-                            localStorage.getItem("access_token"),
-                        },
-                        method: "Post",
-                        url: `${hostname}/bank/delete_bank`,
-                        data: {
-                          uuid: item.uuid
-                        }
-                      });
-                      if (
-                        res.data.message === "ลบบัญชีธนาคารสำเร็จ"
-                      ) {
-                        Swal.fire({
-                          position: "center",
-                          icon: "success",
-                          title: "ลบบัญชีธนาคารสำเร็จ",
-                          showConfirmButton: false,
-                          timer: 2000,
+      {
+        dataIndex: "tel",
+        title: "โทรศัพท์",
+        align: "center",
+        ...getColumnSearchProps('tel'),
+        render: (item) => (
+          <Typography
+            style={{
+              fontSize: '14px'
+            }}
+          >{item}</Typography>
+        ),
+      },
+      {
+        dataIndex: "birthdate",
+        title: "วัน/เดือน/ปีเกิด",
+        align: "center",
+        render: (item) => (
+          <Typography
+            style={{
+              fontSize: '14px'
+            }}
+          >{item}</Typography>
+        ),
+      },
+  
+      {
+        dataIndex: 'status',
+        title: "สถานะ",
+        align: "center",
+        render: (item) => (
+          <Chip
+            label={item === "ACTIVE" ? "เปิดใช้งาน" : "ปิดใช้งาน"}
+            size="small"
+            style={{
+              // padding: 5,
+              backgroundColor: item === "ACTIVE" ? "#129A50" : "#FFB946",
+              color: "#fff",
+              minWidth: "120px"
+            }}
+          />
+        ),
+        filters: [
+          { text: 'ถอน', value: 'WITHDRAW' },
+          { text: 'ฝาก', value: 'DEPOSIT' },
+        ],
+        onFilter: (value, record) => record.transfer_type.indexOf(value) === 0,
+      },
+  
+      {
+        dataIndex: 'type',
+        title: "ประเภท",
+        align: "center",
+        render: (item) => (
+          <Chip
+            label={item === "DEPOSIT" ? "สำหรับฝาก" : "สำหรับถอน"}
+            size="small"
+            style={{
+              // padding: 5,
+              backgroundColor: item === "DEPOSIT" ? "#129A50" : "#FFB946",
+              color: "#fff",
+              minWidth: "120px"
+            }}
+          />
+        ),
+      },
+  
+  
+      {
+        title: "แก้ไข",
+        align: "center",
+        render: (item, data) => {
+          return (
+            <>
+              <IconButton
+                onClick={async () => {
+                  setRowData(data);
+                  setOpenDialogAdd({
+                    open: true,
+                    type: "edit",
+                  });
+                }}
+              >
+                <EditIcon />
+              </IconButton>
+            </>
+          );
+        },
+      },
+  
+      {
+        title: "ลบ", align: "center",
+        render: (item, data) => {
+          return (
+            <>
+              <IconButton
+                onClick={async () => {
+                  Swal.fire({
+                    title: "ยืนยันการลบข้อมูล",
+                    icon: "info",
+                    showCancelButton: true,
+                    cancelButtonColor: "#EB001B",
+                    confirmButtonColor: "#129A50",
+                    cancelButtonText: "ยกเลิก",
+                    confirmButtonText: "ยืนยัน",
+                  }).then(async (result) => {
+                    if (result.isConfirmed) {
+                      try {
+                        let res = await axios({
+                          headers: {
+                            Authorization:
+                              "Bearer " +
+                              localStorage.getItem("access_token"),
+                          },
+                          method: "Post",
+                          url: `${hostname}/bank/delete_bank`,
+                          data: {
+                            uuid: data.uuid
+                          }
                         });
-                        getBank();
-                      }
-                    } catch (error) {
-                      console.log(error);
-                      if (
-                        error.response.data.error.status_code === 401 &&
-                        error.response.data.error.message === "Unauthorized"
-                      ) {
-                        dispatch(signOut());
-                        localStorage.clear();
-                        router.push("/auth/login");
-                      }
-                      if (
-                        error.response.status === 401 &&
-                        error.response.data.error.message === "Invalid Token"
-                      ) {
-                        dispatch(signOut());
-                        localStorage.clear();
-                        router.push("/auth/login");
+                        if (
+                          res.data.message === "ลบบัญชีธนาคารสำเร็จ"
+                        ) {
+                          Swal.fire({
+                            position: "center",
+                            icon: "success",
+                            title: "ลบบัญชีธนาคารสำเร็จ",
+                            showConfirmButton: false,
+                            timer: 2000,
+                          });
+                          getBank();
+                        }
+                      } catch (error) {
+                        console.log(error);
+                        if (
+                          error.response.data.error.status_code === 401 &&
+                          error.response.data.error.message === "Unauthorized"
+                        ) {
+                          dispatch(signOut());
+                          localStorage.clear();
+                          router.push("/auth/login");
+                        }
+                        if (
+                          error.response.status === 401 &&
+                          error.response.data.error.message === "Invalid Token"
+                        ) {
+                          dispatch(signOut());
+                          localStorage.clear();
+                          router.push("/auth/login");
+                        }
                       }
                     }
-                  }
-                });
-              }}
-            >
-              <DeleteIcon />
-            </IconButton>
-          </>
-        );
+                  });
+                }}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </>
+          );
+        },
       },
-    },
-  ]
+    ]
 
   useEffect(() => {
     getBank();
@@ -675,12 +814,19 @@ function bankWithdraw() {
             </Button>
           </Box>
         </Grid>
-        <MaterialTableForm
-          data={bank}
+        <Table
           columns={columns}
-          pageSize="10"
-          title=""
-        />
+          dataSource={bank}
+          onChange={onChange}
+          size="small"
+          pagination={{
+            current: page,
+            pageSize: pageSize,
+            onChange: (page, pageSize) => {
+              setPage(page)
+              setPageSize(pageSize)
+            }
+          }} />
 
       </Paper>
 
