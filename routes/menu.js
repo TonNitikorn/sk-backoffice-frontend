@@ -205,11 +205,11 @@ export const menuSuperAdmin = [
       //   link: "/report/reportMakeDeposit",
       //   icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
       // },
-      {
-        name: "รายงานการเติมเครดิต(Admin)",
-        link: "/report/reportError",
-        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
-      },
+      // {
+      //   name: "รายงานการเติมเครดิต(Admin)",
+      //   link: "/report/reportError",
+      //   icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
+      // },
       {
         name: "รายงานการตัดเครดิต",
         link: "/report/reportCutCredit",
