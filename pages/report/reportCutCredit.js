@@ -266,10 +266,10 @@ function reportCutCredit() {
       ),
     },
     {
-      dataIndex: "credit",
+      dataIndex: "credit_before",
       title: "เครดิตก่อนเติม",
       align: "center",
-      ...getColumnSearchProps('credit'),
+      ...getColumnSearchProps('credit_before'),
       render: (item) => (
         <Typography
           style={{
@@ -279,10 +279,10 @@ function reportCutCredit() {
       ),
     },
     {
-      dataIndex: "credit",
+      dataIndex: "credit_after",
       title: "เครดิตหลังเติม",
       align: "center",
-      ...getColumnSearchProps('credit'),
+      ...getColumnSearchProps('credit_after'),
       render: (item) => (
         <Typography
           style={{
