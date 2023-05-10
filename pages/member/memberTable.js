@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import {
    Grid,
    Button,
    TextField,
    Typography,
    Chip,
-   Box,
    Dialog,
    IconButton,
    DialogTitle,
@@ -19,19 +17,12 @@ import {
    CssBaseline,
    MenuItem,
    Switch,
-   FormControl,
-   RadioGroup,
-   FormControlLabel,
-   Radio,
 } from "@mui/material";
 import Layout from '../../theme/Layout'
-import MaterialTableForm from "../../components/materialTableForm"
 import axios from "axios";
 import hostname from "../../utils/hostname";
 import LoadingModal from "../../theme/LoadingModal";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import ZoomInIcon from "@mui/icons-material/ZoomIn";
-import KeyIcon from "@mui/icons-material/Key";
 import EditIcon from "@mui/icons-material/Edit";
 import Image from "next/image";
 import moment from "moment/moment";
@@ -364,7 +355,6 @@ function memberTable() {
       }
    };
 
-   console.log('first', transaction)
 
    useEffect(() => {
       getMemberAll()
@@ -1629,10 +1619,8 @@ function memberTable() {
                         let totalSumCreditBefore = ''
                         let totalSumCreditAfter = ''
 
-                        console.log('pageData', pageData)
 
                         pageData.forEach(({ credit, credit_before, credit_after, sumCredit, sumCreditBefore, sumCreditAfter }) => {
-                           console.log('sumCreditBefore', sumCreditBefore)
                            totalCredit += parseInt(credit);
                            totalBefore += parseInt(credit_before);
                            totalAfter += parseInt(credit_after);
