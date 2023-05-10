@@ -9,7 +9,7 @@ import {
   ListItemIcon,
   ListItemText,
   Grid,
-  Button, AppBar, Drawer, Toolbar, Collapse,MenuIcon
+  Button, AppBar, Drawer, Toolbar, Collapse, MenuIcon
 } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
 import { menuSuperAdmin } from "../routes/menu";
@@ -31,7 +31,7 @@ function Layout({ children, page }) {
   const [open, setOpen] = useState(false);
   const [username, setUsername] = useState('')
 
- 
+
 
   const handleClick = (id) => {
     if (id === "member") {
@@ -87,10 +87,13 @@ function Layout({ children, page }) {
       >
         <Toolbar>
           <Grid container justifyContent="flex-end" onClick={() => router.push('/profile')}>
-            <AccountCircleIcon fontSize="large" sx={{ color: '#fff', mt: 1.5, mr: 1 }} />
-            <Typography sx={{ color: '#fff', fontSize: '20px', mt: 2 }}>
-              {username}
-            </Typography>
+            <Button sx={{ bgcolor: '#0465a587', mt: 1 }}>
+              <AccountCircleIcon fontSize="large" sx={{ color: '#fff', mr: 1 }} />
+              <Typography sx={{ color: '#fff', fontSize: '18px', mt: 0.5 }}>
+                {username}
+              </Typography>
+            </Button>
+
           </Grid>
 
 

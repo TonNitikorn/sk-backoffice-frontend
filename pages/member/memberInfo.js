@@ -74,25 +74,16 @@ function memberInfo() {
       let resData = res.data
       let resTran = res.data.transaction
       // setTransaction(resData.transaction)
-      if (resTran !== null) {
-        let no = 1;
+      let no = 1;
 
-        resTran.map((item) => {
-          item.no = no++;
-          item.create_at = moment(item.create_at).format('DD/MM/YYYY HH:mm')
-        });
+      resTran.map((item) => {
+        item.no = no++;
+        item.create_at = moment(item.create_at).format('DD/MM/YYYY HH:mm')
+      });
 
-        setTransaction(resTran)
-        setDataMember(resData);
-      } else {
-        Swal.fire({
-          position: "center",
-          icon: "error",
-          title: "ไม่มีผู้ใช้นี้",
-          showConfirmButton: false,
-          timer: 2000,
-        });
-      }
+      setTransaction(resTran)
+      setDataMember(resData);
+
 
       setLoading(false);
     } catch (error) {
@@ -112,6 +103,20 @@ function memberInfo() {
         dispatch(signOut());
         localStorage.clear();
         router.push("/auth/login");
+      }
+      if (
+        error.response.data.error.status_code === 400 &&
+        error.response.data.error.message === "ไม่พบข้อมูล"
+      ) {
+        setLoading(false);
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "ไม่มีผู้ใช้นี้",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+
       }
     }
   };
@@ -373,7 +378,7 @@ function memberInfo() {
                 <AccountBoxIcon sx={{ fontSize: 100, color: "#109CF1" }} />
 
                 <Grid item direction="column" sx={{ mt: 2 }}>
-                  <Typography variant="h6">ยูสเซอร์เนมลูกค้า</Typography>
+                  <Typography variant="h6">ชื่อผู้ใช้ลูกค้า</Typography>
                   <Typography sx={{ ml: 1 }}>{dataMember.username || ""}</Typography>
                 </Grid>
               </Grid>
