@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Layout from '../../theme/Layout'
 import {
   Paper,
@@ -19,22 +19,26 @@ import {
   FormControlLabel,
   Chip,
   Card,
-  CardContent
+  CardContent,
+  Snackbar
 } from "@mui/material";
 import axios from "axios";
 import hostname from "../../utils/hostname";
 import LoadingModal from "../../theme/LoadingModal";
-import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import Swal from "sweetalert2";
 import { signOut } from "../../store/slices/userSlice";
 import { useRouter } from "next/router";
 import { useAppDispatch } from "../../store/store";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
-import MaterialTableForm from "../../components/materialTableForm"
-import CircleIcon from '@mui/icons-material/Circle';
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
+import { Table, Input, Space, } from 'antd';
+import SearchIcon from '@mui/icons-material/Search';
+import { CopyToClipboard } from "react-copy-to-clipboard";
 
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 function employee() {
   const dispatch = useAppDispatch();
@@ -46,6 +50,9 @@ function employee() {
   const [confirmEditPassword, setConfirmEditPassword] = useState(false)
   const [newPassword, setNewPassword] = useState()
   const [employeeTotal, setEmployeeTotal] = useState({})
+  const [open, setOpen] = useState(false);
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(10)
   const [state, setState] = useState({
     grap: false,
     home: false,
@@ -66,11 +73,16 @@ function employee() {
     admin_list: false,
   });
 
+  const handleClickSnackbar = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    setOpen(false);
+  };
+
   const handleChange = (event) => {
-    setState({
-      ...state,
-      [event.target.name]: event.target.checked,
-    });
+    setState({ ...state, [event.target.name]: event.target.checked, });
   };
   const handleChangeData = async (e) => {
     setRowData({ ...rowData, [e.target.name]: e.target.value });
@@ -231,55 +243,186 @@ function employee() {
       }
     }
   };
-  const columns = [
-    {
-      title: "สถานะ",
-      field: "no",
-      align: "center",
-      render: (item) => {
-        return (
-          <>
-            <Chip
-              label={item.status === "ACTIVE" ? "เปิดใช้งาน" : "ปิดใช้งาน"}
-              // size="small"
-              style={{
-                padding: 10,
-                backgroundColor: item.status === "ACTIVE" ? "#129A50" : "#FFB946",
-                color: "#fff",
-                minWidth: "120px"
-              }}
-            />
-          </>
-        )
 
+  const searchInput = useRef(null);
+
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+  };
+
+  const handleReset = (clearFilters) => {
+    clearFilters();
+  };
+
+  const getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <Input
+          ref={searchInput}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{
+            marginBottom: 8,
+            display: 'block',
+          }}
+        />
+        <Space>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Reset
+          </Button>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            <SearchIcon />
+            Search
+          </Button>
+          {/* <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({
+                closeDropdown: false,
+              });
+              setSearchText(selectedKeys[0]);
+              setSearchedColumn(dataIndex);
+            }}
+          >
+            Filter
+          </Button> */}
+          {/* <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              close();
+            }}
+          >
+            close
+          </Button> */}
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchIcon
+        style={{
+          color: filtered ? '#1890ff' : undefined,
+        }}
+      />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
       }
     },
+  });
 
-    {
-      title: "ชื่อ - นามสกุล",
-      align: "center",
-      field: "name",
-    },
-    {
-      title: "Username",
-      align: "center",
-      field: "username",
-    },
-    {
-      title: "เบอร์โทร",
-      align: "center",
-      field: "tel",
-    },
+  const onChange = (pagination, filters, sorter, extra) => {
+    console.log('params', pagination, filters, sorter, extra);
+  };
 
+  const columns = [
     {
+      title: 'ลำดับ',
+      dataIndex: 'no',
+      align: 'center',
+      sorter: (record1, record2) => record1.no - record2.no,
+      render: (item, data) => (
+        <Typography sx={{ fontSize: '14px', textAlign: 'center' }} >{item}</Typography>
+      )
+    },
+    {
+      dataIndex: 'status',
+      title: "สถานะ",
+      align: "center",
+      render: (item) => (
+        <Chip
+          label={item === "ACTIVE" ? "เปิดใช้งาน" : "ปิดใช้งาน"}
+          size="small"
+          style={{
+            padding: 10,
+            backgroundColor: item === "ACTIVE" ? "#129A50" : "#BB2828",
+            color: "#eee",
+          }}
+        />
+      ),
+      filters: [
+        { text: 'สำเร็จ', value: 'SUCCESS' },
+        { text: 'ยกเลิก', value: 'CANCEL' },
+      ],
+      onFilter: (value, record) => record.transfer_type.indexOf(value) === 0,
+    },
+    {
+      title: 'ชื่อผู้ใช้งาน',
+      dataIndex: 'username',
+      render: (item, data) => (
+        <CopyToClipboard text={item}>
+          <div style={{
+            "& .MuiButton-text": {
+              "&:hover": {
+                textDecoration: "underline blue 1px",
+              }
+            }
+          }} >
+            <Button
+              sx={{ fontSize: "14px", p: 0, color: "blue", }}
+              onClick={handleClickSnackbar}
+            >
+              {item}
+            </Button>
+          </div>
+        </CopyToClipboard>
+      ),
+      ...getColumnSearchProps('tel'),
+
+    },
+    {
+      dataIndex: "tel",
+      title: "เบอร์โทรศัพท์",
+      align: "center",
+      render: (item) => (
+        <Typography
+          style={{
+            fontSize: '14px'
+          }}
+        >{item}</Typography>
+      ),
+    },
+    {
+      dataIndex: "role",
       title: "ตำแหน่ง",
       align: "center",
-      field: "role",
+      render: (item) => (
+        <Typography
+          style={{
+            fontSize: '14px'
+          }}
+        >{item}</Typography>
+      ),
     },
     {
       title: "แก้ไข",
       align: "center",
-      render: (item) => {
+      maxWidth: '60px',
+      render: (item, data) => {
         return (
           <>
             <IconButton
@@ -294,8 +437,9 @@ function employee() {
         );
       },
     },
-
   ]
+
+ 
 
   useEffect(() => {
     getProfileAdmin()
@@ -328,13 +472,7 @@ function employee() {
             </CardContent>
           </Card>
 
-          <Card
-            sx={{
-              width: 180,
-              bgcolor: "#101D35",
-              maxWidth: 200,
-            }}
-          >
+          <Card sx={{ width: 180, bgcolor: "#101D35",maxWidth: 200, }}>
             <CardContent>
               <Typography component="div" sx={{ color: "#eee" }}>
                 เปิดใช้งาน
@@ -473,7 +611,7 @@ function employee() {
           direction="row"
           justifyContent="space-between"
           alignItems="start">
-            <Typography variant='h5'>รายชื่อพนักงาน</Typography>
+          <Typography variant='h5'>รายชื่อพนักงาน</Typography>
           <Box>
             <Button
               variant='contained'
@@ -492,10 +630,20 @@ function employee() {
             </Button>
           </Box>
         </Grid>
-        <MaterialTableForm
-          data={employee}
+        <Table
           columns={columns}
-          pageSize="10"
+          dataSource={employee}
+          onChange={onChange}
+          size="small"
+          pagination={{
+            current: page,
+            pageSize: pageSize,
+            onChange: (page, pageSize) => {
+              setPage(page)
+              setPageSize(pageSize)
+            }
+          }}
+
         />
       </Paper>
 
@@ -885,7 +1033,16 @@ function employee() {
         </DialogActions>
       </Dialog>
       <LoadingModal open={loading} />
-
+      <Snackbar
+        open={open}
+        autoHideDuration={3000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert severity="success" sx={{ width: "100%" }}>
+          Copy success !
+        </Alert>
+      </Snackbar>
     </Layout>
   )
 }
