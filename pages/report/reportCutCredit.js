@@ -188,6 +188,7 @@ function reportCutCredit() {
       }
     }
   };
+  console.log('withdarw', withdraw)
 
   const columns = [
     {
@@ -431,7 +432,7 @@ function reportCutCredit() {
                 let end = moment()
                   .subtract(1, "days")
                   .format("YYYY-MM-DD 23:59");
-                getAllError("yesterday", start, end);
+                  getRerort("yesterday", start, end);
               }}
             >
               <Typography sx={{ color: '#ffff' }}>เมื่อวาน</Typography>
@@ -446,7 +447,7 @@ function reportCutCredit() {
               onClick={async () => {
                 let start = moment().format("YYYY-MM-DD 00:00");
                 let end = moment().format("YYYY-MM-DD 23:59");
-                getAllError("today", start, end);
+                getRerort("today", start, end);
               }}
             >
               <Typography sx={{ color: '#ffff' }}>วันนี้</Typography>
