@@ -293,8 +293,8 @@ function reportAddCredit() {
       ),
     },
     {
-      dataIndex: "birthdate",
-      title: "วัน/เดือน/ปีเกิด",
+      dataIndex: "create_at",
+      title: "วันที่ทำรายการ",
       align: "center",
       render: (item) => (
         <Typography
