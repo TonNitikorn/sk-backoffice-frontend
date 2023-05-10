@@ -7,8 +7,14 @@ import Swal from "sweetalert2";
 import withAuth from "../routes/withAuth";
 import LoadingModal from "../theme/LoadingModal";
 import Avatar from '@mui/material/Avatar';
+import { signOut } from "../store/slices/userSlice";
+import { useRouter } from "next/router";
+import { useAppDispatch } from "../store/store";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 function profile() {
+  const dispatch = useAppDispatch();
+  const router = useRouter()
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
 
@@ -50,16 +56,16 @@ function profile() {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("access_token"),
         },
-        method: "put",
-        url: `${hostname}/admin/${data.uuid}`,
+        method: "post",
+        url: `${hostname}/admin/update`,
         data: {
-          info_name: data.info_name,
+          // info_name: data.info_name,
           password: data.password,
-          uuid: data.uuid,
+          // uuid: data.uuid,
         },
       });
 
-      if (res.data.message === "แก้ไขข้อมูลเรียบร้อย") {
+      if (res.data.message === "update success") {
         Swal.fire({
           position: "center",
           icon: "success",
@@ -130,12 +136,12 @@ function profile() {
           justifyContent="center"
           alignItems="center">
           <Grid item  >
-            <Avatar {...stringAvatar('Aent Dodds')} sx={{ width: 100, height: 100 }} />
+            {/* <AccountCircleIcon fontSize="large" /> */}
           </Grid>
         </Grid>
-        <Grid container justifyContent="center" alignItems="center" spacing={2}>
+        <Grid container justifyContent="center" alignItems="center" spacing={2} sx={{ mt: 5 }}>
           <Grid item xs={8}>
-            <Typography sx={{ mt: 2 }}>ชื่อผู้ใช้ : *</Typography>
+            <Typography sx={{ mt: 2 }}>Username : *</Typography>
             <TextField
               name="info_name"
               type="text"
@@ -145,6 +151,7 @@ function profile() {
               size="small"
               onChange={(e) => handleChangeData(e)}
               variant="outlined"
+              disabled
             />
           </Grid>
           <Grid item xs={8}>

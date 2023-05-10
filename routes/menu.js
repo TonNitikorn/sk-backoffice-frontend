@@ -40,30 +40,6 @@ export const menuSuperAdmin = [
     icon: <FormatListBulletedIcon />,
   },
   {
-    name: "บัญชีธนาคาร",
-    // link: "/bankAccount",
-    icon: <AccountBalanceIcon />,
-    type: 'collapse',
-    id: 'bank',
-    bank:[
-      {
-        name: "บัญชีทั้งหมด",
-        link: "/bankAccount",
-        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
-      },
-      {
-        name: "บัญชีฝาก",
-        link: "/bank/bankDeposit",
-        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
-      },
-      {
-        name: "บัญชีถอน",
-        link: "/bank/bankWithdraw",
-        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
-      },
-    ]
-  },
-  {
     name: "ลูกค้า",
     // link: "/DepositWithdrawalSystem/CreditManual",
     icon: <GroupsIcon />,
@@ -87,6 +63,31 @@ export const menuSuperAdmin = [
       // },
     ],
   },
+  {
+    name: "บัญชีธนาคาร",
+    // link: "/bankAccount",
+    icon: <AccountBalanceIcon />,
+    type: 'collapse',
+    id: 'bank',
+    bank: [
+      {
+        name: "บัญชีทั้งหมด",
+        link: "/bankAccount",
+        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
+      },
+      {
+        name: "บัญชีฝาก",
+        link: "/bank/bankDeposit",
+        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
+      },
+      {
+        name: "บัญชีถอน",
+        link: "/bank/bankWithdraw",
+        icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
+      },
+    ]
+  },
+ 
   // {
   //   name: "โปรโมชัน",
   //   link: "/promotion",
@@ -121,7 +122,7 @@ export const menuSuperAdmin = [
   //   link: "rank/ranking",
   //   icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
   // },
-  
+
 
   // {
   //   name: "สรุป",
@@ -171,7 +172,7 @@ export const menuSuperAdmin = [
     link: "/employee/employee",
     icon: <GroupIcon />,
   },
-  
+
   {
     name: "จัดการหน้าเว็บ",
     link: "/manageWebPages",
