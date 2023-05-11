@@ -69,7 +69,7 @@ function Login() {
          // alert("Login failed");
 
       } else {
-         router.push("/home");
+         router.push("/dashboard");
       }
    };
 
