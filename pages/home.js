@@ -18,8 +18,6 @@ import {
 import hostname from "../utils/hostname";
 import axios from "axios";
 import scbL from "../assets/scbL.png";
-import kbank from "../assets/kbank.png";
-import trueL from "../assets/trueL.png";
 import Image from "next/image";
 import moment from "moment/moment";
 import { CopyToClipboard } from "react-copy-to-clipboard";
@@ -31,8 +29,7 @@ import LoadingModal from "../theme/LoadingModal";
 import { useAppDispatch } from "../store/store";
 import { signOut } from "../store/slices/userSlice";
 import { useRouter } from "next/router";
-import MaterialTable from '@material-table/core'
-// import { ExportCsv, ExportPdf } from "@material-table/exporters";
+import { CSVLink } from "react-csv";
 
 import { Table, Input, Space, } from 'antd';
 import SearchIcon from '@mui/icons-material/Search';
@@ -51,11 +48,11 @@ function home() {
 
     const handleClickSnackbar = () => {
         setOpen(true);
-      };
-    
-      const handleClose = (event, reason) => {
+    };
+
+    const handleClose = (event, reason) => {
         setOpen(false);
-      };
+    };
 
     const getDataLast = async () => {
         setLoading(true);
@@ -593,7 +590,7 @@ function home() {
                     style={{
                         fontSize: '14px'
                     }}
-                >{item === null ? "-": item}</Typography>
+                >{item === null ? "-" : item}</Typography>
             ),
         },
     ];
@@ -609,7 +606,7 @@ function home() {
             <CssBaseline />
             <Paper sx={{ p: 3, mb: 2 }} >
                 <Typography variant="h5" sx={{ mb: 1, textDecoration: "underline #41A3E3 3px" }}>บัญชีเงินฝาก</Typography>
-
+                
                 <Grid container justifyContent="start" >
                     {bankData.map((item) =>
                         <Paper sx={
@@ -1155,7 +1152,14 @@ function home() {
                     <Paper sx={{ p: 3 }}>
                         <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px" }}  > รายการเดินบัญชี </Typography>
 
-
+                        <CSVLink
+                    data={dataLast}
+                    onClick={() => {
+                        console.log("clicked")
+                    }}
+                >
+                    test export
+                </CSVLink>
                         <Table
                             columns={columns}
                             dataSource={dataLast}
@@ -1482,15 +1486,15 @@ function home() {
             </Dialog>
             <LoadingModal open={loading} />
             <Snackbar
-        open={open}
-        autoHideDuration={3000}
-        onClose={handleClose}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      >
-        <Alert severity="success" sx={{ width: "100%" }}>
-          Copy success !
-        </Alert>
-      </Snackbar>
+                open={open}
+                autoHideDuration={3000}
+                onClose={handleClose}
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            >
+                <Alert severity="success" sx={{ width: "100%" }}>
+                    Copy success !
+                </Alert>
+            </Snackbar>
         </Layout>
     );
 }
