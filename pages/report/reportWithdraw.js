@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Paper,
   Button,
@@ -16,7 +16,6 @@ import {
 } from "@mui/material";
 import Layout from "../../theme/Layout";
 import moment from "moment";
-import MaterialTableForm from "../../components/materialTableForm"
 import axios from "axios";
 import hostname from "../../utils/hostname";
 import { CopyToClipboard } from "react-copy-to-clipboard";
@@ -24,7 +23,6 @@ import Image from "next/image";
 import withAuth from "../../routes/withAuth";
 import LoadingModal from "../../theme/LoadingModal";
 import { useTheme } from '@mui/material/styles';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { Table, Input, Space, } from 'antd';
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -537,7 +535,7 @@ function reportDeposit() {
           style={{
             fontSize: '14px'
           }}
-        >{item}</Typography>
+        >{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
       ),
     },
     {
@@ -550,7 +548,7 @@ function reportDeposit() {
           style={{
             fontSize: '14px'
           }}
-        >{item}</Typography>
+        >{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
       ),
     },
 
@@ -575,7 +573,7 @@ function reportDeposit() {
       ],
       onFilter: (value, record) => record.transfer_type.indexOf(value) === 0,
     },
-    
+
     {
       dataIndex: "create_at",
       title: "วันที่ทำรายการ",
@@ -682,7 +680,7 @@ function reportDeposit() {
               }}
               required
             />
-            
+
             <TextField
               name="username"
               type="text"
@@ -802,7 +800,7 @@ function reportDeposit() {
 
           <Card sx={{ width: 250, bgcolor: "#101D35" }}>
             <CardContent>
-              <Typography variant="h7" sx={{ color : '#2ECC71' }}>ยอดรวมเงินทั้งหมด</Typography>
+              <Typography variant="h7" sx={{ color: '#2ECC71' }}>ยอดรวมเงินทั้งหมด</Typography>
               <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>
                 {Intl.NumberFormat("TH").format(parseInt(total.sumTotal))}  </Typography>
               <Grid sx={{ textAlign: 'right' }}>
@@ -816,7 +814,7 @@ function reportDeposit() {
 
           <Card sx={{ width: 250, bgcolor: "#101D35" }}>
             <CardContent>
-              <Typography variant="h7" sx={{ color : '#2ECC71' }}>ยอดรวมเงินสำเร็จทั้งหมด</Typography>
+              <Typography variant="h7" sx={{ color: '#2ECC71' }}>ยอดรวมเงินสำเร็จทั้งหมด</Typography>
               <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>
                 {Intl.NumberFormat("TH").format(parseInt(total.sumSuccess))}  </Typography>
               <Grid sx={{ textAlign: 'right' }}>
@@ -830,7 +828,7 @@ function reportDeposit() {
 
           <Card sx={{ width: 250, bgcolor: "#101D35" }}>
             <CardContent>
-              <Typography variant="h7" sx={{ color : '#2ECC71' }}>ยอดรวมเงินยกเลิกทั้งหมด</Typography>
+              <Typography variant="h7" sx={{ color: '#2ECC71' }}>ยอดรวมเงินยกเลิกทั้งหมด</Typography>
               <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>
                 {Intl.NumberFormat("TH").format(parseInt(total.sumCancel))}   </Typography>
               <Grid sx={{ textAlign: 'right' }}>

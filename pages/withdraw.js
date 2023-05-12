@@ -1,5 +1,5 @@
 import Layout from "../theme/Layout";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
     Paper,
     Button,
@@ -21,6 +21,8 @@ import moment from "moment/moment";
 import Swal from "sweetalert2";
 import LoadingModal from "../theme/LoadingModal";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import { Table, Input, Space, } from 'antd';
+import SearchIcon from '@mui/icons-material/Search';
 
 function withdraw() {
     const [username, setUsername] = useState("");
@@ -29,6 +31,10 @@ function withdraw() {
     const [loading, setLoading] = useState(false);
     const [transaction, setTransaction] = useState([])
     const [open, setOpen] = useState(false);
+    const [page, setPage] = useState(1)
+    const [pageSize, setPageSize] = useState(10)
+
+
     const handleClose = (event, reason) => {
         setOpen(false);
     };
@@ -150,129 +156,199 @@ function withdraw() {
         }
     };
 
+    const searchInput = useRef(null);
+    const handleSearch = (selectedKeys, confirm, dataIndex) => {
+        confirm();
+    };
+
+    const handleReset = (clearFilters) => {
+        clearFilters();
+    };
+
+    const getColumnSearchProps = (dataIndex) => ({
+        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+            <div
+                style={{
+                    padding: 8,
+                }}
+                onKeyDown={(e) => e.stopPropagation()}
+            >
+                <Input
+                    ref={searchInput}
+                    placeholder={`Search ${dataIndex}`}
+                    value={selectedKeys[0]}
+                    onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                    onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                    style={{
+                        marginBottom: 8,
+                        display: 'block',
+                    }}
+                />
+                <Space>
+                    <Button
+                        onClick={() => clearFilters && handleReset(clearFilters)}
+                        size="small"
+                        style={{
+                            width: 90,
+                        }}
+                    >
+                        Reset
+                    </Button>
+                    <Button
+                        type="primary"
+                        onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                        size="small"
+                        style={{
+                            width: 90,
+                        }}
+                    >
+                        <SearchIcon />
+                        Search
+                    </Button>
+                    {/* <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({
+                closeDropdown: false,
+              });
+              setSearchText(selectedKeys[0]);
+              setSearchedColumn(dataIndex);
+            }}
+          >
+            Filter
+          </Button> */}
+                    {/* <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              close();
+            }}
+          >
+            close
+          </Button> */}
+                </Space>
+            </div>
+        ),
+        filterIcon: (filtered) => (
+            <SearchIcon
+                style={{
+                    color: filtered ? '#1890ff' : undefined,
+                }}
+            />
+        ),
+        onFilter: (value, record) =>
+            record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+        onFilterDropdownOpenChange: (visible) => {
+            if (visible) {
+                setTimeout(() => searchInput.current?.select(), 100);
+            }
+        },
+    });
+
+    const onChange = (pagination, filters, sorter, extra) => {
+        console.log('params', pagination, filters, sorter, extra);
+    };
+
     const columns = [
         {
-            title: "ลำดับที่",
-            field: "no",
-            search: true,
-            width: "10%",
-            align: "center",
+            title: 'ลำดับ',
+            dataIndex: 'no',
+            align: 'center',
+            sorter: (record1, record2) => record1.no - record2.no,
+            render: (item, data) => (
+                <Typography sx={{ fontSize: '14px', textAlign: 'center' }} >{item}</Typography>
+            )
         },
 
         {
-            title: "ยอดเงิน",
-            field: "credit",
-            search: true,
-            // width: "10%",
-            align: "center",
-            // render: (item) => (
-            //     <Chip
-            //         label={Intl.NumberFormat("TH").format(parseInt(item.credit))}
-            //         size="small"
-            //         style={{
-            //             background: "#41a3e3",
-            //             color: "#ffff",
-            //             width: 100
-
-            //         }}
-            //     />
-            // ),
-            render: (item) => (
-                <Typography
-                    style={{
-                        fontSize: '14px'
-                    }}
-                >{Intl.NumberFormat("TH").format(parseInt(item.credit))}</Typography>
-            ),
-        },
-        {
-            title: "ประเภท",
-            search: true,
-            // width: "10%",
+            dataIndex: 'transfer_type',
+            title: "สถานะ",
             align: "center",
             render: (item) => (
                 <Chip
-                    label={item.transfer_type === "DEPOSIT" ? "ฝากเงิน" : "ถอนเงิน"}
+                    label={item === "WITHDRAW" ? 'ถอน' : 'ฝาก'}
                     size="small"
                     style={{
-                        background:  item.transfer_type === "DEPOSIT" ? "#3d813d" : "#db9d40",
-                        color: "#ffff",
-                        width: 100
-
+                        // padding: 5,
+                        backgroundColor: "#FFB946",
+                        color: "#fff",
+                        minWidth: "120px"
                     }}
                 />
             ),
-
+            filters: [
+                { text: 'ถอน', value: 'WITHDRAW' },
+                { text: 'ฝาก', value: 'DEPOSIT' },
+            ],
+            onFilter: (value, record) => record.transfer_type.indexOf(value) === 0,
         },
         {
-            title: "เครดิตก่อนทำรายการ",
-            field: "credit_before",
-            search: true,
-            // width: "10%",
+            dataIndex: "credit",
+            title: "เครดิต",
             align: "center",
-            // render: (item) => (
-            //     <Chip
-            //         label={Intl.NumberFormat("TH").format(parseInt(item.credit_before))}
-            //         size="small"
-            //         style={{
-            //             background: "#FFB946",
-            //             color: "#ffff",
-            //             width: 100
-            //         }}
-            //     />
-            // ),
+            sorter: (record1, record2) => record1.credit - record2.credit,
             render: (item) => (
                 <Typography
                     style={{
                         fontSize: '14px'
                     }}
-                >{Intl.NumberFormat("TH").format(parseInt(item.credit_before))}</Typography>
+                >{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
             ),
         },
         {
-            title: "เครดิตหลังทำรายการ",
-            field: "credit_after",
-            search: true,
-            // width: "30%",
+            dataIndex: "credit_before",
+            title: "เครดิตก่อนเติม",
             align: "center",
-            // render: (item) => (
-            //     <Chip
-            //         label={Intl.NumberFormat("TH").format(parseInt(item.credit_after))}
-            //         size="small"
-            //         style={{
-            //             background: "#0b9f0b",
-            //             color: "#ffff",
-            //             width: 100
-
-            //         }}
-            //     />
-            // ),
+            ...getColumnSearchProps('credit_before'),
             render: (item) => (
                 <Typography
                     style={{
                         fontSize: '14px'
                     }}
-                >{Intl.NumberFormat("TH").format(parseInt(item.credit_after))}</Typography>
+                >{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
             ),
         },
-
         {
-            title: "เวลา",
-            field: "create_at",
-            search: true,
-            align: 'center',
-            // width: "30%",
+            dataIndex: "credit_after",
+            title: "เครดิตหลังเติม",
             align: "center",
+            ...getColumnSearchProps('credit_after'),
+            render: (item) => (
+                <Typography
+                    style={{
+                        fontSize: '14px'
+                    }}
+                >{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
+            ),
         },
         {
+            dataIndex: "create_at",
+            title: "วันที่ทำรายการ",
+            align: "center",
+            render: (item) => (
+                <Typography
+                    style={{
+                        fontSize: '14px'
+                    }}
+                >{item}</Typography>
+            ),
+        },
+        {
+            dataIndex: "content",
             title: "หมายเหตุ",
-            field: "annotation",
-            align: 'center',
-            search: true,
-            // width: "30%",
             align: "center",
+            render: (item) => (
+                <Typography
+                    style={{
+                        fontSize: '14px'
+                    }}
+                >{item}</Typography>
+            ),
         },
-    ];
+    ]
+
+
 
     useEffect(() => {
         // searchUser()
@@ -477,7 +553,45 @@ function withdraw() {
             </Grid>
 
             <Grid style={{ marginTop: "20px" }}>
-                <MaterialTableForm pageSize={20} data={transaction} columns={columns} />
+                <Table
+                    columns={columns}
+                    dataSource={transaction}
+                    onChange={onChange}
+                    size="small"
+                    pagination={{
+                        current: page,
+                        pageSize: pageSize,
+                        onChange: (page, pageSize) => {
+                            setPage(page)
+                            setPageSize(pageSize)
+                        }
+                    }}
+                    summary={(pageData) => {
+                        let totalCredit = 0;
+
+                        pageData.forEach(({ credit }) => {
+                            totalCredit += parseInt(credit);
+
+
+                        });
+                        return (
+                            <>
+                                <Table.Summary.Row>
+                                    <Table.Summary.Cell> <Typography >ผลรวม</Typography></Table.Summary.Cell>
+                                    <Table.Summary.Cell />
+                                    
+                                    <Table.Summary.Cell ><Typography align="center" sx={{ color: '#129A50', fontWeight: 'bold' }}>{Intl.NumberFormat("TH").format(parseInt(parseInt(totalCredit)))}</Typography></Table.Summary.Cell>
+                                    <Table.Summary.Cell ></Table.Summary.Cell>
+                                    <Table.Summary.Cell />
+                                    <Table.Summary.Cell />
+                                    <Table.Summary.Cell />
+                                    <Table.Summary.Cell />
+
+                                </Table.Summary.Row>
+                            </>
+                        );
+                    }}
+                />
             </Grid>
             <LoadingModal open={loading} />
             <Snackbar
@@ -494,4 +608,4 @@ function withdraw() {
     );
 }
 
-export default withdraw;
+export default withAuth(withdraw);

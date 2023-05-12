@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Layout from "../theme/Layout";
 import {
     Grid,
@@ -8,13 +8,12 @@ import {
     Paper,
     Button,
     Chip,
-    Divider,
-    Skeleton,
     Dialog,
     DialogTitle,
     DialogContent,
     CssBaseline,
-    Table, TableRow, TableHead, TableContainer, TableCell, TableBody, CardContent, Card
+    Snackbar,
+    Alert
 } from "@mui/material";
 import hostname from "../utils/hostname";
 import axios from "axios";
@@ -35,14 +34,28 @@ import { useRouter } from "next/router";
 import MaterialTable from '@material-table/core'
 // import { ExportCsv, ExportPdf } from "@material-table/exporters";
 
+import { Table, Input, Space, } from 'antd';
+import SearchIcon from '@mui/icons-material/Search';
+
 function home() {
     const dispatch = useAppDispatch();
+    const [open, setOpen] = useState(false);
     const router = useRouter();
     const [openDialogView, setOpenDialogView] = useState(false);
     const [search, setSearch] = useState({});
     const [loading, setLoading] = useState(false);
     const [dataLast, setDataLast] = useState([])
     const [bankData, setBankData] = useState([]);
+    const [page, setPage] = useState(1)
+    const [pageSize, setPageSize] = useState(10)
+
+    const handleClickSnackbar = () => {
+        setOpen(true);
+      };
+    
+      const handleClose = (event, reason) => {
+        setOpen(false);
+      };
 
     const getDataLast = async () => {
         setLoading(true);
@@ -79,11 +92,11 @@ function home() {
             if (
                 error.response.status === 401 &&
                 error.response.data.error.message === "Invalid Token"
-             ) {
+            ) {
                 dispatch(signOut());
                 localStorage.clear();
                 router.push("/auth/login");
-             }
+            }
         }
     };
     const getBank = async () => {
@@ -117,14 +130,473 @@ function home() {
             if (
                 error.response.status === 401 &&
                 error.response.data.error.message === "Invalid Token"
-             ) {
+            ) {
                 dispatch(signOut());
                 localStorage.clear();
                 router.push("/auth/login");
-             }
+            }
         }
     };
 
+    const searchInput = useRef(null);
+    const handleSearch = (selectedKeys, confirm, dataIndex) => {
+        confirm();
+    };
+
+    const handleReset = (clearFilters) => {
+        clearFilters();
+    };
+
+    const getColumnSearchProps = (dataIndex) => ({
+        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+            <div
+                style={{
+                    padding: 8,
+                }}
+                onKeyDown={(e) => e.stopPropagation()}
+            >
+                <Input
+                    ref={searchInput}
+                    placeholder={`Search ${dataIndex}`}
+                    value={selectedKeys[0]}
+                    onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                    onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                    style={{
+                        marginBottom: 8,
+                        display: 'block',
+                    }}
+                />
+                <Space>
+                    <Button
+                        onClick={() => clearFilters && handleReset(clearFilters)}
+                        size="small"
+                        style={{
+                            width: 90,
+                        }}
+                    >
+                        Reset
+                    </Button>
+                    <Button
+                        type="primary"
+                        onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                        size="small"
+                        style={{
+                            width: 90,
+                        }}
+                    >
+                        <SearchIcon />
+                        Search
+                    </Button>
+                    {/* <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({
+                closeDropdown: false,
+              });
+              setSearchText(selectedKeys[0]);
+              setSearchedColumn(dataIndex);
+            }}
+          >
+            Filter
+          </Button> */}
+                    {/* <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              close();
+            }}
+          >
+            close
+          </Button> */}
+                </Space>
+            </div>
+        ),
+        filterIcon: (filtered) => (
+            <SearchIcon
+                style={{
+                    color: filtered ? '#1890ff' : undefined,
+                }}
+            />
+        ),
+        onFilter: (value, record) =>
+            record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+        onFilterDropdownOpenChange: (visible) => {
+            if (visible) {
+                setTimeout(() => searchInput.current?.select(), 100);
+            }
+        },
+    });
+
+    const onChange = (pagination, filters, sorter, extra) => {
+        console.log('params', pagination, filters, sorter, extra);
+    };
+    console.log('dataLast', dataLast)
+
+    const columns = [
+        {
+            title: 'ลำดับ',
+            dataIndex: 'no',
+            align: 'center',
+            sorter: (record1, record2) => record1.no - record2.no,
+            render: (item, data) => (
+                <Typography sx={{ fontSize: '14px', textAlign: 'center' }} >{item}</Typography>
+            )
+        },
+        {
+            title: 'ธนาคาร',
+            dataIndex: 'bank_name',
+            width: '200px',
+            ...getColumnSearchProps('bank_number'),
+            render: (item, data) => <Grid container>
+                <Grid item xs={3} sx={{ mt: 1 }}>
+                    {item === "kbnk" ? (
+                        <Image
+                            src={
+                                "https://angpaos.games/wp-content/uploads/2023/03/kbnk.png"
+                            }
+                            alt="kbnk"
+                            width={50}
+                            height={50}
+                        />
+                    ) : item === "truemoney" ? (
+                        <Image
+                            src={
+                                "https://angpaos.games/wp-content/uploads/2023/03/truemoney.png"
+                            }
+                            alt="truemoney"
+                            width={50}
+                            height={50}
+                        />
+                    ) : item === "ktba" ? (
+                        <Image
+                            src={
+                                "https://angpaos.games/wp-content/uploads/2023/03/ktba.png"
+                            }
+                            alt="ktba"
+                            width={50}
+                            height={50}
+                        />
+                    ) : item === "scb" ? (
+                        <Image
+                            src={
+                                "https://angpaos.games/wp-content/uploads/2023/03/scb.png"
+                            }
+                            alt="scb"
+                            width={50}
+                            height={50}
+                        />
+                    ) : item === "bay" ? (
+                        <Image
+                            src={
+                                "https://angpaos.games/wp-content/uploads/2023/03/bay.png"
+                            }
+                            alt="bay"
+                            width={50}
+                            height={50}
+                        />
+                    ) : item === "bbla" ? (
+                        <Image
+                            src={
+                                "https://angpaos.games/wp-content/uploads/2023/03/bbl.png"
+                            }
+                            alt="bbla"
+                            width={50}
+                            height={50}
+                        />
+                    ) : item === "gsb" ? (
+                        <Image
+                            src={
+                                "https://angpaos.games/wp-content/uploads/2023/03/gsb.png"
+                            }
+                            alt="gsb"
+                            width={50}
+                            height={50}
+                        />
+                    ) : item === "ttb" ? (
+                        <Image
+                            src={
+                                "https://angpaos.games/wp-content/uploads/2023/03/ttb.png"
+                            }
+                            alt="ttb"
+                            width={50}
+                            height={50}
+                        />
+                    ) : item === "bbac" ? (
+                        <Image
+                            src={
+                                "https://angpaos.games/wp-content/uploads/2023/03/baac.png"
+                            }
+                            alt="bbac"
+                            width={50}
+                            height={50}
+                        />
+                    ) : item === "icbc" ? (
+                        <Image
+                            src={
+                                "https://angpaos.games/wp-content/uploads/2023/03/icbc.png"
+                            }
+                            alt="icbc"
+                            width={50}
+                            height={50}
+                        />
+                    ) : item === "tcd" ? (
+                        <Image
+                            src={
+                                "https://angpaos.games/wp-content/uploads/2023/03/tcd.png"
+                            }
+                            alt="tcd"
+                            width={50}
+                            height={50}
+                        />
+                    ) : item === "citi" ? (
+                        <Image
+                            src={
+                                "https://angpaos.games/wp-content/uploads/2023/03/citi.png"
+                            }
+                            alt="citi"
+                            width={50}
+                            height={50}
+                        />
+                    ) : item === "scbt" ? (
+                        <Image
+                            src={
+                                "https://angpaos.games/wp-content/uploads/2023/03/scbt.png"
+                            }
+                            alt="scbt"
+                            width={50}
+                            height={50}
+                        />
+                    ) : item === "cimb" ? (
+                        <Image
+                            src={
+                                "https://angpaos.games/wp-content/uploads/2023/03/cimb.png"
+                            }
+                            alt="cimb"
+                            width={50}
+                            height={50}
+                        />
+                    ) : item === "uob" ? (
+                        <Image
+                            src={
+                                "https://angpaos.games/wp-content/uploads/2023/03/uob.png"
+                            }
+                            alt="uob"
+                            width={50}
+                            height={50}
+                        />
+                    ) : item === "hsbc" ? (
+                        <Image
+                            src={
+                                "https://angpaos.games/wp-content/uploads/2023/03/hsbc.png"
+                            }
+                            alt="hsbc"
+                            width={50}
+                            height={50}
+                        />
+                    ) : item === "mizuho" ? (
+                        <Image
+                            src={
+                                "https://angpaos.games/wp-content/uploads/2023/03/mizuho.png"
+                            }
+                            alt="mizuho"
+                            width={50}
+                            height={50}
+                        />
+                    ) : item === "ghb" ? (
+                        <Image
+                            src={
+                                "https://angpaos.games/wp-content/uploads/2023/03/ghb.png"
+                            }
+                            alt="ghb"
+                            width={50}
+                            height={50}
+                        />
+                    ) : item === "lhbank" ? (
+                        <Image
+                            src={
+                                "https://angpaos.games/wp-content/uploads/2023/03/lhbank.png"
+                            }
+                            alt="lhbank"
+                            width={50}
+                            height={50}
+                        />
+                    ) : item === "tisco" ? (
+                        <Image
+                            src={
+                                "https://angpaos.games/wp-content/uploads/2023/03/tisco.png"
+                            }
+                            alt="tisco"
+                            width={50}
+                            height={50}
+                        />
+                    ) : item === "kkba" ? (
+                        <Image
+                            src={
+                                "https://angpaos.games/wp-content/uploads/2023/03/kkba.png"
+                            }
+                            alt="kkba"
+                            width={50}
+                            height={50}
+                        />
+                    ) : item === "ibank" ? (
+                        <Image
+                            src={
+                                "https://angpaos.games/wp-content/uploads/2023/03/ibank.png"
+                            }
+                            alt="ibank"
+                            width={50}
+                            height={50}
+                        />
+                    ) : (
+                        ""
+                    )}
+                </Grid>
+                <Grid item xs={9}>
+                    <Grid sx={{ ml: 3, mt: 1 }}>
+                        <CopyToClipboard text={data.bank_number}>
+                            <div style={{ "& .MuiButton-text": { "&:hover": { textDecoration: "underline blue 1px", } } }} >
+                                <Button
+                                    sx={{ fontSize: "14px", p: 0, color: "blue", }}
+                                    onClick={handleClickSnackbar}
+                                >
+                                    {data.bank_number}
+                                </Button>
+                            </div>
+                        </CopyToClipboard>
+                    </Grid>
+                    <Grid sx={{ ml: 3, }}>
+                        <Typography sx={{ fontSize: "14px" }}>
+                            {data.name}
+                        </Typography>
+                    </Grid>
+                </Grid>
+            </Grid >,
+        },
+        {
+            title: 'ชื่อผู้ใช้งาน',
+            dataIndex: 'username',
+            render: (item, data) => (
+                <CopyToClipboard text={item}>
+                    <div style={{
+                        "& .MuiButton-text": {
+                            "&:hover": {
+                                textDecoration: "underline blue 1px",
+                            }
+                        }
+                    }} >
+                        <Button
+                            sx={{ fontSize: "14px", p: 0, color: "blue", }}
+                            onClick={handleClickSnackbar}
+                        >
+                            {item}
+                        </Button>
+                    </div>
+                </CopyToClipboard>
+            ),
+            ...getColumnSearchProps('tel'),
+
+        },
+        {
+            dataIndex: "credit",
+            title: "เครดิต",
+            align: "center",
+            sorter: (record1, record2) => record1.credit - record2.credit,
+            render: (item) => (
+                <Typography
+                    style={{
+                        fontSize: '14px'
+                    }}
+                >{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
+            ),
+        },
+        {
+            dataIndex: "credit_before",
+            title: "เครดิตก่อนเติม",
+            align: "center",
+            ...getColumnSearchProps('credit_before'),
+            render: (item) => (
+                <Typography
+                    style={{
+                        fontSize: '14px'
+                    }}
+                >{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
+            ),
+        },
+        {
+            dataIndex: "credit_after",
+            title: "เครดิตหลังเติม",
+            align: "center",
+            ...getColumnSearchProps('credit_after'),
+            render: (item) => (
+                <Typography
+                    style={{
+                        fontSize: '14px'
+                    }}
+                >{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
+            ),
+        },
+
+        {
+            dataIndex: 'status_transction',
+            title: "สถานะ",
+            align: "center",
+            render: (item) => (
+                <Chip
+                    label={item === 'SUCCESS' ? "สำเร็จ" : "ยกเลิก"}
+                    size="small"
+                    style={{
+                        padding: 10,
+                        backgroundColor: item === 'SUCCESS' ? "#129A50" : "#BB2828",
+                        color: "#eee",
+                    }}
+                />
+            ),
+            filters: [
+                { text: 'สำเร็จ', value: 'SUCCESS' },
+                { text: 'ยกเลิก', value: 'CANCEL' },
+            ],
+            onFilter: (value, record) => record.transfer_type.indexOf(value) === 0,
+        },
+
+        {
+            dataIndex: "create_at",
+            title: "วันที่ทำรายการ",
+            align: "center",
+            render: (item) => (
+                <Typography
+                    style={{
+                        fontSize: '14px'
+                    }}
+                >{item}</Typography>
+            ),
+        },
+
+        {
+            dataIndex: "transfer_by",
+            title: "ทำรายการโดย",
+            align: "center",
+            render: (item) => (
+                <Typography
+                    style={{
+                        fontSize: '14px'
+                    }}
+                >{item}</Typography>
+            ),
+        },
+        {
+            dataIndex: "content",
+            title: "หมายเหตุ",
+            align: "center",
+            render: (item) => (
+                <Typography
+                    style={{
+                        fontSize: '14px'
+                    }}
+                >{item === null ? "-": item}</Typography>
+            ),
+        },
+    ];
 
     useEffect(() => {
         getDataLast()
@@ -473,11 +945,11 @@ function home() {
                                                 if (
                                                     error.response.status === 401 &&
                                                     error.response.data.error.message === "Invalid Token"
-                                                 ) {
+                                                ) {
                                                     dispatch(signOut());
                                                     localStorage.clear();
                                                     router.push("/auth/login");
-                                                 }
+                                                }
                                                 console.log(error);
                                             }
                                         }}
@@ -567,11 +1039,11 @@ function home() {
                                                 if (
                                                     error.response.status === 401 &&
                                                     error.response.data.error.message === "Invalid Token"
-                                                 ) {
+                                                ) {
                                                     dispatch(signOut());
                                                     localStorage.clear();
                                                     router.push("/auth/login");
-                                                 }
+                                                }
                                                 console.log(error);
                                             }
                                         }}
@@ -661,11 +1133,11 @@ function home() {
                                                 if (
                                                     error.response.status === 401 &&
                                                     error.response.data.error.message === "Invalid Token"
-                                                 ) {
+                                                ) {
                                                     dispatch(signOut());
                                                     localStorage.clear();
                                                     router.push("/auth/login");
-                                                 }
+                                                }
                                                 console.log(error);
                                             }
                                         }}
@@ -682,98 +1154,22 @@ function home() {
                 <Grid item xs={8}>
                     <Paper sx={{ p: 3 }}>
                         <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px" }}  > รายการเดินบัญชี </Typography>
-                        {/* 
-                        <TableContainer component={Paper}>
-                            <Table sx={{ minWidth: 450 }} aria-label="simple table">
-                                <TableHead>
-                                    <TableRow sx={{ fontWeight: 'blod' }}>
-                                        <TableCell>วัน/เวลา</TableCell>
-                                        <TableCell align="right">จำนวนเงิน</TableCell>
-                                        <TableCell align="right">เครดิตก่อนเติม</TableCell>
-                                        <TableCell align="right">เครดิตหลังเติม</TableCell>
-                                        <TableCell align="right">ธนาคาร</TableCell>
-                                        <TableCell align="right">เลขที่บัญชี</TableCell>
-                                        <TableCell align="right">สถานะ</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    <>
-                                        {dataLast.map((item) =>
-                                            <TableRow
-                                                key={item.no}
-                                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                            >
-                                                <TableCell component="th" scope="row">{item.create_at}</TableCell>
-                                                <TableCell align="right">{item.credit}</TableCell>
-                                                <TableCell align="right">{item.credit_before}</TableCell>
-                                                <TableCell align="right">{item.credit_after}</TableCell>
-                                                <TableCell align="right">{item.bank_name}</TableCell>
-                                                <TableCell align="right">{item.bank_number}</TableCell>
-                                                <TableCell align="right">{item.status_transction}</TableCell>
-                                            </TableRow>
-                                        )}
-                                    </>
 
-                                </TableBody>
-                            </Table>
-                        </TableContainer> */}
 
-                        <MaterialTable
-                            title=""
-                            columns={[
-                                { title: 'วัน/เวลา', field: 'create_at' },
-                                { title: 'ชื่อผู้ใช้', field: 'username' },
-                                { title: 'จำนวนเงิน', field: 'credit' },
-                                { title: 'เครดิตก่อนเติม	', field: 'credit_before' },
-                                { title: 'เครดิตหลังเติม', field: 'credit_after' },
-                                { title: 'ธนาคาร', field: 'bank_name' },
-                                { title: 'เลขที่บัญชี', field: 'bank_number' },
-                                {
-                                    title: 'สถานะ', field: 'status_transction', render: (item) => (
-                                        <Chip
-                                            label={item.status_transction === 'SUCCESS' ? "SUCCESS" : 'UNSUCCESS'}
-                                            size="small"
-                                            style={{
-                                                padding: 10,
-                                                backgroundColor: item.status_transction === 'SUCCESS' ? "#129A50" : "#FFB946",
-                                                color: "#eee",
-                                            }}
-                                        />
-                                    ),
-                                },
-                            ]}
-                            data={dataLast}
-                            options={{
-                                // exportMenu: [
-                                    
-                                //     {
-                                //         label: "Export CSV",
-                                //         exportFunc: (cols, datas) =>
-                                //             ExportCsv(cols, datas, "รายการเดินบัญชี"),
-                                //     },
-                                // ],
-                                search: true,
-                                columnsButton: true,
-                                columnResizable: true,
-                                rowStyle: {
-                                    fontSize: 12,
-                                },
-                                headerStyle: {
-                                    paddingTop: 5,
-                                    paddingBottom: 5,
-                                    align: "center",
-                                    paddingRight: 0
-                                },
-                                pageSize: 20,
-                                pageSizeOptions: [10, 20, 100],
-                                padding: 0,
+                        <Table
+                            columns={columns}
+                            dataSource={dataLast}
+                            onChange={onChange}
+                            size="small"
+                            pagination={{
+                                current: page,
+                                pageSize: pageSize,
+                                onChange: (page, pageSize) => {
+                                    setPage(page)
+                                    setPageSize(pageSize)
+                                }
                             }}
-                            // localization={{
-                            //     toolbar: {
-                            //         exportCSVName: "Export some excel format",
-                            //         exportPDFName: "Export as pdf!!"
-                            //     }
-                            // }}
+
                         />
                     </Paper>
                 </Grid>
@@ -1052,11 +1448,11 @@ function home() {
                                         if (
                                             error.response.status === 401 &&
                                             error.response.data.error.message === "Invalid Token"
-                                         ) {
+                                        ) {
                                             dispatch(signOut());
                                             localStorage.clear();
                                             router.push("/auth/login");
-                                         }
+                                        }
                                         if (
                                             error.response.data.error.status_code === 404 &&
                                             error.response.data.error.message === "ไม่พบรหัสข้อมูลนี้"
@@ -1085,10 +1481,18 @@ function home() {
                 </DialogContent>
             </Dialog>
             <LoadingModal open={loading} />
+            <Snackbar
+        open={open}
+        autoHideDuration={3000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert severity="success" sx={{ width: "100%" }}>
+          Copy success !
+        </Alert>
+      </Snackbar>
         </Layout>
     );
 }
 
-// export default withAuth(home);
-
-export default home
+export default withAuth(home);
