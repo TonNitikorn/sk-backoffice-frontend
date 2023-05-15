@@ -15,10 +15,6 @@ import {
 import Image from 'next/image';
 import hostname from "../utils/hostname";
 import axios from "axios";
-import scbL from "../assets/scbL.png";
-import kbank from "../assets/kbank.png";
-import trueL from "../assets/trueL.png";
-import MaterialTableForm from '../components/materialTableForm';
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import moment from "moment/moment";
 import Snackbar from "@mui/material/Snackbar";
@@ -28,16 +24,10 @@ import { signOut } from "../store/slices/userSlice";
 import { useRouter } from "next/router";
 import { useAppDispatch } from "../store/store";
 import LoadingModal from "../theme/LoadingModal";
-import ManageSearchIcon from "@mui/icons-material/ManageSearch";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
-import TextSnippetIcon from "@mui/icons-material/TextSnippet";
 import EditIcon from "@mui/icons-material/Edit";
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
-import ArticleIcon from '@mui/icons-material/Article';
 import { Table, Input, Space, } from 'antd';
 
 
