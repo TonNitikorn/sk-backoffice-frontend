@@ -611,12 +611,7 @@ function home() {
                     {bankData.map((item) =>
                         <Paper sx={
                             {
-                                // backgroundImage:
-                                //   "url(https://the1pg.com/wp-content/uploads/2022/10/BG-wallet.jpg)",
-                                // backgroundRepeat: "no-repeat",
-                                // backgroundSize: "cover",
-                                // backgroundPosition: "center",
-                                bgcolor: '#0072B1',
+                                background: "linear-gradient(#41A3E3, #0072B1)",
                                 p: 2,
                                 height: 150,
                                 width: "400px",

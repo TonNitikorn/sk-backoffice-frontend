@@ -109,6 +109,7 @@ function memberTable() {
             item.create_at = moment(item.create_at).format('DD/MM/YYYY HH:mm')
          });
 
+
          setDataMember(resData);
          setLoading(false);
       } catch (error) {
@@ -178,6 +179,7 @@ function memberTable() {
          }
       }
    };
+
 
    const editUser = async (type, start, end) => {
       setLoading(false);
@@ -732,7 +734,7 @@ function memberTable() {
                </div>
             </CopyToClipboard>
          ),
-         ...getColumnSearchProps('tel'),
+         ...getColumnSearchProps('username'),
 
       },
 

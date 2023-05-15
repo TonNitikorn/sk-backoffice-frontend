@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Layout from '../theme/Layout'
 import {
    Grid,
@@ -10,7 +10,7 @@ import {
    IconButton,
    MenuItem,
    Paper,
-   Dialog, DialogTitle, DialogContent, Table, TableRow, TableCell, FormControl, RadioGroup, Radio, FormControlLabel
+   Dialog, DialogTitle, DialogContent, TableContainer, TableRow, TableCell, FormControl, RadioGroup, Radio, FormControlLabel
 } from "@mui/material";
 import Image from 'next/image';
 import hostname from "../utils/hostname";
@@ -38,6 +38,9 @@ import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
 import ArticleIcon from '@mui/icons-material/Article';
+import { Table, Input, Space, } from 'antd';
+
+
 const Alert = React.forwardRef(function Alert(props, ref) {
    return <MuiAlert elevation={6}
       ref={ref}
@@ -62,6 +65,8 @@ function withdrawpending() {
    const [selectedBank, setSelectedBank] = useState();
    const [openDialogView, setOpenDialogView] = useState(false);
    let temp
+   const [page, setPage] = useState(1)
+   const [pageSize, setPageSize] = useState(10)
 
    const handleChange = (uuid) => {
       setSelectedBank(uuid);
@@ -102,6 +107,7 @@ function withdrawpending() {
             item.create_at = moment(item.create_at).format('DD/MM/YYYY HH:mm')
             item.update_at = moment(item.update_at).format('DD/MM/YYYY HH:mm')
             item.bank_account_name = item.members?.fname + ' ' + item.members?.lname
+            item.username = item.members.username
          })
          temp = resData.length;
 
@@ -112,11 +118,11 @@ function withdrawpending() {
          if (
             error.response.data.error.status_code === 401 &&
             error.response.data.error.message === "Unauthorized"
-        ) {
+         ) {
             dispatch(signOut());
             localStorage.clear();
             router.push("/auth/login");
-        }
+         }
          if (
             error.response.status === 401 &&
             error.response.data.error.message === "Invalid Token"
@@ -151,18 +157,19 @@ function withdrawpending() {
             item.create_at = moment(item.create_at).format('DD/MM/YYYY HH:mm')
             item.update_at = moment(item.update_at).format('DD/MM/YYYY HH:mm')
             item.bank_account_name = item.members?.fname + ' ' + item.members?.lname
+            item.username = item.members.username
          })
          // console.log('temp 1 >> ', temp)
          // console.log('resData.length 2>> ', resData.length)
-            // let tempRes =  temp + res.lresData.length
-            // console.log('tempRes', tempRes)
+         // let tempRes =  temp + res.lresData.length
+         // console.log('tempRes', tempRes)
 
-            if (temp != resData.length) {
-               playAudio();
-               setDataWithdraw(resData)
-               getDataWithdraw();
-            }
-         
+         if (temp != resData.length) {
+            playAudio();
+            setDataWithdraw(resData)
+            getDataWithdraw();
+         }
+
 
          setDataWithdraw(resData)
          // setLoading(false);
@@ -171,11 +178,11 @@ function withdrawpending() {
          if (
             error.response.data.error.status_code === 401 &&
             error.response.data.error.message === "Unauthorized"
-        ) {
+         ) {
             dispatch(signOut());
             localStorage.clear();
             router.push("/auth/login");
-        }
+         }
          if (
             error.response.status === 401 &&
             error.response.data.error.message === "Invalid Token"
@@ -212,11 +219,11 @@ function withdrawpending() {
          if (
             error.response.data.error.status_code === 401 &&
             error.response.data.error.message === "Unauthorized"
-        ) {
+         ) {
             dispatch(signOut());
             localStorage.clear();
             router.push("/auth/login");
-        }
+         }
          if (
             error.response.status === 401 &&
             error.response.data.error.message === "Invalid Token"
@@ -263,11 +270,11 @@ function withdrawpending() {
          if (
             error.response.data.error.status_code === 401 &&
             error.response.data.error.message === "Unauthorized"
-        ) {
+         ) {
             dispatch(signOut());
             localStorage.clear();
             router.push("/auth/login");
-        }
+         }
          if (
             error.response.status === 401 &&
             error.response.data.error.message === "Invalid Token"
@@ -334,11 +341,11 @@ function withdrawpending() {
          if (
             error.response.data.error.status_code === 401 &&
             error.response.data.error.message === "Unauthorized"
-        ) {
+         ) {
             dispatch(signOut());
             localStorage.clear();
             router.push("/auth/login");
-        }
+         }
          if (
             error.response.status === 401 &&
             error.response.data.error.message === "Invalid Token"
@@ -349,6 +356,105 @@ function withdrawpending() {
          }
       }
    }
+
+   ////////////////////// search table /////////////////////
+   const searchInput = useRef(null);
+   const handleSearch = (selectedKeys, confirm, dataIndex) => {
+      confirm();
+   };
+
+   const handleReset = (clearFilters) => {
+      clearFilters();
+   };
+
+   const getColumnSearchProps = (dataIndex) => ({
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+         <div
+            style={{
+               padding: 8,
+            }}
+            onKeyDown={(e) => e.stopPropagation()}
+         >
+            <Input
+               ref={searchInput}
+               placeholder={`Search ${dataIndex}`}
+               value={selectedKeys[0]}
+               onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+               onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+               style={{
+                  marginBottom: 8,
+                  display: 'block',
+               }}
+            />
+            <Space>
+               <Button
+                  onClick={() => clearFilters && handleReset(clearFilters)}
+                  size="small"
+                  style={{
+                     width: 90,
+                  }}
+               >
+                  Reset
+               </Button>
+               <Button
+                  type="primary"
+                  onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                  size="small"
+                  style={{
+                     width: 90,
+                  }}
+               >
+                  <SearchIcon />
+                  Search
+               </Button>
+               {/* <Button
+             type="link"
+             size="small"
+             onClick={() => {
+               confirm({
+                 closeDropdown: false,
+               });
+               setSearchText(selectedKeys[0]);
+               setSearchedColumn(dataIndex);
+             }}
+           >
+             Filter
+           </Button> */}
+               {/* <Button
+             type="link"
+             size="small"
+             onClick={() => {
+               close();
+             }}
+           >
+             close
+           </Button> */}
+            </Space>
+         </div>
+      ),
+      filterIcon: (filtered) => (
+         <SearchIcon
+            style={{
+               color: filtered ? '#1890ff' : undefined,
+            }}
+         />
+      ),
+      onFilter: (value, record) =>
+         record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+      onFilterDropdownOpenChange: (visible) => {
+         if (visible) {
+            setTimeout(() => searchInput.current?.select(), 100);
+         }
+      },
+   });
+
+   const onChange = (pagination, filters, sorter, extra) => {
+      console.log('params', pagination, filters, sorter, extra);
+   };
+
+
+   ////////////////////// search table /////////////////////
+
 
    useEffect(() => {
       getDataWithdraw()
@@ -373,45 +479,44 @@ function withdrawpending() {
 
    const columns = [
       {
-         field: "no",
-         title: "อนุมัติ",
-         maxWidth: 80,
-         align: "center",
-         render: (item) => (
+         title: 'อนุมัติ',
+         align: 'center',
+         render: (item, data) => (
             <>
                <IconButton
                   onClick={() => {
-                     setRowData(item)
+                     setRowData(data)
                      setOpenDialogApprove(true)
                   }}
                >
                   <AssignmentTurnedInIcon color="primary" />
                </IconButton>
             </>
-         ),
+         )
       },
       {
-         title: "สถานะ",
-         align: "center",
-         render: (item) => (
+         title: 'สถานะ',
+         dataIndex: 'status_transction',
+         align: 'center',
+         render: (item, data) => (
             <Chip label={
-               item.status_transction === "FAIL" ?
+               item === "FAIL" ?
                   "ผิดพลาด" :
-                  item.status_transction === "CREATE" ?
+                  item === "CREATE" ?
                      "รออนุมัติ" :
-                     item.status_transction === "APPROVE" ?
+                     item === "APPROVE" ?
                         "อนุมัติแล้ว" :
-                        item.status_transction === "PROCESS" ?
+                        item === "PROCESS" ?
                            "รอทำรายการ" :
-                           item.status_transction === "SUCCESS" ?
+                           item === "SUCCESS" ?
                               "สำเร็จ" :
-                              item.status_transction === "OTP" ?
+                              item === "OTP" ?
                                  "OTP" :
-                                 item.status_transction === "REJECT" ?
+                                 item === "REJECT" ?
                                     "ยกเลิก" :
-                                    item.status_transction === "MANUAL" ?
+                                    item === "MANUAL" ?
                                        "ถอนมือ" :
-                                       item.status_transction === "" ?
+                                       item === "" ?
                                           "ทั้งหมด" :
                                           "-"
             }
@@ -419,450 +524,445 @@ function withdrawpending() {
                style={
                   {
                      padding: 10,
-                     backgroundColor: item.status_transction === "FAIL" ?
+                     backgroundColor: item === "FAIL" ?
                         "#EB001B" :
-                        item.status_transction === "CREATE" ?
+                        item === "CREATE" ?
                            "#16539B" :
-                           item.status_transction === "APPROVE" ?
+                           item === "APPROVE" ?
                               "#16539B" :
-                              item.status_transction === "PROCESS" ?
+                              item === "PROCESS" ?
                                  "#FFB946" :
-                                 item.status_transction === "SUCCESS" ?
+                                 item === "SUCCESS" ?
                                     "#129A50" :
-                                    item.status_transction === "OTP" ?
+                                    item === "OTP" ?
                                        "#FFB946" :
-                                       item.status_transction === "REJECT" ?
+                                       item === "REJECT" ?
                                           "#FD3B52" :
-                                          item.status_transction === "MANUAL" ?
+                                          item === "MANUAL" ?
                                              "#E1772B" :
-                                             item.status_transction === "" ?
+                                             item === "" ?
                                                 "gray" :
                                                 "gray",
-                     // item.status_transction === 1 ? "#129A50" : "#FFB946",
+                     // item === 1 ? "#129A50" : "#FFB946",
                      color: "#eee",
                   }
                }
             />
-         ),
+         )
       },
 
       {
-         field: "bank_name",
-         title: "ธนาคาร",
-         align: "center",
-         render: (item) => (
-            <Grid container >
-               <Grid item xs={12} sx={{ mt: 1 }}>
-                  {item.members?.bank_name === "kbnk" ? (
-                     <Image
-                        src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/kbnk.png"
-                        }
-                        alt="kbnk"
-                        width={50}
-                        height={50}
-                     />
-                  ) : item.members?.bank_name === "truemoney" ? (
-                     <Image
-                        src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/truemoney.png"
-                        }
-                        alt="truemoney"
-                        width={50}
-                        height={50}
-                     />
-                  ) : item.members?.bank_name === "ktba" ? (
-                     <Image
-                        src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/ktba.png"
-                        }
-                        alt="ktba"
-                        width={50}
-                        height={50}
-                     />
-                  ) : item.members?.bank_name === "scb" ? (
-                     <Image
-                        src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/scb.png"
-                        }
-                        alt="scb"
-                        width={50}
-                        height={50}
-                     />
-                  ) : item.members?.bank_name === "bay" ? (
-                     <Image
-                        src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/bay.png"
-                        }
-                        alt="bay"
-                        width={50}
-                        height={50}
-                     />
-                  ) : item.members?.bank_name === "bbla" ? (
-                     <Image
-                        src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/bbl.png"
-                        }
-                        alt="bbla"
-                        width={50}
-                        height={50}
-                     />
-                  ) : item.members?.bank_name === "gsb" ? (
-                     <Image
-                        src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/gsb.png"
-                        }
-                        alt="gsb"
-                        width={50}
-                        height={50}
-                     />
-                  ) : item.members?.bank_name === "ttb" ? (
-                     <Image
-                        src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/ttb.png"
-                        }
-                        alt="ttb"
-                        width={50}
-                        height={50}
-                     />
-                  ) : item.members?.bank_name === "bbac" ? (
-                     <Image
-                        src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/baac.png"
-                        }
-                        alt="bbac"
-                        width={50}
-                        height={50}
-                     />
-                  ) : item.members?.bank_name === "icbc" ? (
-                     <Image
-                        src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/icbc.png"
-                        }
-                        alt="icbc"
-                        width={50}
-                        height={50}
-                     />
-                  ) : item.members?.bank_name === "tcd" ? (
-                     <Image
-                        src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/tcd.png"
-                        }
-                        alt="tcd"
-                        width={50}
-                        height={50}
-                     />
-                  ) : item.members?.bank_name === "citi" ? (
-                     <Image
-                        src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/citi.png"
-                        }
-                        alt="citi"
-                        width={50}
-                        height={50}
-                     />
-                  ) : item.members?.bank_name === "scbt" ? (
-                     <Image
-                        src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/scbt.png"
-                        }
-                        alt="scbt"
-                        width={50}
-                        height={50}
-                     />
-                  ) : item.members?.bank_name === "cimb" ? (
-                     <Image
-                        src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/cimb.png"
-                        }
-                        alt="cimb"
-                        width={50}
-                        height={50}
-                     />
-                  ) : item.members?.bank_name === "uob" ? (
-                     <Image
-                        src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/uob.png"
-                        }
-                        alt="uob"
-                        width={50}
-                        height={50}
-                     />
-                  ) : item.members?.bank_name === "hsbc" ? (
-                     <Image
-                        src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/hsbc.png"
-                        }
-                        alt="hsbc"
-                        width={50}
-                        height={50}
-                     />
-                  ) : item.members?.bank_name === "mizuho" ? (
-                     <Image
-                        src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/mizuho.png"
-                        }
-                        alt="mizuho"
-                        width={50}
-                        height={50}
-                     />
-                  ) : item.members?.bank_name === "ghb" ? (
-                     <Image
-                        src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/ghb.png"
-                        }
-                        alt="ghb"
-                        width={50}
-                        height={50}
-                     />
-                  ) : item.members?.bank_name === "lhbank" ? (
-                     <Image
-                        src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/lhbank.png"
-                        }
-                        alt="lhbank"
-                        width={50}
-                        height={50}
-                     />
-                  ) : item.members?.bank_name === "tisco" ? (
-                     <Image
-                        src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/tisco.png"
-                        }
-                        alt="tisco"
-                        width={50}
-                        height={50}
-                     />
-                  ) : item.members?.bank_name === "kkba" ? (
-                     <Image
-                        src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/kkba.png"
-                        }
-                        alt="kkba"
-                        width={50}
-                        height={50}
-                     />
-                  ) : item.members?.bank_name === "ibank" ? (
-                     <Image
-                        src={
-                           "https://angpaos.games/wp-content/uploads/2023/03/ibank.png"
-                        }
-                        alt="ibank"
-                        width={50}
-                        height={50}
-                     />
-                  ) : (
-                     ""
-                  )}
-               </Grid>
+         title: 'ธนาคาร',
+         width: '200px',
+         // ...getColumnSearchProps('bank_number'),
+         render: (item, data) => <Grid container>
+            <Grid item xs={3} sx={{ mt: 1 }}>
+               {data.members.bank_name === "kbnk" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/kbnk.png"
+                     }
+                     alt="kbnk"
+                     width={50}
+                     height={50}
+                  />
+               ) : data.members.bank_name === "truemoney" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/truemoney.png"
+                     }
+                     alt="truemoney"
+                     width={50}
+                     height={50}
+                  />
+               ) : data.members.bank_name === "ktba" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/ktba.png"
+                     }
+                     alt="ktba"
+                     width={50}
+                     height={50}
+                  />
+               ) : data.members.bank_name === "scb" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/scb.png"
+                     }
+                     alt="scb"
+                     width={50}
+                     height={50}
+                  />
+               ) : data.members.bank_name === "bay" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/bay.png"
+                     }
+                     alt="bay"
+                     width={50}
+                     height={50}
+                  />
+               ) : data.members.bank_name === "bbla" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/bbl.png"
+                     }
+                     alt="bbla"
+                     width={50}
+                     height={50}
+                  />
+               ) : data.members.bank_name === "gsb" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/gsb.png"
+                     }
+                     alt="gsb"
+                     width={50}
+                     height={50}
+                  />
+               ) : data.members.bank_name === "ttb" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/ttb.png"
+                     }
+                     alt="ttb"
+                     width={50}
+                     height={50}
+                  />
+               ) : data.members.bank_name === "bbac" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/baac.png"
+                     }
+                     alt="bbac"
+                     width={50}
+                     height={50}
+                  />
+               ) : data.members.bank_name === "icbc" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/icbc.png"
+                     }
+                     alt="icbc"
+                     width={50}
+                     height={50}
+                  />
+               ) : data.members.bank_name === "tcd" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/tcd.png"
+                     }
+                     alt="tcd"
+                     width={50}
+                     height={50}
+                  />
+               ) : data.members.bank_name === "citi" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/citi.png"
+                     }
+                     alt="citi"
+                     width={50}
+                     height={50}
+                  />
+               ) : data.members.bank_name === "scbt" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/scbt.png"
+                     }
+                     alt="scbt"
+                     width={50}
+                     height={50}
+                  />
+               ) : data.members.bank_name === "cimb" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/cimb.png"
+                     }
+                     alt="cimb"
+                     width={50}
+                     height={50}
+                  />
+               ) : data.members.bank_name === "uob" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/uob.png"
+                     }
+                     alt="uob"
+                     width={50}
+                     height={50}
+                  />
+               ) : data.members.bank_name === "hsbc" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/hsbc.png"
+                     }
+                     alt="hsbc"
+                     width={50}
+                     height={50}
+                  />
+               ) : data.members.bank_name === "mizuho" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/mizuho.png"
+                     }
+                     alt="mizuho"
+                     width={50}
+                     height={50}
+                  />
+               ) : data.members.bank_name === "ghb" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/ghb.png"
+                     }
+                     alt="ghb"
+                     width={50}
+                     height={50}
+                  />
+               ) : data.members.bank_name === "lhbank" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/lhbank.png"
+                     }
+                     alt="lhbank"
+                     width={50}
+                     height={50}
+                  />
+               ) : data.members.bank_name === "tisco" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/tisco.png"
+                     }
+                     alt="tisco"
+                     width={50}
+                     height={50}
+                  />
+               ) : data.members.bank_name === "kkba" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/kkba.png"
+                     }
+                     alt="kkba"
+                     width={50}
+                     height={50}
+                  />
+               ) : data.members.bank_name === "ibank" ? (
+                  <Image
+                     src={
+                        "https://angpaos.games/wp-content/uploads/2023/03/ibank.png"
+                     }
+                     alt="ibank"
+                     width={50}
+                     height={50}
+                  />
+               ) : (
+                  ""
+               )}
             </Grid>
-         ),
-      },
-      {
-         field: "bank_number",
-         title: "ธนาคาร",
-         align: "center",
-         minWidth: "150px",
-         render: (item) => (
-            <Grid container >
-               <Grid item xs={12} >
-                  <Grid >
-                     <CopyToClipboard text={item.members?.bank_number} >
-                        <div style={{
-                           "& .MuiButton-text": {
-                              "&:hover": {
-                                 // backgroundColor: "#9CE1BC",
-                                 // color: "blue",
-                                 textDecoration: "underline blue 1px",
-                              }
+            <Grid item xs={9}>
+               <Grid sx={{ ml: 3, mt: 1 }}>
+                  <CopyToClipboard text={data.members.bank_number}>
+                     <div style={{
+                        "& .MuiButton-text": {
+                           "&:hover": {
+                              // backgroundColor: "#9CE1BC",
+                              // color: "blue",
+                              textDecoration: "underline blue 1px",
                            }
-                        }} >
-                           <Button sx={{
+                        }
+                     }} >
+                        <Button
+                           sx={{
                               fontSize: "14px",
                               p: 0,
                               color: "blue",
                            }}
-                              onClick={handleClickSnackbar} >
-                              {item.members?.bank_number}
-                           </Button>
-                        </div>
-                     </CopyToClipboard>
-                  </Grid>
-                  <Grid >
-                     <Typography sx={{ fontSize: "14px" }}> {item.members?.name}</Typography>
-                  </Grid>
-                  <Grid sx={{ ml: 1 }} >
-                     <Typography sx={{ fontSize: "14px" }}> {item.bank_account_name} </Typography>
-                  </Grid>
+                           onClick={handleClickSnackbar}
+                        >
+                           {data.members.bank_number}
+                        </Button>
+                     </div>
+                  </CopyToClipboard>
+               </Grid>
+               <Grid sx={{ ml: 3, }}>
+                  <Typography sx={{ fontSize: "14px" }}>
+                     {data.members.fname}    {data.members.lname}
+                  </Typography>
                </Grid>
             </Grid>
-         ),
+         </Grid >,
       },
-      {
-         field: "bank_name",
-         title: "ชื่อผู้ใช้งาน",
-         align: "center",
-         render: (item) => (
-            <Grid container >
-               <Grid item xs={12} >
-                  <Grid>
-                     <CopyToClipboard text={item.members?.username} >
-                        <div style={
-                           {
-                              "& .MuiButton-text": {
-                                 "&:hover": {
-                                    // backgroundColor: "#9CE1BC",
-                                    // color: "blue",
-                                    textDecoration: "underline blue 1px",
-                                 }
-                              }
-                           }
-                        } >
-                           <Button sx={
-                              {
-                                 fontSize: "14px",
-                                 p: 0,
-                                 color: "blue",
-                              }
-                           }
-                              onClick={handleClickSnackbar} >
-                              {item.members?.username}
-                           </Button>
-                        </div>
-                     </CopyToClipboard>
-                  </Grid>
-               </Grid>
-            </Grid>
-         ),
-      },
-      {
-         title: "ยอดเงินถอน",
-         align: "center",
-         minWidth: "130px",
-         render: (item) => (
-            <>
-               <Grid container justifyContent="center" >
-                  <Grid >
-                     <Typography sx={{ fontSize: "14px" }} >
-                        {Intl.NumberFormat("TH", { style: "currency", currency: "THB", }).format(parseInt(item.credit))}
-                     </Typography>
-                  </Grid>
 
-               </Grid>
-            </>
-         ),
-      },
       {
-         title: "ประเภท",
-         align: "center",
-         render: (item) => (<
-            Chip label={
-               item.transfer_type === "WITHDRAW" ?
+         title: 'Username',
+         dataIndex: 'username',
+         render: (item, data) => (
+            <CopyToClipboard text={item}>
+               <div style={{
+                  "& .MuiButton-text": {
+                     "&:hover": {
+                        // backgroundColor: "#9CE1BC",
+                        // color: "blue",
+                        textDecoration: "underline blue 1px",
+                     }
+                  }
+               }} >
+                  <Button
+                     sx={{
+                        fontSize: "14px",
+                        p: 0,
+                        color: "blue",
+                     }}
+                     onClick={handleClickSnackbar}
+                  >
+                     {item}
+                  </Button>
+               </div>
+            </CopyToClipboard>
+         ),
+         ...getColumnSearchProps('username'),
+
+      },
+
+      {
+         title: 'ยอดเงินถอน',
+         dataIndex: 'credit',
+         align: 'center',
+         render: (item, data) => (
+            <Grid container justifyContent="center" >
+               <Grid >
+                  <Typography sx={{ fontSize: "14px" }} >
+                     {Intl.NumberFormat("TH", { style: "currency", currency: "THB", }).format(parseInt(item))}
+                  </Typography>
+               </Grid>
+
+            </Grid>
+         )
+      },
+
+      {
+         title: 'ประเภท',
+         dataIndex: 'transfer_type',
+         align: 'center',
+         render: (item, data) => (
+            <Chip label={
+               item === "WITHDRAW" ?
                   "ถอนเงิน" :
-                  item.transfer_type === "queue" ?
+                  item === "queue" ?
                      "อยู่ในคิว" :
-                     item.transfer_type === "Normal" ?
+                     item === "Normal" ?
                         "ปกติ" :
-                        item.transfer_type === "Create" ?
+                        item === "Create" ?
                            "ปกติ" :
-                           item.transfer_type === "Approve" ?
+                           item === "Approve" ?
                               "อนุมัติ" :
-                              item.transfer_type === "manual" ?
+                              item === "manual" ?
                                  "ถอนมือ" :
-                                 item.transfer_type === "Manual" ?
+                                 item === "Manual" ?
                                     "ถอนมือ" :
-                                    item.transfer_type === "Success" ?
+                                    item === "Success" ?
                                        "อนุมัติ" :
-                                       item.transfer_type === "-" ?
+                                       item === "-" ?
                                           "-" :
-                                          item.transfer_type === "null" ?
+                                          item === "null" ?
                                              "-" :
-                                             item.transfer_type === "Process" ?
+                                             item === "Process" ?
                                                 "ดำเนินการ" :
-                                                item.transfer_type === "Withdraw Success" ?
+                                                item === "Withdraw Success" ?
                                                    "ปกติ" :
-                                                   item.transfer_type === "wait OTP" ?
+                                                   item === "wait OTP" ?
                                                       "ปกติ" :
                                                       "-"
             }
-            size="small"
-            style={
-               {
-                  padding: 10,
-                  backgroundColor: item.transfer_type === "WITHDRAW" ?
-                     "#16539B" :
-                     item.transfer_type === "queue" ?
+               size="small"
+               style={
+                  {
+                     padding: 10,
+                     backgroundColor: item === "WITHDRAW" ?
                         "#16539B" :
-                        item.transfer_type === "Normal" ?
+                        item === "queue" ?
                            "#16539B" :
-                           item.transfer_type === "Create" ?
-                              "#129A50" :
-                              item.transfer_type === "Approve" ?
-                                 "#16539B" :
-                                 item.transfer_type === "manual" ?
-                                    "#FFB946" :
-                                    item.transfer_type === "Manual" ?
+                           item === "Normal" ?
+                              "#16539B" :
+                              item === "Create" ?
+                                 "#129A50" :
+                                 item === "Approve" ?
+                                    "#16539B" :
+                                    item === "manual" ?
                                        "#FFB946" :
-                                       item.transfer_type === "Success" ?
-                                          "#129A50" :
-                                          item.transfer_type === "-" ?
-                                             "gray" :
-                                             item.transfer_type === "null" ?
+                                       item === "Manual" ?
+                                          "#FFB946" :
+                                          item === "Success" ?
+                                             "#129A50" :
+                                             item === "-" ?
                                                 "gray" :
-                                                item.transfer_type === "Process" ?
-                                                   "#16539B" :
-                                                   item.transfer_type === "Withdraw Success" ?
-                                                      "#129A50" :
-                                                      item.transfer_type === "wait OTP" ?
+                                                item === "null" ?
+                                                   "gray" :
+                                                   item === "Process" ?
+                                                      "#16539B" :
+                                                      item === "Withdraw Success" ?
                                                          "#129A50" :
-                                                         "gray",
-                  color: "#eee",
+                                                         item === "wait OTP" ?
+                                                            "#129A50" :
+                                                            "gray",
+                     color: "#eee",
+                  }
                }
-            }
-         />
-         ),
+            />
+         )
       },
+
       {
-         field: "create_at",
+         dataIndex: "create_at",
          title: "วันที่ถอน",
          align: "center",
-         minWidth: "120px",
-      },
-      {
-         field: "update_at",
-         title: "วันที่อัพเดท",
-         align: "center",
-         minWidth: "130px",
          render: (item) => (
-            <>
-               <Grid container justifyContent="center" >
-                  <Grid >
-                     <Typography sx={{ fontSize: "14px" }} > {item.update_at}</Typography>
-                  </Grid>
-               </Grid>
-            </>
+            <Typography
+               style={{
+                  fontSize: '14px'
+               }}
+            >{item}</Typography>
          ),
       },
+
       {
-         field: "transfer_by",
+         dataIndex: "update_at",
+         title: "วันที่อัพเดท",
+         align: "center",
+         render: (item) => (
+            <Typography
+               style={{
+                  fontSize: '14px'
+               }}
+            >{item}</Typography>
+         ),
+      },
+
+      {
+         dataIndex: "transfer_by",
          title: "ทำโดย",
          align: "center",
-         minWidth: "100px"
+         render: (item) => (
+            <Typography
+               style={{
+                  fontSize: '14px'
+               }}
+            >{item}</Typography>
+         ),
       },
 
       {
          title: "เงินในบัญชี",
          align: "center",
-         minWidth: "130px",
-         render: (item) => (
+         render: (item, data) => (
             <>
                <Grid container justifyContent="center" >
                   <Grid item xs={12}
                      sx={
                         { mb: 1 }} >
                      <Chip label={
-                        item.credit_before ?
-                           item.credit_before :
+                        data.credit_before ?
+                           data.credit_before :
                            "0.00"
                      }
                         size="small"
@@ -877,8 +977,8 @@ function withdrawpending() {
                      /> </Grid>
                   <Grid item xs={12} >
                      <Chip label={
-                        item.credit_after ?
-                           item.credit_after :
+                        data.credit_after ?
+                           data.credit_after :
                            "0.00"
                      }
                         size="small"
@@ -890,35 +990,41 @@ function withdrawpending() {
                               color: "#eee",
                            }
                         }
-                     /> </Grid> </Grid> </>
+                     />
+                  </Grid>
+               </Grid>
+            </>
          ),
       },
+
+
       {
          title: "เปลี่ยนสถานะ",
          align: "center",
-         minWidth: "140px",
-         render: (item) => {
-            return (
-               <>
-                  <IconButton disabled={item.status_transction !== "Reject"}
-                     onClick={
-                        () => {
-                           setOpenDialogText({
-                              open: true,
-                              data: item,
-                              type: "change_status",
-                           });
-                        }
-                     } >
-                     <EditIcon color={
-                        item.status_transction !== "Reject" ?
-                           "gray" :
-                           "secondary2"
+         render: (item, data) => (
+            <>
+               <IconButton disabled={data.status_transction !== "Reject"}
+                  onClick={
+                     () => {
+                        setOpenDialogText({
+                           open: true,
+                           data: data,
+                           type: "change_status",
+                        });
                      }
-                     /> </IconButton> </>
-            );
-         },
+                  } >
+                  <EditIcon color={
+                     data.status_transction !== "Reject" ?
+                        "gray" :
+                        "secondary2"
+                  }
+                  />
+               </IconButton>
+            </>
+         ),
       },
+
+
       // {
       //    title: "สลิป",
       //    align: "center",
@@ -953,12 +1059,8 @@ function withdrawpending() {
                {bankData.map((item) =>
                   <Paper sx={
                      {
-                        // backgroundImage:
-                        //   "url(https://angpaos.games/wp-content/uploads/2023/03/BG-wallet.jpg)",
-                        // backgroundRepeat: "no-repeat",
-                        // backgroundSize: "cover",
-                        // backgroundPosition: "center",
-                        bgcolor: '#0072B1',
+                        background: "linear-gradient(#41A3E3, #0072B1)",
+                        // bgcolor: '#0072B1',
                         p: 2,
                         height: 150,
                         width: "400px",
@@ -1260,276 +1362,23 @@ function withdrawpending() {
             </Grid>
          </Paper>
 
-         {/* <Grid container sx={{ mt: 2 }} >
-            <Grid item container xs={12} sx={{ mb: 3 }} >
-               <TextField label="เริ่ม"
-                  style={{
-                     marginRight: "8px",
-                     marginTop: "8px",
-                     backgroundColor: "white",
-                     borderRadius: 4,
-                  }}
-                  variant="outlined"
-                  size=""
-                  type="datetime-local"
-                  name="start"
-                  value={selectedDateRange.start}
-                  onChange={(e) => {
-                     setSelectedDateRange({
-                        ...selectedDateRange,
-                        [e.target.name]: e.target.value,
-                     });
-                  }}
-                  InputLabelProps={{ shrink: true, }}
-               />
-               <TextField label="สิ้นสุด"
-                  style={{
-                     marginRight: "8px",
-                     marginTop: "8px",
-                     color: "white",
-                     backgroundColor: "white",
-                     borderRadius: 4,
-                  }}
-                  variant="outlined"
-                  size=""
-                  type="datetime-local"
-                  name="end"
-                  value={selectedDateRange.end}
-                  onChange={(e) => {
-                     setSelectedDateRange({
-                        ...selectedDateRange,
-                        [e.target.name]: e.target.value,
-                     });
-                  }}
-                  InputLabelProps={{ shrink: true }}
-                  required />
-               <TextField variant="outlined"
-                  type="text"
-                  name="type"
-                  value={search.type}
-                  onChange={(e) => {
-                     setSearch({
-                        ...search,
-                        [e.target.name]: e.target.value,
-                     });
-                  }}
-                  sx={{ mt: 1, mr: 1, width: "220px", bgcolor: '#fff' }}
-                  select label="ประเภทการค้นหา"
-                  InputLabelProps={{ shrink: true }} >
-                  <MenuItem value="" > ทั้งหมด </MenuItem>
-                  <MenuItem value="Fail" > ผิดพลาด </MenuItem>
-                  <MenuItem value="Create" > รออนุมัติ </MenuItem>
-                  <MenuItem value="Approve" > อนุมัติแล้ว </MenuItem>
-                  <MenuItem value="Process" > กำลังทำรายการ </MenuItem>
-                  <MenuItem value="Success" > สำเร็จ </MenuItem>
-                  <MenuItem value="OTP" > OTP </MenuItem>
-                  <MenuItem value="Reject" > ยกเลิก </MenuItem>
-                  <MenuItem value="manual" > ถอนมือ </MenuItem>
-               </TextField>
+         <Paper sx={{ p: 3, mb: 2 }} >
+            <Table
+               columns={columns}
+               dataSource={dataWithdraw}
+               onChange={onChange}
+               size="small"
+               pagination={{
+                  current: page,
+                  pageSize: pageSize,
+                  onChange: (page, pageSize) => {
+                     setPage(page)
+                     setPageSize(pageSize)
+                  }
+               }}
 
-               <TextField variant="outlined"
-                  type="text"
-                  name="data"
-                  value={search.data}
-                  onChange={(e) => {
-                     setSearch({
-                        ...search,
-                        [e.target.name]: e.target.value,
-                     });
-                  }}
-                  placeholder="ค้นหาข้อมูลที่ต้องการ"
-                  sx={{ mt: 1, mr: 2, width: "220px", bgcolor: '#fff' }}
-               />
-               <Button variant="contained"
-                  style={{ marginRight: "8px", marginTop: 8, color: '#fff' }}
-                  color="primary"
-                  size="large"
-                  onClick={() => {
-                     getMemberList();
-                  }} >
-                  <Typography > ค้นหา </Typography>
-               </Button>
-            </Grid>
-         </Grid> */}
-
-         <Grid container justifyContent="space-between" >
-            <Paper sx={{ p: 3, mb: 2 }} >
-               {/* <Grid container sx={{ mt: 2 }} >
-                  <Grid item container xs={12} sx={{ mb: 3 }} >
-                     <TextField label="เริ่ม"
-                        style={{
-                           marginRight: "8px",
-                           marginTop: "8px",
-                           backgroundColor: "white",
-                           borderRadius: 4,
-                        }}
-                        variant="outlined"
-                        size="small"
-
-                        type="datetime-local"
-                        name="start"
-                        value={selectedDateRange.start}
-                        onChange={(e) => {
-                           setSelectedDateRange({
-                              ...selectedDateRange,
-                              [e.target.name]: e.target.value,
-                           });
-                        }}
-                        InputLabelProps={{ shrink: true, }}
-                     />
-                     <TextField label="สิ้นสุด"
-                        style={{
-                           marginRight: "8px",
-                           marginTop: "8px",
-                           color: "white",
-                           backgroundColor: "white",
-                           borderRadius: 4,
-                        }}
-                        variant="outlined"
-                        size="small"
-
-                        type="datetime-local"
-                        name="end"
-
-                        value={selectedDateRange.end}
-                        onChange={(e) => {
-                           setSelectedDateRange({
-                              ...selectedDateRange,
-                              [e.target.name]: e.target.value,
-                           });
-                        }}
-                        InputLabelProps={{ shrink: true }}
-                        required />
-                     <TextField variant="outlined"
-                        type="text"
-                        name="type"
-                        size="small"
-
-                        value={search.type}
-                        onChange={(e) => {
-                           setSearch({
-                              ...search,
-                              [e.target.name]: e.target.value,
-                           });
-                        }}
-                        sx={{ mt: 1, mr: 1, width: "220px", bgcolor: '#fff' }}
-                        select label="ประเภทการค้นหา"
-                        InputLabelProps={{ shrink: true }} >
-                        <MenuItem value="" > ทั้งหมด </MenuItem>
-                        <MenuItem value="Fail" > ผิดพลาด </MenuItem>
-                        <MenuItem value="Create" > รออนุมัติ </MenuItem>
-                        <MenuItem value="Approve" > อนุมัติแล้ว </MenuItem>
-                        <MenuItem value="Process" > กำลังทำรายการ </MenuItem>
-                        <MenuItem value="Success" > สำเร็จ </MenuItem>
-                        <MenuItem value="OTP" > OTP </MenuItem>
-                        <MenuItem value="Reject" > ยกเลิก </MenuItem>
-                        <MenuItem value="manual" > ถอนมือ </MenuItem>
-                     </TextField>
-
-                     <TextField variant="outlined"
-                        type="text"
-                        name="data"
-                        size="small"
-                        value={search.data}
-                        onChange={(e) => {
-                           setSearch({
-                              ...search,
-                              [e.target.name]: e.target.value,
-                           });
-                        }}
-                        label="ค้นหาชื่อผู้ใช้"
-                        placeholder="ค้นหาชื่อผู้ใช้"
-                        sx={{ mt: 1, mr: 2, width: "220px", bgcolor: '#fff' }}
-                     />
-                    <Button variant="contained"
-                        style={{ marginRight: "8px", marginTop: 8, color: '#fff' }}
-                        color="primary"
-                        size="large"
-                        onClick={() => {
-                           getMemberList();
-                        }} >
-                        <Typography > ค้นหา </Typography>
-                     </Button> 
-                     <Button
-                        variant="contained"
-                        style={{ marginRight: "8px", marginTop: 9, color: '#fff' }}
-                        color="primary"
-                        size="small"
-                        onClick={() => {
-                           getUser();
-                           getReport();
-                        }}
-                     >
-                        <SearchIcon />
-                        <Typography>ค้นหา</Typography>
-                     </Button>
-                     <Button
-                        variant="contained"
-                        style={{
-                           marginRight: "8px",
-                           marginTop: 9,
-                           backgroundColor: "#FFB946",
-                           color: '#fff'
-                        }}
-                        size="large"
-                        onClick={async () => {
-                           let start = moment()
-                              .subtract(1, "days")
-                              .format("YYYY-MM-DD 00:00");
-                           let end = moment()
-                              .subtract(1, "days")
-                              .format("YYYY-MM-DD 23:59");
-                           setSelectedDateRange({
-                              start: moment()
-                                 .subtract(1, "days")
-                                 .format("YYYY-MM-DD 00:00"),
-                              end: moment().subtract(1, "days").format("YYYY-MM-DD 23:59"),
-                           });
-                           getUser("yesterday", start, end);
-                           getReport("yesterday", start, end);
-                        }}
-                     >
-                        <Typography>เมื่อวาน</Typography>
-                     </Button>
-                     <Button
-                        variant="contained"
-                        style={{
-                           marginRight: "8px",
-                           marginTop: 9,
-                           backgroundColor: "#129A50",
-                           color: '#fff'
-                        }}
-                        size="large"
-                        onClick={async () => {
-                           let start = moment().format("YYYY-MM-DD 00:00");
-                           let end = moment().format("YYYY-MM-DD 23:59");
-                           setSelectedDateRange({
-                              start: moment().format("YYYY-MM-DD 00:00"),
-                              end: moment().format("YYYY-MM-DD 23:59"),
-                           });
-                           getUser("today", start, end);
-                           getReport("today", start, end);
-                        }}
-                     >
-                        <Typography>วันนี้</Typography>
-                     </Button>
-                  </Grid>
-               </Grid> */}
-               <Grid container justifyContent="start" >
-                  <MaterialTableForm data={dataWithdraw} columns={columns} pageSize="5" title="จัดการรายการถอน" />
-               </Grid>
-            </Paper>
-         </Grid>
-
-         {/* <Grid container justifyContent="start" >
-                <MaterialTableForm data={data} columns={columns} pageSize="5" title="จัดการรายการถอน" />
-            </Grid> */}
-
-         {/* <Paper sx={{ p: 3, mb: 2 }} >
-            <Grid container justifyContent="start" >
-               <MaterialTableForm data={data2} columns={columns2} pageSize="10" title="รายการถอนวันนี้" />
-            </Grid>
-         </Paper> */}
+            />
+         </Paper>
 
          <Dialog
             open={openDialogApprove}
@@ -1646,7 +1495,7 @@ function withdrawpending() {
             <DialogContent>
                <Grid container justifyContent="center" spacing={2}>
                   <Grid item xs={6}>
-                     <Table sx={{ border: '1px solid #eee' }}>
+                     <TableContainer >
                         <TableRow>
                            <TableCell
                               sx={{ fontWeight: "bold", width: "150px", border: '1px solid #eee' }}
@@ -1654,7 +1503,7 @@ function withdrawpending() {
                            >
                               ชื่อผู้ใช้งาน
                            </TableCell>
-                           <TableCell>{rowData.members?.username}</TableCell>
+                           <TableCell sx={{ fontWeight: "bold", width: "200px", border: '1px solid #eee' }}>{rowData.members?.username}</TableCell>
                         </TableRow>
                         <TableRow>
                            <TableCell
@@ -1663,7 +1512,7 @@ function withdrawpending() {
                            >
                               ธนาคาร
                            </TableCell>
-                           <TableCell >{rowData.members?.bank_name}</TableCell>
+                           <TableCell sx={{ fontWeight: "bold", width: "200px", border: '1px solid #eee' }}>{rowData.members?.bank_name}</TableCell>
                         </TableRow>
                         <TableRow>
                            <TableCell
@@ -1672,7 +1521,7 @@ function withdrawpending() {
                            >
                               เลขบัญชี
                            </TableCell>
-                           <TableCell >{rowData.members?.bank_number}</TableCell>
+                           <TableCell sx={{ fontWeight: "bold", width: "200px", border: '1px solid #eee' }}>{rowData.members?.bank_number}</TableCell>
                         </TableRow>
                         <TableRow>
                            <TableCell
@@ -1681,7 +1530,7 @@ function withdrawpending() {
                            >
                               ชื่อ นามสกุล
                            </TableCell>
-                           <TableCell >{rowData.bank_account_name}</TableCell>
+                           <TableCell sx={{ fontWeight: "bold", width: "200px", border: '1px solid #eee' }}>{rowData.bank_account_name}</TableCell>
                         </TableRow>
                         <TableRow>
                            <TableCell
@@ -1690,7 +1539,7 @@ function withdrawpending() {
                            >
                               เวลาที่ถอน
                            </TableCell>
-                           <TableCell >{rowData.create_at}</TableCell>
+                           <TableCell sx={{ fontWeight: "bold", width: "200px", border: '1px solid #eee' }}>{rowData.create_at}</TableCell>
                         </TableRow>
                         <TableRow>
                            <TableCell
@@ -1701,7 +1550,7 @@ function withdrawpending() {
                            </TableCell>
                            <TableCell sx={{ fontWeight: "bold" }} > {Intl.NumberFormat("TH").format(parseInt(rowData.credit))} บาท</TableCell>
                         </TableRow>
-                     </Table>
+                     </TableContainer>
                   </Grid>
 
                   <Grid item xs={6}>
