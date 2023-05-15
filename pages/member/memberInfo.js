@@ -75,11 +75,33 @@ function memberInfo() {
       let resTran = res.data.transaction
       // setTransaction(resData.transaction)
       let no = 1;
+      let credit = []
+      let sumCredit = 0
+      let credit_before = []
+      let sumCreditBefore = 0
+      let credit_after = []
+      let sumCreditAfter = 0
+
+
+      for (const item of resData.transaction) {
+        credit.push(parseInt(item.credit))
+        credit_before.push(parseInt(item.credit_before))
+        credit_after.push(parseInt(item.credit_after))
+
+      }
+      sumCredit = credit.reduce((a, b) => a + b, 0)
+      sumCreditBefore = credit_before.reduce((a, b) => a + b, 0)
+      sumCreditAfter = credit_after.reduce((a, b) => a + b, 0)
 
       resTran.map((item) => {
         item.no = no++;
         item.create_at = moment(item.create_at).format('DD/MM/YYYY HH:mm')
+        item.sumCredit = sumCredit
+        item.sumCreditBefore = sumCreditBefore
+        item.sumCreditAfter = sumCreditAfter
       });
+
+      console.log('resTran', resTran)
 
       setTransaction(resTran)
       setDataMember(resData);
@@ -425,22 +447,36 @@ function memberInfo() {
           let totalCredit = 0;
           let totalBefore = 0;
           let totalAfter = 0;
+          let totalSumCredit = ''
+          let totalSumCreditBefore = ''
+          let totalSumCreditAfter = ''
 
-          pageData.forEach(({ credit, credit_before, credit_after }) => {
+          pageData.forEach(({ credit, credit_before, credit_after, sumCredit, sumCreditBefore, sumCreditAfter  }) => {
             totalCredit += parseInt(credit);
             totalBefore += parseInt(credit_before);
             totalAfter += parseInt(credit_after);
-
+            totalSumCredit = sumCredit
+            totalSumCreditBefore = sumCreditBefore
+            totalSumCreditAfter = sumCreditAfter
 
           });
           return (
             <>
               <Table.Summary.Row>
-                <Table.Summary.Cell />
+                <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold" }} > ยอดรวม </Typography> </Table.Summary.Cell>
+
                 <Table.Summary.Cell />
                 <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold" }} >{Intl.NumberFormat("TH").format(parseInt(totalCredit))}</Typography> </Table.Summary.Cell>
                 <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold", color: 'red' }} >{Intl.NumberFormat("TH").format(parseInt(totalBefore))}</Typography> </Table.Summary.Cell>
                 <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold", color: '#129A50' }} >{Intl.NumberFormat("TH").format(parseInt(totalAfter))}</Typography>  </Table.Summary.Cell>
+
+              </Table.Summary.Row>
+              <Table.Summary.Row>
+                <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold" }} > ยอดรวมทั้งหมด </Typography> </Table.Summary.Cell>
+                <Table.Summary.Cell />
+                <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold" }} >{!totalSumCredit ? 0 : Intl.NumberFormat("TH").format(parseInt(totalSumCredit))}</Typography> </Table.Summary.Cell>
+                <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold", color: 'red' }} >{!totalSumCreditBefore ? 0 : Intl.NumberFormat("TH").format(parseInt(totalSumCreditBefore))}</Typography> </Table.Summary.Cell>
+                <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold", color: '#129A50' }} >{!totalSumCreditAfter ? 0 : Intl.NumberFormat("TH").format(parseInt(totalSumCreditAfter))}</Typography>  </Table.Summary.Cell>
 
               </Table.Summary.Row>
             </>

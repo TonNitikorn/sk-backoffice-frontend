@@ -981,29 +981,29 @@ function memberTable() {
                   setPageSize(pageSize)
                }
             }}
-            summary={(pageData) => {
-               let totalCredit = 0;
+         // summary={(pageData) => {
+         //    let totalCredit = 0;
 
-               pageData.forEach(({ credit }) => {
-                  totalCredit += parseInt(credit);
+         //    pageData.forEach(({ credit }) => {
+         //       totalCredit += parseInt(credit);
 
 
-               });
-               return (
-                  <>
-                     <Table.Summary.Row>
-                        <Table.Summary.Cell> <Typography ></Typography></Table.Summary.Cell>
-                        <Table.Summary.Cell />
-                        <Table.Summary.Cell />
-                        <Table.Summary.Cell />
-                        <Table.Summary.Cell >
-                           <Typography align="center">{totalCredit}</Typography>
-                        </Table.Summary.Cell>
+         //    });
+         //    return (
+         //       <>
+         //          <Table.Summary.Row>
+         //             <Table.Summary.Cell> <Typography ></Typography></Table.Summary.Cell>
+         //             <Table.Summary.Cell />
+         //             <Table.Summary.Cell />
+         //             <Table.Summary.Cell />
+         //             <Table.Summary.Cell >
+         //                <Typography align="center">{Intl.NumberFormat("TH").format(parseInt(totalCredit))}</Typography>
+         //             </Table.Summary.Cell>
 
-                     </Table.Summary.Row>
-                  </>
-               );
-            }}
+         //          </Table.Summary.Row>
+         //       </>
+         //    );
+         // }}
          />
 
          <Dialog
