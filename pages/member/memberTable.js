@@ -1545,13 +1545,12 @@ function memberTable() {
                                  }}
                               />
                            ),
-                           filters: [
-                              { text: 'ถอนเงิน', value: 'WITHDRAW' },
-                              { text: 'ฝากเงิน', value: 'DEPOSIT' },
-                           ],
-                           onFilter: (value, record) => record.transfer_type.indexOf(value) === 0,
+                           // filters: [
+                           //    { text: 'ถอนเงิน', value: 'WITHDRAW' },
+                           //    { text: 'ฝากเงิน', value: 'DEPOSIT' },
+                           // ],
+                           // onFilter: (value, record) => record.transfer_type.indexOf(value) === 0,
                         },
-
                         {
                            dataIndex: 'credit_before',
                            title: "เครดิตก่อนทำรายการ",
