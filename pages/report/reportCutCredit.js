@@ -17,6 +17,9 @@ import Layout from '../../theme/Layout'
 import { Table, Input, Space, } from 'antd';
 import SearchIcon from '@mui/icons-material/Search';
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import excel from '../../assets/excel.png'
+import { CSVLink } from "react-csv";
+import Image from "next/image";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -159,12 +162,32 @@ function reportCutCredit() {
       let data = res.data.listDeposit
       let dataWithdraw = data.filter((item) => item.transfer_type === "WITHDRAW")
 
-      let noWith = 1
+      let no = 1
       dataWithdraw.map(item => {
-        item.no = noWith++
         item.transfer_type = item.transfer_type === "DEPOSIT" ? 'เติมเครดิต' : 'ตัดเครดิต'
         item.username = item.members?.username
         item.create_at = moment(item.create_at).format('DD/MM/YYYY HH:mm')
+        delete item.affiliate_point
+        delete item.affiliate_point_after
+        delete item.affiliate_point_before
+        delete item.detail_bank
+        delete item.member_uuid
+        delete item.no
+        delete item.point
+        delete item.point_after
+        delete item.point_before
+        delete item.prefix
+        delete item.slip
+        delete item.status_bank
+        delete item.status_provider
+        delete item.uuid
+        delete item.update_at
+        delete item.members
+        delete item.by_bank
+        delete item.amount
+        delete item.amount_before
+        delete item.amount_after
+        item.no = no++;
       })
       setWithdraw(dataWithdraw)
       setLoading(false);
@@ -188,7 +211,6 @@ function reportCutCredit() {
       }
     }
   };
-  console.log('withdarw', withdraw)
 
   const columns = [
     {
@@ -325,7 +347,7 @@ function reportCutCredit() {
           style={{
             fontSize: '14px'
           }}
-        >{item}</Typography>
+        >{item === null ? "-" : item}</Typography>
       ),
     },
   ]
@@ -455,7 +477,31 @@ function reportCutCredit() {
           </Grid>
         </Grid>
 
+        <Grid
+          container
+          direction="row"
+          justifyContent="flex-end"
+          alignItems="center" >
 
+          {/* <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px" }}  > รายการเดินบัญชี </Typography> */}
+
+          <CSVLink
+            data={withdraw}
+            filename={'รายการตัดเครดิต ตั้งแต่วันที่ ' + moment(selectedDateRange.start).format("YYYY-MM-DD") + ' ถึง ' + moment(selectedDateRange.end).format("YYYY-MM-DD 00:00")}
+
+          >
+            <Button
+              variant="outlined"
+              sx={{ mr: "8px", my: "10px", justifyContent: "flex-end", border: "1px solid #C0C0C0", boxShadow: 1, }}
+            >
+              <Image src={excel} alt="excel" />{" "}
+              <Typography variant="h7" sx={{ color: "black", ml: 1 }}>
+                {" "}
+                Export Excel
+              </Typography>
+            </Button>
+          </CSVLink>
+        </Grid>
 
         <Table
           columns={columns}

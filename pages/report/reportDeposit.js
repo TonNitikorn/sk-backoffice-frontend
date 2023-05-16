@@ -68,7 +68,7 @@ function reportDeposit() {
       let transaction = res.data.transaction
       let no = 1;
       transaction.map((item) => {
-        item.no = no++;
+        
         item.create_at = moment(item.create_at).format('DD/MM/YYYY HH:mm')
         item.bank_name = item.members?.bank_name
         item.bank_number = item.members?.bank_number
@@ -93,6 +93,7 @@ function reportDeposit() {
         delete item.amount
         delete item.amount_before
         delete item.amount_after
+        item.no = no++;
         // item.credit = Intl.NumberFormat("TH").format(parseInt(item.credit))
         // item.credit_after = Intl.NumberFormat("TH").format(parseInt(item.credit_after))
         // item.credit_before = Intl.NumberFormat("TH").format(parseInt(item.credit_before))
@@ -652,7 +653,7 @@ function reportDeposit() {
           style={{
             fontSize: '14px'
           }}
-        >{item}</Typography>
+        >{item === null ? "-" : item}</Typography>
       ),
     },
   ];
@@ -876,13 +877,15 @@ function reportDeposit() {
         <Grid
           container
           direction="row"
-          justifyContent="space-between"
-          alignItems="flex-start" >
+          justifyContent="flex-end"
+          alignItems="center" >
 
-          <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px" }}  > รายการเดินบัญชี </Typography>
+          {/* <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px" }}  > รายการเดินบัญชี </Typography> */}
 
           <CSVLink
             data={filterSuccess.length > 0 ? filterSuccess : filterCancel.length > 0 ? filterCancel : report}
+            filename={'รายการฝาก ตั้งแต่วันที่ ' + moment(selectedDateRange.start).format("YYYY-MM-DD") + ' ถึง ' + moment(selectedDateRange.end).format("YYYY-MM-DD 00:00")}
+
           >
             <Button
               variant="outlined"
