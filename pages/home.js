@@ -18,6 +18,7 @@ import {
 import hostname from "../utils/hostname";
 import axios from "axios";
 import scbL from "../assets/scbL.png";
+import excel from "../assets/excel.png";
 import Image from "next/image";
 import moment from "moment/moment";
 import { CopyToClipboard } from "react-copy-to-clipboard";
@@ -45,6 +46,7 @@ function home() {
     const [bankData, setBankData] = useState([]);
     const [page, setPage] = useState(1)
     const [pageSize, setPageSize] = useState(10)
+    const [exportData, setExportData] = useState([])
 
     const handleClickSnackbar = () => {
         setOpen(true);
@@ -72,8 +74,26 @@ function home() {
                 item.bank_name = item.members?.bank_name
                 item.bank_number = item.members?.bank_number
                 item.username = item.members?.username
+                delete item.affiliate_point
+                delete item.affiliate_point_after
+                delete item.affiliate_point_before
+                delete item.detail_bank
+                delete item.member_uuid
+                delete item.no
+                delete item.point
+                delete item.point_after
+                delete item.point_before
+                delete item.prefix
+                delete item.slip
+                delete item.status_bank
+                delete item.status_provider
+                delete item.uuid
+                delete item.update_at
+                delete item.members
+                delete item.by_bank
             });
             setDataLast(resData);
+
             setLoading(false);
 
         } catch (error) {
@@ -228,7 +248,6 @@ function home() {
     const onChange = (pagination, filters, sorter, extra) => {
         console.log('params', pagination, filters, sorter, extra);
     };
-    console.log('dataLast', dataLast)
 
     const columns = [
         {
@@ -606,7 +625,7 @@ function home() {
             <CssBaseline />
             <Paper sx={{ p: 3, mb: 2 }} >
                 <Typography variant="h5" sx={{ mb: 1, textDecoration: "underline #41A3E3 3px" }}>บัญชีเงินฝาก</Typography>
-                
+
                 <Grid container justifyContent="start" >
                     {bankData.map((item) =>
                         <Paper sx={
@@ -871,6 +890,7 @@ function home() {
                 <Grid item xs={4}>
                     <Paper sx={{ p: 3 }}>
                         <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px" }}>รายการรออนุมัติ</Typography>
+
                         <Paper elevation={3} sx={{ mt: 1, borderRadius: 1, p: 3 }}>
                             <Grid container
                                 direction="row"
@@ -1150,16 +1170,32 @@ function home() {
                 </Grid>
                 <Grid item xs={8}>
                     <Paper sx={{ p: 3 }}>
-                        <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px" }}  > รายการเดินบัญชี </Typography>
 
-                        <CSVLink
-                    data={dataLast}
-                    onClick={() => {
-                        console.log("clicked")
-                    }}
-                >
-                    test export
-                </CSVLink>
+                        <Grid
+                            container
+                            direction="row"
+                            justifyContent="space-between"
+                            alignItems="flex-start" >
+
+                            <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px" }}  > รายการเดินบัญชี </Typography>
+
+
+                            <CSVLink
+                                data={dataLast}
+                            >
+                                <Button
+                                    variant="outlined"
+                                    sx={{ mr: "8px", my: "10px", justifyContent: "flex-end", border: "1px solid #C0C0C0", boxShadow: 1, }}
+                                >
+                                    <Image src={excel} alt="excel" />{" "}
+                                    <Typography variant="h7" sx={{ color: "black", ml: 1 }}>
+                                        {" "}
+                                        Export Excel
+                                    </Typography>
+                                </Button>
+                            </CSVLink>
+                        </Grid>
+
                         <Table
                             columns={columns}
                             dataSource={dataLast}

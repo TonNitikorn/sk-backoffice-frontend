@@ -21,6 +21,8 @@ import withAuth from "../../routes/withAuth";
 import LoadingModal from "../../theme/LoadingModal";
 import { Table, Input, Space, } from 'antd';
 import SearchIcon from '@mui/icons-material/Search';
+import excel from '../../assets/excel.png'
+import { CSVLink } from "react-csv";
 
 function reportDeposit() {
   const [selectedDateRange, setSelectedDateRange] = useState({
@@ -71,6 +73,26 @@ function reportDeposit() {
         item.bank_name = item.members?.bank_name
         item.bank_number = item.members?.bank_number
         item.username = item.members?.username
+        delete item.affiliate_point
+        delete item.affiliate_point_after
+        delete item.affiliate_point_before
+        delete item.detail_bank
+        delete item.member_uuid
+        delete item.no
+        delete item.point
+        delete item.point_after
+        delete item.point_before
+        delete item.prefix
+        delete item.slip
+        delete item.status_bank
+        delete item.status_provider
+        delete item.uuid
+        delete item.update_at
+        delete item.members
+        delete item.by_bank
+        delete item.amount
+        delete item.amount_before
+        delete item.amount_after
         // item.credit = Intl.NumberFormat("TH").format(parseInt(item.credit))
         // item.credit_after = Intl.NumberFormat("TH").format(parseInt(item.credit_after))
         // item.credit_before = Intl.NumberFormat("TH").format(parseInt(item.credit_before))
@@ -553,7 +575,7 @@ function reportDeposit() {
       ),
     },
 
-    
+
     {
       dataIndex: 'status_transction',
       title: "สถานะ",
@@ -851,7 +873,29 @@ function reportDeposit() {
         </Grid>
 
 
+        <Grid
+          container
+          direction="row"
+          justifyContent="space-between"
+          alignItems="flex-start" >
 
+          <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px" }}  > รายการเดินบัญชี </Typography>
+
+          <CSVLink
+            data={filterSuccess.length > 0 ? filterSuccess : filterCancel.length > 0 ? filterCancel : report}
+          >
+            <Button
+              variant="outlined"
+              sx={{ mr: "8px", my: "10px", justifyContent: "flex-end", border: "1px solid #C0C0C0", boxShadow: 1, }}
+            >
+              <Image src={excel} alt="excel" />{" "}
+              <Typography variant="h7" sx={{ color: "black", ml: 1 }}>
+                {" "}
+                Export Excel
+              </Typography>
+            </Button>
+          </CSVLink>
+        </Grid>
         <Table
           columns={columns}
           dataSource={filterSuccess.length > 0 ? filterSuccess : filterCancel.length > 0 ? filterCancel : report}
