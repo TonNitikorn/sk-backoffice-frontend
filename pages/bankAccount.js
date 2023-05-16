@@ -641,10 +641,10 @@ function bankAccount() {
         />
       ),
       filters: [
-        { text: 'ถอน', value: 'WITHDRAW' },
-        { text: 'ฝาก', value: 'DEPOSIT' },
+        { text: 'เปิดใช้งาน', value: 'ACTIVE' },
+        { text: 'ปิดใช้งาน', value: 'INACTIVE' },
       ],
-      onFilter: (value, record) => record.transfer_type.indexOf(value) === 0,
+      onFilter: (value, record) => record.status.indexOf(value) === 0,
     },
 
     {
