@@ -272,7 +272,7 @@ function reportAddCredit() {
           </div>
         </CopyToClipboard>
       ),
-      ...getColumnSearchProps('tel'),
+      ...getColumnSearchProps('username'),
 
     },
 

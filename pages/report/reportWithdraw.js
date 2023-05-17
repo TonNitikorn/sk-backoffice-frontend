@@ -534,7 +534,7 @@ function reportDeposit() {
           </div>
         </CopyToClipboard>
       ),
-      ...getColumnSearchProps('tel'),
+      ...getColumnSearchProps('username'),
 
     },
     {

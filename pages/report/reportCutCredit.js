@@ -271,7 +271,7 @@ function reportCutCredit() {
           </div>
         </CopyToClipboard>
       ),
-      ...getColumnSearchProps('tel'),
+      ...getColumnSearchProps('username'),
 
     },
 
