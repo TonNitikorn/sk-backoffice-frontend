@@ -127,6 +127,7 @@ function reportDeposit() {
   };
 
   console.log('report', report)
+  console.log('total', total)
 
   const sumData = (transaction, sumCredit) => {
     let dataSuccess = transaction.filter((item) => item.status_transction === 'SUCCESS')
@@ -782,7 +783,7 @@ function reportDeposit() {
             <CardContent>
               <Typography variant="h7" sx={{ color: "#FFB946" }}>จำนวนรายการ</Typography>
               <Typography variant="h5" sx={{ textAlign: "center", color: "#ffff", mt: 2 }}>
-                {Intl.NumberFormat("TH").format(parseInt(total.totalList))}
+                {total.totalList}
               </Typography>
               <Grid sx={{ textAlign: 'right' }}>
                 <Button
@@ -797,7 +798,7 @@ function reportDeposit() {
             <CardContent>
               <Typography variant="h7" sx={{ color: "#FFB946" }}>สถานะสำเร็จทั้งหมด</Typography>
               <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>
-                {Intl.NumberFormat("TH").format(parseInt(total.totalSuccess))}</Typography>
+                {total.totalSuccess}</Typography>
               <Grid sx={{ textAlign: 'right' }}>
                 <Button
                   sx={{ color: "#eee" }}
@@ -812,7 +813,7 @@ function reportDeposit() {
             <CardContent>
               <Typography variant="h7" sx={{ color: "#FFB946" }}>สถานะยกเลิกทั้งหมด</Typography>
               <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>
-                {Intl.NumberFormat("TH").format(parseInt(total.totalCancel))} </Typography>
+                {total.totalCancel} </Typography>
               <Grid sx={{ textAlign: 'right' }}>
                 <Button
                   sx={{ color: "#eee" }}
@@ -827,7 +828,7 @@ function reportDeposit() {
             <CardContent>
               <Typography variant="h7" sx={{ color: '#2ECC71' }}>ยอดรวมเงินทั้งหมด</Typography>
               <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>
-                {Intl.NumberFormat("TH").format(parseInt(total.sumTotal))}  </Typography>
+                {total.sumTotal}  </Typography>
               <Grid sx={{ textAlign: 'right' }}>
                 <Button
                   sx={{ color: "#eee" }}>
@@ -855,7 +856,7 @@ function reportDeposit() {
             <CardContent>
               <Typography variant="h7" sx={{ color: '#2ECC71' }}>ยอดรวมเงินยกเลิกทั้งหมด</Typography>
               <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>
-                {Intl.NumberFormat("TH").format(parseInt(total.sumCancel))}   </Typography>
+                {total.sumCancel}   </Typography>
               <Grid sx={{ textAlign: 'right' }}>
                 <Button
                   sx={{ color: "#eee" }}>
