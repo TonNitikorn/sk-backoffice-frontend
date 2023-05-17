@@ -495,7 +495,7 @@ function withdrawpending() {
                   item === "CREATE" ?
                      "รออนุมัติ" :
                      item === "APPROVE" ?
-                        "อนุมัติแล้ว" :
+                        "รออนุมัติ" :
                         item === "PROCESS" ?
                            "รอทำรายการ" :
                            item === "SUCCESS" ?
