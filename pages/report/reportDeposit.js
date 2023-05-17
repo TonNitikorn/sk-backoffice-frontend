@@ -67,8 +67,28 @@ function reportDeposit() {
       let resData = res.data;
       let transaction = res.data.transaction
       let no = 1;
+      let credit = []
+      let sumCredit = 0
+      let credit_before = []
+      let sumCreditBefore = 0
+      let credit_after = []
+      let sumCreditAfter = 0
+
+
+      for (const item of resData.transaction) {
+        credit.push(parseInt(item.credit))
+        credit_before.push(parseInt(item.credit_before))
+        credit_after.push(parseInt(item.credit_after))
+
+      }
+      sumCredit = credit.reduce((a, b) => a + b, 0)
+      sumCreditBefore = credit_before.reduce((a, b) => a + b, 0)
+      sumCreditAfter = credit_after.reduce((a, b) => a + b, 0)
+
       transaction.map((item) => {
-        
+        item.sumCredit = sumCredit
+        item.sumCreditBefore = sumCreditBefore
+        item.sumCreditAfter = sumCreditAfter
         item.create_at = moment(item.create_at).format('DD/MM/YYYY HH:mm')
         item.bank_name = item.members?.bank_name
         item.bank_number = item.members?.bank_number
@@ -533,7 +553,7 @@ function reportDeposit() {
           </div>
         </CopyToClipboard>
       ),
-      ...getColumnSearchProps('tel'),
+      ...getColumnSearchProps('username'),
 
     },
     {
@@ -559,7 +579,7 @@ function reportDeposit() {
           style={{
             fontSize: '14px'
           }}
-        >{item}</Typography>
+        >{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
       ),
     },
     {
@@ -572,7 +592,7 @@ function reportDeposit() {
           style={{
             fontSize: '14px'
           }}
-        >{item}</Typography>
+        >{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
       ),
     },
 
@@ -583,42 +603,43 @@ function reportDeposit() {
       align: "center",
       render: (item) => (
         <Chip
-          label={item === "MANUAL" ? "สำเร็จ" : "ยกเลิก"}
+          label={item === "MANUAL" ? 'เติมมือ' : item === 'SUCCESS' ? "สำเร็จ" : "ยกเลิก"}
           size="small"
           style={{
             padding: 10,
-            backgroundColor: item === "MANUAL" ? "#129A50" : "#BB2828",
+            backgroundColor: item === "MANUAL" ? "#4a5eb3" : item === 'SUCCESS' ? "#129A50" : "#BB2828",
             color: "#eee",
-          }}
+          }}S
         />
       ),
       filters: [
         { text: 'สำเร็จ', value: 'SUCCESS' },
+        { text: 'เติมมือ', value: 'MANUAL' },
         { text: 'ยกเลิก', value: 'CANCEL' },
       ],
-      onFilter: (value, record) => record.transfer_type.indexOf(value) === 0,
+      onFilter: (value, record) => record.status_transction.indexOf(value) === 0,
     },
-    {
-      dataIndex: 'status_transction',
-      title: "รูปแบบการทำรายการ",
-      align: "center",
-      render: (item) => (
-        <Chip
-          label={item === "MANUAL" ? "เติมมือ" : "AUTO"}
-          size="small"
-          style={{
-            padding: 10,
-            backgroundColor: item === "MANUAL" ? "#4a5eb3" : "#129A50",
-            color: "#eee",
-          }}
-        />
-      ),
-      filters: [
-        { text: 'ถอน', value: 'WITHDRAW' },
-        { text: 'ฝาก', value: 'DEPOSIT' },
-      ],
-      onFilter: (value, record) => record.transfer_type.indexOf(value) === 0,
-    },
+    // {
+    //   dataIndex: 'status_transction',
+    //   title: "รูปแบบการทำรายการ",
+    //   align: "center",
+    //   render: (item) => (
+    //     <Chip
+    //       label={item === "MANUAL" ? "เติมมือ" : "AUTO"}
+    //       size="small"
+    //       style={{
+    //         padding: 10,
+    //         backgroundColor: item === "MANUAL" ? "#4a5eb3" : "#129A50",
+    //         color: "#eee",
+    //       }}
+    //     />
+    //   ),
+    //   filters: [
+    //     { text: 'เติมมือ', value: 'MANUAL' },
+    //     { text: 'ออโต้', value: 'AUTO' },
+    //   ],
+    //   onFilter: (value, record) => record.transfer_type.indexOf(value) === 0,
+    // },
     {
       dataIndex: "create_at",
       title: "วันที่ทำรายการ",
@@ -911,6 +932,46 @@ function reportDeposit() {
               setPage(page)
               setPageSize(pageSize)
             }
+          }}
+          summary={(pageData) => {
+            let totalCredit = 0;
+            let totalBefore = 0;
+            let totalAfter = 0;
+            let totalSumCredit = ''
+            let totalSumCreditBefore = ''
+            let totalSumCreditAfter = ''
+
+            pageData.forEach(({ credit, credit_before, credit_after, sumCredit, sumCreditBefore, sumCreditAfter }) => {
+              totalCredit += parseInt(credit);
+              totalBefore += parseInt(credit_before);
+              totalAfter += parseInt(credit_after);
+              totalSumCredit = sumCredit
+              totalSumCreditBefore = sumCreditBefore
+              totalSumCreditAfter = sumCreditAfter
+
+            });
+            return (
+              <>
+                <Table.Summary.Row>
+                  <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold" }} > ยอดรวม </Typography> </Table.Summary.Cell>
+                  <Table.Summary.Cell />
+                  <Table.Summary.Cell />
+                  <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold" }} >{Intl.NumberFormat("TH").format(parseInt(totalCredit))}</Typography> </Table.Summary.Cell>
+                  <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold", color: 'red' }} >{Intl.NumberFormat("TH").format(parseInt(totalBefore))}</Typography> </Table.Summary.Cell>
+                  <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold", color: '#129A50' }} >{Intl.NumberFormat("TH").format(parseInt(totalAfter))}</Typography>  </Table.Summary.Cell>
+
+                </Table.Summary.Row>
+                <Table.Summary.Row>
+                  <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold" }} > ยอดรวมทั้งหมด </Typography> </Table.Summary.Cell>
+                  <Table.Summary.Cell />
+                  <Table.Summary.Cell />
+                  <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold" }} >{!totalSumCredit ? 0 : Intl.NumberFormat("TH").format(parseInt(totalSumCredit))}</Typography> </Table.Summary.Cell>
+                  <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold", color: 'red' }} >{!totalSumCreditBefore ? 0 : Intl.NumberFormat("TH").format(parseInt(totalSumCreditBefore))}</Typography> </Table.Summary.Cell>
+                  <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold", color: '#129A50' }} >{!totalSumCreditAfter ? 0 : Intl.NumberFormat("TH").format(parseInt(totalSumCreditAfter))}</Typography>  </Table.Summary.Cell>
+
+                </Table.Summary.Row>
+              </>
+            );
           }}
 
         />
