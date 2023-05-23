@@ -89,7 +89,7 @@ function Layout({ children, page }) {
           <Grid container justifyContent="flex-end" onClick={() => router.push('/profile')}>
             <Button sx={{ bgcolor: '#0465a587', mt: 1 }}>
               <AccountCircleIcon fontSize="large" sx={{ color: '#fff', mr: 1 }} />
-              <Typography sx={{ color: '#fff', fontSize: '18px', mt: 0.5 }}>
+              <Typography sx={{ color: '#fff', fontSize: '16px', mt: 0.5 , mr:1 }}>
                 {username}
               </Typography>
             </Button>
@@ -125,6 +125,7 @@ function Layout({ children, page }) {
             alt="scb"
             width={160}
             height={50}
+            onClick={()=> router.push('/dashboard')}
           />
         </Grid>
         <Divider />

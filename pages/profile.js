@@ -60,7 +60,7 @@ function profile() {
         url: `${hostname}/admin/update`,
         data: {
           // info_name: data.info_name,
-          password: data.password,
+          password: data.re_password,
           // uuid: data.uuid,
         },
       });
@@ -154,13 +154,39 @@ function profile() {
               disabled
             />
           </Grid>
-          <Grid item xs={8}>
-            <Typography sx={{ mt: 2 }}>Password: *</Typography>
+          {/* <Grid item xs={8}>
+            <Typography sx={{ mt: 2 }}>รหัสผ่านเดิม: *</Typography>
             <TextField
-              name="password"
+              name="old_password"
               type="text"
-              value={data.password || ""}
-              placeholder="Password"
+              value={data.old_password || ""}
+              placeholder="รหัสผ่านเดิม"
+              fullWidth
+              size="small"
+              onChange={(e) => handleChangeData(e)}
+              variant="outlined"
+            />
+          </Grid> */}
+          <Grid item xs={8}>
+            <Typography sx={{ mt: 2 }}>รหัสผ่านใหม่: *</Typography>
+            <TextField
+              name="new_password"
+              type="text"
+              value={data.new_password || ""}
+              placeholder="รหัสผ่านใหม่"
+              fullWidth
+              size="small"
+              onChange={(e) => handleChangeData(e)}
+              variant="outlined"
+            />
+          </Grid>
+          <Grid item xs={8}>
+            <Typography sx={{ mt: 2 }}>ยืนยันรหัสผ่านใหม่: *</Typography>
+            <TextField
+              name="re_password"
+              type="text"
+              value={data.re_password || ""}
+              placeholder="ยืนยันรหัสผ่านใหม่"
               fullWidth
               size="small"
               onChange={(e) => handleChangeData(e)}
@@ -173,7 +199,27 @@ function profile() {
                 variant="contained"
                 size="large"
                 fullWidth
-                onClick={() => editProfile()}
+                onClick={() => {
+                  if (data.new_password !== data.re_password) {
+                    Swal.fire({
+                      position: "center",
+                      icon: "warning",
+                      title: "กรุณากรอกรหัสผ่านให้ตรงกัน",
+                      showConfirmButton: false,
+                      timer: 2000,
+                    });
+                  } if (!data.new_password || !data.re_password) {
+                    Swal.fire({
+                      position: "center",
+                      icon: "error",
+                      title: "กรุณากรอกข้อมูล",
+                      showConfirmButton: false,
+                      timer: 2000,
+                    });
+                  } else {
+                    editProfile()
+                  }
+                }}
                 sx={{
                   mt: 3,
                 }}
