@@ -28,7 +28,6 @@ import {
    Tooltip,
    Legend,
 } from "chart.js";
-import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { Bar, Line } from "react-chartjs-2";
 import axios from "axios";
@@ -43,7 +42,6 @@ import { Table, Input, Space, } from 'antd';
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 import Image from "next/image";
-import Swal from "sweetalert2";
 
 ChartJS.register(
    CategoryScale,
