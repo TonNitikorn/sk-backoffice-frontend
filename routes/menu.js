@@ -173,11 +173,11 @@ export const menuSuperAdmin = [
     icon: <GroupIcon />,
   },
 
-  {
-    name: "จัดการหน้าเว็บ",
-    link: "/manageWebPages",
-    icon: <LibraryBooksIcon />,
-  },
+  // {
+  //   name: "จัดการหน้าเว็บ",
+  //   link: "/manageWebPages",
+  //   icon: <LibraryBooksIcon />,
+  // },
   {
     name: "รายงาน",
     // link: "/DepositWithdrawalSystem/CreditManual",

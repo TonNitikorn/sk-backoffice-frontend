@@ -79,7 +79,7 @@ function home() {
                 delete item.affiliate_point_before
                 delete item.detail_bank
                 delete item.member_uuid
-                delete item.no
+                // delete item.no
                 delete item.point
                 delete item.point_after
                 delete item.point_before
@@ -510,7 +510,7 @@ function home() {
                     </div>
                 </CopyToClipboard>
             ),
-            ...getColumnSearchProps('tel'),
+            ...getColumnSearchProps('username'),
 
         },
         {
@@ -882,7 +882,7 @@ function home() {
             <Grid container justifyContent="row" spacing={2}>
 
 
-                <Grid item xs={4}>
+                <Grid item xs={6}>
                     <Paper sx={{ p: 3 }}>
                         <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px" }}>รายการรออนุมัติ</Typography>
 
@@ -1163,17 +1163,14 @@ function home() {
 
                     </Paper>
                 </Grid>
-                <Grid item xs={8}>
+                <Grid item xs={12}>
                     <Paper sx={{ p: 3 }}>
-
                         <Grid
                             container
                             direction="row"
                             justifyContent="space-between"
                             alignItems="flex-start" >
-
                             <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px" }}  > รายการเดินบัญชี </Typography>
-
 
                             <CSVLink
                                 data={dataLast}
@@ -1191,21 +1188,23 @@ function home() {
                             </CSVLink>
                         </Grid>
 
-                        <Table
-                            columns={columns}
-                            dataSource={dataLast}
-                            onChange={onChange}
-                            size="small"
-                            pagination={{
-                                current: page,
-                                pageSize: pageSize,
-                                onChange: (page, pageSize) => {
-                                    setPage(page)
-                                    setPageSize(pageSize)
-                                }
-                            }}
+                        <Grid container>
+                            <Table
+                                columns={columns}
+                                dataSource={dataLast}
+                                onChange={onChange}
+                                size="small"
+                                pagination={{
+                                    current: page,
+                                    pageSize: pageSize,
+                                    onChange: (page, pageSize) => {
+                                        setPage(page)
+                                        setPageSize(pageSize)
+                                    }
+                                }}
+                            />
+                        </Grid>
 
-                        />
                     </Paper>
                 </Grid>
             </Grid>

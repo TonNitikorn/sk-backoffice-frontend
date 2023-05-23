@@ -101,7 +101,6 @@ function memberInfo() {
         item.sumCreditAfter = sumCreditAfter
       });
 
-      console.log('resTran', resTran)
 
       setTransaction(resTran)
       setDataMember(resData);
