@@ -66,11 +66,11 @@ function reportDeposit() {
           "create_at_start": type === undefined ? selectedDateRange.start : start,
           "create_at_end": type === undefined ? selectedDateRange.end : end,
           "transfer_type": "WITHDRAW",
-          "username": username
+          "username": username !== "" ? username : "ALL"
         }
       });
 
-      let transaction = res.data.transaction
+      let transaction = res.data
       let no = 1;
       let credit = []
       let sumCredit = 0
@@ -729,7 +729,7 @@ function reportDeposit() {
             <TextField
               name="username"
               type="text"
-              value={username || "ALL"}
+              value={username || ""}
               label="ค้นหาโดยใช้ Username"
               placeholder="ค้นหาโดยใช้ Username"
               onChange={(e) => setUsername(e.target.value)}

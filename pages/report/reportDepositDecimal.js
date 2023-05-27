@@ -164,7 +164,7 @@ function reportDepositDecimal() {
               type="text"
               size="small"
 
-              value={username || "ALL"}
+              value={username || ""}
               label="ค้นหาโดยใช้ Username"
               placeholder="ค้นหาโดยใช้ Username"
               onChange={(e) => setUsername(e.target.value)}

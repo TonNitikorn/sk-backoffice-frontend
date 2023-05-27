@@ -312,7 +312,7 @@ function reportError() {
             <TextField
               name="username"
               type="text"
-              value={username || "ALL"}
+              value={username || ""}
               label="ค้นหาโดยใช้ Username"
               placeholder="ค้นหาโดยใช้ Username"
               onChange={(e) => setUsername(e.target.value)}

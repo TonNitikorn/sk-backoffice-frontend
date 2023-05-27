@@ -60,7 +60,7 @@ function reportDeposit() {
           "create_at_start": type === undefined ? selectedDateRange.start : start,
           "create_at_end": type === undefined ? selectedDateRange.end : end,
           "transfer_type": "DEPOSIT",
-          "username": username
+          "username": username !== "" ? username : "ALL"
         }
       });
 
@@ -738,7 +738,7 @@ function reportDeposit() {
             <TextField
               name="username"
               type="text"
-              value={username || "ALL"}
+              value={username || ""}
               label="ค้นหาโดยใช้ Username"
               placeholder="ค้นหาโดยใช้ Username"
               onChange={(e) => setUsername(e.target.value)}
