@@ -214,7 +214,7 @@ function memberTable() {
                timer: 2000,
             });
             setOpenDialogEdit(false);
-            getMemberList()
+            getMemberAll()
             setLoading(false);
          }
       } catch (error) {
@@ -266,7 +266,7 @@ function memberTable() {
                timer: 2000,
             });
             setOpenDialogManual(false);
-            getMemberList()
+            getMemberAll()
          }
       } catch (error) {
          console.log(error);
