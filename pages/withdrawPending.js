@@ -57,6 +57,7 @@ function withdrawpending() {
    let temp
    const [page, setPage] = useState(1)
    const [pageSize, setPageSize] = useState(10)
+   const [statusWithdraw, setStatusWithdraw] = useState(null);
 
    const handleChange = (uuid) => {
       setSelectedBank(uuid);
@@ -229,15 +230,15 @@ function withdrawpending() {
       setLoading(true);
       try {
          let res = await axios({
-            headers: {
-               Authorization: "Bearer " + localStorage.getItem("access_token"),
-            },
+            headers: { Authorization: "Bearer " + localStorage.getItem("access_token"),},
             method: "post",
             url: `${hostname}/transaction/approve_withdraw_request`,
             data:
             {
                "uuid": uuid,
-               "by_bank": selectedBank
+               "by_bank": selectedBank,
+               "status_Withdraw": statusWithdraw,
+               "content" : rowData.content || "Auto"
             }
          });
          if (res.data.message === "อนุมัติคำขอถอนเงินสำเร็จ") {
@@ -257,17 +258,60 @@ function withdrawpending() {
          getDataWithdraw()
       } catch (error) {
          console.log(error);
-         if (
-            error.response.data.error.status_code === 401 &&
-            error.response.data.error.message === "Unauthorized"
-         ) {
+         if (error.response.data.error.status_code === 401 && error.response.data.error.message === "Unauthorized") {
             dispatch(signOut());
             localStorage.clear();
             router.push("/auth/login");
          }
          if (
-            error.response.status === 401 &&
-            error.response.data.error.message === "Invalid Token"
+            error.response.status === 401 && error.response.data.error.message === "Invalid Token"
+         ) {
+            dispatch(signOut());
+            localStorage.clear();
+            router.push("/auth/login");
+         }
+      }
+   }
+
+   const approveWithdrawManual = async (uuid) => {
+      setLoading(true);
+      try {
+         let res = await axios({
+            headers: { Authorization: "Bearer " + localStorage.getItem("access_token"),},
+            method: "post",
+            url: `${hostname}/transaction/approve_manual_transaction`,
+            data:
+            {
+               "uuid": uuid,
+               "by_bank": selectedBank,
+               "status_Withdraw": statusWithdraw,
+               "content" : rowData.content || "Auto"
+            }
+         });
+         if (res.data.message === "อนุมัติรายการสำเร็จ") {
+            Swal.fire({
+               position: "center",
+               icon: "success",
+               title: "อนุมัติคำขอถอนเงินสำเร็จ",
+               showConfirmButton: false,
+               timer: 2000,
+            });
+            getBank()
+            setOpenDialogApprove(false)
+            setRowData({})
+            setSelectedBank()
+         }
+         setLoading(false);
+         getDataWithdraw()
+      } catch (error) {
+         console.log(error);
+         if (error.response.data.error.status_code === 401 && error.response.data.error.message === "Unauthorized") {
+            dispatch(signOut());
+            localStorage.clear();
+            router.push("/auth/login");
+         }
+         if (
+            error.response.status === 401 && error.response.data.error.message === "Invalid Token"
          ) {
             dispatch(signOut());
             localStorage.clear();
@@ -1548,11 +1592,20 @@ function withdrawpending() {
                      <FormControl>
                         <RadioGroup
                            row
-                           defaultValue="auto"
-                           name="radio-buttons-group"
+                           onChange={(e) => {
+                              setStatusWithdraw(e.target.value);
+                           }}
                         >
-                           <FormControlLabel value="auto" onClick={() => setContent(false)} control={<Radio />} label={<Typography sx={{ fontSize: '14px' }}>ออโต้ </Typography>} />
-                           <FormControlLabel value="manual" onClick={() => setContent(true)} control={<Radio />} label={<Typography sx={{ fontSize: '14px' }}>ถอนมือ </Typography>} />
+                           <FormControlLabel
+                              value="AUTO"
+                              onClick={() => setContent(false)}
+                              control={<Radio onChange={(e) => handleChangeData(e)} />}
+                              label={<Typography sx={{ fontSize: '14px' }}>ออโต้ </Typography>} />
+                           <FormControlLabel
+                              value="MANUAL"
+                              onClick={() => setContent(true)}
+                              control={<Radio onChange={(e) => handleChangeData(e)} />}
+                              label={<Typography sx={{ fontSize: '14px' }}>ถอนมือ </Typography>} />
                         </RadioGroup>
                      </FormControl>
                      <Typography sx={{ fontSize: '14px', mt: 3 }}> ธนาคาร</Typography>
@@ -1608,7 +1661,12 @@ function withdrawpending() {
                            disabled={!!selectedBank ? false : true}
                            onClick={() => {
                               if (!!selectedBank) {
-                                 approveWithdraw(rowData.uuid, rowData.by_bank);
+                                 if(statusWithdraw === 'AUTO'){
+                                    approveWithdraw(rowData.uuid, rowData.by_bank);
+                                 }
+                                 if (statusWithdraw === 'MANUAL') {
+                                    approveWithdrawManual(rowData.uuid, rowData.by_bank);
+                                 }
                               } else {
                                  alert('กรุณาเลือกธนาคาร')
                               }
