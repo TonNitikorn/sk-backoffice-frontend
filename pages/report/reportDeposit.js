@@ -609,7 +609,7 @@ function reportDeposit() {
             padding: 10,
             backgroundColor: item === "MANUAL" ? "#4a5eb3" : item === 'SUCCESS' ? "#129A50" : "#BB2828",
             color: "#eee",
-          }}S
+          }} S
         />
       ),
       filters: [
@@ -748,8 +748,10 @@ function reportDeposit() {
             />
             <Button
               variant="contained"
-              style={{ marginRight: "8px", }}
-              color="primary"
+              style={{
+                marginRight: "8px",
+                background: "linear-gradient(#0072B1, #41A3E3)"
+              }}
               size="large"
               onClick={() => {
                 setFilterSuccess([])
@@ -763,7 +765,7 @@ function reportDeposit() {
               variant="contained"
               style={{
                 marginRight: "8px",
-                backgroundColor: "#FFB946",
+                background: "linear-gradient(#c9881e, #ffc463)"
               }}
               size=""
               onClick={async () => {
@@ -781,7 +783,7 @@ function reportDeposit() {
               variant="contained"
               style={{
                 marginRight: "8px",
-                backgroundColor: "#129A50",
+                background: "linear-gradient(#09893f, #41db82)",
               }}
               size=""
               onClick={async () => {
@@ -802,89 +804,85 @@ function reportDeposit() {
           direction="row"
           justifyContent="space-between"
           alignItems="flex-start"
-          sx={{ mt: 4, mb: 4 }}>
+          sx={{ mt: 2, mb: 4 }}>
 
-          <Card sx={{ width: 250, bgcolor: "#101D35", mt: 2 }}>
+          <Card sx={{ width: 250, background: "linear-gradient(#0072B1, #41A3E3)" }}>
             <CardContent>
-              <Typography variant="h7" sx={{ color: "#FFB946" }}>จำนวนรายการ</Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>{total.totalList} </Typography>
+              <Typography variant="h7" sx={{ color: "#eee" }}>จำนวนรายการ</Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#eee", mt: 2 }}>{total.totalList} </Typography>
               <Grid sx={{ textAlign: 'right' }}>
-                <Button
-                  sx={{ color: "#eee" }}
-                  onClick={() => { }}>
-                  <Typography >รายการ</Typography>
+                <Button disabled>
+                  <Typography sx={{ color: "#eee", mt: 1, mb: -2 }}>รายการ</Typography>
                 </Button>
               </Grid>
             </CardContent>
           </Card>
 
-          <Card sx={{ width: 250, bgcolor: "#101D35", mt: 2 }} >
+          <Card sx={{ width: 250, background: "linear-gradient(#0072B1, #41A3E3)" }}>
             <CardContent>
-              <Typography variant="h7" sx={{ color: "#FFB946" }}>จำนวนรายการฝากแบบเติมมือ</Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {total.typeManual} </Typography>
+              <Typography variant="h7" sx={{ color: '#eee' }}>ยอดรวมฝากทั้งหมด</Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#eee", mt: 2 }}> {total.sumTotal}</Typography>
+              <Grid sx={{ textAlign: 'right' }}>
+                <Button disabled>
+                  <Typography sx={{ color: "#eee", mt: 1, mb: -2 }}>บาท</Typography>
+                </Button>
+              </Grid>
+
+            </CardContent>
+          </Card>
+
+          <Card sx={{ width: 250, background: "linear-gradient(#c9881e, #ffc463)" }} >
+            <CardContent>
+              <Typography variant="h7" sx={{ color: "#eee" }}>จำนวนรายการฝากแบบเติมมือ</Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#eee", mt: 2 }}>  {total.typeManual} </Typography>
               <Grid sx={{ textAlign: 'right' }}>
                 <Button
                   sx={{ color: "#eee" }}
                   onClick={() => filterData('manual')}>
-                  <Typography sx={{ textDecoration: "underline" }}>ดูเพิ่มเติม..</Typography>
+                  <Typography sx={{ textDecoration: "underline", mt: 1, mb: -2 }}>ดูเพิ่มเติม..</Typography>
                 </Button>
               </Grid>
             </CardContent>
           </Card>
 
-          <Card sx={{ width: 250, bgcolor: "#101D35", mt: 2 }}>
+          <Card sx={{ width: 250, background: "linear-gradient(#c9881e, #ffc463)" }}>
             <CardContent>
-              <Typography variant="h7" sx={{ color: "#FFB946" }}>จำนวนรายการฝากแบบอัตโนมัติ</Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {total.typeAuto} </Typography>
+              <Typography variant="h7" sx={{ color: "#eee" }}>ยอดรวมฝากแบบเติมมือ</Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#eee", mt: 2 }}> {total.sumManual}</Typography>
+              <Grid sx={{ textAlign: 'right' }}>
+                <Button disabled>
+                  <Typography sx={{ color: "#eee", mt: 1, mb: -2 }}>บาท</Typography>
+                </Button>
+              </Grid>
+
+            </CardContent>
+          </Card>
+
+          <Card sx={{ width: 250, background: "linear-gradient(#09893f, #41db82)" }}>
+            <CardContent>
+              <Typography variant="h7" sx={{ color: "#eee" }}>จำนวนรายการฝากแบบอัตโนมัติ</Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#eee", mt: 2 }}>  {total.typeAuto} </Typography>
               <Grid sx={{ textAlign: 'right' }}>
                 <Button
                   sx={{ color: "#eee" }}
                   onClick={() => filterData('auto')}>
-                  <Typography sx={{ textDecoration: "underline" }}>ดูเพิ่มเติม..</Typography>
+                  <Typography sx={{ textDecoration: "underline", mt: 1, mb: -2 }}>ดูเพิ่มเติม..</Typography>
                 </Button>
               </Grid>
             </CardContent>
           </Card>
 
-          <Card sx={{ width: 250, bgcolor: "#101D35", mt: 2 }}>
+
+
+
+
+          <Card sx={{ width: 250, background: "linear-gradient(#09893f, #41db82)" }}>
             <CardContent>
-              <Typography variant="h7" sx={{ color: '#2ECC71' }}>ยอดรวมฝากทั้งหมด</Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}> {total.sumTotal}</Typography>
+              <Typography variant="h7" sx={{ color: "#eee" }}>ยอดรวมฝากแบบอัตโนมัติ</Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#eee", mt: 2 }}>  {total.sumAuto}</Typography>
               <Grid sx={{ textAlign: 'right' }}>
-                <Button
-                  sx={{ color: "#eee" }}
-                  onClick={() => { }}>
-                  <Typography >บาท</Typography>
-                </Button>
-              </Grid>
-
-            </CardContent>
-          </Card>
-
-          <Card sx={{ width: 250, bgcolor: "#101D35", mt: 2 }}>
-            <CardContent>
-              <Typography variant="h7" sx={{ color: "#2ECC71" }}>ยอดรวมฝากแบบเติมมือ</Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}> {total.sumManual}</Typography>
-              <Grid sx={{ textAlign: 'right' }}>
-                <Button
-                  sx={{ color: "#eee" }}
-                  onClick={() => { }}>
-                  <Typography >บาท</Typography>
-                </Button>
-              </Grid>
-
-            </CardContent>
-          </Card>
-
-          <Card sx={{ width: 250, bgcolor: "#101D35", mt: 2 }}>
-            <CardContent>
-              <Typography variant="h7" sx={{ color: "#2ECC71" }}>ยอดรวมฝากแบบอัตโนมัติ</Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>  {total.sumAuto}</Typography>
-              <Grid sx={{ textAlign: 'right' }}>
-                <Button
-                  sx={{ color: "#eee" }}
-                  onClick={() => { }}>
-                  <Typography >บาท</Typography>
+                <Button disabled>
+                  <Typography sx={{ color: "#eee", mt: 1, mb: -2 }}>บาท</Typography>
                 </Button>
               </Grid>
             </CardContent>

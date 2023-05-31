@@ -942,8 +942,7 @@ function memberTable() {
 
                <Button
                   variant="contained"
-                  style={{ marginRight: "8px", }}
-                  color="primary"
+                  style={{ marginRight: "8px", background: "linear-gradient(#0072B1, #41A3E3)" }}
                   size="large"
                   onClick={() => {
                      getMemberList();
@@ -956,7 +955,7 @@ function memberTable() {
                   size="large"
                   style={{
                      marginRight: "8px",
-                     backgroundColor: "#129A50",
+                     background: "linear-gradient(#09893f, #41db82)",
                   }}
                   onClick={async () => {
                      getMemberAll();

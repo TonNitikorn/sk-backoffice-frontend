@@ -256,7 +256,7 @@ function reportCutCredit() {
             padding: 10,
             backgroundColor: item === "MANUAL" ? "#4a5eb3" : item === 'SUCCESS' ? "#129A50" : "#BB2828",
             color: "#eee",
-          }}S
+          }} S
         />
       ),
       filters: [
@@ -304,28 +304,28 @@ function reportCutCredit() {
       ...getColumnSearchProps('credit'),
       render: (item) => (
         <Typography
-        style={{
-          fontSize: '14px'
-        }}
-      >{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
+          style={{
+            fontSize: '14px'
+          }}
+        >{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
       ),
     },
     {
       dataIndex: "credit_before",
-      title: "เครดิตก่อนเติม",
+      title: "เครดิตก่อนตัด",
       align: "center",
       ...getColumnSearchProps('credit_before'),
       render: (item) => (
         <Typography
-        style={{
-          fontSize: '14px'
-        }}
-      >{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
+          style={{
+            fontSize: '14px'
+          }}
+        >{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
       ),
     },
     {
       dataIndex: "credit_after",
-      title: "เครดิตหลังเติม",
+      title: "เครดิตหลังตัด",
       align: "center",
       ...getColumnSearchProps('credit_after'),
       render: (item) => (
@@ -453,7 +453,7 @@ function reportCutCredit() {
             /> */}
             <Button
               variant="contained"
-              style={{ marginRight: "8px" }}
+              style={{ marginRight: "8px", background: "linear-gradient(#0072B1, #41A3E3)" }}
               color="primary"
               size="large"
               onClick={() => {
@@ -466,7 +466,7 @@ function reportCutCredit() {
               variant="contained"
               style={{
                 marginRight: "8px",
-                backgroundColor: "#FFB946",
+                background: "linear-gradient(#c9881e, #ffc463)"
               }}
               size="large"
               onClick={async () => {
@@ -485,7 +485,7 @@ function reportCutCredit() {
               variant="contained"
               style={{
                 marginRight: "8px",
-                backgroundColor: "#129A50",
+                background: "linear-gradient(#09893f, #41db82)",
               }}
               size="large"
               onClick={async () => {

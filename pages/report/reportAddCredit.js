@@ -181,7 +181,7 @@ function reportAddCredit() {
       sumCreditBefore = credit_before.reduce((a, b) => a + b, 0)
       sumCreditAfter = credit_after.reduce((a, b) => a + b, 0)
 
-     
+
       dataWithdraw.map(item => {
         item.sumCredit = sumCredit
         item.sumCreditBefore = sumCreditBefore
@@ -256,7 +256,7 @@ function reportAddCredit() {
             padding: 10,
             backgroundColor: item === "MANUAL" ? "#4a5eb3" : item === 'SUCCESS' ? "#129A50" : "#BB2828",
             color: "#eee",
-          }}S
+          }} S
         />
       ),
       filters: [
@@ -453,7 +453,7 @@ function reportAddCredit() {
             /> */}
             <Button
               variant="contained"
-              style={{ marginRight: "8px" }}
+              style={{ marginRight: "8px", background: "linear-gradient(#0072B1, #41A3E3)" }}
               color="primary"
               size="large"
               onClick={() => {
@@ -466,7 +466,7 @@ function reportAddCredit() {
               variant="contained"
               style={{
                 marginRight: "8px",
-                backgroundColor: "#FFB946",
+                background: "linear-gradient(#c9881e, #ffc463)"
               }}
               size="large"
               onClick={async () => {
@@ -485,7 +485,7 @@ function reportAddCredit() {
               variant="contained"
               style={{
                 marginRight: "8px",
-                backgroundColor: "#129A50",
+                background: "linear-gradient(#09893f, #41db82)",
               }}
               size="large"
               onClick={async () => {

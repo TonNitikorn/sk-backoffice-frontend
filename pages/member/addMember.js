@@ -363,6 +363,7 @@ function addMember() {
                 sx={{
                   mt: 3,
                   // background: "#129A50",
+                  background: "linear-gradient(#0072B1, #41A3E3)" ,
                   color: '#fff',
 
                 }}

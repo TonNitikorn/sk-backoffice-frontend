@@ -391,6 +391,7 @@ function withdraw() {
                                     fullWidth
                                     disabled={username === "" ? true : false}
                                     onClick={() => searchUser()}
+                                    sx={{ background: "linear-gradient(#0072B1, #41A3E3)" }}
                                 >
                                     <Typography sx={{ color: '#ffff' }}>ค้นหา</Typography>
 
@@ -484,6 +485,7 @@ function withdraw() {
                                     <Box sx={{ textAlign: "right" }}>
                                         <Button
                                             variant="contained"
+                                            sx={{ background: "linear-gradient(#0072B1, #41A3E3)" }}
                                             onClick={() => submitWithdraw()}
                                         >
                                             <Typography sx={{ color: '#ffff' }}>ยืนยันทำรายการ</Typography>
@@ -578,7 +580,7 @@ function withdraw() {
                                 <Table.Summary.Row>
                                     <Table.Summary.Cell> <Typography >ผลรวม</Typography></Table.Summary.Cell>
                                     <Table.Summary.Cell />
-                                    
+
                                     <Table.Summary.Cell ><Typography align="center" sx={{ color: '#129A50', fontWeight: 'bold' }}>{Intl.NumberFormat("TH").format(parseInt(parseInt(totalCredit)))}</Typography></Table.Summary.Cell>
                                     <Table.Summary.Cell ></Table.Summary.Cell>
                                     <Table.Summary.Cell />

@@ -1416,7 +1416,7 @@ function withdrawpending() {
 
          <Dialog
             open={openDialogApprove}
-            // onClose={() => setOpenDialogApprove(false)}
+            onClose={() => setOpenDialogApprove(false)}
             fullWidth
             maxWidth="md"
          >
@@ -1675,7 +1675,7 @@ function withdrawpending() {
                            sx={{
                               mt: 3,
                               color: '#fff',
-
+                              background: "linear-gradient(#0072B1, #41A3E3)" 
                            }}
                         >
                            ยืนยัน

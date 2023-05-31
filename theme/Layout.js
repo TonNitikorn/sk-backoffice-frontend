@@ -83,13 +83,13 @@ function Layout({ children, page }) {
       <CssBaseline />
       <AppBar
         position="fixed"
-        sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px`, height: 73 }}
+        sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px`, height: 73, background: "linear-gradient(#0072B1, #41A3E3)" }}
       >
         <Toolbar>
           <Grid container justifyContent="flex-end" onClick={() => router.push('/profile')}>
             <Button sx={{ bgcolor: '#0465a587', mt: 1 }}>
               <AccountCircleIcon fontSize="large" sx={{ color: '#fff', mr: 1 }} />
-              <Typography sx={{ color: '#fff', fontSize: '16px', mt: 0.5 , mr:1 }}>
+              <Typography sx={{ color: '#fff', fontSize: '16px', mt: 0.5, mr: 1 }}>
                 {username}
               </Typography>
             </Button>
@@ -111,7 +111,7 @@ function Layout({ children, page }) {
           },
           "& .MuiListItemButton-root": {
             "&:hover": {
-              backgroundColor: "#AED6F1",
+              backgroundColor: "#5caee3",
               // borderRadius: "6px",
             },
           },
@@ -125,7 +125,7 @@ function Layout({ children, page }) {
             alt="scb"
             width={160}
             height={50}
-            onClick={()=> router.push('/dashboard')}
+            onClick={() => router.push('/dashboard')}
           />
         </Grid>
         <Divider />
@@ -179,7 +179,7 @@ function Layout({ children, page }) {
                         }} onClick={() => {
                           router.push(e.link)
                         }}>
-                          <ListItemIcon>
+                          <ListItemIcon >
                             {e.icon}
                           </ListItemIcon>
                           <ListItemText primary={e.name} />

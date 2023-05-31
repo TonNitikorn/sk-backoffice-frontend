@@ -376,7 +376,7 @@ function memberInfo() {
           <Grid item xs={1} sx={{ ml: 1 }}>
             <Button
               variant="contained"
-              style={{ marginTop: 8, color: '#fff' }}
+              style={{ marginTop: 8, color: '#fff' ,background: "linear-gradient(#0072B1, #41A3E3)"  }}
               color="primary"
               size="large"
               fullWidth

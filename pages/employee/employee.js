@@ -621,7 +621,7 @@ function employee() {
                 my: 2,
                 justifyContent: "flex-end",
                 boxShadow: 1,
-                background: "#41A3E3",
+                background: "linear-gradient(#0072B1, #41A3E3)" 
               }}>
               <PersonAddAltIcon sx={{ color: "white" }} />{" "}
               <Typography sx={{ color: "white", ml: 1 }}>

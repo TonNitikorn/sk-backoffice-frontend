@@ -571,7 +571,7 @@ function reportDeposit() {
     },
     {
       dataIndex: "credit_before",
-      title: "เครดิตก่อนเติม",
+      title: "เครดิตก่อนถอน",
       align: "center",
       ...getColumnSearchProps('credit_before'),
       render: (item) => (
@@ -584,7 +584,7 @@ function reportDeposit() {
     },
     {
       dataIndex: "credit_after",
-      title: "เครดิตหลังเติม",
+      title: "เครดิตหลังถอน",
       align: "center",
       ...getColumnSearchProps('credit_after'),
       render: (item) => (
@@ -739,7 +739,11 @@ function reportDeposit() {
             />
             <Button
               variant="contained"
-              style={{ marginRight: "8px", marginTop: "8px", }}
+              style={{
+                marginRight: "8px",
+                marginTop: "8px",
+                background: "linear-gradient(#0072B1, #41A3E3)"
+              }}
               color="primary"
               size="large"
               onClick={() => {
@@ -756,7 +760,7 @@ function reportDeposit() {
               style={{
                 marginRight: "8px",
                 marginTop: "8px",
-                backgroundColor: "#FFB946",
+                background: "linear-gradient(#c9881e, #ffc463)"
               }}
               size="large"
               onClick={async () => {
@@ -774,7 +778,7 @@ function reportDeposit() {
               style={{
                 marginRight: "8px",
                 marginTop: "8px",
-                backgroundColor: "#129A50",
+                background: "linear-gradient(#09893f, #41db82)",
               }}
               size="large"
               onClick={async () => {
@@ -798,52 +802,64 @@ function reportDeposit() {
           sx={{ mt: 2, mb: 3 }}
         >
 
-          <Card sx={{ width: 250, bgcolor: '#101D35', }}>
+          <Card sx={{ width: 250, background: "linear-gradient(#0072B1, #41A3E3)" }}>
             <CardContent>
-              <Typography variant="h7" sx={{ color: "#FFB946" }}>จำนวนรายการ</Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", color: "#ffff", mt: 2 }}>
+              <Typography variant="h7" sx={{ color: "#eee" }}>จำนวนรายการ</Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#ffff", mt: 3 }}>
                 {total.totalList}
               </Typography>
               <Grid sx={{ textAlign: 'right' }}>
-                <Button
-                  sx={{ color: "#eee" }}>
-                  <Typography>เครดิต</Typography>
+                <Button disabled>
+                  <Typography sx={{ color: "#eee", mt: 1, mb: -2 }}>บาท</Typography>
                 </Button>
               </Grid>
             </CardContent>
           </Card>
 
-          <Card sx={{ width: 250, bgcolor: "#101D35" }}>
+          <Card sx={{ width: 250, background: "linear-gradient(#09893f, #41db82)" }}>
             <CardContent>
-              <Typography variant="h7" sx={{ color: "#FFB946" }}>สถานะสำเร็จทั้งหมด</Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>
+              <Typography variant="h7" sx={{ color: "#eee" }}>สถานะสำเร็จทั้งหมด</Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#eee", mt: 3 }}>
                 {total.totalSuccess}</Typography>
               <Grid sx={{ textAlign: 'right' }}>
                 <Button
                   sx={{ color: "#eee" }}
                   onClick={() => filterData('success')}>
-                  <Typography sx={{ textDecoration: "underline" }}>ดูเพิ่มเติม..</Typography>
+                  <Typography sx={{ textDecoration: "underline", mt: 1, mb: -2 }}>ดูเพิ่มเติม..</Typography>
                 </Button>
               </Grid>
             </CardContent>
           </Card>
 
-          <Card sx={{ width: 250, bgcolor: "#101D35" }}>
+          <Card sx={{ width: 250, background: "linear-gradient(#09893f, #41db82)" }}>
             <CardContent>
-              <Typography variant="h7" sx={{ color: "#FFB946" }}>สถานะยกเลิกทั้งหมด</Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>
+              <Typography variant="h7" sx={{ color: '#eee' }}>ยอดรวมเงินสำเร็จทั้งหมด</Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#eee", mt: 3 }}>
+                {Intl.NumberFormat("TH").format(parseInt(total.sumSuccess))}  </Typography>
+              <Grid sx={{ textAlign: 'right' }}>
+                <Button disabled>
+                  <Typography sx={{ color: "#eee", mt: 1, mb: -2 }}>บาท</Typography>
+                </Button>
+              </Grid>
+            </CardContent>
+          </Card>
+
+          <Card sx={{ width: 250, background: "linear-gradient(#890909, #db4141)" }}>
+            <CardContent>
+              <Typography variant="h7" sx={{ color: "#eee" }}>สถานะยกเลิกทั้งหมด</Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#eee", mt: 3 }}>
                 {total.totalCancel} </Typography>
               <Grid sx={{ textAlign: 'right' }}>
                 <Button
                   sx={{ color: "#eee" }}
                   onClick={() => filterData('cancel')}>
-                  <Typography sx={{ textDecoration: "underline" }}>ดูเพิ่มเติม..</Typography>
+                  <Typography sx={{ textDecoration: "underline", mt: 1, mb: -2 }}>ดูเพิ่มเติม..</Typography>
                 </Button>
               </Grid>
             </CardContent>
           </Card>
 
-          <Card sx={{ width: 250, bgcolor: "#101D35" }}>
+          {/* <Card sx={{ width: 250, bgcolor: "#101D35" }}>
             <CardContent>
               <Typography variant="h7" sx={{ color: '#2ECC71' }}>ยอดรวมเงินทั้งหมด</Typography>
               <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>
@@ -851,35 +867,22 @@ function reportDeposit() {
               <Grid sx={{ textAlign: 'right' }}>
                 <Button
                   sx={{ color: "#eee" }}>
-                  <Typography>เครดิต</Typography>
+                  <Typography>บาท</Typography>
                 </Button>
               </Grid>
             </CardContent>
-          </Card>
+          </Card> */}
 
-          <Card sx={{ width: 250, bgcolor: "#101D35" }}>
-            <CardContent>
-              <Typography variant="h7" sx={{ color: '#2ECC71' }}>ยอดรวมเงินสำเร็จทั้งหมด</Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>
-                {Intl.NumberFormat("TH").format(parseInt(total.sumSuccess))}  </Typography>
-              <Grid sx={{ textAlign: 'right' }}>
-                <Button
-                  sx={{ color: "#eee" }}>
-                  <Typography>เครดิต</Typography>
-                </Button>
-              </Grid>
-            </CardContent>
-          </Card>
 
-          <Card sx={{ width: 250, bgcolor: "#101D35" }}>
+
+          <Card sx={{ width: 250, background: "linear-gradient(#890909, #db4141)" }}>
             <CardContent>
-              <Typography variant="h7" sx={{ color: '#2ECC71' }}>ยอดรวมเงินยกเลิกทั้งหมด</Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>
+              <Typography variant="h7" sx={{ color: '#eee' }}>ยอดรวมเงินยกเลิกทั้งหมด</Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#eee", mt: 3 }}>
                 {total.sumCancel}   </Typography>
               <Grid sx={{ textAlign: 'right' }}>
-                <Button
-                  sx={{ color: "#eee" }}>
-                  <Typography>เครดิต</Typography>
+                <Button disabled>
+                  <Typography sx={{ color: "#eee", mt: 1, mb: -2 }}>บาท</Typography>
                 </Button>
               </Grid>
             </CardContent>
