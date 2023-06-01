@@ -82,6 +82,8 @@ function memberTable() {
 
    const handleChangeData = async (e) => {
       setRowData({ ...rowData, [e.target.name]: e.target.value });
+      // console.log('rowData', moment(rowData.date).format('DD/MM/YYYY HH:mm') )
+
    };
 
 
@@ -241,6 +243,8 @@ function memberTable() {
 
    const submitFormCredit = async (type) => {
       try {
+         let time = moment(rowData.date).format('DD/MM') + '@'+rowData.time
+
          let res = await axios({
             headers: {
                Authorization: "Bearer " + localStorage.getItem("access_token"),
@@ -251,7 +255,8 @@ function memberTable() {
                "member_username": userData.username,
                "amount": rowData.amount,
                "transfer_type": type,
-               "content": rowData.annotationWithdraw === "อื่นๆ" ? rowData.annotation : rowData.annotationWithdraw
+               "content": rowData.annotationWithdraw === "อื่นๆ" ? rowData.annotation : rowData.annotationWithdraw,
+               "date": time
             },
          });
 
@@ -287,8 +292,6 @@ function memberTable() {
             router.push("/auth/login");
          }
       }
-
-
    };
 
    const getTransaction = async (user) => {
@@ -887,7 +890,6 @@ function memberTable() {
       console.log('params', pagination, filters, sorter, extra);
    };
 
-
    return (
       <Layout>
          <CssBaseline />
@@ -1401,63 +1403,45 @@ function memberTable() {
                            }}
                         />
                      </Grid>
-                     <Grid container item xs={12}>
+                     {openDialogManual.type === "deposit"
+                        ?
                         <Grid container item xs={12}>
-                           <Typography sx={{ fontSize: '14px', mb: 1, mt: 1 }}>เวลาตามสลิป *</Typography>
-                        </Grid>
-                        <Grid container item xs={6}>
-                           <TextField
-                              name="date"
-                              type="date"
-                              value={rowData?.date || ""}
-                              placeholder="วันที่"
-                              fullWidth
-                              size="small"
-                              onChange={(e) => handleChangeData(e)}
-                              variant="outlined"
-                              sx={{ bgcolor: "white" }}
-                              inputProps={{
-                                 min: 0
-                              }}
-                           />
-                        </Grid>
+                           <Grid container item xs={12}>
+                              <Typography sx={{ fontSize: '14px', mb: 1, mt: 1 }}>เวลาตามสลิป *</Typography>
+                           </Grid>
+                           <Grid container item xs={6}>
+                              <TextField
+                                 name="date"
+                                 type="date"
+                                 value={rowData?.date || ""}
+                                 placeholder="วันที่"
+                                 fullWidth
+                                 size="small"
+                                 onChange={(e) => handleChangeData(e)}
+                                 variant="outlined"
+                                 sx={{ bgcolor: "white" }}
+                                 inputProps={{
+                                    min: 0
+                                 }}
+                              />
+                           </Grid>
 
-                        <Grid container item xs={3}>
-                           <TextField
-                              name="hh"
-                              type="number"
-                              value={rowData?.hh || ""}
-                              placeholder="ชม."
-                              fullWidth
-                              size="small"
-                              onChange={(e) => handleChangeData(e)}
-                              variant="outlined"
-                              sx={{ bgcolor: "white" }}
-                              // InputProps={{
-                              //    inputProps: {
-                              //      type: 'number',
-                              //      min: 0, max: 25,
-                              //    },
-                              //  }}
-                           />
+                           <Grid container item xs={3}>
+                              <TextField
+                                 name="time"
+                                 type="time"
+                                 value={rowData?.time || ""}
+                                 placeholder="ชม."
+                                 fullWidth
+                                 size="small"
+                                 onChange={(e) => handleChangeData(e)}
+                                 variant="outlined"
+                                 sx={{ bgcolor: "white" }}
+                              />
+                           </Grid>
                         </Grid>
-                        <Grid container item xs={3}>
-                           <TextField
-                              name="mm"
-                              type="number"
-                              value={rowData?.mm || ""}
-                              placeholder="นาที"
-                              fullWidth
-                              size="small"
-                              onChange={(e) => handleChangeData(e)}
-                              variant="outlined"
-                              sx={{ bgcolor: "white" }}
-                              inputProps={{
-                                 min: 0
-                              }}
-                           />
-                        </Grid>
-                     </Grid>
+                        : ''}
+
 
                      <Grid container item xs={12}>
                         <Typography sx={{ fontSize: '14px', my: 1, mt: 2 }}>หมายเหตุ *</Typography>

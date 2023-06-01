@@ -884,7 +884,6 @@ function home() {
             title: "หมายเหตุ",
             align: "center",
             width: '400px',
-
             render: (item) => (
                 <Box >
                     <Button
