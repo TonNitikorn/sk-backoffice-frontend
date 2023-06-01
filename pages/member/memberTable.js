@@ -16,7 +16,7 @@ import {
    DialogContent,
    CssBaseline,
    MenuItem,
-   Switch,
+   Switch, FormControl, FormLabel, FormHelperText,
 } from "@mui/material";
 import Layout from '../../theme/Layout'
 import axios from "axios";
@@ -1401,6 +1401,64 @@ function memberTable() {
                            }}
                         />
                      </Grid>
+                     <Grid container item xs={12}>
+                        <Grid container item xs={12}>
+                           <Typography sx={{ fontSize: '14px', mb: 1, mt: 1 }}>เวลาตามสลิป *</Typography>
+                        </Grid>
+                        <Grid container item xs={6}>
+                           <TextField
+                              name="date"
+                              type="date"
+                              value={rowData?.date || ""}
+                              placeholder="วันที่"
+                              fullWidth
+                              size="small"
+                              onChange={(e) => handleChangeData(e)}
+                              variant="outlined"
+                              sx={{ bgcolor: "white" }}
+                              inputProps={{
+                                 min: 0
+                              }}
+                           />
+                        </Grid>
+
+                        <Grid container item xs={3}>
+                           <TextField
+                              name="hh"
+                              type="number"
+                              value={rowData?.hh || ""}
+                              placeholder="ชม."
+                              fullWidth
+                              size="small"
+                              onChange={(e) => handleChangeData(e)}
+                              variant="outlined"
+                              sx={{ bgcolor: "white" }}
+                              // InputProps={{
+                              //    inputProps: {
+                              //      type: 'number',
+                              //      min: 0, max: 25,
+                              //    },
+                              //  }}
+                           />
+                        </Grid>
+                        <Grid container item xs={3}>
+                           <TextField
+                              name="mm"
+                              type="number"
+                              value={rowData?.mm || ""}
+                              placeholder="นาที"
+                              fullWidth
+                              size="small"
+                              onChange={(e) => handleChangeData(e)}
+                              variant="outlined"
+                              sx={{ bgcolor: "white" }}
+                              inputProps={{
+                                 min: 0
+                              }}
+                           />
+                        </Grid>
+                     </Grid>
+
                      <Grid container item xs={12}>
                         <Typography sx={{ fontSize: '14px', my: 1, mt: 2 }}>หมายเหตุ *</Typography>
                         <TextField
