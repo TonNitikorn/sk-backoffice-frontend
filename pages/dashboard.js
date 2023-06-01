@@ -1667,7 +1667,7 @@ function dashboard() {
             </Grid>
          </Paper>
 
-         <Grid container direction="row" sx={{ mt: 3 }}>
+         {/* <Grid container direction="row" sx={{ mt: 3 }}>
             <Card sx={{ minWidth: 250, maxWidth: 230, my: 2, bgcolor: "#101D35", }}>
                <CardContent>
                   <Typography component="div" sx={{ color: "#eee" }}> twitter </Typography>
@@ -1718,7 +1718,7 @@ function dashboard() {
             </Card>
 
 
-         </Grid>
+         </Grid> */}
 
          <Dialog
             open={openDialogTrans}
