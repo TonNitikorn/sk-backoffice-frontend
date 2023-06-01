@@ -63,7 +63,18 @@ function withdraw() {
             setDataUser(lastDataUser);
             let resTran = res.data.transaction
             let no = 1
+            let credit = []
+            let sumCredit = 0
+
+
+            for (const item of resTran) {
+                credit.push(parseInt(item.credit))
+
+            }
+            sumCredit = credit.reduce((a, b) => a + b, 0)
+
             resTran.map((item) => {
+                item.sumCredit = sumCredit
                 item.no = no++;
                 item.create_at = moment(item.create_at).format('DD/MM/YYYY HH:mm')
             })
@@ -270,7 +281,7 @@ function withdraw() {
                     size="small"
                     style={{
                         // padding: 5,
-                        backgroundColor: "#FFB946",
+                        backgroundColor: item === "WITHDRAW" ? '#FFB946' : '#129A50',
                         color: "#fff",
                         minWidth: "120px"
                     }}
@@ -569,22 +580,34 @@ function withdraw() {
                     }}
                     summary={(pageData) => {
                         let totalCredit = 0;
+                        let totalBefore = 0;
+                        let totalAfter = 0;
+                        let totalSumCredit = ''
+                        let totalSumCreditBefore = ''
+                        let totalSumCreditAfter = ''
 
-                        pageData.forEach(({ credit }) => {
+                        pageData.forEach(({ credit, credit_before, credit_after, sumCredit, sumCreditBefore, sumCreditAfter }) => {
                             totalCredit += parseInt(credit);
-
+                            totalBefore += parseInt(credit_before);
+                            totalAfter += parseInt(credit_after);
+                            totalSumCredit = sumCredit
+                            totalSumCreditBefore = sumCreditBefore
+                            totalSumCreditAfter = sumCreditAfter
 
                         });
                         return (
                             <>
                                 <Table.Summary.Row>
-                                    <Table.Summary.Cell> <Typography >ผลรวม</Typography></Table.Summary.Cell>
+                                    <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold" }} > ยอดรวม </Typography> </Table.Summary.Cell>
                                     <Table.Summary.Cell />
-
-                                    <Table.Summary.Cell ><Typography align="center" sx={{ color: '#129A50', fontWeight: 'bold' }}>{Intl.NumberFormat("TH").format(parseInt(parseInt(totalCredit)))}</Typography></Table.Summary.Cell>
-                                    <Table.Summary.Cell ></Table.Summary.Cell>
+                                    <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold", color: '#129A50' }} >{Intl.NumberFormat("TH").format(parseInt(totalCredit))}</Typography> </Table.Summary.Cell>
                                     <Table.Summary.Cell />
                                     <Table.Summary.Cell />
+                                </Table.Summary.Row>
+                                <Table.Summary.Row>
+                                    <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold" }} > ยอดรวมทั้งหมด </Typography> </Table.Summary.Cell>
+                                    <Table.Summary.Cell />
+                                    <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold", color: '#129A50' }} >{!totalSumCredit ? 0 : Intl.NumberFormat("TH").format(parseInt(totalSumCredit))}</Typography> </Table.Summary.Cell>
                                     <Table.Summary.Cell />
                                     <Table.Summary.Cell />
 
