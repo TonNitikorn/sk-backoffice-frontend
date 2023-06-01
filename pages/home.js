@@ -23,8 +23,8 @@ import Image from "next/image";
 import moment from "moment/moment";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import withAuth from "../routes/withAuth";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import DoneIcon from '@mui/icons-material/Done';
+import CloseIcon from '@mui/icons-material/Close';
 import Swal from "sweetalert2";
 import LoadingModal from "../theme/LoadingModal";
 import { useAppDispatch } from "../store/store";
@@ -614,6 +614,339 @@ function home() {
         },
     ];
 
+    const columnsApprove = [
+        {
+            title: 'ลำดับ',
+            dataIndex: 'no',
+            align: 'center',
+            width: '100px',
+
+            sorter: (record1, record2) => record1.no - record2.no,
+            render: (item, data) => (
+                <Typography sx={{ textAlign: 'center' }} >{item}</Typography>
+            )
+        },
+        {
+            title: 'ธนาคาร',
+            dataIndex: 'bank_name',
+            width: '350px',
+            ...getColumnSearchProps('bank_number'),
+            render: (item, data) =>
+                <Grid container>
+                    <Grid item xs={3} sx={{ mt: 1 }}>
+                        {item === "kbnk" ? (
+                            <Image
+                                src={
+                                    "https://angpaos.games/wp-content/uploads/2023/03/kbnk.png"
+                                }
+                                alt="kbnk"
+                                width={50}
+                                height={50}
+                            />
+                        ) : item === "truemoney" ? (
+                            <Image
+                                src={
+                                    "https://angpaos.games/wp-content/uploads/2023/03/truemoney.png"
+                                }
+                                alt="truemoney"
+                                width={50}
+                                height={50}
+                            />
+                        ) : item === "ktba" ? (
+                            <Image
+                                src={
+                                    "https://angpaos.games/wp-content/uploads/2023/03/ktba.png"
+                                }
+                                alt="ktba"
+                                width={50}
+                                height={50}
+                            />
+                        ) : item === "scb" ? (
+                            <Image
+                                src={
+                                    "https://angpaos.games/wp-content/uploads/2023/03/scb.png"
+                                }
+                                alt="scb"
+                                width={50}
+                                height={50}
+                            />
+                        ) : item === "bay" ? (
+                            <Image
+                                src={
+                                    "https://angpaos.games/wp-content/uploads/2023/03/bay.png"
+                                }
+                                alt="bay"
+                                width={50}
+                                height={50}
+                            />
+                        ) : item === "bbla" ? (
+                            <Image
+                                src={
+                                    "https://angpaos.games/wp-content/uploads/2023/03/bbl.png"
+                                }
+                                alt="bbla"
+                                width={50}
+                                height={50}
+                            />
+                        ) : item === "gsb" ? (
+                            <Image
+                                src={
+                                    "https://angpaos.games/wp-content/uploads/2023/03/gsb.png"
+                                }
+                                alt="gsb"
+                                width={50}
+                                height={50}
+                            />
+                        ) : item === "ttb" ? (
+                            <Image
+                                src={
+                                    "https://angpaos.games/wp-content/uploads/2023/03/ttb.png"
+                                }
+                                alt="ttb"
+                                width={50}
+                                height={50}
+                            />
+                        ) : item === "bbac" ? (
+                            <Image
+                                src={
+                                    "https://angpaos.games/wp-content/uploads/2023/03/baac.png"
+                                }
+                                alt="bbac"
+                                width={50}
+                                height={50}
+                            />
+                        ) : item === "icbc" ? (
+                            <Image
+                                src={
+                                    "https://angpaos.games/wp-content/uploads/2023/03/icbc.png"
+                                }
+                                alt="icbc"
+                                width={50}
+                                height={50}
+                            />
+                        ) : item === "tcd" ? (
+                            <Image
+                                src={
+                                    "https://angpaos.games/wp-content/uploads/2023/03/tcd.png"
+                                }
+                                alt="tcd"
+                                width={50}
+                                height={50}
+                            />
+                        ) : item === "citi" ? (
+                            <Image
+                                src={
+                                    "https://angpaos.games/wp-content/uploads/2023/03/citi.png"
+                                }
+                                alt="citi"
+                                width={50}
+                                height={50}
+                            />
+                        ) : item === "scbt" ? (
+                            <Image
+                                src={
+                                    "https://angpaos.games/wp-content/uploads/2023/03/scbt.png"
+                                }
+                                alt="scbt"
+                                width={50}
+                                height={50}
+                            />
+                        ) : item === "cimb" ? (
+                            <Image
+                                src={
+                                    "https://angpaos.games/wp-content/uploads/2023/03/cimb.png"
+                                }
+                                alt="cimb"
+                                width={50}
+                                height={50}
+                            />
+                        ) : item === "uob" ? (
+                            <Image
+                                src={
+                                    "https://angpaos.games/wp-content/uploads/2023/03/uob.png"
+                                }
+                                alt="uob"
+                                width={50}
+                                height={50}
+                            />
+                        ) : item === "hsbc" ? (
+                            <Image
+                                src={
+                                    "https://angpaos.games/wp-content/uploads/2023/03/hsbc.png"
+                                }
+                                alt="hsbc"
+                                width={50}
+                                height={50}
+                            />
+                        ) : item === "mizuho" ? (
+                            <Image
+                                src={
+                                    "https://angpaos.games/wp-content/uploads/2023/03/mizuho.png"
+                                }
+                                alt="mizuho"
+                                width={50}
+                                height={50}
+                            />
+                        ) : item === "ghb" ? (
+                            <Image
+                                src={
+                                    "https://angpaos.games/wp-content/uploads/2023/03/ghb.png"
+                                }
+                                alt="ghb"
+                                width={50}
+                                height={50}
+                            />
+                        ) : item === "lhbank" ? (
+                            <Image
+                                src={
+                                    "https://angpaos.games/wp-content/uploads/2023/03/lhbank.png"
+                                }
+                                alt="lhbank"
+                                width={50}
+                                height={50}
+                            />
+                        ) : item === "tisco" ? (
+                            <Image
+                                src={
+                                    "https://angpaos.games/wp-content/uploads/2023/03/tisco.png"
+                                }
+                                alt="tisco"
+                                width={50}
+                                height={50}
+                            />
+                        ) : item === "kkba" ? (
+                            <Image
+                                src={
+                                    "https://angpaos.games/wp-content/uploads/2023/03/kkba.png"
+                                }
+                                alt="kkba"
+                                width={50}
+                                height={50}
+                            />
+                        ) : item === "ibank" ? (
+                            <Image
+                                src={
+                                    "https://angpaos.games/wp-content/uploads/2023/03/ibank.png"
+                                }
+                                alt="ibank"
+                                width={50}
+                                height={50}
+                            />
+                        ) : (
+                            ""
+                        )}
+                    </Grid>
+                    <Grid item xs={9}>
+                        <Grid sx={{ ml: 3, mt: 1 }}>
+                            <CopyToClipboard text={data.bank_number}>
+                                <div style={{ "& .MuiButton-text": { "&:hover": { textDecoration: "underline blue 1px", } } }} >
+                                    <Button
+                                        sx={{ p: 0, color: "blue", }}
+                                        onClick={handleClickSnackbar}
+                                    >
+                                        {data.bank_number}
+                                    </Button>
+                                </div>
+                            </CopyToClipboard>
+                        </Grid>
+                        <Grid sx={{ ml: 3, }}>
+                            <Typography sx={{}}>
+                                {data.name}
+                            </Typography>
+                        </Grid>
+                    </Grid>
+                </Grid >,
+        },
+
+        {
+            dataIndex: "credit",
+            title: "เครดิต",
+            align: "center",
+            width: '250px',
+            sorter: (record1, record2) => record1.credit - record2.credit,
+            render: (item) => (
+                <Typography sx={{}}>{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
+            ),
+        },
+
+        {
+            dataIndex: "create_at",
+            title: "วันที่ทำรายการ",
+            align: "center",
+            width: '250px',
+            render: (item) => (
+                <Typography >{item}</Typography>
+            ),
+        },
+
+        {
+            dataIndex: "content",
+            title: "หมายเหตุ",
+            align: "center",
+            width: '400px',
+
+            render: (item) => (
+                <Box >
+                    <Button
+                        variant="contained"
+                        sx={{ bgcolor: '#34BD22 ', mt: 1 ,mr:1,width: '150px'}}
+                        onClick={() => {
+                            setOpenDialogView({
+                                open: true,
+                                // data: item,
+                            });
+                        }}
+                    >
+                        <DoneIcon sx={{ color: '#FFFF' }} />
+                    </Button>
+                    <Button
+                        variant="contained"
+                        sx={{ bgcolor: "#EB001B", mt: 1, color: '#ffff' }}
+                        onClick={async () => {
+                            try {
+                                let res = await axios({
+                                    headers: { Authorization: "Bearer " + localStorage.getItem("access_token") },
+                                    method: "post",
+                                    url: `${hostname}/api/sms/scb/sms-transaction/hide/${item.uuid}`,
+                                });
+                                if (res.data.message === "แก้ไขข้อมูลเรียบร้อยแล้ว") {
+                                    Swal.fire({
+                                        position: "center",
+                                        icon: "success",
+                                        title: "ซ่อนข้อมูลเรียบร้อย",
+                                        showConfirmButton: false,
+                                        timer: 2000,
+                                    });
+                                    getListWait();
+                                }
+                            } catch (error) {
+                                if (
+                                    error.response.data.error.status_code === 401 &&
+                                    error.response.data.error.message === "Unauthorized"
+                                ) {
+                                    dispatch(signOut());
+                                    localStorage.clear();
+                                    router.push("/auth/login");
+                                }
+                                if (
+                                    error.response.status === 401 &&
+                                    error.response.data.error.message === "Invalid Token"
+                                ) {
+                                    dispatch(signOut());
+                                    localStorage.clear();
+                                    router.push("/auth/login");
+                                }
+                                console.log(error);
+                            }
+                        }}
+                    >
+                        <CloseIcon />
+                    </Button>
+                </Box>
+            ),
+        },
+    ];
+
     useEffect(() => {
         getDataLast()
         getBank()
@@ -882,8 +1215,8 @@ function home() {
             <Grid container justifyContent="row" spacing={2}>
 
 
-                <Grid item xs={6}>
-                    <Paper sx={{ p: 3 }}>
+                <Grid item xs={12}>
+                    {/* <Paper sx={{ p: 3 }}>
                         <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px" }}>รายการรออนุมัติ</Typography>
 
                         <Paper elevation={3} sx={{ mt: 1, borderRadius: 1, p: 3 }}>
@@ -920,7 +1253,7 @@ function home() {
                                             });
                                         }}
                                     >
-                                        <CheckCircleOutlineIcon sx={{ color: '#FFFF' }} />
+                                        <DoneIcon sx={{ color: '#FFFF' }} />
                                     </Button>
                                     <Button
                                         variant="contained"
@@ -966,7 +1299,7 @@ function home() {
                                             }
                                         }}
                                     >
-                                        <HighlightOffIcon />
+                                        <ClearIcon />
                                     </Button>
                                 </Grid>
                             </Grid>
@@ -1014,7 +1347,7 @@ function home() {
                                             });
                                         }}
                                     >
-                                        <CheckCircleOutlineIcon sx={{ color: '#FFFF' }} />
+                                        <DoneIcon sx={{ color: '#FFFF' }} />
                                     </Button>
                                     <Button
                                         variant="contained"
@@ -1060,7 +1393,7 @@ function home() {
                                             }
                                         }}
                                     >
-                                        <HighlightOffIcon />
+                                        <ClearIcon />
                                     </Button>
                                 </Grid>
                             </Grid>
@@ -1108,7 +1441,7 @@ function home() {
                                             });
                                         }}
                                     >
-                                        <CheckCircleOutlineIcon sx={{ color: '#FFFF' }} />
+                                        <DoneIcon sx={{ color: '#FFFF' }} />
                                     </Button>
                                     <Button
                                         variant="contained"
@@ -1154,13 +1487,30 @@ function home() {
                                             }
                                         }}
                                     >
-                                        <HighlightOffIcon />
+                                        <ClearIcon />
                                     </Button>
                                 </Grid>
                             </Grid>
 
                         </Paper>
 
+                    </Paper> */}
+                    <Paper sx={{ p: 3 }}>
+                        <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px" }}>รายการรออนุมัติ</Typography>
+                        <Table
+                            columns={columnsApprove}
+                            dataSource={dataLast}
+                            onChange={onChange}
+                            size="small"
+                            pagination={{
+                                current: page,
+                                pageSize: pageSize,
+                                onChange: (page, pageSize) => {
+                                    setPage(page)
+                                    setPageSize(pageSize)
+                                }
+                            }}
+                        />
                     </Paper>
                 </Grid>
                 <Grid item xs={12}>
@@ -1187,23 +1537,20 @@ function home() {
                                 </Button>
                             </CSVLink>
                         </Grid>
-
-                        <Grid container>
-                            <Table
-                                columns={columns}
-                                dataSource={dataLast}
-                                onChange={onChange}
-                                size="small"
-                                pagination={{
-                                    current: page,
-                                    pageSize: pageSize,
-                                    onChange: (page, pageSize) => {
-                                        setPage(page)
-                                        setPageSize(pageSize)
-                                    }
-                                }}
-                            />
-                        </Grid>
+                        <Table
+                            columns={columns}
+                            dataSource={dataLast}
+                            onChange={onChange}
+                            size="small"
+                            pagination={{
+                                current: page,
+                                pageSize: pageSize,
+                                onChange: (page, pageSize) => {
+                                    setPage(page)
+                                    setPageSize(pageSize)
+                                }
+                            }}
+                        />
 
                     </Paper>
                 </Grid>

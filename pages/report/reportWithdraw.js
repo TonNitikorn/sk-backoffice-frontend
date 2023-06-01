@@ -148,7 +148,7 @@ function reportDeposit() {
   };
 
   const sumData = (transaction, sumCredit) => {
-    let dataSuccess = transaction.filter((item) => item.status_transction === 'SUCCESS')
+    let dataSuccess = transaction.filter((item) => item.status_transction === 'SUCCESS' || item.status_transction === 'MANUAL')
     let dataCancel = transaction.filter((item) => item.status_transction === 'CANCEL')
     let sumSuccess = []
     let sumCancel = []
@@ -187,7 +187,7 @@ function reportDeposit() {
   const filterData = (type) => {
     if (type === "success") {
       setFilterCancel([])
-      let data = report.filter((item) => item.status_transction === "SUCCESS")
+      let data = report.filter((item) => item.status_transction === 'SUCCESS' || item.status_transction === 'MANUAL')
       setFilterSuccess(data)
     }
     if (type === "cancel") {
