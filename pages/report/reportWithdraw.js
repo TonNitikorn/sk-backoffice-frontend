@@ -27,6 +27,7 @@ import { Table, Input, Space, } from 'antd';
 import { CSVLink } from "react-csv";
 import SearchIcon from '@mui/icons-material/Search';
 import excel from '../../assets/excel.png'
+import Swal from "sweetalert2";
 
 
 function reportDeposit() {
@@ -54,8 +55,10 @@ function reportDeposit() {
     setOpen(false);
   };
   const getReport = async (type, start, end) => {
+
     setLoading(true);
     try {
+
       let res = await axios({
         headers: {
           Authorization: "Bearer " + localStorage.getItem("access_token"),
@@ -128,6 +131,16 @@ function reportDeposit() {
       setLoading(false);
     } catch (error) {
       console.log(error);
+      if (error.response.data.error.message === 'ไม่พบข้อมูลผู้ใช้งาน') {
+        setLoading(false);
+        Swal.fire({
+          position: "center",
+          icon: "warning",
+          title: "ไม่พบข้อมูลผู้ใช้งาน",
+          showConfirmButton: false,
+          timer: 2000,
+      }); 
+      }
       if (
         error.response.data.error.status_code === 401 &&
         error.response.data.error.message === "Unauthorized"
@@ -602,7 +615,7 @@ function reportDeposit() {
       align: "center",
       render: (item) => (
         <Chip
-          label={item === "MANUAL" ? 'เติมมือ' : item === 'SUCCESS' ? "สำเร็จ" : "ยกเลิก"}
+          label={item === "MANUAL" ? 'ถอนมือ' : item === 'SUCCESS' ? "สำเร็จ" : "ยกเลิก"}
           size="small"
           style={{
             padding: 10,
@@ -613,7 +626,7 @@ function reportDeposit() {
       ),
       filters: [
         { text: 'สำเร็จ', value: 'SUCCESS' },
-        { text: 'เติมมือ', value: 'MANUAL' },
+        { text: 'ถอนมือ', value: 'MANUAL' },
         { text: 'ยกเลิก', value: 'CANCEL' },
       ],
       onFilter: (value, record) => record.status_transction.indexOf(value) === 0,
