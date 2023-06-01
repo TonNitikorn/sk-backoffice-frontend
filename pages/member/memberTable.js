@@ -1216,7 +1216,7 @@ function memberTable() {
                               mt: 3,
                               // background: "#129A50",
                               color: '#fff',
-
+                              background: "linear-gradient(#0072B1, #41A3E3)"
                            }}
                         >
                            ยืนยัน
@@ -1481,6 +1481,7 @@ function memberTable() {
                            sx={{
                               mt: 3,
                               color: '#fff',
+                              background: "linear-gradient(#0072B1, #41A3E3)"
                            }}
                         >
                            ยืนยัน

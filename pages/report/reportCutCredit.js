@@ -250,7 +250,7 @@ function reportCutCredit() {
       align: "center",
       render: (item) => (
         <Chip
-          label={item === "MANUAL" ? 'เติมมือ' : item === 'SUCCESS' ? "สำเร็จ" : "ยกเลิก"}
+          label={item === "MANUAL" ? 'ถอนมือ' : item === 'SUCCESS' ? "สำเร็จ" : "ยกเลิก"}
           size="small"
           style={{
             padding: 10,

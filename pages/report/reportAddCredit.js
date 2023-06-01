@@ -307,7 +307,7 @@ function reportAddCredit() {
           style={{
             fontSize: '14px'
           }}
-        >{item}</Typography>
+        >{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
       ),
     },
     {
@@ -320,7 +320,7 @@ function reportAddCredit() {
           style={{
             fontSize: '14px'
           }}
-        >{item}</Typography>
+        >{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
       ),
     },
     {
@@ -333,7 +333,7 @@ function reportAddCredit() {
           style={{
             fontSize: '14px'
           }}
-        >{item}</Typography>
+        >{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
       ),
     },
     {
