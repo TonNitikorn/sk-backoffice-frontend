@@ -850,7 +850,7 @@ function home() {
                             </CopyToClipboard>
                         </Grid>
                         <Grid sx={{ ml: 3, }}>
-                            <Typography sx={{}}>
+                            <Typography sx={{fontSize:'14px'}}>
                                 {data.name}
                             </Typography>
                         </Grid>
@@ -865,7 +865,7 @@ function home() {
             width: '250px',
             sorter: (record1, record2) => record1.credit - record2.credit,
             render: (item) => (
-                <Typography sx={{}}>{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
+                <Typography sx={{fontSize:'14px'}}>{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
             ),
         },
 
@@ -875,7 +875,7 @@ function home() {
             align: "center",
             width: '250px',
             render: (item) => (
-                <Typography >{item}</Typography>
+                <Typography sx={{fontSize:'14px'}}>{item}</Typography>
             ),
         },
 
@@ -946,6 +946,13 @@ function home() {
             ),
         },
     ];
+
+    function playAudio() {
+        const audio = new Audio(
+           "https://angpaos.games/wp-content/uploads/2023/04/achive-sound-132273.mp3"
+        );
+        audio.play();
+     }
 
     useEffect(() => {
         getDataLast()
@@ -1216,285 +1223,6 @@ function home() {
 
 
                 <Grid item xs={12}>
-                    {/* <Paper sx={{ p: 3 }}>
-                        <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px" }}>รายการรออนุมัติ</Typography>
-
-                        <Paper elevation={3} sx={{ mt: 1, borderRadius: 1, p: 3 }}>
-                            <Grid container
-                                direction="row"
-                                justifyContent="center"
-                                alignItems="center">
-                                <Grid item xs={3}>
-                                    <Box sx={{ mt: 1, ml: 1 }}>
-                                        <Image src={scbL} alt="scb" />
-                                    </Box>
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <Chip
-                                        label={<Typography sx={{ fontSize: "14px" }}>ธนาคารไทยพานิชย์</Typography>}
-                                        size="small"
-                                        sx={{
-                                            backgroundColor: "#7421C6 ",
-                                            color: "#eee",
-                                        }}
-                                    />
-                                    <Typography sx={{ mt: 1 }}>สุทิน จิตอาสา</Typography>
-                                    <Typography sx={{ mt: 1 }}>100 บาท</Typography>
-                                    <Typography sx={{ mt: 1 }}>เวลา 14-03-202303:49 </Typography>
-                                </Grid>
-                                <Grid item xs={3} >
-                                    <Button
-                                        variant="contained"
-                                        sx={{ bgcolor: '#34BD22 ', mt: 1 }}
-                                        onClick={() => {
-                                            setOpenDialogView({
-                                                open: true,
-                                                // data: item,
-                                            });
-                                        }}
-                                    >
-                                        <DoneIcon sx={{ color: '#FFFF' }} />
-                                    </Button>
-                                    <Button
-                                        variant="contained"
-                                        sx={{ bgcolor: "#EB001B", mt: 1, color: '#ffff' }}
-                                        onClick={async () => {
-                                            try {
-                                                let res = await axios({
-                                                    headers: {
-                                                        Authorization:
-                                                            "Bearer " + localStorage.getItem("access_token"),
-                                                    },
-                                                    method: "post",
-                                                    url: `${hostname}/api/sms/scb/sms-transaction/hide/${item.uuid}`,
-                                                });
-                                                if (res.data.message === "แก้ไขข้อมูลเรียบร้อยแล้ว") {
-                                                    Swal.fire({
-                                                        position: "center",
-                                                        icon: "success",
-                                                        title: "ซ่อนข้อมูลเรียบร้อย",
-                                                        showConfirmButton: false,
-                                                        timer: 2000,
-                                                    });
-                                                    getListWait();
-                                                }
-                                            } catch (error) {
-                                                if (
-                                                    error.response.data.error.status_code === 401 &&
-                                                    error.response.data.error.message === "Unauthorized"
-                                                ) {
-                                                    dispatch(signOut());
-                                                    localStorage.clear();
-                                                    router.push("/auth/login");
-                                                }
-                                                if (
-                                                    error.response.status === 401 &&
-                                                    error.response.data.error.message === "Invalid Token"
-                                                ) {
-                                                    dispatch(signOut());
-                                                    localStorage.clear();
-                                                    router.push("/auth/login");
-                                                }
-                                                console.log(error);
-                                            }
-                                        }}
-                                    >
-                                        <ClearIcon />
-                                    </Button>
-                                </Grid>
-                            </Grid>
-
-                        </Paper>
-
-                        <Paper elevation={3} sx={{
-                            mt: 1,
-                            borderRadius: 1,
-                            p: 3
-                            // bgcolor: '#78BEFF',
-                            // background: "linear-gradient(#41A3E3, #0072B1, #0072B1)",
-                        }}
-                        >
-                            <Grid container
-                                direction="row"
-                                justifyContent="center"
-                                alignItems="center">
-                                <Grid item xs={3}>
-                                    <Box sx={{ mt: 1, ml: 1 }}>
-                                        <Image src={scbL} alt="scb" />
-                                    </Box>
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <Chip
-                                        label={<Typography sx={{ fontSize: "14px" }}>ธนาคารไทยพานิชย์</Typography>}
-                                        size="small"
-                                        sx={{
-                                            backgroundColor: "#7421C6 ",
-                                            color: "#eee",
-                                        }}
-                                    />
-                                    <Typography sx={{ mt: 1 }}>สุทิน จิตอาสา</Typography>
-                                    <Typography sx={{ mt: 1 }}>100 บาท</Typography>
-                                    <Typography sx={{ mt: 1 }}>เวลา 14-03-202303:49 </Typography>
-                                </Grid>
-                                <Grid item xs={3}  >
-                                    <Button
-                                        variant="contained"
-                                        sx={{ bgcolor: '#34BD22 ', mt: 1 }}
-                                        onClick={() => {
-                                            setOpenDialogView({
-                                                open: true,
-                                                // data: item,
-                                            });
-                                        }}
-                                    >
-                                        <DoneIcon sx={{ color: '#FFFF' }} />
-                                    </Button>
-                                    <Button
-                                        variant="contained"
-                                        sx={{ bgcolor: "#EB001B", mt: 1, color: '#ffff' }}
-                                        onClick={async () => {
-                                            try {
-                                                let res = await axios({
-                                                    headers: {
-                                                        Authorization:
-                                                            "Bearer " + localStorage.getItem("access_token"),
-                                                    },
-                                                    method: "post",
-                                                    url: `${hostname}/api/sms/scb/sms-transaction/hide/${item.uuid}`,
-                                                });
-                                                if (res.data.message === "แก้ไขข้อมูลเรียบร้อยแล้ว") {
-                                                    Swal.fire({
-                                                        position: "center",
-                                                        icon: "success",
-                                                        title: "ซ่อนข้อมูลเรียบร้อย",
-                                                        showConfirmButton: false,
-                                                        timer: 2000,
-                                                    });
-                                                    getListWait();
-                                                }
-                                            } catch (error) {
-                                                if (
-                                                    error.response.data.error.status_code === 401 &&
-                                                    error.response.data.error.message === "Unauthorized"
-                                                ) {
-                                                    dispatch(signOut());
-                                                    localStorage.clear();
-                                                    router.push("/auth/login");
-                                                }
-                                                if (
-                                                    error.response.status === 401 &&
-                                                    error.response.data.error.message === "Invalid Token"
-                                                ) {
-                                                    dispatch(signOut());
-                                                    localStorage.clear();
-                                                    router.push("/auth/login");
-                                                }
-                                                console.log(error);
-                                            }
-                                        }}
-                                    >
-                                        <ClearIcon />
-                                    </Button>
-                                </Grid>
-                            </Grid>
-
-                        </Paper>
-
-                        <Paper elevation={3} sx={{
-                            mt: 1,
-                            borderRadius: 1,
-                            p: 3
-                            // bgcolor: '#78BEFF',
-                            // background: "linear-gradient(#41A3E3, #0072B1, #0072B1)",
-                        }}
-                        >
-                            <Grid container
-                                direction="row"
-                                justifyContent="center"
-                                alignItems="center">
-                                <Grid item xs={3}>
-                                    <Box sx={{ mt: 1, ml: 1 }}>
-                                        <Image src={scbL} alt="scb" />
-                                    </Box>
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <Chip
-                                        label={<Typography sx={{ fontSize: "14px" }}>ธนาคารไทยพานิชย์</Typography>}
-                                        size="small"
-                                        sx={{
-                                            backgroundColor: "#7421C6 ",
-                                            color: "#eee",
-                                        }}
-                                    />
-                                    <Typography sx={{ mt: 1 }}>สุทิน จิตอาสา</Typography>
-                                    <Typography sx={{ mt: 1 }}>100 บาท</Typography>
-                                    <Typography sx={{ mt: 1 }}>เวลา 14-03-202303:49 </Typography>
-                                </Grid>
-                                <Grid item xs={3}  >
-                                    <Button
-                                        variant="contained"
-                                        sx={{ bgcolor: '#34BD22 ', mt: 1 }}
-                                        onClick={() => {
-                                            setOpenDialogView({
-                                                open: true,
-                                                // data: item,
-                                            });
-                                        }}
-                                    >
-                                        <DoneIcon sx={{ color: '#FFFF' }} />
-                                    </Button>
-                                    <Button
-                                        variant="contained"
-                                        sx={{ bgcolor: "#EB001B", mt: 1, color: '#ffff' }}
-                                        onClick={async () => {
-                                            try {
-                                                let res = await axios({
-                                                    headers: {
-                                                        Authorization:
-                                                            "Bearer " + localStorage.getItem("access_token"),
-                                                    },
-                                                    method: "post",
-                                                    url: `${hostname}/api/sms/scb/sms-transaction/hide/${item.uuid}`,
-                                                });
-                                                if (res.data.message === "แก้ไขข้อมูลเรียบร้อยแล้ว") {
-                                                    Swal.fire({
-                                                        position: "center",
-                                                        icon: "success",
-                                                        title: "ซ่อนข้อมูลเรียบร้อย",
-                                                        showConfirmButton: false,
-                                                        timer: 2000,
-                                                    });
-                                                    getListWait();
-                                                }
-                                            } catch (error) {
-                                                if (
-                                                    error.response.data.error.status_code === 401 &&
-                                                    error.response.data.error.message === "Unauthorized"
-                                                ) {
-                                                    dispatch(signOut());
-                                                    localStorage.clear();
-                                                    router.push("/auth/login");
-                                                }
-                                                if (
-                                                    error.response.status === 401 &&
-                                                    error.response.data.error.message === "Invalid Token"
-                                                ) {
-                                                    dispatch(signOut());
-                                                    localStorage.clear();
-                                                    router.push("/auth/login");
-                                                }
-                                                console.log(error);
-                                            }
-                                        }}
-                                    >
-                                        <ClearIcon />
-                                    </Button>
-                                </Grid>
-                            </Grid>
-
-                        </Paper>
-
-                    </Paper> */}
                     <Paper sx={{ p: 3 }}>
                         <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px" }}>รายการรออนุมัติ</Typography>
                         <Table
