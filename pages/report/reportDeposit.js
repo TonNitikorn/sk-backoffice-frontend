@@ -147,7 +147,7 @@ function reportDeposit() {
 
   const sumData = (transaction, sumCredit) => {
     let dataTypeManual = transaction.filter((item) => item.status_transction === "MANUAL")
-    let dataTypeAuto = transaction.filter((item) => item.status_transction === "AUTO")
+    let dataTypeAuto = transaction.filter((item) => item.transfer_by === "AUTO")
 
     let sumManual = []
     let sumAuto = []
@@ -165,6 +165,7 @@ function reportDeposit() {
     }
 
     let auto = sumAuto.reduce((a, b) => a + b, 0)
+  
 
     for (const item of transaction) {
       price.push(item.amount)
@@ -180,9 +181,10 @@ function reportDeposit() {
       typeAuto: dataTypeAuto.length,
       sumManual: Intl.NumberFormat("TH").format(parseInt(manual)),
       sumAuto: Intl.NumberFormat("TH").format(parseInt(auto)),
-      sumTotal: Intl.NumberFormat("TH").format(parseInt(manual, auto))
+      sumTotal: Intl.NumberFormat("TH").format(parseInt(manual + auto))
     })
   }
+  console.log('total', total)
 
   const filterData = (type) => {
     if (type === "manual") {
