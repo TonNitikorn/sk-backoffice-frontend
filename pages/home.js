@@ -47,6 +47,7 @@ function home() {
     const [page, setPage] = useState(1)
     const [pageSize, setPageSize] = useState(10)
     const [exportData, setExportData] = useState([])
+    const [mock, setMock] = useState([])
 
     const handleClickSnackbar = () => {
         setOpen(true);
@@ -68,6 +69,8 @@ function home() {
             });
             let resData = res.data;
             let no = 1;
+            let lastData = resData.filter((item) => item.status_transction === "CREATE")
+            console.log('lastData', lastData)
             resData.map((item) => {
                 item.no = no++;
                 item.create_at = moment(item.create_at).format("DD-MM-YYYY HH:mm")
@@ -92,7 +95,33 @@ function home() {
                 delete item.members
                 delete item.by_bank
             });
+            lastData.map((item) => {
+                item.no = no++;
+                item.create_at = moment(item.create_at).format("DD-MM-YYYY HH:mm")
+                item.bank_name = item.members?.bank_name
+                item.bank_number = item.members?.bank_number
+                item.username = item.members?.username
+                delete item.affiliate_point
+                delete item.affiliate_point_after
+                delete item.affiliate_point_before
+                delete item.detail_bank
+                delete item.member_uuid
+                // delete item.no
+                delete item.point
+                delete item.point_after
+                delete item.point_before
+                delete item.prefix
+                delete item.slip
+                delete item.status_bank
+                delete item.status_provider
+                delete item.uuid
+                delete item.update_at
+                delete item.members
+                delete item.by_bank
+            });
+
             setDataLast(resData);
+            setMock(lastData)
 
             setLoading(false);
 
@@ -850,7 +879,7 @@ function home() {
                             </CopyToClipboard>
                         </Grid>
                         <Grid sx={{ ml: 3, }}>
-                            <Typography sx={{fontSize:'14px'}}>
+                            <Typography sx={{ fontSize: '14px' }}>
                                 {data.name}
                             </Typography>
                         </Grid>
@@ -865,7 +894,7 @@ function home() {
             width: '250px',
             sorter: (record1, record2) => record1.credit - record2.credit,
             render: (item) => (
-                <Typography sx={{fontSize:'14px'}}>{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
+                <Typography sx={{ fontSize: '14px' }}>{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
             ),
         },
 
@@ -875,7 +904,7 @@ function home() {
             align: "center",
             width: '250px',
             render: (item) => (
-                <Typography sx={{fontSize:'14px'}}>{item}</Typography>
+                <Typography sx={{ fontSize: '14px' }}>{item}</Typography>
             ),
         },
 
@@ -888,7 +917,7 @@ function home() {
                 <Box >
                     <Button
                         variant="contained"
-                        sx={{ bgcolor: '#34BD22 ', mt: 1 ,mr:1,width: '150px'}}
+                        sx={{ bgcolor: '#34BD22 ', mt: 1, mr: 1, width: '150px' }}
                         onClick={() => {
                             setOpenDialogView({
                                 open: true,
@@ -948,10 +977,10 @@ function home() {
 
     function playAudio() {
         const audio = new Audio(
-           "https://angpaos.games/wp-content/uploads/2023/04/achive-sound-132273.mp3"
+            "https://angpaos.games/wp-content/uploads/2023/04/achive-sound-132273.mp3"
         );
         audio.play();
-     }
+    }
 
     useEffect(() => {
         getDataLast()
@@ -1226,7 +1255,7 @@ function home() {
                         <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px" }}>รายการรออนุมัติ</Typography>
                         <Table
                             columns={columnsApprove}
-                            dataSource={dataLast}
+                            dataSource={mock}
                             onChange={onChange}
                             size="small"
                             pagination={{
