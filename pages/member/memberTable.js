@@ -43,7 +43,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 const hr = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24'];
-const mi = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24','25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49','50','51','52','53','54','55','56','57','58','59','60'];
+const mi = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '60'];
 
 function memberTable() {
    const dispatch = useAppDispatch();
@@ -72,7 +72,6 @@ function memberTable() {
    const [hour, setHour] = useState(hr[0]);
    const [minute, setMinute] = useState(mi[0])
 
-
    const handleChangeBonus = (event) => {
       setBonus(event.target.checked);
    };
@@ -89,9 +88,6 @@ function memberTable() {
       setRowData({ ...rowData, [e.target.name]: e.target.value });
 
    };
-
-   console.log('rowData', rowData)
-
 
    const getMemberList = async (type, start, end) => {
       setLoading(true);
@@ -188,8 +184,6 @@ function memberTable() {
       }
    };
 
-
-
    const editUser = async (type, start, end) => {
       setLoading(false);
       try {
@@ -247,12 +241,32 @@ function memberTable() {
       }
    };
 
+   const handleCheckEmtyData = (type) => {
+      if (!!rowData.amount || !!rowData.annotationWithdraw || !!rowData.annotation || !!hour || !!minute) {
+         submitFormCredit(type)
+      } else {
+         Swal.fire({
+            position: "center",
+            icon: "warning",
+            title: "กรุณากรอกข้อมูลให้ครบถ้วน",
+            showConfirmButton: false,
+            timer: 2000,
+         });
+      }
+   }
 
    const submitFormCredit = async (type) => {
-
       try {
-         let time = moment(rowData.date).format('DD/MM') + '@' + hour +':'+ minute
-
+         let time = moment(rowData.date).format('DD/MM') + '@' + hour + ':' + minute
+         if (!!rowData.amount || !!rowData.annotationWithdraw || !!rowData.annotation || !!hour || !!minute) {
+            Swal.fire({
+               position: "center",
+               icon: "success",
+               title: "กรุณากรอกข้อมูลให้ครบถ้วน",
+               showConfirmButton: false,
+               timer: 2000,
+            });
+         }
          let res = await axios({
             headers: {
                Authorization: "Bearer " + localStorage.getItem("access_token"),
@@ -1259,7 +1273,7 @@ function memberTable() {
 
          <Dialog
             open={openDialogManual.open}
-            onClose={() => setOpenDialogManual(false)}
+            // onClose={() => setOpenDialogManual(false)}
             fullWidth
             maxWidth="md"
          >
@@ -1508,8 +1522,7 @@ function memberTable() {
                            // size="large"
                            fullWidth
                            onClick={() => {
-                              console.log('first', openDialogManual.type)
-                              if (!rowData?.annotationWithdraw || !rowData?.amount) {
+                              if (!rowData?.annotationWithdraw || !rowData?.amount || !rowData?.date) {
                                  setOpenDialogManual(false)
                                  Swal.fire({
                                     position: "center",
@@ -1535,6 +1548,7 @@ function memberTable() {
                                  }
                               } else if (openDialogManual.type === "deposit") {
                                  submitFormCredit("DEPOSIT")
+
                               }
                            }
                            }
