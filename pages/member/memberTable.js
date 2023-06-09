@@ -8,7 +8,7 @@ import {
    Dialog,
    IconButton,
    DialogTitle,
-   DialogActions,
+   Autocomplete,
    // Table,
    TableContainer,
    TableRow,
@@ -42,6 +42,8 @@ import SearchIcon from '@mui/icons-material/Search';
 const Alert = React.forwardRef(function Alert(props, ref) {
    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
+const hr = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24'];
+const mi = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24','25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49','50','51','52','53','54','55','56','57','58','59','60'];
 
 function memberTable() {
    const dispatch = useAppDispatch();
@@ -67,6 +69,9 @@ function memberTable() {
       data: "",
       type: "",
    });
+   const [hour, setHour] = useState(hr[0]);
+   const [minute, setMinute] = useState(mi[0])
+
 
    const handleChangeBonus = (event) => {
       setBonus(event.target.checked);
@@ -82,9 +87,10 @@ function memberTable() {
 
    const handleChangeData = async (e) => {
       setRowData({ ...rowData, [e.target.name]: e.target.value });
-      // console.log('rowData', moment(rowData.date).format('DD/MM/YYYY HH:mm') )
 
    };
+
+   console.log('rowData', rowData)
 
 
    const getMemberList = async (type, start, end) => {
@@ -183,6 +189,7 @@ function memberTable() {
    };
 
 
+
    const editUser = async (type, start, end) => {
       setLoading(false);
       try {
@@ -242,8 +249,9 @@ function memberTable() {
 
 
    const submitFormCredit = async (type) => {
+
       try {
-         let time = moment(rowData.date).format('DD/MM') + '@'+rowData.time
+         let time = moment(rowData.date).format('DD/MM') + '@' + hour +':'+ minute
 
          let res = await axios({
             headers: {
@@ -257,7 +265,7 @@ function memberTable() {
                "transfer_type": type,
                "content": rowData.annotationWithdraw === "อื่นๆ" ? rowData.annotation : rowData.annotationWithdraw,
                "date": time
-            },
+            }
          });
 
          setLoading(false);
@@ -1405,11 +1413,11 @@ function memberTable() {
                      </Grid>
                      {openDialogManual.type === "deposit"
                         ?
-                        <Grid container item xs={12}>
-                           <Grid container item xs={12}>
+                        <Grid container spacing={1}>
+                           <Grid item xs={12}>
                               <Typography sx={{ fontSize: '14px', mb: 1, mt: 1 }}>เวลาตามสลิป *</Typography>
                            </Grid>
-                           <Grid container item xs={6}>
+                           <Grid item xs={6}>
                               <TextField
                                  name="date"
                                  type="date"
@@ -1426,18 +1434,28 @@ function memberTable() {
                               />
                            </Grid>
 
-                           <Grid container item xs={3}>
-                              <TextField
-                                 name="time"
-                                 type="time"
-                                 value={rowData?.time || ""}
-                                 placeholder="ชม."
-                                 fullWidth
-                                 size="small"
-                                 onChange={(e) => handleChangeData(e)}
-                                 variant="outlined"
-                                 sx={{ bgcolor: "white" }}
+                           <Grid item xs={3}>
+                              <Autocomplete
+                                 value={hour}
+                                 onChange={(event, newValue) => {
+                                    setHour(newValue);
+                                 }}
+                                 options={hr}
+                                 sx={{ width: 100 }}
+                                 renderInput={(params) => <TextField {...params} label="hour" size="small" />}
                               />
+                           </Grid>
+                           <Grid item xs={3}>
+                              <Autocomplete
+                                 value={minute}
+                                 onChange={(event, newValue) => {
+                                    setMinute(newValue);
+                                 }}
+                                 options={mi}
+                                 sx={{ width: 100 }}
+                                 renderInput={(params) => <TextField {...params} label="minute" size="small" />}
+                              />
+
                            </Grid>
                         </Grid>
                         : ''}
