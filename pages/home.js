@@ -31,6 +31,8 @@ import { useAppDispatch } from "../store/store";
 import { signOut } from "../store/slices/userSlice";
 import { useRouter } from "next/router";
 import { CSVLink } from "react-csv";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 
 import { Table, Input, Space, } from 'antd';
 import SearchIcon from '@mui/icons-material/Search';
@@ -42,12 +44,14 @@ function home() {
     const [openDialogView, setOpenDialogView] = useState(false);
     const [search, setSearch] = useState({});
     const [loading, setLoading] = useState(false);
-    const [dataLast, setDataLast] = useState([])
+    const [dataTransactionFail, setDataTransactionFail] = useState([])
+    const [dataTransactionSuccess, setDataTransactionSuccess] = useState([])
     const [bankData, setBankData] = useState([]);
     const [page, setPage] = useState(1)
     const [pageSize, setPageSize] = useState(10)
     const [exportData, setExportData] = useState([])
     const [mock, setMock] = useState([])
+    let temp
 
     const handleClickSnackbar = () => {
         setOpen(true);
@@ -57,7 +61,7 @@ function home() {
         setOpen(false);
     };
 
-    const getDataLast = async () => {
+    const getDataTransactionFail = async () => {
         setLoading(true);
         try {
             let res = await axios({
@@ -65,63 +69,19 @@ function home() {
                     Authorization: "Bearer " + localStorage.getItem("access_token"),
                 },
                 method: "get",
-                url: `${hostname}/dashboard/transaction/last`,
+                url: `${hostname}/transaction/transaction_fail`,
             });
             let resData = res.data;
             let no = 1;
-            let lastData = resData.filter((item) => item.status_transction === "CREATE")
-            console.log('lastData', lastData)
+            // let lastData = resData.filter((item) => item.status_transction === "CREATE")
             resData.map((item) => {
                 item.no = no++;
-                item.create_at = moment(item.create_at).format("DD-MM-YYYY HH:mm")
-                item.bank_name = item.members?.bank_name
-                item.bank_number = item.members?.bank_number
-                item.username = item.members?.username
-                delete item.affiliate_point
-                delete item.affiliate_point_after
-                delete item.affiliate_point_before
-                delete item.detail_bank
-                delete item.member_uuid
-                // delete item.no
-                delete item.point
-                delete item.point_after
-                delete item.point_before
-                delete item.prefix
-                delete item.slip
-                delete item.status_bank
-                delete item.status_provider
-                delete item.uuid
-                delete item.update_at
-                delete item.members
-                delete item.by_bank
-            });
-            lastData.map((item) => {
-                item.no = no++;
-                item.create_at = moment(item.create_at).format("DD-MM-YYYY HH:mm")
-                item.bank_name = item.members?.bank_name
-                item.bank_number = item.members?.bank_number
-                item.username = item.members?.username
-                delete item.affiliate_point
-                delete item.affiliate_point_after
-                delete item.affiliate_point_before
-                delete item.detail_bank
-                delete item.member_uuid
-                // delete item.no
-                delete item.point
-                delete item.point_after
-                delete item.point_before
-                delete item.prefix
-                delete item.slip
-                delete item.status_bank
-                delete item.status_provider
-                delete item.uuid
-                delete item.update_at
-                delete item.members
-                delete item.by_bank
+                item.create_at = moment(item.create_at).format("DD/MM HH:mm")
             });
 
-            setDataLast(resData);
-            setMock(lastData)
+
+            setDataTransactionFail(resData);
+            // setMock(lastData)
 
             setLoading(false);
 
@@ -145,6 +105,54 @@ function home() {
             }
         }
     };
+
+     const getDataTransactionSuccess = async () => {
+        setLoading(true);
+        try {
+            let res = await axios({
+                headers: {
+                    Authorization: "Bearer " + localStorage.getItem("access_token"),
+                },
+                method: "get",
+                url: `${hostname}/transaction/transaction_success`,
+            });
+            let resData = res.data;
+            let no = 1;
+            // let lastData = resData.filter((item) => item.status_transction === "CREATE")
+            resData.map((item) => {
+                item.no = no++;
+                item.create_at = moment(item.create_at).format("DD/MM HH:mm")
+                item.username = item.members.username
+                item.bank_number = item.banks?.bank_number
+            });
+
+
+            setDataTransactionSuccess(resData);
+            // setMock(lastData)
+
+            setLoading(false);
+
+        } catch (error) {
+            console.log(error);
+            if (
+                error.response.data.error.status_code === 401 &&
+                error.response.data.error.message === "Unauthorized"
+            ) {
+                dispatch(signOut());
+                localStorage.clear();
+                router.push("/auth/login");
+            }
+            if (
+                error.response.status === 401 &&
+                error.response.data.error.message === "Invalid Token"
+            ) {
+                dispatch(signOut());
+                localStorage.clear();
+                router.push("/auth/login");
+            }
+        }
+    };
+
     const getBank = async () => {
         setLoading(true);
         try {
@@ -158,11 +166,12 @@ function home() {
             let resData = res.data;
             let lastData = resData.filter(item => item.type === "DEPOSIT")
             let no = 1;
-            lastData.map((item) => {
+            let data = lastData.filter(item => item.status === "ACTIVE")
+            data.map((item) => {
                 item.no = no++;
                 item.birthdate = moment(item.birthdate).format("DD-MM-YYYY")
             });
-            setBankData(lastData);
+            setBankData(data);
         } catch (error) {
             console.log(error);
             if (
@@ -279,23 +288,23 @@ function home() {
     };
 
     const columns = [
+        // {
+        //     title: 'ลำดับ',
+        //     dataIndex: 'no',
+        //     align: 'center',
+        //     sorter: (record1, record2) => record1.no - record2.no,
+        //     render: (item, data) => (
+        //         <Typography sx={{ fontSize: '14px', textAlign: 'center' }} >{item}</Typography>
+        //     )
+        // },
         {
-            title: 'ลำดับ',
-            dataIndex: 'no',
-            align: 'center',
-            sorter: (record1, record2) => record1.no - record2.no,
-            render: (item, data) => (
-                <Typography sx={{ fontSize: '14px', textAlign: 'center' }} >{item}</Typography>
-            )
-        },
-        {
-            title: 'ธนาคาร',
-            dataIndex: 'bank_name',
+            title: 'ฝากเข้าธนาคาร',
+            dataIndex: 'bank_number',
             width: '200px',
             ...getColumnSearchProps('bank_number'),
             render: (item, data) => <Grid container>
                 <Grid item xs={3} sx={{ mt: 1 }}>
-                    {item === "kbnk" ? (
+                    {data.banks?.bank_name === "kbnk" ? (
                         <Image
                             src={
                                 "https://angpaos.games/wp-content/uploads/2023/03/kbnk.png"
@@ -304,7 +313,7 @@ function home() {
                             width={50}
                             height={50}
                         />
-                    ) : item === "truemoney" ? (
+                    ) : data.banks?.bank_name === "truemoney" ? (
                         <Image
                             src={
                                 "https://angpaos.games/wp-content/uploads/2023/03/truemoney.png"
@@ -313,7 +322,7 @@ function home() {
                             width={50}
                             height={50}
                         />
-                    ) : item === "ktba" ? (
+                    ) : data.banks?.bank_name === "ktba" ? (
                         <Image
                             src={
                                 "https://angpaos.games/wp-content/uploads/2023/03/ktba.png"
@@ -322,7 +331,7 @@ function home() {
                             width={50}
                             height={50}
                         />
-                    ) : item === "scb" ? (
+                    ) : data.banks?.bank_name === "scb" ? (
                         <Image
                             src={
                                 "https://angpaos.games/wp-content/uploads/2023/03/scb.png"
@@ -331,7 +340,7 @@ function home() {
                             width={50}
                             height={50}
                         />
-                    ) : item === "bay" ? (
+                    ) : data.banks?.bank_name === "bay" ? (
                         <Image
                             src={
                                 "https://angpaos.games/wp-content/uploads/2023/03/bay.png"
@@ -340,7 +349,7 @@ function home() {
                             width={50}
                             height={50}
                         />
-                    ) : item === "bbla" ? (
+                    ) : data.banks?.bank_name === "bbla" ? (
                         <Image
                             src={
                                 "https://angpaos.games/wp-content/uploads/2023/03/bbl.png"
@@ -349,7 +358,7 @@ function home() {
                             width={50}
                             height={50}
                         />
-                    ) : item === "gsb" ? (
+                    ) : data.banks?.bank_name === "gsb" ? (
                         <Image
                             src={
                                 "https://angpaos.games/wp-content/uploads/2023/03/gsb.png"
@@ -358,7 +367,7 @@ function home() {
                             width={50}
                             height={50}
                         />
-                    ) : item === "ttb" ? (
+                    ) : data.banks?.bank_name === "ttb" ? (
                         <Image
                             src={
                                 "https://angpaos.games/wp-content/uploads/2023/03/ttb.png"
@@ -367,7 +376,7 @@ function home() {
                             width={50}
                             height={50}
                         />
-                    ) : item === "bbac" ? (
+                    ) : data.banks?.bank_name === "bbac" ? (
                         <Image
                             src={
                                 "https://angpaos.games/wp-content/uploads/2023/03/baac.png"
@@ -376,7 +385,7 @@ function home() {
                             width={50}
                             height={50}
                         />
-                    ) : item === "icbc" ? (
+                    ) : data.banks?.bank_name === "icbc" ? (
                         <Image
                             src={
                                 "https://angpaos.games/wp-content/uploads/2023/03/icbc.png"
@@ -385,7 +394,7 @@ function home() {
                             width={50}
                             height={50}
                         />
-                    ) : item === "tcd" ? (
+                    ) : data.banks?.bank_name === "tcd" ? (
                         <Image
                             src={
                                 "https://angpaos.games/wp-content/uploads/2023/03/tcd.png"
@@ -394,7 +403,7 @@ function home() {
                             width={50}
                             height={50}
                         />
-                    ) : item === "citi" ? (
+                    ) : data.banks?.bank_name === "citi" ? (
                         <Image
                             src={
                                 "https://angpaos.games/wp-content/uploads/2023/03/citi.png"
@@ -403,7 +412,7 @@ function home() {
                             width={50}
                             height={50}
                         />
-                    ) : item === "scbt" ? (
+                    ) : data.banks?.bank_name === "scbt" ? (
                         <Image
                             src={
                                 "https://angpaos.games/wp-content/uploads/2023/03/scbt.png"
@@ -412,7 +421,7 @@ function home() {
                             width={50}
                             height={50}
                         />
-                    ) : item === "cimb" ? (
+                    ) : data.banks?.bank_name === "cimb" ? (
                         <Image
                             src={
                                 "https://angpaos.games/wp-content/uploads/2023/03/cimb.png"
@@ -421,7 +430,7 @@ function home() {
                             width={50}
                             height={50}
                         />
-                    ) : item === "uob" ? (
+                    ) : data.banks?.bank_name === "uob" ? (
                         <Image
                             src={
                                 "https://angpaos.games/wp-content/uploads/2023/03/uob.png"
@@ -430,7 +439,7 @@ function home() {
                             width={50}
                             height={50}
                         />
-                    ) : item === "hsbc" ? (
+                    ) : data.banks?.bank_name === "hsbc" ? (
                         <Image
                             src={
                                 "https://angpaos.games/wp-content/uploads/2023/03/hsbc.png"
@@ -439,7 +448,7 @@ function home() {
                             width={50}
                             height={50}
                         />
-                    ) : item === "mizuho" ? (
+                    ) : data.banks?.bank_name === "mizuho" ? (
                         <Image
                             src={
                                 "https://angpaos.games/wp-content/uploads/2023/03/mizuho.png"
@@ -448,7 +457,7 @@ function home() {
                             width={50}
                             height={50}
                         />
-                    ) : item === "ghb" ? (
+                    ) : data.banks?.bank_name === "ghb" ? (
                         <Image
                             src={
                                 "https://angpaos.games/wp-content/uploads/2023/03/ghb.png"
@@ -457,7 +466,7 @@ function home() {
                             width={50}
                             height={50}
                         />
-                    ) : item === "lhbank" ? (
+                    ) : data.banks?.bank_name === "lhbank" ? (
                         <Image
                             src={
                                 "https://angpaos.games/wp-content/uploads/2023/03/lhbank.png"
@@ -466,7 +475,7 @@ function home() {
                             width={50}
                             height={50}
                         />
-                    ) : item === "tisco" ? (
+                    ) : data.banks?.bank_name === "tisco" ? (
                         <Image
                             src={
                                 "https://angpaos.games/wp-content/uploads/2023/03/tisco.png"
@@ -475,7 +484,7 @@ function home() {
                             width={50}
                             height={50}
                         />
-                    ) : item === "kkba" ? (
+                    ) : data.banks?.bank_name === "kkba" ? (
                         <Image
                             src={
                                 "https://angpaos.games/wp-content/uploads/2023/03/kkba.png"
@@ -484,7 +493,7 @@ function home() {
                             width={50}
                             height={50}
                         />
-                    ) : item === "ibank" ? (
+                    ) : data.banks?.bank_name === "ibank" ? (
                         <Image
                             src={
                                 "https://angpaos.games/wp-content/uploads/2023/03/ibank.png"
@@ -512,7 +521,7 @@ function home() {
                     </Grid>
                     <Grid sx={{ ml: 3, }}>
                         <Typography sx={{ fontSize: "14px" }}>
-                            {data.name}
+                            {data.banks?.name}
                         </Typography>
                     </Grid>
                 </Grid>
@@ -555,32 +564,32 @@ function home() {
                 >{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
             ),
         },
-        {
-            dataIndex: "credit_before",
-            title: "เครดิตก่อนเติม",
-            align: "center",
-            ...getColumnSearchProps('credit_before'),
-            render: (item) => (
-                <Typography
-                    style={{
-                        fontSize: '14px'
-                    }}
-                >{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
-            ),
-        },
-        {
-            dataIndex: "credit_after",
-            title: "เครดิตหลังเติม",
-            align: "center",
-            ...getColumnSearchProps('credit_after'),
-            render: (item) => (
-                <Typography
-                    style={{
-                        fontSize: '14px'
-                    }}
-                >{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
-            ),
-        },
+        // {
+        //     dataIndex: "credit_before",
+        //     title: "เครดิตก่อนเติม",
+        //     align: "center",
+        //     ...getColumnSearchProps('credit_before'),
+        //     render: (item) => (
+        //         <Typography
+        //             style={{
+        //                 fontSize: '14px'
+        //             }}
+        //         >{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
+        //     ),
+        // },
+        // {
+        //     dataIndex: "credit_after",
+        //     title: "เครดิตหลังเติม",
+        //     align: "center",
+        //     ...getColumnSearchProps('credit_after'),
+        //     render: (item) => (
+        //         <Typography
+        //             style={{
+        //                 fontSize: '14px'
+        //             }}
+        //         >{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
+        //     ),
+        // },
 
         {
             dataIndex: 'status_transction',
@@ -975,17 +984,33 @@ function home() {
         },
     ];
 
+    useEffect(() => {
+        getDataTransactionFail()
+        getDataTransactionSuccess()
+        getBank()
+    }, [])
+
+
+    // useEffect(() => {
+    //     getDataWithdraw()
+    //     getBank()
+
+    // }, [])
+
+    // useEffect(() => {
+    //     const interval = setInterval(() => {
+    //         pendingWithdraw()
+    //     }, 3000);
+    //     return () => clearInterval(interval);
+    // }, []);
+
+
     function playAudio() {
         const audio = new Audio(
             "https://angpaos.games/wp-content/uploads/2023/04/achive-sound-132273.mp3"
         );
         audio.play();
     }
-
-    useEffect(() => {
-        getDataLast()
-        getBank()
-    }, [])
 
 
     return (
@@ -1210,14 +1235,55 @@ function home() {
                                             ""
                                         )} </Box>
                                 </Grid>
-                                <Grid item xs={5} sx={{ ml: 2, mt: 2 }} >
+                                <Grid item xs={5} sx={{ ml: 2, mt: 1 }} >
                                     <Typography sx={{ fontSize: "14px", mt: "5px", ml: "5px", color: "#EEEEEE", }} >
-                                        {
-                                            item.bank_name === "truemoney" ? "True Wallet"
-                                                : item.bank_name === "scb" ? "SCB (ไทยพาณิชย์)"
-                                                    : item.bank_name === "kbnk" ? "KBank (กสิกรไทย)"
-                                                        : ""
-                                        } </Typography>
+                                        {item.bank_name === "kbnk"
+                                            ? "กสิกรไทย"
+                                            : item.bank_name === "truemoney"
+                                                ? "TrueMoney"
+                                                : item.bank_name === "ktba"
+                                                    ? "กรุงไทย"
+                                                    : item.bank_name === "scb"
+                                                        ? "ไทยพาณิชย์"
+                                                        : item.bank_name === "bay"
+                                                            ? "กรุงศรีอยุธยา"
+                                                            : item.bank_name === "bbla"
+                                                                ? "กรุงเทพ"
+                                                                : item.bank_name === "gsb"
+                                                                    ? "ออมสิน"
+                                                                    : item.bank_name === "ttb"
+                                                                        ? "ทหารไทยธนชาต (TTB)"
+                                                                        : item.bank_name === "BAAC"
+                                                                            ? "เพื่อการเกษตรและสหกรณ์การเกษตร"
+                                                                            : item.bank_name === "ICBC"
+                                                                                ? "ไอซีบีซี (ไทย)"
+                                                                                : item.bank_name === "TCD"
+                                                                                    ? "ไทยเครดิตเพื่อรายย่อย"
+                                                                                    : item.bank_name === "CITI"
+                                                                                        ? "ซิตี้แบงก์"
+                                                                                        : item.bank_name === "SCBT"
+                                                                                            ? "สแตนดาร์ดชาร์เตอร์ด (ไทย)"
+                                                                                            : item.bank_name === "CIMB"
+                                                                                                ? "ซีไอเอ็มบีไทย"
+                                                                                                : item.bank_name === "UOB"
+                                                                                                    ? "ยูโอบี"
+                                                                                                    : item.bank_name === "HSBC"
+                                                                                                        ? "เอชเอสบีซี ประเทศไทย"
+                                                                                                        : item.bank_name === "MIZUHO"
+                                                                                                            ? "มิซูโฮ คอร์ปอเรต"
+                                                                                                            : item.bank_name === "GHB"
+                                                                                                                ? "อาคารสงเคราะห์"
+                                                                                                                : item.bank_name === "LHBANK"
+                                                                                                                    ? "แลนด์ แอนด์ เฮ้าส์"
+                                                                                                                    : item.bank_name === "TISCO"
+                                                                                                                        ? "ทิสโก้"
+                                                                                                                        : item.bank_name === "kkba"
+                                                                                                                            ? "เกียรตินาคิน"
+                                                                                                                            : item.bank_name === "IBANK"
+                                                                                                                                ? "อิสลามแห่งประเทศไทย"
+                                                                                                                                : ""
+                                        }
+                                    </Typography>
                                     <Typography sx={{ fontSize: "18px", fontWeight: "bold", mt: "5px", ml: "5px", color: "#EEEEEE", }}>
                                         {item.bank_number} </Typography>
                                     <Typography sx={{ fontSize: "14px", mt: "5px", ml: "5px", color: "#EEEEEE", }} >
@@ -1226,14 +1292,14 @@ function home() {
                                 </Grid>
 
                                 <Grid item xs={4} >
-                                    <Typography sx={{ fontSize: "14px", mt: "5px", ml: "5px", color: "#EEEEEE", }} >
+                                    {/* <Typography sx={{ fontSize: "14px", mt: "5px", ml: "5px", color: "#EEEEEE", }} >
                                         จำนวนครั้ง / วัน
                                     </Typography>
                                     <Chip label={Intl.NumberFormat("TH").format(parseInt(item.count_transaction))}
                                         size="small"
-                                        style={{ marginTop: "10px", padding: 10, width: 120, backgroundColor: "#129A50", color: "#EEEEEE", }} />
-                                    <Typography sx={{ fontSize: "14px", mt: "5px", ml: "5px", color: "#EEEEEE", }} >
-                                        จำนวนเงินถอน
+                                        style={{ marginTop: "10px", padding: 10, width: 120, backgroundColor: "#129A50", color: "#EEEEEE", }} /> */}
+                                    <Typography sx={{ fontSize: "14px", mt: 1, ml: "5px", color: "#EEEEEE", }} >
+                                        เงินในบัญชี
                                     </Typography>
                                     <Chip
                                         label={Intl.NumberFormat("TH").format(parseInt(item.bank_total))}
@@ -1247,13 +1313,407 @@ function home() {
                     }
                 </Grid>
             </Paper>
+
             <Grid container justifyContent="row" spacing={2}>
+                <Grid item xs={4}>
+                    <Paper sx={{
+                        pt: 3,
+                        pl: 3,
+                        height: "770px",
+
+                    }}>
+                        <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px" }}>รายการรออนุมัติการฝากผิดบัญชี</Typography>
+                        <Box sx={{
+                            overflow: "auto",
+                            maxHeight: "700px",
+                        }}>
+
+                            {dataTransactionFail.map((item) =>
+                                <Paper sx={
+                                    {
+                                        // background: "linear-gradient(#0072B1, #41A3E3)",
+                                        background: "#eee",
+                                        p: 2,
+                                        // height: 150,
+                                        // width: "300px",
+                                        mt: 2,
+                                        mr: 1
+                                    }
+                                } >
+                                    <Grid container >
+                                        <Grid item xs={2} sx={{ mt: 1 }} >
+                                            <Box>
+                                                {item.banks?.bank_name === "kbnk" ? (
+                                                    <Image
+                                                        src={
+                                                            "https://angpaos.games/wp-content/uploads/2023/03/kbnk.png"
+                                                        }
+                                                        alt="kbnk"
+                                                        width={50}
+                                                        height={50}
+                                                    />
+                                                ) : item.banks?.bank_name === "truemoney" ? (
+                                                    <Image
+                                                        src={
+                                                            "https://angpaos.games/wp-content/uploads/2023/03/truemoney.png"
+                                                        }
+                                                        alt="truemoney"
+                                                        width={50}
+                                                        height={50}
+                                                    />
+                                                ) : item.banks?.bank_name === "ktba" ? (
+                                                    <Image
+                                                        src={
+                                                            "https://angpaos.games/wp-content/uploads/2023/03/ktba.png"
+                                                        }
+                                                        alt="ktba"
+                                                        width={50}
+                                                        height={50}
+                                                    />
+                                                ) : item.banks?.bank_name === "scb" ? (
+                                                    <Image
+                                                        src={
+                                                            "https://angpaos.games/wp-content/uploads/2023/03/scb.png"
+                                                        }
+                                                        alt="scb"
+                                                        width={50}
+                                                        height={50}
+                                                    />
+                                                ) : item.banks?.bank_name === "bay" ? (
+                                                    <Image
+                                                        src={
+                                                            "https://angpaos.games/wp-content/uploads/2023/03/bay.png"
+                                                        }
+                                                        alt="bay"
+                                                        width={50}
+                                                        height={50}
+                                                    />
+                                                ) : item.banks?.bank_name === "bbla" ? (
+                                                    <Image
+                                                        src={
+                                                            "https://angpaos.games/wp-content/uploads/2023/03/bbl.png"
+                                                        }
+                                                        alt="bbla"
+                                                        width={50}
+                                                        height={50}
+                                                    />
+                                                ) : item.banks?.bank_name === "gsb" ? (
+                                                    <Image
+                                                        src={
+                                                            "https://angpaos.games/wp-content/uploads/2023/03/gsb.png"
+                                                        }
+                                                        alt="gsb"
+                                                        width={50}
+                                                        height={50}
+                                                    />
+                                                ) : item.banks?.bank_name === "ttb" ? (
+                                                    <Image
+                                                        src={
+                                                            "https://angpaos.games/wp-content/uploads/2023/03/ttb.png"
+                                                        }
+                                                        alt="ttb"
+                                                        width={50}
+                                                        height={50}
+                                                    />
+                                                ) : item.banks?.bank_name === "bbac" ? (
+                                                    <Image
+                                                        src={
+                                                            "https://angpaos.games/wp-content/uploads/2023/03/baac.png"
+                                                        }
+                                                        alt="bbac"
+                                                        width={50}
+                                                        height={50}
+                                                    />
+                                                ) : item.banks?.bank_name === "icbc" ? (
+                                                    <Image
+                                                        src={
+                                                            "https://angpaos.games/wp-content/uploads/2023/03/icbc.png"
+                                                        }
+                                                        alt="icbc"
+                                                        width={50}
+                                                        height={50}
+                                                    />
+                                                ) : item.banks?.bank_name === "tcd" ? (
+                                                    <Image
+                                                        src={
+                                                            "https://angpaos.games/wp-content/uploads/2023/03/tcd.png"
+                                                        }
+                                                        alt="tcd"
+                                                        width={50}
+                                                        height={50}
+                                                    />
+                                                ) : item.banks?.bank_name === "citi" ? (
+                                                    <Image
+                                                        src={
+                                                            "https://angpaos.games/wp-content/uploads/2023/03/citi.png"
+                                                        }
+                                                        alt="citi"
+                                                        width={50}
+                                                        height={50}
+                                                    />
+                                                ) : item.banks?.bank_name === "scbt" ? (
+                                                    <Image
+                                                        src={
+                                                            "https://angpaos.games/wp-content/uploads/2023/03/scbt.png"
+                                                        }
+                                                        alt="scbt"
+                                                        width={50}
+                                                        height={50}
+                                                    />
+                                                ) : item.banks?.bank_name === "cimb" ? (
+                                                    <Image
+                                                        src={
+                                                            "https://angpaos.games/wp-content/uploads/2023/03/cimb.png"
+                                                        }
+                                                        alt="cimb"
+                                                        width={50}
+                                                        height={50}
+                                                    />
+                                                ) : item.banks?.bank_name === "uob" ? (
+                                                    <Image
+                                                        src={
+                                                            "https://angpaos.games/wp-content/uploads/2023/03/uob.png"
+                                                        }
+                                                        alt="uob"
+                                                        width={50}
+                                                        height={50}
+                                                    />
+                                                ) : item.banks?.bank_name === "hsbc" ? (
+                                                    <Image
+                                                        src={
+                                                            "https://angpaos.games/wp-content/uploads/2023/03/hsbc.png"
+                                                        }
+                                                        alt="hsbc"
+                                                        width={50}
+                                                        height={50}
+                                                    />
+                                                ) : item.banks?.bank_name === "mizuho" ? (
+                                                    <Image
+                                                        src={
+                                                            "https://angpaos.games/wp-content/uploads/2023/03/mizuho.png"
+                                                        }
+                                                        alt="mizuho"
+                                                        width={50}
+                                                        height={50}
+                                                    />
+                                                ) : item.banks?.bank_name === "ghb" ? (
+                                                    <Image
+                                                        src={
+                                                            "https://angpaos.games/wp-content/uploads/2023/03/ghb.png"
+                                                        }
+                                                        alt="ghb"
+                                                        width={50}
+                                                        height={50}
+                                                    />
+                                                ) : item.banks?.bank_name === "lhbank" ? (
+                                                    <Image
+                                                        src={
+                                                            "https://angpaos.games/wp-content/uploads/2023/03/lhbank.png"
+                                                        }
+                                                        alt="lhbank"
+                                                        width={50}
+                                                        height={50}
+                                                    />
+                                                ) : item.banks?.bank_name === "tisco" ? (
+                                                    <Image
+                                                        src={
+                                                            "https://angpaos.games/wp-content/uploads/2023/03/tisco.png"
+                                                        }
+                                                        alt="tisco"
+                                                        width={50}
+                                                        height={50}
+                                                    />
+                                                ) : item.banks?.bank_name === "kkba" ? (
+                                                    <Image
+                                                        src={
+                                                            "https://angpaos.games/wp-content/uploads/2023/03/kkba.png"
+                                                        }
+                                                        alt="kkba"
+                                                        width={50}
+                                                        height={50}
+                                                    />
+                                                ) : item.banks?.bank_name === "ibank" ? (
+                                                    <Image
+                                                        src={
+                                                            "https://angpaos.games/wp-content/uploads/2023/03/ibank.png"
+                                                        }
+                                                        alt="ibank"
+                                                        width={50}
+                                                        height={50}
+                                                    />
+                                                ) : (
+                                                    ""
+                                                )}
+                                            </Box>
+                                        </Grid>
+                                        <Grid item xs={5} sx={{ ml: 2, mt: 1 }} >
+                                            <Typography sx={{ fontSize: '14px', color: "#000" }} >
+                                                {item.banks?.bank_name === "kbnk"
+                                                    ? "กสิกรไทย"
+                                                    : item.banks?.bank_name === "truemoney"
+                                                        ? "TrueMoney"
+                                                        : item.banks?.bank_name === "ktba"
+                                                            ? "กรุงไทย"
+                                                            : item.banks?.bank_name === "scb"
+                                                                ? "ไทยพาณิชย์"
+                                                                : item.banks?.bank_name === "bay"
+                                                                    ? "กรุงศรีอยุธยา"
+                                                                    : item.banks?.bank_name === "bbla"
+                                                                        ? "กรุงเทพ"
+                                                                        : item.banks?.bank_name === "gsb"
+                                                                            ? "ออมสิน"
+                                                                            : item.banks?.bank_name === "ttb"
+                                                                                ? "ทหารไทยธนชาต (TTB)"
+                                                                                : item.banks?.bank_name === "BAAC"
+                                                                                    ? "เพื่อการเกษตรและสหกรณ์การเกษตร"
+                                                                                    : item.banks?.bank_name === "ICBC"
+                                                                                        ? "ไอซีบีซี (ไทย)"
+                                                                                        : item.banks?.bank_name === "TCD"
+                                                                                            ? "ไทยเครดิตเพื่อรายย่อย"
+                                                                                            : item.banks?.bank_name === "CITI"
+                                                                                                ? "ซิตี้แบงก์"
+                                                                                                : item.banks?.bank_name === "SCBT"
+                                                                                                    ? "สแตนดาร์ดชาร์เตอร์ด (ไทย)"
+                                                                                                    : item.banks?.bank_name === "CIMB"
+                                                                                                        ? "ซีไอเอ็มบีไทย"
+                                                                                                        : item.banks?.bank_name === "UOB"
+                                                                                                            ? "ยูโอบี"
+                                                                                                            : item.banks?.bank_name === "HSBC"
+                                                                                                                ? "เอชเอสบีซี ประเทศไทย"
+                                                                                                                : item.banks?.bank_name === "MIZUHO"
+                                                                                                                    ? "มิซูโฮ คอร์ปอเรต"
+                                                                                                                    : item.banks?.bank_name === "GHB"
+                                                                                                                        ? "อาคารสงเคราะห์"
+                                                                                                                        : item.banks?.bank_name === "LHBANK"
+                                                                                                                            ? "แลนด์ แอนด์ เฮ้าส์"
+                                                                                                                            : item.banks?.bank_name === "TISCO"
+                                                                                                                                ? "ทิสโก้"
+                                                                                                                                : item.banks?.bank_name === "kkba"
+                                                                                                                                    ? "เกียรตินาคิน"
+                                                                                                                                    : item.banks?.bank_name === "IBANK"
+                                                                                                                                        ? "อิสลามแห่งประเทศไทย"
+                                                                                                                                        : ""
+                                                }
+                                            </Typography>
+                                            <Typography sx={{ fontSize: "18px", fontWeight: "bold", mt: "5px", color: "#000", }}>
+                                                {item.banks?.bank_number} </Typography>
+                                            <Typography sx={{ fontSize: "14px", mt: "5px", color: "#000", }} >
+                                                {item.banks?.bank_account_name}
+                                            </Typography>
+
+                                        </Grid>
+
+                                        <Grid item xs={4} >
+                                            <Typography align="end" sx={{ fontSize: "14px", mt: "5px", ml: "5px", color: "#000", }} >
+                                                {item.create_at}
+                                            </Typography>
+                                            {/* <Chip label={Intl.NumberFormat("TH").format(parseInt(item.count_transaction))}
+                                                size="small"
+                                                style={{ marginTop: "10px", padding: 10, width: 120, backgroundColor: "#129A50", color: "#EEEEEE", }} /> */}
+                                            <Typography align="start" sx={{ fontSize: "14px", mt: "5px", ml: "5px", color: "#000", }} >
+                                                จำนวนเงินฝาก :
+                                            </Typography>
+                                            <Grid container justifyContent="flex-end">
+                                                <Chip
+                                                    label={Intl.NumberFormat("TH").format(parseInt(item.credit))}
+                                                    size="small"
+                                                    style={{ marginTop: "10px", padding: 10, width: 120, backgroundColor: "#129A50", color: "#EEEEEE", }} />
+                                            </Grid>
+
+                                        </Grid>
+                                        <Grid
+                                            item
+                                            xs={12}
+                                            container
+                                            justifyContent="center"
+                                            sx={{ mt: 1 }}
+                                        >
+                                            <Grid item xs={6}>
+                                                <Typography sx={{ fontSize: "14px", color: '#000' }}>
+                                                    ชื่อผู้ใช้ :
+                                                </Typography>
+
+                                                <TextField
+                                                    variant="outlined"
+                                                    type="text"
+                                                    name="username"
+                                                    size="small"
+                                                    value={search.username}
+                                                    onChange={(e) => {
+                                                        setSearch({
+                                                            ...search,
+                                                            [e.target.name]: e.target.value,
+                                                        });
+                                                    }}
+                                                    placeholder="username"
+                                                    fullWidth
+                                                // sx={{  mr: 2 }}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={4} sx={{ mt: 3, ml: 2 }}>
+                                                <Button
+                                                    variant="contained"
+                                                    // color="secondary"09893f
+                                                    disabled={!search.username}
+                                                    sx={{ background: !search.username ? "gray" : "linear-gradient(#41db82, #09893f)" }}
+                                                    onClick={() => {
+                                                        setOpenDialogView({
+                                                            open: true,
+                                                            data: item,
+                                                        });
+                                                    }}
+                                                >
+                                                    <CheckCircleOutlineIcon sx={{ color: 'white' }} />
+                                                </Button>
+                                                <Button
+                                                    variant="contained"
+                                                    sx={{ background: "linear-gradient(#890909, #db4141)", ml: 1 }}
+                                                // onClick={async () => {
+                                                //     try {
+                                                //         let res = await axios({
+                                                //             headers: {
+                                                //                 Authorization:
+                                                //                     "Bearer " + localStorage.getItem("access_token"),
+                                                //             },
+                                                //             method: "post",
+                                                //             url: `${hostname}/api/sms/scb/sms-transaction/hide/${item.uuid}`,
+                                                //         });
+                                                //         if (res.data.message === "แก้ไขข้อมูลเรียบร้อยแล้ว") {
+                                                //             Swal.fire({
+                                                //                 position: "center",
+                                                //                 icon: "success",
+                                                //                 title: "ซ่อนข้อมูลเรียบร้อย",
+                                                //                 showConfirmButton: false,
+                                                //                 timer: 2000,
+                                                //             });
+                                                //             getListWait();
+                                                //         }
+                                                //     } catch (error) {
+                                                //         if (
+                                                //             error.response.data.error.status_code === 401 &&
+                                                //             error.response.data.error.message === "Unauthorized"
+                                                //         ) {
+                                                //             dispatch(signOut());
+                                                //             localStorage.clear();
+                                                //             router.push("/auth/login");
+                                                //         }
+                                                //         console.log(error);
+                                                //     }
+                                                // }}
+                                                >
+                                                    <HighlightOffIcon sx={{ color: 'white' }} />
+                                                </Button>
+                                            </Grid>
 
 
-                <Grid item xs={12}>
-                    <Paper sx={{ p: 3 }}>
-                        <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px" }}>รายการรออนุมัติ</Typography>
-                        <Table
+                                        </Grid>
+                                    </Grid>
+                                </Paper>
+                            )
+                            }
+                        </Box>
+
+                        {/* <Table
                             columns={columnsApprove}
                             dataSource={mock}
                             onChange={onChange}
@@ -1266,10 +1726,11 @@ function home() {
                                     setPageSize(pageSize)
                                 }
                             }}
-                        />
+                        /> */}
                     </Paper>
                 </Grid>
-                <Grid item xs={12}>
+
+                <Grid item xs={8}>
                     <Paper sx={{ p: 3 }}>
                         <Grid
                             container
@@ -1279,7 +1740,7 @@ function home() {
                             <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px" }}  > รายการเดินบัญชี </Typography>
 
                             <CSVLink
-                                data={dataLast}
+                                data={dataTransactionSuccess}
                             >
                                 <Button
                                     variant="outlined"
@@ -1295,7 +1756,7 @@ function home() {
                         </Grid>
                         <Table
                             columns={columns}
-                            dataSource={dataLast}
+                            dataSource={dataTransactionSuccess}
                             onChange={onChange}
                             size="small"
                             pagination={{
@@ -1318,7 +1779,7 @@ function home() {
                 fullWidth
                 maxWidth="xs"
             >
-                <DialogTitle>ข้อมูล SMS</DialogTitle>
+                <DialogTitle>รายการรออนุมัติการฝากผิดบัญชี</DialogTitle>
                 <DialogContent>
                     <Grid container>
                         <Grid item xs={2} sx={{ mt: 3, ml: 1 }}>
