@@ -49,8 +49,6 @@ function home() {
     const [bankData, setBankData] = useState([]);
     const [page, setPage] = useState(1)
     const [pageSize, setPageSize] = useState(10)
-    const [exportData, setExportData] = useState([])
-    const [mock, setMock] = useState([])
     let temp
 
     const handleClickSnackbar = () => {
@@ -106,7 +104,7 @@ function home() {
         }
     };
 
-     const getDataTransactionSuccess = async () => {
+    const getDataTransactionSuccess = async () => {
         setLoading(true);
         try {
             let res = await axios({
@@ -192,6 +190,65 @@ function home() {
             }
         }
     };
+
+    const approveTransaction = async () => {
+        try {
+            let res = await axios({
+                headers: {
+                Authorization: "Bearer " + localStorage.getItem("access_token")},
+                method: "post",
+                url: `${hostname}/transaction/approve_deposit_request`,
+                data: {
+                    "username": search.username,
+                    "uuid": search.uuid
+                },
+            });
+            if (res.data.message === "อนุมัติคำขอฝากเงินสำเร็จ") {
+                setOpenDialogView(false);
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: "อนุมัติคำขอฝากเงินสำเร็จ",
+                    showConfirmButton: false,
+                    timer: 2500,
+                });
+                setSearch({});
+                getDataTransactionFail()
+                getDataTransactionSuccess()
+            }
+        } catch (error) {
+            if (
+                error.response.data.error.status_code === 401 &&
+                error.response.data.error.message === "Unauthorized"
+            ) {
+                dispatch(signOut());
+                localStorage.clear();
+                router.push("/auth/login");
+            }
+            if (
+                error.response.status === 401 &&
+                error.response.data.error.message === "Invalid Token"
+            ) {
+                dispatch(signOut());
+                localStorage.clear();
+                router.push("/auth/login");
+            }
+            if (
+                error.response.data.error.status_code === 404 &&
+                error.response.data.error.message === "ไม่พบรหัสข้อมูลนี้"
+            ) {
+                setOpenDialogView(false);
+                Swal.fire({
+                    position: "center",
+                    icon: "error",
+                    title: "ไม่พบรหัสข้อมูลนี้",
+                    showConfirmButton: false,
+                    timer: 2000,
+                });
+            }
+            console.log(error);
+        }
+    }
 
     const searchInput = useRef(null);
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -652,338 +709,6 @@ function home() {
         },
     ];
 
-    const columnsApprove = [
-        {
-            title: 'ลำดับ',
-            dataIndex: 'no',
-            align: 'center',
-            width: '100px',
-
-            sorter: (record1, record2) => record1.no - record2.no,
-            render: (item, data) => (
-                <Typography sx={{ textAlign: 'center' }} >{item}</Typography>
-            )
-        },
-        {
-            title: 'ธนาคาร',
-            dataIndex: 'bank_name',
-            width: '350px',
-            ...getColumnSearchProps('bank_number'),
-            render: (item, data) =>
-                <Grid container>
-                    <Grid item xs={3} sx={{ mt: 1 }}>
-                        {item === "kbnk" ? (
-                            <Image
-                                src={
-                                    "https://angpaos.games/wp-content/uploads/2023/03/kbnk.png"
-                                }
-                                alt="kbnk"
-                                width={50}
-                                height={50}
-                            />
-                        ) : item === "truemoney" ? (
-                            <Image
-                                src={
-                                    "https://angpaos.games/wp-content/uploads/2023/03/truemoney.png"
-                                }
-                                alt="truemoney"
-                                width={50}
-                                height={50}
-                            />
-                        ) : item === "ktba" ? (
-                            <Image
-                                src={
-                                    "https://angpaos.games/wp-content/uploads/2023/03/ktba.png"
-                                }
-                                alt="ktba"
-                                width={50}
-                                height={50}
-                            />
-                        ) : item === "scb" ? (
-                            <Image
-                                src={
-                                    "https://angpaos.games/wp-content/uploads/2023/03/scb.png"
-                                }
-                                alt="scb"
-                                width={50}
-                                height={50}
-                            />
-                        ) : item === "bay" ? (
-                            <Image
-                                src={
-                                    "https://angpaos.games/wp-content/uploads/2023/03/bay.png"
-                                }
-                                alt="bay"
-                                width={50}
-                                height={50}
-                            />
-                        ) : item === "bbla" ? (
-                            <Image
-                                src={
-                                    "https://angpaos.games/wp-content/uploads/2023/03/bbl.png"
-                                }
-                                alt="bbla"
-                                width={50}
-                                height={50}
-                            />
-                        ) : item === "gsb" ? (
-                            <Image
-                                src={
-                                    "https://angpaos.games/wp-content/uploads/2023/03/gsb.png"
-                                }
-                                alt="gsb"
-                                width={50}
-                                height={50}
-                            />
-                        ) : item === "ttb" ? (
-                            <Image
-                                src={
-                                    "https://angpaos.games/wp-content/uploads/2023/03/ttb.png"
-                                }
-                                alt="ttb"
-                                width={50}
-                                height={50}
-                            />
-                        ) : item === "bbac" ? (
-                            <Image
-                                src={
-                                    "https://angpaos.games/wp-content/uploads/2023/03/baac.png"
-                                }
-                                alt="bbac"
-                                width={50}
-                                height={50}
-                            />
-                        ) : item === "icbc" ? (
-                            <Image
-                                src={
-                                    "https://angpaos.games/wp-content/uploads/2023/03/icbc.png"
-                                }
-                                alt="icbc"
-                                width={50}
-                                height={50}
-                            />
-                        ) : item === "tcd" ? (
-                            <Image
-                                src={
-                                    "https://angpaos.games/wp-content/uploads/2023/03/tcd.png"
-                                }
-                                alt="tcd"
-                                width={50}
-                                height={50}
-                            />
-                        ) : item === "citi" ? (
-                            <Image
-                                src={
-                                    "https://angpaos.games/wp-content/uploads/2023/03/citi.png"
-                                }
-                                alt="citi"
-                                width={50}
-                                height={50}
-                            />
-                        ) : item === "scbt" ? (
-                            <Image
-                                src={
-                                    "https://angpaos.games/wp-content/uploads/2023/03/scbt.png"
-                                }
-                                alt="scbt"
-                                width={50}
-                                height={50}
-                            />
-                        ) : item === "cimb" ? (
-                            <Image
-                                src={
-                                    "https://angpaos.games/wp-content/uploads/2023/03/cimb.png"
-                                }
-                                alt="cimb"
-                                width={50}
-                                height={50}
-                            />
-                        ) : item === "uob" ? (
-                            <Image
-                                src={
-                                    "https://angpaos.games/wp-content/uploads/2023/03/uob.png"
-                                }
-                                alt="uob"
-                                width={50}
-                                height={50}
-                            />
-                        ) : item === "hsbc" ? (
-                            <Image
-                                src={
-                                    "https://angpaos.games/wp-content/uploads/2023/03/hsbc.png"
-                                }
-                                alt="hsbc"
-                                width={50}
-                                height={50}
-                            />
-                        ) : item === "mizuho" ? (
-                            <Image
-                                src={
-                                    "https://angpaos.games/wp-content/uploads/2023/03/mizuho.png"
-                                }
-                                alt="mizuho"
-                                width={50}
-                                height={50}
-                            />
-                        ) : item === "ghb" ? (
-                            <Image
-                                src={
-                                    "https://angpaos.games/wp-content/uploads/2023/03/ghb.png"
-                                }
-                                alt="ghb"
-                                width={50}
-                                height={50}
-                            />
-                        ) : item === "lhbank" ? (
-                            <Image
-                                src={
-                                    "https://angpaos.games/wp-content/uploads/2023/03/lhbank.png"
-                                }
-                                alt="lhbank"
-                                width={50}
-                                height={50}
-                            />
-                        ) : item === "tisco" ? (
-                            <Image
-                                src={
-                                    "https://angpaos.games/wp-content/uploads/2023/03/tisco.png"
-                                }
-                                alt="tisco"
-                                width={50}
-                                height={50}
-                            />
-                        ) : item === "kkba" ? (
-                            <Image
-                                src={
-                                    "https://angpaos.games/wp-content/uploads/2023/03/kkba.png"
-                                }
-                                alt="kkba"
-                                width={50}
-                                height={50}
-                            />
-                        ) : item === "ibank" ? (
-                            <Image
-                                src={
-                                    "https://angpaos.games/wp-content/uploads/2023/03/ibank.png"
-                                }
-                                alt="ibank"
-                                width={50}
-                                height={50}
-                            />
-                        ) : (
-                            ""
-                        )}
-                    </Grid>
-                    <Grid item xs={9}>
-                        <Grid sx={{ ml: 3, mt: 1 }}>
-                            <CopyToClipboard text={data.bank_number}>
-                                <div style={{ "& .MuiButton-text": { "&:hover": { textDecoration: "underline blue 1px", } } }} >
-                                    <Button
-                                        sx={{ p: 0, color: "blue", }}
-                                        onClick={handleClickSnackbar}
-                                    >
-                                        {data.bank_number}
-                                    </Button>
-                                </div>
-                            </CopyToClipboard>
-                        </Grid>
-                        <Grid sx={{ ml: 3, }}>
-                            <Typography sx={{ fontSize: '14px' }}>
-                                {data.name}
-                            </Typography>
-                        </Grid>
-                    </Grid>
-                </Grid >,
-        },
-
-        {
-            dataIndex: "credit",
-            title: "เครดิต",
-            align: "center",
-            width: '250px',
-            sorter: (record1, record2) => record1.credit - record2.credit,
-            render: (item) => (
-                <Typography sx={{ fontSize: '14px' }}>{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
-            ),
-        },
-
-        {
-            dataIndex: "create_at",
-            title: "วันที่ทำรายการ",
-            align: "center",
-            width: '250px',
-            render: (item) => (
-                <Typography sx={{ fontSize: '14px' }}>{item}</Typography>
-            ),
-        },
-
-        {
-            dataIndex: "content",
-            title: "หมายเหตุ",
-            align: "center",
-            width: '400px',
-            render: (item) => (
-                <Box >
-                    <Button
-                        variant="contained"
-                        sx={{ bgcolor: '#34BD22 ', mt: 1, mr: 1, width: '150px' }}
-                        onClick={() => {
-                            setOpenDialogView({
-                                open: true,
-                                // data: item,
-                            });
-                        }}
-                    >
-                        <DoneIcon sx={{ color: '#FFFF' }} />
-                    </Button>
-                    <Button
-                        variant="contained"
-                        sx={{ bgcolor: "#EB001B", mt: 1, color: '#ffff' }}
-                        onClick={async () => {
-                            try {
-                                let res = await axios({
-                                    headers: { Authorization: "Bearer " + localStorage.getItem("access_token") },
-                                    method: "post",
-                                    url: `${hostname}/api/sms/scb/sms-transaction/hide/${item.uuid}`,
-                                });
-                                if (res.data.message === "แก้ไขข้อมูลเรียบร้อยแล้ว") {
-                                    Swal.fire({
-                                        position: "center",
-                                        icon: "success",
-                                        title: "ซ่อนข้อมูลเรียบร้อย",
-                                        showConfirmButton: false,
-                                        timer: 2000,
-                                    });
-                                    getListWait();
-                                }
-                            } catch (error) {
-                                if (
-                                    error.response.data.error.status_code === 401 &&
-                                    error.response.data.error.message === "Unauthorized"
-                                ) {
-                                    dispatch(signOut());
-                                    localStorage.clear();
-                                    router.push("/auth/login");
-                                }
-                                if (
-                                    error.response.status === 401 &&
-                                    error.response.data.error.message === "Invalid Token"
-                                ) {
-                                    dispatch(signOut());
-                                    localStorage.clear();
-                                    router.push("/auth/login");
-                                }
-                                console.log(error);
-                            }
-                        }}
-                    >
-                        <CloseIcon />
-                    </Button>
-                </Box>
-            ),
-        },
-    ];
-
     useEffect(() => {
         getDataTransactionFail()
         getDataTransactionSuccess()
@@ -1011,8 +736,7 @@ function home() {
         );
         audio.play();
     }
-
-
+    
     return (
         <Layout title="home">
             <CssBaseline />
@@ -1638,12 +1362,10 @@ function home() {
                                                     type="text"
                                                     name="username"
                                                     size="small"
-                                                    value={search.username}
+                                                    // value={search.username}
                                                     onChange={(e) => {
-                                                        setSearch({
-                                                            ...search,
-                                                            [e.target.name]: e.target.value,
-                                                        });
+                                                        setSearch({ ...search, [e.target.name]: e.target.value, uuid: item.uuid });
+
                                                     }}
                                                     placeholder="username"
                                                     fullWidth
@@ -1653,14 +1375,14 @@ function home() {
                                             <Grid item xs={4} sx={{ mt: 3, ml: 2 }}>
                                                 <Button
                                                     variant="contained"
-                                                    // color="secondary"09893f
-                                                    disabled={!search.username}
-                                                    sx={{ background: !search.username ? "gray" : "linear-gradient(#41db82, #09893f)" }}
+                                                    disabled={item.uuid !== search?.uuid ? true : search.username === '' ? true :false}
+                                                    sx={{ background: item.uuid !== search?.uuid ? true : search.username === '' ? "gray" : "linear-gradient(#41db82, #09893f)" }}
                                                     onClick={() => {
                                                         setOpenDialogView({
                                                             open: true,
                                                             data: item,
                                                         });
+
                                                     }}
                                                 >
                                                     <CheckCircleOutlineIcon sx={{ color: 'white' }} />
@@ -1779,169 +1501,174 @@ function home() {
                 fullWidth
                 maxWidth="xs"
             >
-                <DialogTitle>รายการรออนุมัติการฝากผิดบัญชี</DialogTitle>
+                <DialogTitle sx={{ fontWeight: 'bold', textDecoration: 'underline' }}>รายการรออนุมัติการฝากผิดบัญชี</DialogTitle>
                 <DialogContent>
-                    <Grid container>
-                        <Grid item xs={2} sx={{ mt: 3, ml: 1 }}>
-                            {openDialogView.data?.bank_tranfer === "KBNK" ? (
+                    <Grid
+                        container
+                        direction="row"
+                        justifyContent="flex-start"
+                        alignItems="flex-start">
+
+                        <Grid item xs={2} sx={{ ml: 1, mt: 1 }}>
+                            {openDialogView.data?.banks.bank_name === "kbnk" ? (
                                 <Image
-                                    src={"https://the1pg.com/wp-content/uploads/2022/10/kbnk.png"}
+                                    src={"https://angpaos.games/wp-content/uploads/2023/03/kbnk.png"}
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.bank_tranfer === "TRUEWALLET" ? (
+                            ) : openDialogView.data?.banks.bank_name === "truemoney" ? (
                                 <Image
                                     src={
-                                        "https://the1pg.com/wp-content/uploads/2022/10/truemoney.png"
+                                        "https://angpaos.games/wp-content/uploads/2023/03/truemoney.png"
                                     }
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.bank_tranfer === "KTBA" ? (
+                            ) : openDialogView.data?.banks.bank_name === "ktba" ? (
                                 <Image
-                                    src={"https://the1pg.com/wp-content/uploads/2022/10/ktba.png"}
+                                    src={"https://angpaos.games/wp-content/uploads/2023/03/ktba.png"}
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.bank_tranfer === "SCB" ? (
+                            ) : openDialogView.data?.banks.bank_name === "scb" ? (
                                 <Image
-                                    src={"https://the1pg.com/wp-content/uploads/2022/10/scb.png"}
+                                    src={"https://angpaos.games/wp-content/uploads/2023/03/scb.png"}
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.bank_tranfer === "BAY" ? (
+                            ) : openDialogView.data?.banks.bank_name === "bay" ? (
                                 <Image
-                                    src={"https://the1pg.com/wp-content/uploads/2022/10/bay.png"}
+                                    src={"https://angpaos.games/wp-content/uploads/2023/03/bay.png"}
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.bank_tranfer === "BBLA" ? (
+                            ) : openDialogView.data?.banks.bank_name === "bbla" ? (
                                 <Image
-                                    src={"https://the1pg.com/wp-content/uploads/2022/10/bbl.png"}
+                                    src={"https://angpaos.games/wp-content/uploads/2023/03/bbl.png"}
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.bank_tranfer === "GSB" ? (
+                            ) : openDialogView.data?.banks.bank_name === "gsb" ? (
                                 <Image
-                                    src={"https://the1pg.com/wp-content/uploads/2022/10/gsb.png"}
+                                    src={"https://angpaos.games/wp-content/uploads/2023/03/gsb.png"}
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.bank_tranfer === "TTB" ? (
+                            ) : openDialogView.data?.banks.bank_name === "ttb" ? (
                                 <Image
-                                    src={"https://the1pg.com/wp-content/uploads/2022/10/ttb.png"}
+                                    src={"https://angpaos.games/wp-content/uploads/2023/03/ttb.png"}
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.bank_tranfer === "BAAC" ? (
+                            ) : openDialogView.data?.banks.bank_name === "baac" ? (
                                 <Image
-                                    src={"https://the1pg.com/wp-content/uploads/2022/10/baac.png"}
+                                    src={"https://angpaos.games/wp-content/uploads/2023/03/baac.png"}
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.bank_tranfer === "ICBC" ? (
+                            ) : openDialogView.data?.banks.bank_name === "icbc" ? (
                                 <Image
-                                    src={"https://the1pg.com/wp-content/uploads/2022/10/icbc.png"}
+                                    src={"https://angpaos.games/wp-content/uploads/2023/03/icbc.png"}
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.bank_tranfer === "TCD" ? (
+                            ) : openDialogView.data?.banks.bank_name === "tcd" ? (
                                 <Image
-                                    src={"https://the1pg.com/wp-content/uploads/2022/10/tcd.png"}
+                                    src={"https://angpaos.games/wp-content/uploads/2023/03/tcd.png"}
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.bank_tranfer === "CITI" ? (
+                            ) : openDialogView.data?.banks.bank_name === "citi" ? (
                                 <Image
-                                    src={"https://the1pg.com/wp-content/uploads/2022/10/citi.png"}
+                                    src={"https://angpaos.games/wp-content/uploads/2023/03/citi.png"}
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.bank_tranfer === "SCBT" ? (
+                            ) : openDialogView.data?.banks.bank_name === "scbt" ? (
                                 <Image
-                                    src={"https://the1pg.com/wp-content/uploads/2022/10/scbt.png"}
+                                    src={"https://angpaos.games/wp-content/uploads/2023/03/scbt.png"}
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.bank_tranfer === "CIMB" ? (
+                            ) : openDialogView.data?.banks.bank_name === "cimb" ? (
                                 <Image
-                                    src={"https://the1pg.com/wp-content/uploads/2022/10/cimb.png"}
+                                    src={"https://angpaos.games/wp-content/uploads/2023/03/cimb.png"}
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.bank_tranfer === "UOB" ? (
+                            ) : openDialogView.data?.banks.bank_name === "uob" ? (
                                 <Image
-                                    src={"https://the1pg.com/wp-content/uploads/2022/10/uob.png"}
+                                    src={"https://angpaos.games/wp-content/uploads/2023/03/uob.png"}
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.bank_tranfer === "HSBC" ? (
+                            ) : openDialogView.data?.banks.bank_name === "hsbc" ? (
                                 <Image
-                                    src={"https://the1pg.com/wp-content/uploads/2022/10/hsbc.png"}
+                                    src={"https://angpaos.games/wp-content/uploads/2023/03/hsbc.png"}
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.bank_tranfer === "MIZUHO" ? (
+                            ) : openDialogView.data?.banks.bank_name === "mizuho" ? (
                                 <Image
                                     src={
-                                        "https://the1pg.com/wp-content/uploads/2022/10/mizuho.png"
+                                        "https://angpaos.games/wp-content/uploads/2023/03/mizuho.png"
                                     }
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.bank_tranfer === "GHB" ? (
+                            ) : openDialogView.data?.banks.bank_name === "ghb" ? (
                                 <Image
-                                    src={"https://the1pg.com/wp-content/uploads/2022/10/ghb.png"}
+                                    src={"https://angpaos.games/wp-content/uploads/2023/03/ghb.png"}
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.bank_tranfer === "LHBANK" ? (
+                            ) : openDialogView.data?.banks.bank_name === "lhbank" ? (
                                 <Image
                                     src={
-                                        "https://the1pg.com/wp-content/uploads/2022/10/lhbank.png"
+                                        "https://angpaos.games/wp-content/uploads/2023/03/lhbank.png"
                                     }
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.bank_tranfer === "TISCO" ? (
+                            ) : openDialogView.data?.banks.bank_name === "tisco" ? (
                                 <Image
                                     src={
-                                        "https://the1pg.com/wp-content/uploads/2022/10/tisco.png"
+                                        "https://angpaos.games/wp-content/uploads/2023/03/tisco.png"
                                     }
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.bank_tranfer === "KKBA" ? (
+                            ) : openDialogView.data?.banks.bank_name === "kkba" ? (
                                 <Image
-                                    src={"https://the1pg.com/wp-content/uploads/2022/10/kkba.png"}
+                                    src={"https://angpaos.games/wp-content/uploads/2023/03/kkba.png"}
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.bank_tranfer === "IBANK" ? (
+                            ) : openDialogView.data?.banks.bank_name === "ibank" ? (
                                 <Image
                                     src={
-                                        "https://the1pg.com/wp-content/uploads/2022/10/ibank.png"
+                                        "https://angpaos.games/wp-content/uploads/2023/03/ibank.png"
                                     }
                                     alt="scb"
                                     width={50}
@@ -1951,131 +1678,65 @@ function home() {
                                 ""
                             )}
                         </Grid>
-                        <Grid xs={9} sx={{ mt: 3 }} container>
-                            <Grid item xs={9} container>
-                                <Typography sx={{ fontSize: "16px", ml: 1, mt: 1 }}>
-                                    จำนวนเงิน :
-                                    <Chip
-                                        label={'100'}
-                                        size="small"
-                                        sx={{
-                                            p: "10px",
-                                            ml: 2,
-                                            backgroundColor: "#16539B",
-                                            color: "#eee",
-                                        }}
-                                    />
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={3} justifyContent="flex-end">
-                                <Typography sx={{ fontSize: "14px" }}>
-                                    {openDialogView.data?.bank_date}
-                                </Typography>
-                                <Typography sx={{ fontSize: "14px" }}>
-                                    {openDialogView.data?.bank_time}
-                                </Typography>
-                            </Grid>
-                        </Grid>
-                        <Grid sx={{ mt: 2 }}>
-                            <Typography sx={{ fontSize: "16px", fontWeight: "bold" }}>
-                                ชื่อผู้ใช้ (Username)
-                            </Typography>
 
-                            <TextField
-                                variant="outlined"
-                                type="text"
-                                name="username"
-                                value={search.username}
-                                onChange={(e) => {
-                                    setSearch({
-                                        ...search,
-                                        [e.target.name]: e.target.value,
-                                    });
-                                }}
-                                placeholder="Username"
-                                fullWidth
-                                sx={{ mt: 1, mr: 2 }}
-                            />
+                        <Grid item xs={5} >
+                            <Typography> {openDialogView.data?.banks.bank_name} </Typography>
+                            <Typography> {openDialogView.data?.banks.bank_number} </Typography>
+                            <Typography> {openDialogView.data?.banks.bank_account_name} </Typography>
                         </Grid>
+                        <Grid item xs={4} >
+                            <Typography sx={{ fontWeight: 'bold' }}>เวลาที่ทำรายการ</Typography>
+                            <Typography > {openDialogView.data?.create_at} </Typography>
+                        </Grid>
+
                     </Grid>
-                    <Grid container justifyContent="flex-end">
+                    <Grid xs={2} item >
+                        <Typography sx={{ fontSize: "16px", ml: 1, mt: 2 }}> <span style={{ fontWeight: 'bold' }}> ชื่อผู้ใช้ (Username) : </span>{search.username} </Typography>
+                    </Grid>
+
+                    <Grid sx={{ mt: 2 }}>
+                        <Typography sx={{ fontSize: "16px", fontWeight: "bold", ml: 1, mt: 2 }}>
+                            จำนวนเงิน :
+                            <Chip
+                                label={openDialogView.data?.credit}
+                                size="small"
+                                sx={{
+                                    p: "10px",
+                                    ml: 2,
+                                    backgroundColor: "#16539B",
+                                    color: "#eee",
+                                }}
+                            />
+                        </Typography>
+                        <Typography sx={{ fontSize: "16px", ml: 1, mt: 2 }}> <span style={{ fontWeight: 'bold' }}> หมายเหตุ : </span>{openDialogView.data?.content} </Typography>
+
+                    </Grid>
+
+                    <Grid container justifyContent="flex-end" spacing={1}>
                         <Grid item xs={3}>
                             <Button
                                 variant="contained"
                                 size="large"
                                 fullWidth
-                                onClick={async () => {
-                                    try {
-                                        let res = await axios({
-                                            headers: {
-                                                Authorization:
-                                                    "Bearer " + localStorage.getItem("access_token"),
-                                            },
-                                            method: "post",
-                                            url: `${hostname}/api/sms/scb/sms-transaction/approved-deposit/${openDialogView.data?.uuid}`,
-                                            data: {
-                                                amount: openDialogView.data?.amount,
-                                                bank_date: openDialogView.data?.bank_date,
-                                                bank_time: openDialogView.data?.bank_time,
-                                                create_by: localStorage.getItem("create_by"),
-                                                username: search.username,
-                                            },
-                                        });
-                                        if (res.data.message === "เพิ่มข้อมูลเรียบร้อยแล้ว") {
-                                            setOpenDialogView(false);
-                                            Swal.fire({
-                                                position: "center",
-                                                icon: "success",
-                                                title: "เพิ่มข้อมูลเรียบร้อยแล้ว",
-                                                showConfirmButton: false,
-                                                timer: 2000,
-                                            });
-                                            setSearch({});
-                                            getListWait();
-                                            getWallet();
-                                        }
-                                    } catch (error) {
-                                        if (
-                                            error.response.data.error.status_code === 401 &&
-                                            error.response.data.error.message === "Unauthorized"
-                                        ) {
-                                            dispatch(signOut());
-                                            localStorage.clear();
-                                            router.push("/auth/login");
-                                        }
-                                        if (
-                                            error.response.status === 401 &&
-                                            error.response.data.error.message === "Invalid Token"
-                                        ) {
-                                            dispatch(signOut());
-                                            localStorage.clear();
-                                            router.push("/auth/login");
-                                        }
-                                        if (
-                                            error.response.data.error.status_code === 404 &&
-                                            error.response.data.error.message === "ไม่พบรหัสข้อมูลนี้"
-                                        ) {
-                                            setOpenDialogView(false);
-                                            Swal.fire({
-                                                position: "center",
-                                                icon: "error",
-                                                title: "ไม่พบรหัสข้อมูลนี้",
-                                                showConfirmButton: false,
-                                                timer: 2000,
-                                            });
-                                        }
-                                        console.log(error);
-                                    }
-                                }}
-                                sx={{
-                                    mt: 3,
-                                    color: '#ffff'
-                                }}
+                                onClick={() => approveTransaction()}
+                                sx={{ mt: 3,color: '#ffff' }}
                             >
                                 ยืนยัน
                             </Button>
                         </Grid>
+                        <Grid item xs={3}>
+                            <Button
+                                variant="text"
+                                size="large"
+                                fullWidth
+                                onClick={() => setOpenDialogView(false)}
+                                sx={{ mt: 3,bgcolor: '#eee' }}
+                            >
+                                ยกเลิก
+                            </Button>
+                        </Grid>
                     </Grid>
+
                 </DialogContent>
             </Dialog>
             <LoadingModal open={loading} />
@@ -2089,7 +1750,7 @@ function home() {
                     Copy success !
                 </Alert>
             </Snackbar>
-        </Layout>
+        </Layout >
     );
 }
 
