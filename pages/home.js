@@ -578,7 +578,7 @@ function home() {
                     </Grid>
                     <Grid sx={{ ml: 3, }}>
                         <Typography sx={{ fontSize: "14px" }}>
-                            {data.banks?.name}
+                            {data.banks?.bank_account_name}
                         </Typography>
                     </Grid>
                 </Grid>
@@ -1057,7 +1057,7 @@ function home() {
                                     {
                                         // background: "linear-gradient(#0072B1, #41A3E3)",
                                         background: "#eee",
-                                        p: 2,
+                                        p: 1,
                                         // height: 150,
                                         // width: "300px",
                                         mt: 2,
@@ -1372,7 +1372,7 @@ function home() {
                                                 // sx={{  mr: 2 }}
                                                 />
                                             </Grid>
-                                            <Grid item xs={4} sx={{ mt: 3, ml: 2 }}>
+                                            <Grid item xs={5} container justifyContent='center' sx={{ mt: 3, ml: 1  }}>
                                                 <Button
                                                     variant="contained"
                                                     disabled={item.uuid !== search?.uuid ? true : search.username === '' ? true :false}
@@ -1510,14 +1510,14 @@ function home() {
                         alignItems="flex-start">
 
                         <Grid item xs={2} sx={{ ml: 1, mt: 1 }}>
-                            {openDialogView.data?.banks.bank_name === "kbnk" ? (
+                            {openDialogView.data?.banks?.bank_name === "kbnk" ? (
                                 <Image
                                     src={"https://angpaos.games/wp-content/uploads/2023/03/kbnk.png"}
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.banks.bank_name === "truemoney" ? (
+                            ) : openDialogView.data?.banks?.bank_name === "truemoney" ? (
                                 <Image
                                     src={
                                         "https://angpaos.games/wp-content/uploads/2023/03/truemoney.png"
@@ -1526,105 +1526,105 @@ function home() {
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.banks.bank_name === "ktba" ? (
+                            ) : openDialogView.data?.banks?.bank_name === "ktba" ? (
                                 <Image
                                     src={"https://angpaos.games/wp-content/uploads/2023/03/ktba.png"}
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.banks.bank_name === "scb" ? (
+                            ) : openDialogView.data?.banks?.bank_name === "scb" ? (
                                 <Image
                                     src={"https://angpaos.games/wp-content/uploads/2023/03/scb.png"}
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.banks.bank_name === "bay" ? (
+                            ) : openDialogView.data?.banks?.bank_name === "bay" ? (
                                 <Image
                                     src={"https://angpaos.games/wp-content/uploads/2023/03/bay.png"}
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.banks.bank_name === "bbla" ? (
+                            ) : openDialogView.data?.banks?.bank_name === "bbla" ? (
                                 <Image
                                     src={"https://angpaos.games/wp-content/uploads/2023/03/bbl.png"}
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.banks.bank_name === "gsb" ? (
+                            ) : openDialogView.data?.banks?.bank_name === "gsb" ? (
                                 <Image
                                     src={"https://angpaos.games/wp-content/uploads/2023/03/gsb.png"}
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.banks.bank_name === "ttb" ? (
+                            ) : openDialogView.data?.banks?.bank_name === "ttb" ? (
                                 <Image
                                     src={"https://angpaos.games/wp-content/uploads/2023/03/ttb.png"}
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.banks.bank_name === "baac" ? (
+                            ) : openDialogView.data?.banks?.bank_name === "baac" ? (
                                 <Image
                                     src={"https://angpaos.games/wp-content/uploads/2023/03/baac.png"}
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.banks.bank_name === "icbc" ? (
+                            ) : openDialogView.data?.banks?.bank_name === "icbc" ? (
                                 <Image
                                     src={"https://angpaos.games/wp-content/uploads/2023/03/icbc.png"}
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.banks.bank_name === "tcd" ? (
+                            ) : openDialogView.data?.banks?.bank_name === "tcd" ? (
                                 <Image
                                     src={"https://angpaos.games/wp-content/uploads/2023/03/tcd.png"}
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.banks.bank_name === "citi" ? (
+                            ) : openDialogView.data?.banks?.bank_name === "citi" ? (
                                 <Image
                                     src={"https://angpaos.games/wp-content/uploads/2023/03/citi.png"}
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.banks.bank_name === "scbt" ? (
+                            ) : openDialogView.data?.banks?.bank_name === "scbt" ? (
                                 <Image
                                     src={"https://angpaos.games/wp-content/uploads/2023/03/scbt.png"}
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.banks.bank_name === "cimb" ? (
+                            ) : openDialogView.data?.banks?.bank_name === "cimb" ? (
                                 <Image
                                     src={"https://angpaos.games/wp-content/uploads/2023/03/cimb.png"}
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.banks.bank_name === "uob" ? (
+                            ) : openDialogView.data?.banks?.bank_name === "uob" ? (
                                 <Image
                                     src={"https://angpaos.games/wp-content/uploads/2023/03/uob.png"}
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.banks.bank_name === "hsbc" ? (
+                            ) : openDialogView.data?.banks?.bank_name === "hsbc" ? (
                                 <Image
                                     src={"https://angpaos.games/wp-content/uploads/2023/03/hsbc.png"}
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.banks.bank_name === "mizuho" ? (
+                            ) : openDialogView.data?.banks?.bank_name === "mizuho" ? (
                                 <Image
                                     src={
                                         "https://angpaos.games/wp-content/uploads/2023/03/mizuho.png"
@@ -1633,14 +1633,14 @@ function home() {
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.banks.bank_name === "ghb" ? (
+                            ) : openDialogView.data?.banks?.bank_name === "ghb" ? (
                                 <Image
                                     src={"https://angpaos.games/wp-content/uploads/2023/03/ghb.png"}
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.banks.bank_name === "lhbank" ? (
+                            ) : openDialogView.data?.banks?.bank_name === "lhbank" ? (
                                 <Image
                                     src={
                                         "https://angpaos.games/wp-content/uploads/2023/03/lhbank.png"
@@ -1649,7 +1649,7 @@ function home() {
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.banks.bank_name === "tisco" ? (
+                            ) : openDialogView.data?.banks?.bank_name === "tisco" ? (
                                 <Image
                                     src={
                                         "https://angpaos.games/wp-content/uploads/2023/03/tisco.png"
@@ -1658,14 +1658,14 @@ function home() {
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.banks.bank_name === "kkba" ? (
+                            ) : openDialogView.data?.banks?.bank_name === "kkba" ? (
                                 <Image
                                     src={"https://angpaos.games/wp-content/uploads/2023/03/kkba.png"}
                                     alt="scb"
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.banks.bank_name === "ibank" ? (
+                            ) : openDialogView.data?.banks?.bank_name === "ibank" ? (
                                 <Image
                                     src={
                                         "https://angpaos.games/wp-content/uploads/2023/03/ibank.png"
@@ -1680,9 +1680,9 @@ function home() {
                         </Grid>
 
                         <Grid item xs={5} >
-                            <Typography> {openDialogView.data?.banks.bank_name} </Typography>
-                            <Typography> {openDialogView.data?.banks.bank_number} </Typography>
-                            <Typography> {openDialogView.data?.banks.bank_account_name} </Typography>
+                            <Typography> {openDialogView.data?.banks?.bank_name} </Typography>
+                            <Typography> {openDialogView.data?.banks?.bank_number} </Typography>
+                            <Typography> {openDialogView.data?.banks?.bank_account_name} </Typography>
                         </Grid>
                         <Grid item xs={4} >
                             <Typography sx={{ fontWeight: 'bold' }}>เวลาที่ทำรายการ</Typography>
@@ -1732,7 +1732,7 @@ function home() {
                                 onClick={() => setOpenDialogView(false)}
                                 sx={{ mt: 3,bgcolor: '#eee' }}
                             >
-                                ยกเลิก
+                                ปิด
                             </Button>
                         </Grid>
                     </Grid>
