@@ -195,7 +195,8 @@ function home() {
         try {
             let res = await axios({
                 headers: {
-                Authorization: "Bearer " + localStorage.getItem("access_token")},
+                    Authorization: "Bearer " + localStorage.getItem("access_token")
+                },
                 method: "post",
                 url: `${hostname}/transaction/approve_deposit_request`,
                 data: {
@@ -245,6 +246,41 @@ function home() {
                     showConfirmButton: false,
                     timer: 2000,
                 });
+            }
+            console.log(error);
+        }
+    }
+
+    const approve_hidden = async (uuid) => {
+        
+        try {
+            let res = await axios({
+                headers: { Authorization:"Bearer " + localStorage.getItem("access_token")},
+                method: "post",
+                url: `${hostname}/transaction/update_hidden`,
+                data: {
+                    "uuid": uuid
+                }
+            });
+            if (res.data) {
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: "ซ่อนข้อมูลเรียบร้อย",
+                    showConfirmButton: false,
+                    timer: 2500,
+                });
+                getDataTransactionFail()
+                getDataTransactionSuccess()
+            }
+        } catch (error) {
+            if (
+                error.response.data.error.status_code === 401 &&
+                error.response.data.error.message === "Unauthorized"
+            ) {
+                dispatch(signOut());
+                localStorage.clear();
+                router.push("/auth/login");
             }
             console.log(error);
         }
@@ -736,7 +772,9 @@ function home() {
         );
         audio.play();
     }
-    
+
+
+
     return (
         <Layout title="home">
             <CssBaseline />
@@ -1375,7 +1413,7 @@ function home() {
                                             <Grid item xs={5} container justifyContent='center' sx={{ mt: 3, ml: 1  }}>
                                                 <Button
                                                     variant="contained"
-                                                    disabled={item.uuid !== search?.uuid ? true : search.username === '' ? true :false}
+                                                    disabled={item.uuid !== search?.uuid ? true : search.username === '' ? true : false}
                                                     sx={{ background: item.uuid !== search?.uuid ? true : search.username === '' ? "gray" : "linear-gradient(#41db82, #09893f)" }}
                                                     onClick={() => {
                                                         setOpenDialogView({
@@ -1390,38 +1428,24 @@ function home() {
                                                 <Button
                                                     variant="contained"
                                                     sx={{ background: "linear-gradient(#890909, #db4141)", ml: 1 }}
-                                                // onClick={async () => {
-                                                //     try {
-                                                //         let res = await axios({
-                                                //             headers: {
-                                                //                 Authorization:
-                                                //                     "Bearer " + localStorage.getItem("access_token"),
-                                                //             },
-                                                //             method: "post",
-                                                //             url: `${hostname}/api/sms/scb/sms-transaction/hide/${item.uuid}`,
-                                                //         });
-                                                //         if (res.data.message === "แก้ไขข้อมูลเรียบร้อยแล้ว") {
-                                                //             Swal.fire({
-                                                //                 position: "center",
-                                                //                 icon: "success",
-                                                //                 title: "ซ่อนข้อมูลเรียบร้อย",
-                                                //                 showConfirmButton: false,
-                                                //                 timer: 2000,
-                                                //             });
-                                                //             getListWait();
-                                                //         }
-                                                //     } catch (error) {
-                                                //         if (
-                                                //             error.response.data.error.status_code === 401 &&
-                                                //             error.response.data.error.message === "Unauthorized"
-                                                //         ) {
-                                                //             dispatch(signOut());
-                                                //             localStorage.clear();
-                                                //             router.push("/auth/login");
-                                                //         }
-                                                //         console.log(error);
-                                                //     }
-                                                // }}
+                                                    onClick={() => {
+                                                        Swal.fire({
+                                                            title: "ยืนยันการซ่อนข้อมูล",
+                                                            icon: "info",
+                                                            showCancelButton: true,
+                                                            cancelButtonColor: "#EB001B",
+                                                            confirmButtonColor: "#058900",
+                                                            cancelButtonText: `ยกเลิก`,
+                                                            confirmButtonText: "ยืนยัน",
+                                                         }).then((result) => {
+                                                            if (result.isConfirmed) {
+                                                                approve_hidden(item.uuid)
+                                                            }
+                                                         });
+                                                    }
+                                                
+                                                }
+                                                
                                                 >
                                                     <HighlightOffIcon sx={{ color: 'white' }} />
                                                 </Button>
@@ -1719,7 +1743,7 @@ function home() {
                                 size="large"
                                 fullWidth
                                 onClick={() => approveTransaction()}
-                                sx={{ mt: 3,color: '#ffff' }}
+                                sx={{ mt: 3, color: '#ffff' }}
                             >
                                 ยืนยัน
                             </Button>
@@ -1730,7 +1754,7 @@ function home() {
                                 size="large"
                                 fullWidth
                                 onClick={() => setOpenDialogView(false)}
-                                sx={{ mt: 3,bgcolor: '#eee' }}
+                                sx={{ mt: 3, bgcolor: '#eee' }}
                             >
                                 ปิด
                             </Button>
