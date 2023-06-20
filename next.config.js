@@ -13,7 +13,7 @@ const nextConfig = {
     },
   },
   images: {
-    domains: ["angpaos.games","the1pg.com" , "api-007bet.superfast-auto.com" , "admin-007bet.superfast-auto.com","images.unsplash.com","cdn.softkingdoms.sgp1.digitaloceanspaces.com"],
+    domains: ["angpaos.games","the1pg.com" ,"public-cdn-softkingdom.sgp1.digitaloceanspaces.com"],
   },
 };
 
