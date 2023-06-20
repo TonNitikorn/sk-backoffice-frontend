@@ -732,7 +732,7 @@ function home() {
 
     function playAudio() {
         const audio = new Audio(
-            "https://angpaos.games/wp-content/uploads/2023/04/achive-sound-132273.mp3"
+            "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687247918891-achive-sound-132273.mp3"
         );
         audio.play();
     }
