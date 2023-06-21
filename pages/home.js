@@ -49,7 +49,8 @@ function home() {
     const [bankData, setBankData] = useState([]);
     const [page, setPage] = useState(1)
     const [pageSize, setPageSize] = useState(10)
-    let temp
+    let FailData
+    let SuccessData
 
     const handleClickSnackbar = () => {
         setOpen(true);
@@ -71,18 +72,13 @@ function home() {
             });
             let resData = res.data;
             let no = 1;
-            // let lastData = resData.filter((item) => item.status_transction === "CREATE")
             resData.map((item) => {
                 item.no = no++;
                 item.create_at = moment(item.create_at).format("DD/MM HH:mm")
             });
-
-
+            FailData = resData.length;
             setDataTransactionFail(resData);
-            // setMock(lastData)
-
             setLoading(false);
-
         } catch (error) {
             console.log(error);
             if (
@@ -103,6 +99,46 @@ function home() {
             }
         }
     };
+    const getDataFail_Interval = async () => {
+        try {
+            let res = await axios({
+                headers: {
+                    Authorization: "Bearer " + localStorage.getItem("access_token"),
+                },
+                method: "get",
+                url: `${hostname}/transaction/transaction_fail`,
+            });
+            let resData = res.data;
+            let no = 1;
+            resData.map((item) => {
+                item.no = no++;
+                item.create_at = moment(item.create_at).format("DD/MM HH:mm")
+            });
+            if (resData.length !== FailData) {
+                playAudio()
+                setDataTransactionFail(resData);
+                getDataTransactionFail()
+            }
+        } catch (error) {
+            console.log(error);
+            if (
+                error.response.data.error.status_code === 401 &&
+                error.response.data.error.message === "Unauthorized"
+            ) {
+                dispatch(signOut());
+                localStorage.clear();
+                router.push("/auth/login");
+            }
+            if (
+                error.response.status === 401 &&
+                error.response.data.error.message === "Invalid Token"
+            ) {
+                dispatch(signOut());
+                localStorage.clear();
+                router.push("/auth/login");
+            }
+        }
+    }
 
     const getDataTransactionSuccess = async () => {
         setLoading(true);
@@ -123,11 +159,8 @@ function home() {
                 item.username = item.members.username
                 item.bank_number = item.banks?.bank_number
             });
-
-
+            SuccessData = resData.length;
             setDataTransactionSuccess(resData);
-            // setMock(lastData)
-
             setLoading(false);
 
         } catch (error) {
@@ -150,6 +183,49 @@ function home() {
             }
         }
     };
+
+    const getDataSuccess_Interval = async () => {
+        try {
+            let res = await axios({
+                headers: {
+                    Authorization: "Bearer " + localStorage.getItem("access_token"),
+                },
+                method: "get",
+                url: `${hostname}/transaction/transaction_success`,
+            });
+            let resData = res.data;
+            let no = 1;
+            resData.map((item) => {
+                item.no = no++;
+                item.create_at = moment(item.create_at).format("DD/MM HH:mm")
+                item.username = item.members.username
+                item.bank_number = item.banks?.bank_number
+            });
+            if (resData.length !== SuccessData) {
+                playAudio()
+                setDataTransactionSuccess(resData);
+                getDataTransactionSuccess()
+            }
+        } catch (error) {
+            console.log(error);
+            if (
+                error.response.data.error.status_code === 401 &&
+                error.response.data.error.message === "Unauthorized"
+            ) {
+                dispatch(signOut());
+                localStorage.clear();
+                router.push("/auth/login");
+            }
+            if (
+                error.response.status === 401 &&
+                error.response.data.error.message === "Invalid Token"
+            ) {
+                dispatch(signOut());
+                localStorage.clear();
+                router.push("/auth/login");
+            }
+        }
+    }
 
     const getBank = async () => {
         setLoading(true);
@@ -252,10 +328,10 @@ function home() {
     }
 
     const approve_hidden = async (uuid) => {
-        
+
         try {
             let res = await axios({
-                headers: { Authorization:"Bearer " + localStorage.getItem("access_token")},
+                headers: { Authorization: "Bearer " + localStorage.getItem("access_token") },
                 method: "post",
                 url: `${hostname}/transaction/update_hidden`,
                 data: {
@@ -758,12 +834,13 @@ function home() {
 
     // }, [])
 
-    // useEffect(() => {
-    //     const interval = setInterval(() => {
-    //         pendingWithdraw()
-    //     }, 3000);
-    //     return () => clearInterval(interval);
-    // }, []);
+    useEffect(() => {
+        const interval = setInterval(() => {
+            getDataFail_Interval()
+            getDataSuccess_Interval()
+        }, 3000);
+        return () => clearInterval(interval);
+    }, []);
 
 
     function playAudio() {
@@ -772,8 +849,6 @@ function home() {
         );
         audio.play();
     }
-
-
 
     return (
         <Layout title="home">
@@ -1410,7 +1485,7 @@ function home() {
                                                 // sx={{  mr: 2 }}
                                                 />
                                             </Grid>
-                                            <Grid item xs={5} container justifyContent='center' sx={{ mt: 3, ml: 1  }}>
+                                            <Grid item xs={5} container justifyContent='center' sx={{ mt: 3, ml: 1 }}>
                                                 <Button
                                                     variant="contained"
                                                     disabled={item.uuid !== search?.uuid ? true : search.username === '' ? true : false}
@@ -1437,15 +1512,15 @@ function home() {
                                                             confirmButtonColor: "#058900",
                                                             cancelButtonText: `ยกเลิก`,
                                                             confirmButtonText: "ยืนยัน",
-                                                         }).then((result) => {
+                                                        }).then((result) => {
                                                             if (result.isConfirmed) {
                                                                 approve_hidden(item.uuid)
                                                             }
-                                                         });
+                                                        });
                                                     }
-                                                
-                                                }
-                                                
+
+                                                    }
+
                                                 >
                                                     <HighlightOffIcon sx={{ color: 'white' }} />
                                                 </Button>
