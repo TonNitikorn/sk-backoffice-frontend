@@ -121,7 +121,7 @@ function Layout({ children, page }) {
       >
         <Grid justifyContent="center" alignItems="center" sx={{ pl: 6, pt: 2 }}>
           <Image
-            src={"https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687251601762-2Long-Angpaogames.png"}
+            src={"https://public-cdn-softkingdom.sgp1.cdn.digitaloceanspaces.com/1687251601762-2Long-Angpaogames.png"}
             alt="scb"
             width={160}
             height={50}

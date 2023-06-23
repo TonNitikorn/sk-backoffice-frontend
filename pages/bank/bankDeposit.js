@@ -357,7 +357,7 @@ function bankDeposit() {
           {item === "kbnk" ? (
             <Image
               src={
-                "https://angpaos.games/wp-content/uploads/2023/03/kbnk.png"
+                "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687509600962-kbnk.png"
               }
               alt="kbnk"
               width={50}
@@ -366,7 +366,7 @@ function bankDeposit() {
           ) : item === "truemoney" ? (
             <Image
               src={
-                "https://angpaos.games/wp-content/uploads/2023/03/truemoney.png"
+                "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687509654967-truemoney.png"
               }
               alt="truemoney"
               width={50}
@@ -375,7 +375,7 @@ function bankDeposit() {
           ) : item === "ktba" ? (
             <Image
               src={
-                "https://angpaos.games/wp-content/uploads/2023/03/ktba.png"
+                "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687509722840-ktb.png"
               }
               alt="ktba"
               width={50}
@@ -384,7 +384,7 @@ function bankDeposit() {
           ) : item === "scb" ? (
             <Image
               src={
-                "https://angpaos.games/wp-content/uploads/2023/03/scb.png"
+                "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687509747475-scb.png"
               }
               alt="scb"
               width={50}
@@ -393,7 +393,7 @@ function bankDeposit() {
           ) : item === "bay" ? (
             <Image
               src={
-                "https://angpaos.games/wp-content/uploads/2023/03/bay.png"
+                "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687509778211-bay.png"
               }
               alt="bay"
               width={50}
@@ -402,7 +402,7 @@ function bankDeposit() {
           ) : item === "bbla" ? (
             <Image
               src={
-                "https://angpaos.games/wp-content/uploads/2023/03/bbl.png"
+                "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687509796809-bbl.png"
               }
               alt="bbla"
               width={50}
@@ -411,7 +411,7 @@ function bankDeposit() {
           ) : item === "gsb" ? (
             <Image
               src={
-                "https://angpaos.games/wp-content/uploads/2023/03/gsb.png"
+                "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687509823709-gsb.png"
               }
               alt="gsb"
               width={50}
@@ -420,7 +420,7 @@ function bankDeposit() {
           ) : item === "ttb" ? (
             <Image
               src={
-                "https://angpaos.games/wp-content/uploads/2023/03/ttb.png"
+                "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687509868094-ttb.png"
               }
               alt="ttb"
               width={50}
@@ -429,7 +429,7 @@ function bankDeposit() {
           ) : item === "bbac" ? (
             <Image
               src={
-                "https://angpaos.games/wp-content/uploads/2023/03/baac.png"
+                "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687509885549-baac.png"
               }
               alt="bbac"
               width={50}
@@ -438,7 +438,7 @@ function bankDeposit() {
           ) : item === "icbc" ? (
             <Image
               src={
-                "https://angpaos.games/wp-content/uploads/2023/03/icbc.png"
+                "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687509907708-icbt.png"
               }
               alt="icbc"
               width={50}
@@ -447,7 +447,7 @@ function bankDeposit() {
           ) : item === "tcd" ? (
             <Image
               src={
-                "https://angpaos.games/wp-content/uploads/2023/03/tcd.png"
+                "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687509929380-tcd.png"
               }
               alt="tcd"
               width={50}
@@ -456,7 +456,7 @@ function bankDeposit() {
           ) : item === "citi" ? (
             <Image
               src={
-                "https://angpaos.games/wp-content/uploads/2023/03/citi.png"
+                "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687509949540-citi.png"
               }
               alt="citi"
               width={50}
@@ -465,7 +465,7 @@ function bankDeposit() {
           ) : item === "scbt" ? (
             <Image
               src={
-                "https://angpaos.games/wp-content/uploads/2023/03/scbt.png"
+                "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687509967883-scbt.png"
               }
               alt="scbt"
               width={50}
@@ -474,7 +474,7 @@ function bankDeposit() {
           ) : item === "cimb" ? (
             <Image
               src={
-                "https://angpaos.games/wp-content/uploads/2023/03/cimb.png"
+                "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687509984083-cimb.png"
               }
               alt="cimb"
               width={50}
@@ -483,7 +483,7 @@ function bankDeposit() {
           ) : item === "uob" ? (
             <Image
               src={
-                "https://angpaos.games/wp-content/uploads/2023/03/uob.png"
+                "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687510000397-uob.png"
               }
               alt="uob"
               width={50}
@@ -492,7 +492,7 @@ function bankDeposit() {
           ) : item === "hsbc" ? (
             <Image
               src={
-                "https://angpaos.games/wp-content/uploads/2023/03/hsbc.png"
+                "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687510018318-hsbc.png"
               }
               alt="hsbc"
               width={50}
@@ -501,7 +501,7 @@ function bankDeposit() {
           ) : item === "mizuho" ? (
             <Image
               src={
-                "https://angpaos.games/wp-content/uploads/2023/03/mizuho.png"
+                "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687510037176-mizuho.png"
               }
               alt="mizuho"
               width={50}
@@ -510,7 +510,7 @@ function bankDeposit() {
           ) : item === "ghb" ? (
             <Image
               src={
-                "https://angpaos.games/wp-content/uploads/2023/03/ghb.png"
+                "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687510067372-ghb.png"
               }
               alt="ghb"
               width={50}
@@ -519,7 +519,7 @@ function bankDeposit() {
           ) : item === "lhbank" ? (
             <Image
               src={
-                "https://angpaos.games/wp-content/uploads/2023/03/lhbank.png"
+                "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687510092134-lhbank.png"
               }
               alt="lhbank"
               width={50}
@@ -528,7 +528,7 @@ function bankDeposit() {
           ) : item === "tisco" ? (
             <Image
               src={
-                "https://angpaos.games/wp-content/uploads/2023/03/tisco.png"
+                "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687510111592-tisco.png"
               }
               alt="tisco"
               width={50}
@@ -537,7 +537,7 @@ function bankDeposit() {
           ) : item === "kkba" ? (
             <Image
               src={
-                "https://angpaos.games/wp-content/uploads/2023/03/kkba.png"
+                "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687510132080-kkba.png"
               }
               alt="kkba"
               width={50}
@@ -546,7 +546,7 @@ function bankDeposit() {
           ) : item === "ibank" ? (
             <Image
               src={
-                "https://angpaos.games/wp-content/uploads/2023/03/ibank.png"
+                "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687510150924-ibank.png"
               }
               alt="ibank"
               width={50}

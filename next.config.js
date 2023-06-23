@@ -13,7 +13,14 @@ const nextConfig = {
     },
   },
   images: {
-    domains: ["angpaos.games","the1pg.com" ,"public-cdn-softkingdom.sgp1.digitaloceanspaces.com"],
+    domains: ["angpaos.games","the1pg.com" , "public-cdn-softkingdom.sgp1.digitaloceanspaces.com" , "public-cdn-softkingdom.sgp1.cdn.digitaloceanspaces.com" ],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'public-cdn-softkingdom.sgp1.cdn.digitaloceanspaces.com',
+        // port: '',
+        // pathname: '/account123/**',
+      },]
   },
 };
 
