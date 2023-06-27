@@ -35,7 +35,6 @@ function addMember() {
   };
 
   const editUser = async () => {
-    console.log('rowData', rowData)
     setLoading(false);
     try {
       let res = await axios({
