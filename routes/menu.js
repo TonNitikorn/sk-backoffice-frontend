@@ -30,15 +30,16 @@ export const menuSuperAdmin = [
     icon: <EditLocationAltIcon />,
   },
   {
-    name: "สร้างรายการถอน",
-    link: "/withdraw",
-    icon: <CurrencyExchangeIcon />,
-  },
-  {
     name: "จัดการข้อมูลการถอน",
     link: "/withdrawPending",
     icon: <FormatListBulletedIcon />,
   },
+  {
+    name: "สร้างรายการถอน",
+    link: "/withdraw",
+    icon: <CurrencyExchangeIcon />,
+  },
+  
   {
     name: "ลูกค้า",
     // link: "/DepositWithdrawalSystem/CreditManual",

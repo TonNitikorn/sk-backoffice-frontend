@@ -814,7 +814,7 @@ function home() {
                     style={{
                         fontSize: '14px'
                     }}
-                >{item === null ? "-" : item}</Typography>
+                >{item === "" ? "-" : item}</Typography>
             ),
         },
     ];
