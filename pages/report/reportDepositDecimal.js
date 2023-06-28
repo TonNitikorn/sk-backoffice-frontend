@@ -258,10 +258,10 @@ function reportDepositDecimal() {
                         width={50}
                         height={50}
                       />
-                    ) : item.bank_name === "ktba" ? (
+                    ) : item.bank_name === "ktb" ? (
                       <Image
                         src={
-                          "https://the1pg.com/wp-content/uploads/2022/10/ktba.png"
+                          "https://the1pg.com/wp-content/uploads/2022/10/ktb.png"
                         }
                         alt="scb"
                         width={50}
@@ -285,7 +285,7 @@ function reportDepositDecimal() {
                         width={50}
                         height={50}
                       />
-                    ) : item.bank_name === "bbla" ? (
+                    ) : item.bank_name === "bbl" ? (
                       <Image
                         src={
                           "https://the1pg.com/wp-content/uploads/2022/10/bbl.png"

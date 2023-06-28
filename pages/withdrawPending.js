@@ -609,12 +609,12 @@ function withdrawpending() {
                      width={50}
                      height={50}
                   />
-               ) : data.members.bank_name === "ktba" ? (
+               ) : data.members.bank_name === "ktb" ? (
                   <Image
                      src={
                         "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687509722840-ktb.png"
                      }
-                     alt="ktba"
+                     alt="ktb"
                      width={50}
                      height={50}
                   />
@@ -636,12 +636,12 @@ function withdrawpending() {
                      width={50}
                      height={50}
                   />
-               ) : data.members.bank_name === "bbla" ? (
+               ) : data.members.bank_name === "bbl" ? (
                   <Image
                      src={
                         "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687509796809-bbl.png"
                      }
-                     alt="bbla"
+                     alt="bbl"
                      width={50}
                      height={50}
                   />
@@ -1122,12 +1122,12 @@ function withdrawpending() {
                                     width={50}
                                     height={50}
                                  />
-                              ) : item.bank_name === "ktba" ? (
+                              ) : item.bank_name === "ktb" ? (
                                  <Image
                                     src={
                                        "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687509722840-ktb.png"
                                     }
-                                    alt="ktba"
+                                    alt="ktb"
                                     width={50}
                                     height={50}
                                  />
@@ -1149,12 +1149,12 @@ function withdrawpending() {
                                     width={50}
                                     height={50}
                                  />
-                              ) : item.bank_name === "bbla" ? (
+                              ) : item.bank_name === "bbl" ? (
                                  <Image
                                     src={
                                        "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687509796809-bbl.png"
                                     }
-                                    alt="bbla"
+                                    alt="bbl"
                                     width={50}
                                     height={50}
                                  />
@@ -1767,10 +1767,10 @@ function withdrawpending() {
                            </MenuItem>
                            <MenuItem value="kbnk">ธนาคารกสิกรไทย</MenuItem>
                            <MenuItem value="truemoney">TrueMoney Wallet</MenuItem>
-                           <MenuItem value="ktba">ธนาคารกรุงไทย</MenuItem>
+                           <MenuItem value="ktb">ธนาคารกรุงไทย</MenuItem>
                            <MenuItem value="scb">ธนาคารไทยพาณิชย์</MenuItem>
                            <MenuItem value="bay">ธนาคารกรุงศรีอยุธยา</MenuItem>
-                           <MenuItem value="bbla">ธนาคารกรุงเทพ</MenuItem>
+                           <MenuItem value="bbl">ธนาคารกรุงเทพ</MenuItem>
                            <MenuItem value="gsb">ธนาคารออมสิน</MenuItem>
                            <MenuItem value="ttb">ธนาคารทหารไทยธนชาต (TTB)</MenuItem>
                            <MenuItem value="BAAC">
