@@ -1128,7 +1128,8 @@ function dashboard() {
                justifyContent="space-between"
                alignItems="center"
             >
-               <Typography variant="h5">สมาชิก & บัญชีธนาคาร</Typography>
+               {/* <Typography variant="h5">สมาชิก & บัญชีธนาคาร</Typography> */}
+               <Typography variant="h5">สมาชิก</Typography>
 
 
             </Grid>
@@ -1160,7 +1161,7 @@ function dashboard() {
                      </Box>
                   </CardContent>
                </Card>
-               {bank.map((item) =>
+               {/* {bank.map((item) =>
                   <Card sx={{ minWidth: 242, maxHeight: 160, my: 2, ml: 2, background: "linear-gradient(#09893f, #41db82)" }}>
                      <CardContent>
                         <Grid >
@@ -1187,7 +1188,7 @@ function dashboard() {
 
                      </CardContent>
                   </Card>
-               )}
+               )} */}
             </Grid>
 
             {boxMember === 1 ?
@@ -1365,7 +1366,7 @@ function dashboard() {
 
                   <Button
                      variant="contained"
-                     style={{ marginRight: "8px", marginTop: 9, color: '#fff', width: 150 , background: "linear-gradient(#0072B1, #41A3E3)" }}
+                     style={{ marginRight: "8px", marginTop: 9, color: '#fff', width: 150, background: "linear-gradient(#0072B1, #41A3E3)" }}
                      size="small"
                      onClick={() => {
                         getChart()
@@ -1573,7 +1574,7 @@ function dashboard() {
                   }} />
                </Grid>
                <Grid item xs={6} sx={{ background: 'linear-gradient(#e4e3e3, #faf8f8)', borderRadius: '20px', px: 2, my: 1 }}>
-                  <Typography sx={{ fontSize: '18px', textDecoration: "underline #41A3E3 3px", mt: 2 }}> จำนวนครั้งการถอนรายชั่วโมง </Typography>
+                  <Typography sx={{ textAlign: 'center', fontSize: '18px', textDecoration: "underline #41A3E3 3px", mt: 2 }}> จำนวนครั้งการถอนรายชั่วโมง </Typography>
                   <Bar options={optionsCount} data={{
                      labels,
                      datasets: [
@@ -1596,7 +1597,7 @@ function dashboard() {
                   }} />
                </Grid>
                <Grid item xs={6} sx={{ background: 'linear-gradient(#e4e3e3, #faf8f8)', borderRadius: '20px', px: 2, my: 1 }}>
-                  <Typography sx={{ fontSize: '18px', textDecoration: "underline #41A3E3 3px", mt: 2 }}> ยอดการฝากรายชั่วโมง </Typography>
+                  <Typography sx={{ textAlign: 'center', fontSize: '18px', textDecoration: "underline #41A3E3 3px", mt: 2 }}> ยอดการฝากรายชั่วโมง </Typography>
                   <Bar options={options} data={{
                      labels,
                      datasets: [
@@ -1619,7 +1620,7 @@ function dashboard() {
                   }} />
                </Grid>
                <Grid item xs={6} sx={{ background: 'linear-gradient(#e4e3e3, #faf8f8)', borderRadius: '20px', px: 2, my: 1 }}>
-                  <Typography sx={{ fontSize: '18px', textDecoration: "underline #41A3E3 3px", mt: 2 }}> จำนวนครั้งการฝากรายชั่วโมง </Typography>
+                  <Typography sx={{ textAlign: 'center', fontSize: '18px', textDecoration: "underline #41A3E3 3px", mt: 2 }}> จำนวนครั้งการฝากรายชั่วโมง </Typography>
                   <Bar options={optionsCount} data={{
                      labels,
                      datasets: [
@@ -1642,7 +1643,7 @@ function dashboard() {
                   }} />
                </Grid>
                <Grid item xs={6} sx={{ background: 'linear-gradient(#e4e3e3, #faf8f8)', borderRadius: '20px', px: 2, my: 1 }}>
-                  <Typography sx={{ fontSize: '18px', textDecoration: "underline #41A3E3 3px", mt: 2 }}> ยอดการสมัคร </Typography>
+                  <Typography sx={{ textAlign: 'center', fontSize: '18px', textDecoration: "underline #41A3E3 3px", mt: 2 }}> ยอดการสมัคร </Typography>
                   <Bar options={options} data={{
                      labels,
                      datasets: [

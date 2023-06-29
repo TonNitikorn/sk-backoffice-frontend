@@ -18,7 +18,7 @@ export default function LoadingModal(props) {
       }}>
         <Fab aria-label="save" color="neutral">
           <img
-            src={"https://angpaos.games/wp-content/uploads/2023/04/Angpaos-Logo1.png"}
+            src={"https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1688026256108-Angpaos-Logo1.png"}
             alt="mascot"
             width="40px"
             height="35px"
