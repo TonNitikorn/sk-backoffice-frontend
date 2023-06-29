@@ -269,7 +269,7 @@ function memberTable() {
             }
          });
 
-         
+
          if (res.data.message === "สร้างรายการสำเร็จ") {
             setRowData({})
             Swal.fire({
@@ -895,7 +895,119 @@ function memberTable() {
       },
    ];
 
+   const columnsTran = [
+      {
+         title: 'ลำดับ',
+         dataIndex: 'no',
+         align: 'center',
+         sorter: (record1, record2) => record1.no - record2.no,
+         render: (item, data) => (
+            <Typography sx={{ fontSize: '14px', textAlign: 'center' }} >{item}</Typography>
+         )
+      },
+      {
+         dataIndex: "credit",
+         title: "ยอดเงิน",
+         align: "center",
+         sorter: (record1, record2) => record1.credit - record2.credit,
+         render: (item) => (
+            <Typography
+               style={{
+                  fontSize: '14px'
+               }}
+            >{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
+         ),
+      },
+      {
+         dataIndex: 'transfer_type',
+         title: "ประเภท",
+         align: "center",
+         render: (item) => (
+            <Chip
+               label={item === "DEPOSIT" ? "ฝากเงิน" : "ถอนเงิน"}
+               size="small"
+               style={{
+                  // padding: 5,
+                  backgroundColor: item === "DEPOSIT" ? "#129A50" : "#FFB946",
+                  color: "#fff",
+                  minWidth: "120px"
+               }}
+            />
+         ),
+         // filters: [
+         //    { text: 'ถอนเงิน', value: 'WITHDRAW' },
+         //    { text: 'ฝากเงิน', value: 'DEPOSIT' },
+         // ],
+         // onFilter: (value, record) => record.transfer_type.indexOf(value) === 0,
+      },
+
+      {
+         dataIndex: 'credit_before',
+         title: "เครดิตก่อนทำรายการ",
+         align: "center",
+         render: (item) => (
+            <Typography sx={{ color: 'red', fontSize: '14px', }}>
+               {Intl.NumberFormat("TH").format(parseInt(item))}
+            </Typography>
+         ),
+      },
+      {
+         dataIndex: 'credit_after',
+         title: "เครดิตหลังทำรายการ",
+         align: "center",
+         render: (item) => (
+            <Typography sx={{ color: '#129A50', fontSize: '14px', }}>
+               {Intl.NumberFormat("TH").format(parseInt(item))}
+            </Typography>
+         ),
+      },
+      {
+         dataIndex: 'status_transction',
+         title: "สถานะ",
+         align: "center",
+         render: (item, data) => (
+            <Chip
+               label={item === "SUCCESS" ? 'AUTO สำเร็จ' : data.transfer_type === "WITHDRAW" ? 'ถอนมือ' : item === "MANUAL" ? 'เต็มมือ' : 'ยกเลิก'}
+               size="small"
+               style={{
+                  padding: 10,
+                  backgroundColor: item === "SUCCESS" ? "#129A50" : data.transfer_type === "WITHDRAW" ? "#85C1E9 " : item === "MANUAL" ? "#4a5eb3" : "#BB2828",
+                  color: "#fff",
+               }}
+            />
+         ),
+         filters: [
+            { text: 'สำเร็จ', value: 'SUCCESS' },
+            { text: 'เติมมือ', value: 'MANUAL' },
+            { text: 'ยกเลิก', value: 'CANCEL' },
+          ],
+          onFilter: (value, record) => record.status_transction.indexOf(value) === 0 ,
+      },
+      {
+         dataIndex: "create_at",
+         title: "วันที่ทำรายการ",
+         align: "center",
+         render: (item) => (
+            <Typography style={{ fontSize: '14px' }}>{item}</Typography>
+         ),
+      },
+
+      {
+         dataIndex: "content",
+         title: "หมายเหตุ",
+         align: "center",
+         render: (item) => (
+            <Typography style={{ fontSize: '14px' }}>{item}</Typography>
+         ),
+      },
+
+   ]
+
    const onChange = (pagination, filters, sorter, extra) => {
+      console.log('params', pagination, filters, sorter, extra);
+   };
+
+   const onChangeTran = (pagination, filters, sorter, extra) => {
       console.log('params', pagination, filters, sorter, extra);
    };
 
@@ -1540,7 +1652,7 @@ function memberTable() {
                         <Button
                            variant="contained"
                            fullWidth
-                           onClick={() => handleCheckButtonConfirm() }
+                           onClick={() => handleCheckButtonConfirm()}
                            sx={{
                               mt: 3,
                               color: '#fff',
@@ -1569,117 +1681,11 @@ function memberTable() {
             <DialogTitle sx={{ mt: 1 }} > <ManageSearchIcon color="primary" fontSize="large" /> ประวัติการทำรายการของ : {rowData?.username}</DialogTitle>
 
             <DialogContent>
-               <Grid>
+               <div>
                   <Table
-                     columns={[
-                        {
-                           title: 'ลำดับ',
-                           dataIndex: 'no',
-                           align: 'center',
-                           sorter: (record1, record2) => record1.no - record2.no,
-                           render: (item, data) => (
-                              <Typography sx={{ fontSize: '14px', textAlign: 'center' }} >{item}</Typography>
-                           )
-                        },
-                        {
-                           dataIndex: "credit",
-                           title: "ยอดเงิน",
-                           align: "center",
-                           sorter: (record1, record2) => record1.credit - record2.credit,
-                           render: (item) => (
-                              <Typography
-                                 style={{
-                                    fontSize: '14px'
-                                 }}
-                              >{Intl.NumberFormat("TH").format(parseInt(item))}</Typography>
-                           ),
-                        },
-                        {
-                           dataIndex: 'transfer_type',
-                           title: "ประเภท",
-                           align: "center",
-                           render: (item) => (
-                              <Chip
-                                 label={item === "DEPOSIT" ? "ฝากเงิน" : "ถอนเงิน"}
-                                 size="small"
-                                 style={{
-                                    // padding: 5,
-                                    backgroundColor: item === "DEPOSIT" ? "#129A50" : "#FFB946",
-                                    color: "#fff",
-                                    minWidth: "120px"
-                                 }}
-                              />
-                           ),
-                           // filters: [
-                           //    { text: 'ถอนเงิน', value: 'WITHDRAW' },
-                           //    { text: 'ฝากเงิน', value: 'DEPOSIT' },
-                           // ],
-                           // onFilter: (value, record) => record.transfer_type.indexOf(value) === 0,
-                        },
-                        
-                        {
-                           dataIndex: 'credit_before',
-                           title: "เครดิตก่อนทำรายการ",
-                           align: "center",
-                           render: (item) => (
-                              <Typography sx={{ color: 'red', fontSize: '14px', }}>
-                                 {Intl.NumberFormat("TH").format(parseInt(item))}
-                              </Typography>
-                           ),
-                        },
-                        {
-                           dataIndex: 'credit_after',
-                           title: "เครดิตหลังทำรายการ",
-                           align: "center",
-                           render: (item) => (
-                              <Typography sx={{ color: '#129A50', fontSize: '14px', }}>
-                                 {Intl.NumberFormat("TH").format(parseInt(item))}
-                              </Typography>
-                           ),
-                        },
-                        {
-                           dataIndex: 'status_transction',
-                           title: "สถานะ",
-                           align: "center",
-                           render: (item) => (
-                             <Chip
-                               label={item === "MANUAL" ? 'เติมมือ' : item === 'SUCCESS' ? "สำเร็จ" : "ยกเลิก"}
-                               size="small"
-                               style={{
-                                 padding: 10,
-                                 backgroundColor: item === "MANUAL" ? "#4a5eb3" : item === 'SUCCESS' ? "#129A50" : "#BB2828",
-                                 color: "#eee",
-                               }}
-                             />
-                           ),
-                           filters: [
-                             { text: 'สำเร็จ', value: 'SUCCESS' },
-                             { text: 'เติมมือ', value: 'MANUAL' },
-                             { text: 'ยกเลิก', value: 'CANCEL' },
-                           ],
-                           onFilter: (value, record) => record.status_transction.indexOf(value) === 0,
-                         },
-                        {
-                           dataIndex: "create_at",
-                           title: "วันที่ทำรายการ",
-                           align: "center",
-                           render: (item) => (
-                              <Typography style={{fontSize: '14px' }}>{item}</Typography>
-                           ),
-                        },
-
-                        {
-                           dataIndex: "content",
-                           title: "หมายเหตุ",
-                           align: "center",
-                           render: (item) => (
-                              <Typography style={{ fontSize: '14px'}}>{item}</Typography>
-                           ),
-                        },
-
-                     ]}
+                     columns={columnsTran}
                      dataSource={transaction}
-                     onChange={onChange}
+                     onChange={onChangeTran}
                      size="small"
                      pagination={{
                         current: page,
@@ -1689,6 +1695,7 @@ function memberTable() {
                            setPageSize(pageSize)
                         }
                      }}
+
                      summary={(pageData) => {
                         let totalCredit = 0;
                         let totalBefore = 0;
@@ -1734,8 +1741,9 @@ function memberTable() {
                            </>
                         );
                      }}
+
                   />
-               </Grid>
+               </div>
             </DialogContent>
          </Dialog>
 

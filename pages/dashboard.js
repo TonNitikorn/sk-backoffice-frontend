@@ -1539,17 +1539,13 @@ function dashboard() {
 
          <Paper sx={{ p: 3, mt: 2 }}>
             <Typography> ภาพรวมสรุปตั้งแต่วันที่ {selectedDateRange.start} ถึง {selectedDateRange.end}</Typography>
-            <Grid
+            {/* <Grid
                container
                direction="row"
             // justifyContent="center"
             // alignItems="center"
             >
 
-               {/* <Box sx={{ width: "80%", mt: "20px", bgcolor: "#101D35" }}>
-                <Line options={options} data={data} height="100px" /> 
-               
-            </Box> */}
                <Grid item xs={6} sx={{ background: 'linear-gradient(#e4e3e3, #faf8f8)', borderRadius: '20px', px: 2, my: 1 }}>
                   <Typography sx={{ textAlign: 'center', fontSize: '18px', textDecoration: "underline #41A3E3 3px", mt: 2 }}> ยอดการถอนรายชั่วโมง </Typography>
                   <Bar options={options} data={{
@@ -1665,6 +1661,11 @@ function dashboard() {
                      ],
                   }} />
                </Grid>
+            </Grid> */}
+
+            <Grid container sx={{p:2}} spacing={2}>
+               <Grid item xs={6} sx={{bgcolor:'red'}}>asdasd</Grid>
+               <Grid item xs={6} sx={{bgcolor:'pink'}}>asdasd</Grid>
             </Grid>
          </Paper>
 

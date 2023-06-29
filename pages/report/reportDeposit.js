@@ -184,7 +184,6 @@ function reportDeposit() {
       sumTotal: Intl.NumberFormat("TH").format(parseInt(manual + auto))
     })
   }
-  console.log('total', total)
 
   const filterData = (type) => {
     if (type === "manual") {

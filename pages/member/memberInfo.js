@@ -285,7 +285,7 @@ function memberInfo() {
     },
     {
       dataIndex: 'credit_before',
-      title: "Credit Before",
+      title: "เครดิตก่อนเติม",
       align: "center",
       render: (item) => (
         <Typography sx={{ color: 'red', fontSize: '14px', }}>
@@ -295,7 +295,7 @@ function memberInfo() {
     },
     {
       dataIndex: 'credit_after',
-      title: "Credit After",
+      title: "เครดิตหลังเติม",
       align: "center",
       render: (item) => (
         <Typography sx={{ color: '#129A50', fontSize: '14px', }}>
