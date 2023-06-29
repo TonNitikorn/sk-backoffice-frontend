@@ -241,19 +241,6 @@ function memberTable() {
       }
    };
 
-   const handleCheckEmtyData = (type) => {
-      if (!!rowData.amount || !!rowData.annotationWithdraw || !!rowData.annotation || !!hour || !!minute) {
-         submitFormCredit(type)
-      } else {
-         Swal.fire({
-            position: "center",
-            icon: "warning",
-            title: "กรุณากรอกข้อมูลให้ครบถ้วน",
-            showConfirmButton: false,
-            timer: 2000,
-         });
-      }
-   }
 
    const submitFormCredit = async (type) => {
       try {
@@ -282,7 +269,7 @@ function memberTable() {
             }
          });
 
-         setLoading(false);
+         
          if (res.data.message === "สร้างรายการสำเร็จ") {
             setRowData({})
             Swal.fire({
@@ -912,6 +899,39 @@ function memberTable() {
       console.log('params', pagination, filters, sorter, extra);
    };
 
+   const handleCheckButtonConfirm = () => {
+      if (openDialogManual.type === "withdraw") {
+         let totalCredit = parseInt(userData.credit) - parseInt(rowData.amount)
+         if (totalCredit <= 0) {
+            setOpenDialogManual(false)
+            setRowData({})
+            Swal.fire({
+               position: "center",
+               icon: "error",
+               title: "จำนวนเคตรดิตไม่เพียงพอ",
+               showConfirmButton: false,
+               timer: 2000,
+            });
+         } else {
+            submitFormCredit("WITHDRAW")
+         }
+
+         if (!rowData?.annotationWithdraw || !rowData?.amount || !rowData?.date) {
+            setOpenDialogManual(false)
+            Swal.fire({
+               position: "center",
+               icon: "warning",
+               title: "กรุณากรอกข้อมูลให้ครบถ้วน",
+               showConfirmButton: false,
+               timer: 2000,
+            });
+         }
+
+      } else {
+         submitFormCredit("DEPOSIT")
+      }
+   }
+
    return (
       <Layout>
          <CssBaseline />
@@ -1519,39 +1539,8 @@ function memberTable() {
                      <Grid container item xs={4}>
                         <Button
                            variant="contained"
-                           // size="large"
                            fullWidth
-                           onClick={() => {
-                              if (!rowData?.annotationWithdraw || !rowData?.amount || !rowData?.date) {
-                                 setOpenDialogManual(false)
-                                 Swal.fire({
-                                    position: "center",
-                                    icon: "warning",
-                                    title: "กรุณากรอกข้อมูลให้ครบถ้วน",
-                                    showConfirmButton: false,
-                                    timer: 2000,
-                                 });
-                              } else if (openDialogManual.type === "withdraw") {
-                                 let totalCredit = parseInt(userData.credit) - parseInt(rowData.amount)
-                                 if (totalCredit <= 0) {
-                                    setOpenDialogManual(false)
-                                    setRowData({})
-                                    Swal.fire({
-                                       position: "center",
-                                       icon: "error",
-                                       title: "จำนวนเคตรดิตไม่เพียงพอ",
-                                       showConfirmButton: false,
-                                       timer: 2000,
-                                    });
-                                 } else {
-                                    submitFormCredit("WITHDRAW")
-                                 }
-                              } else if (openDialogManual.type === "deposit") {
-                                 submitFormCredit("DEPOSIT")
-
-                              }
-                           }
-                           }
+                           onClick={() => handleCheckButtonConfirm() }
                            sx={{
                               mt: 3,
                               color: '#fff',
@@ -1627,6 +1616,7 @@ function memberTable() {
                            // ],
                            // onFilter: (value, record) => record.transfer_type.indexOf(value) === 0,
                         },
+                        
                         {
                            dataIndex: 'credit_before',
                            title: "เครดิตก่อนทำรายการ",
@@ -1647,17 +1637,34 @@ function memberTable() {
                               </Typography>
                            ),
                         },
-
+                        {
+                           dataIndex: 'status_transction',
+                           title: "สถานะ",
+                           align: "center",
+                           render: (item) => (
+                             <Chip
+                               label={item === "MANUAL" ? 'เติมมือ' : item === 'SUCCESS' ? "สำเร็จ" : "ยกเลิก"}
+                               size="small"
+                               style={{
+                                 padding: 10,
+                                 backgroundColor: item === "MANUAL" ? "#4a5eb3" : item === 'SUCCESS' ? "#129A50" : "#BB2828",
+                                 color: "#eee",
+                               }}
+                             />
+                           ),
+                           filters: [
+                             { text: 'สำเร็จ', value: 'SUCCESS' },
+                             { text: 'เติมมือ', value: 'MANUAL' },
+                             { text: 'ยกเลิก', value: 'CANCEL' },
+                           ],
+                           onFilter: (value, record) => record.status_transction.indexOf(value) === 0,
+                         },
                         {
                            dataIndex: "create_at",
                            title: "วันที่ทำรายการ",
                            align: "center",
                            render: (item) => (
-                              <Typography
-                                 style={{
-                                    fontSize: '14px'
-                                 }}
-                              >{item}</Typography>
+                              <Typography style={{fontSize: '14px' }}>{item}</Typography>
                            ),
                         },
 
@@ -1666,11 +1673,7 @@ function memberTable() {
                            title: "หมายเหตุ",
                            align: "center",
                            render: (item) => (
-                              <Typography
-                                 style={{
-                                    fontSize: '14px'
-                                 }}
-                              >{item}</Typography>
+                              <Typography style={{ fontSize: '14px'}}>{item}</Typography>
                            ),
                         },
 

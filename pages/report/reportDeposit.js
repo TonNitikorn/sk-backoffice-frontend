@@ -165,7 +165,7 @@ function reportDeposit() {
     }
 
     let auto = sumAuto.reduce((a, b) => a + b, 0)
-  
+
 
     for (const item of transaction) {
       price.push(item.amount)
@@ -194,7 +194,7 @@ function reportDeposit() {
     }
     if (type === "auto") {
       setFilterSuccess([])
-      let data = report.filter((item) => item.status_transction === "AUTO")
+      let data = report.filter((item) => item.transfer_by === "AUTO")
       setFilterCancel(data)
     }
   }
@@ -680,6 +680,7 @@ function reportDeposit() {
       ),
     },
   ];
+
   useEffect(() => {
     getReport();
   }, []);
@@ -823,7 +824,7 @@ function reportDeposit() {
           <Card sx={{ width: 250, background: "linear-gradient(#0072B1, #41A3E3)" }}>
             <CardContent>
               <Typography variant="h7" sx={{ color: '#eee' }}>ยอดรวมฝากทั้งหมด</Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", color: "#eee", mt: 2 }}> {total.sumTotal}</Typography>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#eee", mt: 2 }}> {total.sumCredit}</Typography>
               <Grid sx={{ textAlign: 'right' }}>
                 <Button disabled>
                   <Typography sx={{ color: "#eee", mt: 1, mb: -2 }}>บาท</Typography>
@@ -873,10 +874,6 @@ function reportDeposit() {
               </Grid>
             </CardContent>
           </Card>
-
-
-
-
 
           <Card sx={{ width: 250, background: "linear-gradient(#09893f, #41db82)" }}>
             <CardContent>
