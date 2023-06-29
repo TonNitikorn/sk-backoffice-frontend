@@ -502,12 +502,12 @@ function memberTable() {
                      width={50}
                      height={50}
                   />
-               ) : item === "ktba" ? (
+               ) : item === "ktb" ? (
                   <Image
                      src={
                         "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687509722840-ktb.png"
                      }
-                     alt="ktba"
+                     alt="ktb"
                      width={50}
                      height={50}
                   />
@@ -529,12 +529,12 @@ function memberTable() {
                      width={50}
                      height={50}
                   />
-               ) : item === "bbla" ? (
+               ) : item === "bbl" ? (
                   <Image
                      src={
                         "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687509796809-bbl.png"
                      }
-                     alt="bbla"
+                     alt="bbl"
                      width={50}
                      height={50}
                   />
@@ -1141,10 +1141,10 @@ function memberTable() {
                            </MenuItem>
                            <MenuItem value="kbnk">ธนาคารกสิกรไทย</MenuItem>
                            <MenuItem value="truemoney">TrueMoney Wallet</MenuItem>
-                           <MenuItem value="ktba">ธนาคารกรุงไทย</MenuItem>
+                           <MenuItem value="ktb">ธนาคารกรุงไทย</MenuItem>
                            <MenuItem value="scb">ธนาคารไทยพาณิชย์</MenuItem>
                            <MenuItem value="bay">ธนาคารกรุงศรีอยุธยา</MenuItem>
-                           <MenuItem value="bbla">ธนาคารกรุงเทพ</MenuItem>
+                           <MenuItem value="bbl">ธนาคารกรุงเทพ</MenuItem>
                            <MenuItem value="gsb">ธนาคารออมสิน</MenuItem>
                            <MenuItem value="ttb">ธนาคารทหารไทยธนชาต (TTB)</MenuItem>
                            <MenuItem value="BAAC">
@@ -1341,13 +1341,13 @@ function memberTable() {
                                     ? "กสิกรไทย"
                                     : userData.bank_name === "truemoney"
                                        ? "TrueMoney"
-                                       : userData.bank_name === "ktba"
+                                       : userData.bank_name === "ktb"
                                           ? "กรุงไทย"
                                           : userData.bank_name === "scb"
                                              ? "ไทยพาณิชย์"
                                              : userData.bank_name === "bay"
                                                 ? "กรุงศรีอยุธยา"
-                                                : userData.bank_name === "bbla"
+                                                : userData.bank_name === "bbl"
                                                    ? "กรุงเทพ"
                                                    : userData.bank_name === "gsb"
                                                       ? "ออมสิน"

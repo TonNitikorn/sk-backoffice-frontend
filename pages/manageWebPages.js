@@ -299,6 +299,8 @@ function manageWebPages() {
 
   }
 
+  console.log('logo', logo)
+
   useEffect(() => {
     getGameType()
     getAssets()

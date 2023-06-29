@@ -489,12 +489,12 @@ function home() {
                             width={50}
                             height={50}
                         />
-                    ) : data.banks?.bank_name === "ktba" ? (
+                    ) : data.banks?.bank_name === "ktb" ? (
                         <Image
                             src={
                                 "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687509722840-ktb.png"
                             }
-                            alt="ktba"
+                            alt="ktb"
                             width={50}
                             height={50}
                         />
@@ -516,12 +516,12 @@ function home() {
                             width={50}
                             height={50}
                         />
-                    ) : data.banks?.bank_name === "bbla" ? (
+                    ) : data.banks?.bank_name === "bbl" ? (
                         <Image
                             src={
                                 "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687509796809-bbl.png"
                             }
-                            alt="bbla"
+                            alt="bbl"
                             width={50}
                             height={50}
                         />
@@ -886,12 +886,12 @@ function home() {
                                                 width={50}
                                                 height={50}
                                             />
-                                        ) : item.bank_name === "ktba" ? (
+                                        ) : item.bank_name === "ktb" ? (
                                             <Image
                                                 src={
                                                     "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687509722840-ktb.png"
                                                 }
-                                                alt="ktba"
+                                                alt="ktb"
                                                 width={50}
                                                 height={50}
                                             />
@@ -913,12 +913,12 @@ function home() {
                                                 width={50}
                                                 height={50}
                                             />
-                                        ) : item.bank_name === "bbla" ? (
+                                        ) : item.bank_name === "bbl" ? (
                                             <Image
                                                 src={
                                                     "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687509796809-bbl.png"
                                                 }
-                                                alt="bbla"
+                                                alt="bbl"
                                                 width={50}
                                                 height={50}
                                             />
@@ -1076,13 +1076,13 @@ function home() {
                                             ? "กสิกรไทย"
                                             : item.bank_name === "truemoney"
                                                 ? "TrueMoney"
-                                                : item.bank_name === "ktba"
+                                                : item.bank_name === "ktb"
                                                     ? "กรุงไทย"
                                                     : item.bank_name === "scb"
                                                         ? "ไทยพาณิชย์"
                                                         : item.bank_name === "bay"
                                                             ? "กรุงศรีอยุธยา"
-                                                            : item.bank_name === "bbla"
+                                                            : item.bank_name === "bbl"
                                                                 ? "กรุงเทพ"
                                                                 : item.bank_name === "gsb"
                                                                     ? "ออมสิน"
@@ -1196,12 +1196,12 @@ function home() {
                                                         width={50}
                                                         height={50}
                                                     />
-                                                ) : item.banks?.bank_name === "ktba" ? (
+                                                ) : item.banks?.bank_name === "ktb" ? (
                                                     <Image
                                                         src={
                                                             "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687509722840-ktb.png"
                                                         }
-                                                        alt="ktba"
+                                                        alt="ktb"
                                                         width={50}
                                                         height={50}
                                                     />
@@ -1223,12 +1223,12 @@ function home() {
                                                         width={50}
                                                         height={50}
                                                     />
-                                                ) : item.banks?.bank_name === "bbla" ? (
+                                                ) : item.banks?.bank_name === "bbl" ? (
                                                     <Image
                                                         src={
                                                             "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687509796809-bbl.png"
                                                         }
-                                                        alt="bbla"
+                                                        alt="bbl"
                                                         width={50}
                                                         height={50}
                                                     />
@@ -1387,13 +1387,13 @@ function home() {
                                                     ? "กสิกรไทย"
                                                     : item.banks?.bank_name === "truemoney"
                                                         ? "TrueMoney"
-                                                        : item.banks?.bank_name === "ktba"
+                                                        : item.banks?.bank_name === "ktb"
                                                             ? "กรุงไทย"
                                                             : item.banks?.bank_name === "scb"
                                                                 ? "ไทยพาณิชย์"
                                                                 : item.banks?.bank_name === "bay"
                                                                     ? "กรุงศรีอยุธยา"
-                                                                    : item.banks?.bank_name === "bbla"
+                                                                    : item.banks?.bank_name === "bbl"
                                                                         ? "กรุงเทพ"
                                                                         : item.banks?.bank_name === "gsb"
                                                                             ? "ออมสิน"
@@ -1623,7 +1623,7 @@ function home() {
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.banks?.bank_name === "ktba" ? (
+                            ) : openDialogView.data?.banks?.bank_name === "ktb" ? (
                                 <Image
                                     src={"https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687509722840-ktb.png"}
                                     alt="scb"
@@ -1644,7 +1644,7 @@ function home() {
                                     width={50}
                                     height={50}
                                 />
-                            ) : openDialogView.data?.banks?.bank_name === "bbla" ? (
+                            ) : openDialogView.data?.banks?.bank_name === "bbl" ? (
                                 <Image
                                     src={"https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687509796809-bbl.png"}
                                     alt="scb"

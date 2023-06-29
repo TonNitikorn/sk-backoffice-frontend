@@ -387,12 +387,12 @@ function bankWithdraw() {
                 width={50}
                 height={50}
               />
-            ) : item === "ktba" ? (
+            ) : item === "ktb" ? (
               <Image
                 src={
                   "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687509722840-ktb.png"
                 }
-                alt="ktba"
+                alt="ktb"
                 width={50}
                 height={50}
               />
@@ -414,12 +414,12 @@ function bankWithdraw() {
                 width={50}
                 height={50}
               />
-            ) : item === "bbla" ? (
+            ) : item === "bbl" ? (
               <Image
                 src={
                   "https://public-cdn-softkingdom.sgp1.digitaloceanspaces.com/1687509796809-bbl.png"
                 }
-                alt="bbla"
+                alt="bbl"
                 width={50}
                 height={50}
               />

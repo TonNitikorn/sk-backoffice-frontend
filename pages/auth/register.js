@@ -280,10 +280,10 @@ function register() {
                                                 </MenuItem>
                                                 <MenuItem value="kbnk">ธนาคารกสิกรไทย</MenuItem>
                                                 <MenuItem value="truemoney">TrueMoney Wallet</MenuItem>
-                                                <MenuItem value="ktba">ธนาคารกรุงไทย</MenuItem>
+                                                <MenuItem value="ktb">ธนาคารกรุงไทย</MenuItem>
                                                 <MenuItem value="scb">ธนาคารไทยพาณิชย์</MenuItem>
                                                 <MenuItem value="bay">ธนาคารกรุงศรีอยุธยา</MenuItem>
-                                                <MenuItem value="bbla">ธนาคารกรุงเทพ</MenuItem>
+                                                <MenuItem value="bbl">ธนาคารกรุงเทพ</MenuItem>
                                                 <MenuItem value="gsb">ธนาคารออมสิน</MenuItem>
                                                 <MenuItem value="ttb">ธนาคารทหารไทยธนชาต (TTB)</MenuItem>
                                                 <MenuItem value="BAAC">
@@ -670,10 +670,10 @@ function register() {
                                             </MenuItem>
                                             <MenuItem value="kbnk">ธนาคารกสิกรไทย</MenuItem>
                                             <MenuItem value="truemoney">TrueMoney Wallet</MenuItem>
-                                            <MenuItem value="ktba">ธนาคารกรุงไทย</MenuItem>
+                                            <MenuItem value="ktb">ธนาคารกรุงไทย</MenuItem>
                                             <MenuItem value="scb">ธนาคารไทยพาณิชย์</MenuItem>
                                             <MenuItem value="bay">ธนาคารกรุงศรีอยุธยา</MenuItem>
-                                            <MenuItem value="bbla">ธนาคารกรุงเทพ</MenuItem>
+                                            <MenuItem value="bbl">ธนาคารกรุงเทพ</MenuItem>
                                             <MenuItem value="gsb">ธนาคารออมสิน</MenuItem>
                                             <MenuItem value="ttb">ธนาคารทหารไทยธนชาต (TTB)</MenuItem>
                                             <MenuItem value="BAAC">
