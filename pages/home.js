@@ -775,23 +775,24 @@ function home() {
             dataIndex: 'status_transction',
             title: "สถานะ",
             align: "center",
-            render: (item) => (
-                <Chip
-                    label={item === 'SUCCESS' ? "สำเร็จ" : "ยกเลิก"}
-                    size="small"
-                    style={{
-                        padding: 10,
-                        backgroundColor: item === 'SUCCESS' ? "#129A50" : "#BB2828",
-                        color: "#eee",
-                    }}
-                />
+            render: (item, data) => (
+               <Chip
+               label={item === "SUCCESS" ? 'AUTO' : item === "MANUAL" ? 'MANUAL' : 'CANCEL'}
+                  size="small"
+                  style={{
+                     padding: 10,
+                     backgroundColor: item === "SUCCESS" ? '#129A50' : item === "MANUAL" ? '#4a5eb3' : '#BB2828',
+                     color: "#fff",
+                  }}
+               />
             ),
             filters: [
-                { text: 'สำเร็จ', value: 'SUCCESS' },
-                { text: 'ยกเลิก', value: 'CANCEL' },
-            ],
-            onFilter: (value, record) => record.transfer_type.indexOf(value) === 0,
-        },
+               { text: 'สำเร็จ', value: 'SUCCESS' },
+               { text: 'เติมมือ', value: 'MANUAL' },
+               { text: 'ยกเลิก', value: 'CANCEL' },
+             ],
+             onFilter: (value, record) => record.status_transction.indexOf(value) === 0 ,
+         },
 
         {
             dataIndex: "create_at",
@@ -823,11 +824,7 @@ function home() {
             title: "หมายเหตุ",
             align: "center",
             render: (item) => (
-                <Typography
-                    style={{
-                        fontSize: '14px'
-                    }}
-                >{item === "" ? "-" : item}</Typography>
+                <Typography style={{fontSize: '14px' }}>{item === "" ? "-" : item}</Typography>
             ),
         },
     ];
