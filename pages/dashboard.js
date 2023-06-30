@@ -1539,7 +1539,7 @@ function dashboard() {
 
          <Paper sx={{ p: 3, mt: 2 }}>
             <Typography> ภาพรวมสรุปตั้งแต่วันที่ {selectedDateRange.start} ถึง {selectedDateRange.end}</Typography>
-            {/* <Grid
+            <Grid
                container
                direction="row"
             // justifyContent="center"
@@ -1661,12 +1661,9 @@ function dashboard() {
                      ],
                   }} />
                </Grid>
-            </Grid> */}
-
-            <Grid container sx={{p:2}} spacing={2}>
-               <Grid item xs={6} sx={{bgcolor:'red'}}>asdasd</Grid>
-               <Grid item xs={6} sx={{bgcolor:'pink'}}>asdasd</Grid>
             </Grid>
+
+            
          </Paper>
 
          {/* <Grid container direction="row" sx={{ mt: 3 }}>
@@ -1856,6 +1853,28 @@ function dashboard() {
                                  {Intl.NumberFormat("TH").format(parseInt(item))}
                               </Typography>
                            ),
+                        },
+                        {
+                           dataIndex: 'status_transction',
+                           title: "สถานะ",
+                           align: "center",
+                           render: (item, data) => (
+                              <Chip
+                                 label={item === "SUCCESS" ? 'AUTO สำเร็จ' : data.transfer_type === "WITHDRAW" ? 'ถอนมือ' : item === "MANUAL" ? 'เต็มมือ' : 'ยกเลิก'}
+                                 size="small"
+                                 style={{
+                                    padding: 10,
+                                    backgroundColor: item === "SUCCESS" ? "#129A50" : data.transfer_type === "WITHDRAW" ? "#85C1E9 " : item === "MANUAL" ? "#4a5eb3" : "#BB2828",
+                                    color: "#fff",
+                                 }}
+                              />
+                           ),
+                           filters: [
+                              { text: 'สำเร็จ', value: 'SUCCESS' },
+                              { text: 'เติมมือ', value: 'MANUAL' },
+                              { text: 'ยกเลิก', value: 'CANCEL' },
+                            ],
+                            onFilter: (value, record) => record.status_transction.indexOf(value) === 0 ,
                         },
                         {
                            dataIndex: "content",
