@@ -194,10 +194,9 @@ function memberTable() {
             method: "post",
             url: `${hostname}/member/update_member`,
             data: {
-               uuid: rowData.uuid,
+               username: rowData.username,
                fname: rowData.fname,
                lname: rowData.lname,
-               // name: `${rowData.fname} ${rowData.lname}`,
                tel: rowData.tel,
                // bonus: bonus,
                line_id: rowData.line_id,
@@ -858,7 +857,6 @@ function memberTable() {
                   <IconButton
                      onClick={async () => {
                         setRowData(data)
-
                         setOpenDialogEdit({
                            open: true,
                         });
@@ -967,11 +965,11 @@ function memberTable() {
          align: "center",
          render: (item, data) => (
             <Chip
-               label={item === "SUCCESS" ? 'AUTO สำเร็จ' : data.transfer_type === "WITHDRAW" ? 'ถอนมือ' : item === "MANUAL" ? 'เต็มมือ' : 'ยกเลิก'}
+            label={item === "SUCCESS" ? 'AUTO' : item === "MANUAL" ? 'MANUAL' : 'CANCEL'}
                size="small"
                style={{
                   padding: 10,
-                  backgroundColor: item === "SUCCESS" ? "#129A50" : data.transfer_type === "WITHDRAW" ? "#85C1E9 " : item === "MANUAL" ? "#4a5eb3" : "#BB2828",
+                  backgroundColor: item === "SUCCESS" ? '#129A50' : item === "MANUAL" ? '#4a5eb3' : '#BB2828',
                   color: "#fff",
                }}
             />
@@ -1043,7 +1041,6 @@ function memberTable() {
          submitFormCredit("DEPOSIT")
       }
    }
-
    return (
       <Layout>
          <CssBaseline />

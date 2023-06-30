@@ -304,6 +304,28 @@ function memberInfo() {
       ),
     },
     {
+      dataIndex: 'status_transction',
+      title: "สถานะ",
+      align: "center",
+      render: (item, data) => (
+        <Chip
+          label={item === "SUCCESS" ? 'AUTO' : item === "MANUAL" ? 'MANUAL' : 'CANCEL'}
+          size="small"
+          style={{
+            padding: 10,
+            backgroundColor: item === "SUCCESS" ? '#129A50' : item === "MANUAL" ? '#4a5eb3' : '#BB2828',
+            color: "#fff",
+          }}
+        />
+      ),
+      filters: [
+        { text: 'สำเร็จ', value: 'SUCCESS' },
+        { text: 'เติมมือ', value: 'MANUAL' },
+        { text: 'ยกเลิก', value: 'CANCEL' },
+      ],
+      onFilter: (value, record) => record.status_transction.indexOf(value) === 0,
+    },
+    {
       dataIndex: "create_at",
       title: "วันที่ทำรายการ",
       align: "center",
@@ -376,7 +398,7 @@ function memberInfo() {
           <Grid item xs={1} sx={{ ml: 1 }}>
             <Button
               variant="contained"
-              style={{ marginTop: 8, color: '#fff' ,background: "linear-gradient(#0072B1, #41A3E3)"  }}
+              style={{ marginTop: 8, color: '#fff', background: "linear-gradient(#0072B1, #41A3E3)" }}
               color="primary"
               size="large"
               fullWidth
@@ -432,7 +454,10 @@ function memberInfo() {
         </Grid>
       </Paper>
 
-      <Table columns={columns} dataSource={transaction} onChange={onChange}
+      <Table
+        columns={columns}
+        dataSource={transaction}
+        onChange={onChange}
         size="small"
         pagination={{
           current: page,
@@ -450,7 +475,7 @@ function memberInfo() {
           let totalSumCreditBefore = ''
           let totalSumCreditAfter = ''
 
-          pageData.forEach(({ credit, credit_before, credit_after, sumCredit, sumCreditBefore, sumCreditAfter  }) => {
+          pageData.forEach(({ credit, credit_before, credit_after, sumCredit, sumCreditBefore, sumCreditAfter }) => {
             totalCredit += parseInt(credit);
             totalBefore += parseInt(credit_before);
             totalAfter += parseInt(credit_after);
