@@ -202,7 +202,7 @@ function home() {
                 item.bank_number = item.banks?.bank_number
             });
             if (resData.length !== SuccessData) {
-                playAudio()
+                // playAudio()
                 setDataTransactionSuccess(resData);
                 getDataTransactionSuccess()
             }
@@ -319,6 +319,19 @@ function home() {
                     position: "center",
                     icon: "error",
                     title: "ไม่พบรหัสข้อมูลนี้",
+                    showConfirmButton: false,
+                    timer: 2000,
+                });
+            }
+            if (
+                error.response.data.error.status_code === 400 &&
+                error.response.data.error.message === "ไม่พบสมาชิก"
+            ) {
+                setOpenDialogView(false);
+                Swal.fire({
+                    position: "center",
+                    icon: "error",
+                    title: "ไม่พบรหัสสมาชิกนี้",
                     showConfirmButton: false,
                     timer: 2000,
                 });
@@ -1440,7 +1453,7 @@ function home() {
 
                                         <Grid item xs={4} >
                                             <Typography align="end" sx={{ fontSize: "14px", mt: "5px", ml: "5px", color: "#000", }} >
-                                                {item.create_at}
+                                                {item.sms_time}
                                             </Typography>
                                             {/* <Chip label={Intl.NumberFormat("TH").format(parseInt(item.count_transaction))}
                                                 size="small"
