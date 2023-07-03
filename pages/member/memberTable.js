@@ -921,23 +921,23 @@ function memberTable() {
          title: "ประเภท",
          align: "center",
          render: (item) => (
-            <Chip
-               label={item === "DEPOSIT" ? "ฝากเงิน" : "ถอนเงิน"}
-               size="small"
-               style={{
-                  // padding: 5,
-                  backgroundColor: item === "DEPOSIT" ? "#129A50" : "#FFB946",
-                  color: "#fff",
-                  minWidth: "120px"
-               }}
-            />
+           <Chip
+             label={item === "DEPOSIT" ? "ฝาก" : "ถอน"}
+             size="small"
+             style={{
+               // padding: 5,
+               backgroundColor: item === "DEPOSIT" ? "#129A50" : "#FFB946",
+               color: "#fff",
+               minWidth: "120px"
+             }}
+           />
          ),
          // filters: [
-         //    { text: 'ถอนเงิน', value: 'WITHDRAW' },
-         //    { text: 'ฝากเงิน', value: 'DEPOSIT' },
+         //   { text: 'ถอน', value: 'WITHDRAW' },
+         //   { text: 'ฝาก', value: 'DEPOSIT' },
          // ],
          // onFilter: (value, record) => record.transfer_type.indexOf(value) === 0,
-      },
+       },
 
       {
          dataIndex: 'credit_before',
@@ -964,23 +964,23 @@ function memberTable() {
          title: "สถานะ",
          align: "center",
          render: (item, data) => (
-            <Chip
-            label={item === "SUCCESS" ? 'AUTO' : item === "MANUAL" ? 'MANUAL' : 'CANCEL'}
-               size="small"
-               style={{
-                  padding: 10,
-                  backgroundColor: item === "SUCCESS" ? '#129A50' : item === "MANUAL" ? '#4a5eb3' : '#BB2828',
-                  color: "#fff",
-               }}
-            />
+           <Chip
+             label={item === "SUCCESS" ? 'AUTO' : item === "MANUAL" ? 'MANUAL' : 'CANCEL'}
+             size="small"
+             style={{
+               padding: 10,
+               backgroundColor: item === "SUCCESS" ? '#129A50' : item === "MANUAL" ? '#4a5eb3' : '#BB2828',
+               color: "#fff",
+             }}
+           />
          ),
-         filters: [
-            { text: 'สำเร็จ', value: 'SUCCESS' },
-            { text: 'เติมมือ', value: 'MANUAL' },
-            { text: 'ยกเลิก', value: 'CANCEL' },
-          ],
-          onFilter: (value, record) => record.status_transction.indexOf(value) === 0 ,
-      },
+         // filters: [
+         //   { text: 'สำเร็จ', value: 'SUCCESS' },
+         //   { text: 'เติมมือ', value: 'MANUAL' },
+         //   { text: 'ยกเลิก', value: 'CANCEL' },
+         // ],
+         // onFilter: (value, record) => record.status_transction.indexOf(value) === 0,
+       },
       {
          dataIndex: "create_at",
          title: "วันที่ทำรายการ",
