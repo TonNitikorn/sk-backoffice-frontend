@@ -84,7 +84,7 @@ function memberInfo() {
 
 
       for (const item of resData.transaction) {
-        credit.push(parseInt(item.credit))
+        credit.push(Intl.NumberFormat("TH").format(parseInt(item.credit)))
         credit_before.push(parseInt(item.credit_before))
         credit_after.push(parseInt(item.credit_after))
 
@@ -141,7 +141,7 @@ function memberInfo() {
       }
     }
   };
-
+console.log('dataMember', dataMember)
   ////////////////////// search table /////////////////////
   const searchInput = useRef(null);
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -435,7 +435,7 @@ function memberInfo() {
                 />
                 <Grid item direction="column" sx={{ mt: 2 }}>
                   <Typography variant="h6">เครดิตปัจจุบันของลูกค้า</Typography>
-                  <Typography sx={{ ml: 1 }}> {Intl.NumberFormat("TH").format(parseInt(dataMember.credit)) || ""}</Typography>
+                  <Typography sx={{ ml: 1 }}> {!!dataMember.credit || ""}</Typography>
                 </Grid>
               </Grid>
             </Paper>
