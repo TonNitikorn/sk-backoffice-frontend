@@ -35,7 +35,7 @@ import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import { Table, Input, Space, } from 'antd';
 import SearchIcon from '@mui/icons-material/Search';
 import { CopyToClipboard } from "react-copy-to-clipboard";
-
+import MuiAlert from "@mui/material/Alert";
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -216,12 +216,13 @@ function employee() {
           Authorization: "Bearer " + localStorage.getItem("access_token"),
         },
         method: "post",
-        url: `${hostname}/admin/update_admin_password`,
+        url: `${hostname}/admin/update_password`,
         data: {
           uuid: rowData.uuid
         }
       });
-      setNewPassword(res.data.adminUpdate?.new_password)
+
+      setNewPassword(res.data.new_password)
       setConfirmEditPassword(false)
     } catch (error) {
       console.log(error);
