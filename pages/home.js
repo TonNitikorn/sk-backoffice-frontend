@@ -1475,7 +1475,7 @@ function home() {
                                         >
                                             <Grid item xs={12} sx={{ bgcolor: '#d0d0d0', mx: 2, mb: 1, p: '2px', borderRadius: 20 }}>
                                                 <Typography sx={{ textAlign: 'center', fontSize: "12px", color: '#000' }}>
-                                                    {item.sms_log}
+                                                    {item.detail_bank}
                                                     {/* 28/06@14:42 1.00 จากKTB/x476788เข้าx687252 ใช้ได้11.39บ */}
                                                 </Typography>
                                             </Grid>
