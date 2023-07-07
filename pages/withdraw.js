@@ -22,6 +22,7 @@ import LoadingModal from "../theme/LoadingModal";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { Table, Input, Space, } from 'antd';
 import SearchIcon from '@mui/icons-material/Search';
+import CurrencyInput from 'md-react-currency-input';
 
 function withdraw() {
     const [username, setUsername] = useState("");
@@ -477,7 +478,13 @@ function withdraw() {
                                         disabled
                                     />{" "}
                                     <Typography>จำนวนเงินที่จะถอน</Typography>
-                                    <TextField
+                                    <CurrencyInput
+                                        name="amount"
+                                        value={rowData?.amount || ""}
+                                        onChangeEvent={(e) => handleChangeData(e)}
+                                        style={{ width: '100%', borderRadius: '2px', height: "40px", border: "1px solid #b9b9b9", padding: "10px", fontSize: '18px', textAlign: 'right' }}
+                                        precision="0" />
+                                    {/* <TextField
                                         name="amount"
                                         type="number"
                                         fullWidth
@@ -492,8 +499,8 @@ function withdraw() {
                                             }
                                         }}
                                     // disabled
-                                    />{" "}
-                                    <Box sx={{ textAlign: "right" }}>
+                                    />{" "} */}
+                                    <Box sx={{ textAlign: "right" , mt:2}}>
                                         <Button
                                             variant="contained"
                                             sx={{ background: "linear-gradient(#0072B1, #41A3E3)" }}

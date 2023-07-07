@@ -1406,7 +1406,7 @@ function memberTable() {
 
          <Dialog
             open={openDialogManual.open}
-            // onClose={() => setOpenDialogManual(false)}
+            onClose={() => setOpenDialogManual(false)}
             fullWidth
             maxWidth="md"
          >
