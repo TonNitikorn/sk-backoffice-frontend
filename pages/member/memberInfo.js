@@ -141,7 +141,6 @@ function memberInfo() {
       }
     }
   };
-console.log('dataMember', dataMember)
   ////////////////////// search table /////////////////////
   const searchInput = useRef(null);
   const handleSearch = (selectedKeys, confirm, dataIndex) => {

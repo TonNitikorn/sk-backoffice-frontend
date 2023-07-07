@@ -23,6 +23,7 @@
     "antd": "^5.4.6",
     "axios": "^0.27.2",
     "chart.js": "^3.9.1",
+    "md-react-currency-input": "^2.0.1",
     "moment": "^2.29.4",
     "next": "12.3.",
     "react": "18.2.0",

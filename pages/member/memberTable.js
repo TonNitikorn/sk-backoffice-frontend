@@ -16,7 +16,7 @@ import {
    DialogContent,
    CssBaseline,
    MenuItem,
-   Switch, FormControl, FormLabel, FormHelperText,
+   Switch,
 } from "@mui/material";
 import Layout from '../../theme/Layout'
 import axios from "axios";
@@ -38,6 +38,7 @@ import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import CloseIcon from '@mui/icons-material/Close';
 import { Table, Input, Space, } from 'antd';
 import SearchIcon from '@mui/icons-material/Search';
+import CurrencyInput from 'md-react-currency-input';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -65,6 +66,7 @@ function memberTable() {
       start: moment().format("YYYY-MM-DD 00:00"),
       end: moment().format("YYYY-MM-DD 23:59"),
    });
+   const [price, setPrice] = useState(0)
    const [search, setSearch] = useState({
       data: "",
       type: "",
@@ -247,7 +249,7 @@ function memberTable() {
          if (!!rowData.amount || !!rowData.annotationWithdraw || !!rowData.annotation || !!hour || !!minute) {
             Swal.fire({
                position: "center",
-               icon: "success",
+               icon: "warning",
                title: "กรุณากรอกข้อมูลให้ครบถ้วน",
                showConfirmButton: false,
                timer: 2000,
@@ -965,7 +967,7 @@ function memberTable() {
          align: "center",
          render: (item, data) => (
             <Chip
-            label={item === "SUCCESS" ? 'AUTO' : item === "MANUAL" ? 'MANUAL' : 'CANCEL'}
+               label={item === "SUCCESS" ? 'AUTO' : item === "MANUAL" ? 'MANUAL' : 'CANCEL'}
                size="small"
                style={{
                   padding: 10,
@@ -978,8 +980,8 @@ function memberTable() {
             { text: 'สำเร็จ', value: 'SUCCESS' },
             { text: 'เติมมือ', value: 'MANUAL' },
             { text: 'ยกเลิก', value: 'CANCEL' },
-          ],
-          onFilter: (value, record) => record.status_transction.indexOf(value) === 0 ,
+         ],
+         onFilter: (value, record) => record.status_transction.indexOf(value) === 0,
       },
       {
          dataIndex: "create_at",
@@ -1041,6 +1043,8 @@ function memberTable() {
          submitFormCredit("DEPOSIT")
       }
    }
+   console.log('rowData  ', rowData)
+
    return (
       <Layout>
          <CssBaseline />
@@ -1160,7 +1164,7 @@ function memberTable() {
 
          <Dialog
             open={openDialogEdit.open}
-            onClose={() => setOpenDialogEdit(false)}
+            onClose={() => { setOpenDialogEdit(false), setRowData({}) }}
             fullWidth
             maxWidth="md"
          >
@@ -1539,7 +1543,7 @@ function memberTable() {
                      />
                      <Grid container item xs={12}>
                         <Typography sx={{ fontSize: '14px', mb: 1 }}>จำนวนเครดิต *</Typography>
-                        <TextField
+                        {/* <TextField
                            name="amount"
                            type="number"
                            value={rowData?.amount || ""}
@@ -1552,7 +1556,13 @@ function memberTable() {
                            inputProps={{
                               min: 0
                            }}
-                        />
+                        /> */}
+                        <CurrencyInput
+                           name="amount"
+                           value={rowData?.amount || ""}
+                           onChangeEvent={(e) => handleChangeData(e)}
+                           style={{ width:'100%',borderRadius: '2px', height: "40px", border: "1px solid #b9b9b9", padding: "10px", fontSize: '18px', textAlign: 'right' }}
+                           precision="0" />
                      </Grid>
                      {openDialogManual.type === "deposit"
                         ?
@@ -1579,7 +1589,7 @@ function memberTable() {
 
                            <Grid item xs={3}>
                               <Autocomplete
-                                 value={hour}
+                                 value={hour|| '00'}
                                  onChange={(event, newValue) => {
                                     setHour(newValue);
                                  }}
@@ -1590,7 +1600,7 @@ function memberTable() {
                            </Grid>
                            <Grid item xs={3}>
                               <Autocomplete
-                                 value={minute}
+                                 value={minute || '00'}
                                  onChange={(event, newValue) => {
                                     setMinute(newValue);
                                  }}
@@ -1635,6 +1645,7 @@ function memberTable() {
                               fullWidth
                               value={rowData?.annotation || ""}
                               size="small"
+                              error
                               placeholder="หมายเหตุอื่นๆ"
                               onChange={(e) => handleChangeData(e)}
                               variant="outlined"
@@ -1649,6 +1660,7 @@ function memberTable() {
                         <Button
                            variant="contained"
                            fullWidth
+                           disabled={rowData?.annotationWithdraw === "อื่นๆ" && !rowData?.annotation ? true : false}
                            onClick={() => handleCheckButtonConfirm()}
                            sx={{
                               mt: 3,
