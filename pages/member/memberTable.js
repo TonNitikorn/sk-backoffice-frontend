@@ -975,15 +975,7 @@ function memberTable() {
                color: "#fff",
              }}
            />
-            <Chip
-               label={item === "SUCCESS" ? 'AUTO' : item === "MANUAL" ? 'MANUAL' : 'CANCEL'}
-               size="small"
-               style={{
-                  padding: 10,
-                  backgroundColor: item === "SUCCESS" ? '#129A50' : item === "MANUAL" ? '#4a5eb3' : '#BB2828',
-                  color: "#fff",
-               }}
-            />
+            
          ),
          filters: [
             { text: 'สำเร็จ', value: 'SUCCESS' },
@@ -992,13 +984,6 @@ function memberTable() {
          ],
          onFilter: (value, record) => record.status_transction.indexOf(value) === 0,
       },
-         // filters: [
-         //   { text: 'สำเร็จ', value: 'SUCCESS' },
-         //   { text: 'เติมมือ', value: 'MANUAL' },
-         //   { text: 'ยกเลิก', value: 'CANCEL' },
-         // ],
-         // onFilter: (value, record) => record.status_transction.indexOf(value) === 0,
-       },
       {
          dataIndex: "create_at",
          title: "วันที่ทำรายการ",
@@ -1059,7 +1044,6 @@ function memberTable() {
          submitFormCredit("DEPOSIT")
       }
    }
-   console.log('rowData  ', rowData)
 
    return (
       <Layout>
