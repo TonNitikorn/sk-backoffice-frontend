@@ -202,7 +202,7 @@ function home() {
                 item.bank_number = item.banks?.bank_number
             });
             if (resData.length !== SuccessData) {
-                playAudio()
+                // playAudio()
                 setDataTransactionSuccess(resData);
                 getDataTransactionSuccess()
             }
@@ -319,6 +319,19 @@ function home() {
                     position: "center",
                     icon: "error",
                     title: "ไม่พบรหัสข้อมูลนี้",
+                    showConfirmButton: false,
+                    timer: 2000,
+                });
+            }
+            if (
+                error.response.data.error.status_code === 400 &&
+                error.response.data.error.message === "ไม่พบสมาชิก"
+            ) {
+                setOpenDialogView(false);
+                Swal.fire({
+                    position: "center",
+                    icon: "error",
+                    title: "ไม่พบรหัสสมาชิกนี้",
                     showConfirmButton: false,
                     timer: 2000,
                 });
@@ -758,28 +771,28 @@ function home() {
         //     ),
         // },
 
-        {
-            dataIndex: 'status_transction',
-            title: "สถานะ",
-            align: "center",
-            render: (item, data) => (
-               <Chip
-               label={item === "SUCCESS" ? 'AUTO' : item === "MANUAL" ? 'MANUAL' : 'CANCEL'}
-                  size="small"
-                  style={{
-                     padding: 10,
-                     backgroundColor: item === "SUCCESS" ? '#129A50' : item === "MANUAL" ? '#4a5eb3' : '#BB2828',
-                     color: "#fff",
-                  }}
-               />
-            ),
-            filters: [
-               { text: 'สำเร็จ', value: 'SUCCESS' },
-               { text: 'เติมมือ', value: 'MANUAL' },
-               { text: 'ยกเลิก', value: 'CANCEL' },
-             ],
-             onFilter: (value, record) => record.status_transction.indexOf(value) === 0 ,
-         },
+        // {
+        //     dataIndex: 'status_transction',
+        //     title: "สถานะ",
+        //     align: "center",
+        //     render: (item, data) => (
+        //        <Chip
+        //        label={item === "SUCCESS" ? 'AUTO' : item === "MANUAL" ? 'MANUAL' : 'CANCEL'}
+        //           size="small"
+        //           style={{
+        //              padding: 10,
+        //              backgroundColor: item === "SUCCESS" ? '#129A50' : item === "MANUAL" ? '#4a5eb3' : '#BB2828',
+        //              color: "#fff",
+        //           }}
+        //        />
+        //     ),
+        //     filters: [
+        //        { text: 'สำเร็จ', value: 'SUCCESS' },
+        //        { text: 'เติมมือ', value: 'MANUAL' },
+        //        { text: 'ยกเลิก', value: 'CANCEL' },
+        //      ],
+        //      onFilter: (value, record) => record.status_transction.indexOf(value) === 0 ,
+        //  },
 
         {
             dataIndex: "create_at",
@@ -811,7 +824,7 @@ function home() {
             title: "หมายเหตุ",
             align: "center",
             render: (item) => (
-                <Typography style={{fontSize: '14px' }}>{item === "" ? "-" : item}</Typography>
+                <Typography style={{ fontSize: '14px' }}>{item === "" ? "-" : item}</Typography>
             ),
         },
     ];
@@ -1437,7 +1450,7 @@ function home() {
 
                                         <Grid item xs={4} >
                                             <Typography align="end" sx={{ fontSize: "14px", mt: "5px", ml: "5px", color: "#000", }} >
-                                                {item.create_at}
+                                                {item.sms_time}
                                             </Typography>
                                             {/* <Chip label={Intl.NumberFormat("TH").format(parseInt(item.count_transaction))}
                                                 size="small"
@@ -1460,6 +1473,12 @@ function home() {
                                             justifyContent="center"
                                             sx={{ mt: 1 }}
                                         >
+                                            <Grid item xs={12} sx={{ bgcolor: '#d0d0d0', mx: 2, mb: 1, p: '2px', borderRadius: 20 }}>
+                                                <Typography sx={{ textAlign: 'center', fontSize: "12px", color: '#000' }}>
+                                                    {item.detail_bank}
+                                                    {/* 28/06@14:42 1.00 จากKTB/x476788เข้าx687252 ใช้ได้11.39บ */}
+                                                </Typography>
+                                            </Grid>
                                             <Grid item xs={6}>
                                                 <Typography sx={{ fontSize: "14px", color: '#000' }}>
                                                     ชื่อผู้ใช้ :
