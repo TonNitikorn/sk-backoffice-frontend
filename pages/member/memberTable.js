@@ -1021,28 +1021,26 @@ function memberTable() {
    };
 
    const handleCheckButtonConfirm = () => {
-      console.log('first', openDialogManual.type)
       if (openDialogManual.type === "withdraw") {
          let totalCredit = parseInt(userData.credit) - parseInt(rowData.amount)
+         console.log('totalCredit', totalCredit)
          if (totalCredit <= 0) {
             setOpenDialogManual(false)
             setRowData({})
             Swal.fire({
                position: "center",
                icon: "error",
-               title: "จำนวนเคตรดิตไม่เพียงพอ",
+               title: "จำนวนเครดิตไม่เพียงพอ",
                showConfirmButton: false,
                timer: 2000,
             });
+         }
+         else if (!rowData?.annotationWithdraw || !rowData?.amount) {
+            setOpenDialogManual(false)
+            alert_warning()
          } else {
             submitFormCredit("WITHDRAW")
          }
-
-         if (!rowData?.annotationWithdraw || !rowData?.amount || !rowData?.date) {
-            setOpenDialogManual(false)
-            alert_warning()
-         }
-
       } else {
          if (!rowData?.amount) {
             setOpenDialogManual(false)
