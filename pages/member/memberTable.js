@@ -244,11 +244,16 @@ function memberTable() {
 
 
    const submitFormCredit = async (type) => {
+      console.log('rowData?.annotationWithdraw', rowData?.annotationWithdraw)
+      console.log('rowData?.annotation', rowData?.annotation)
+
+
       try {
          let time = moment(rowData.date).format('DD/MM') + '@' + hour + ':' + minute
          let amount = rowData.amount
          let total = amount.replace(',', '')
-         if (!!rowData.amount || !!rowData.annotationWithdraw || !!rowData.annotation) {
+         if (!rowData?.annotationWithdraw || !rowData?.annotation) {
+            setOpenDialogManual(false);
             Swal.fire({
                position: "center",
                icon: "warning",
@@ -256,35 +261,37 @@ function memberTable() {
                showConfirmButton: false,
                timer: 2000,
             });
-         }
-         let res = await axios({
-            headers: {
-               Authorization: "Bearer " + localStorage.getItem("access_token"),
-            },
-            method: "post",
-            url: `${hostname}/transaction/create_manual`,
-            data: {
-               "member_username": userData.username,
-               "amount": parseInt(total),
-               "transfer_type": type,
-               "content": rowData.annotationWithdraw === "อื่นๆ" ? rowData.annotation : rowData.annotationWithdraw,
-               "date": time
-            }
-         });
-
-
-         if (res.data.message === "สร้างรายการสำเร็จ") {
-            setRowData({})
-            Swal.fire({
-               position: "center",
-               icon: "success",
-               title: "ทำรายการเรียบร้อย",
-               showConfirmButton: false,
-               timer: 2000,
+         } else {
+            let res = await axios({
+               headers: {
+                  Authorization: "Bearer " + localStorage.getItem("access_token"),
+               },
+               method: "post",
+               url: `${hostname}/transaction/create_manual`,
+               data: {
+                  "member_username": userData.username,
+                  "amount": parseInt(total),
+                  "transfer_type": type,
+                  "content": rowData.annotationWithdraw === "อื่นๆ" ? rowData.annotation : rowData.annotationWithdraw,
+                  "date": time
+               }
             });
-            setOpenDialogManual(false);
-            getMemberAll()
+
+
+            if (res.data.message === "สร้างรายการสำเร็จ") {
+               setRowData({})
+               Swal.fire({
+                  position: "center",
+                  icon: "success",
+                  title: "ทำรายการเรียบร้อย",
+                  showConfirmButton: false,
+                  timer: 2000,
+               });
+               setOpenDialogManual(false);
+               getMemberAll()
+            }
          }
+
       } catch (error) {
          console.log(error);
          if (
@@ -1015,6 +1022,7 @@ function memberTable() {
    };
 
    const handleCheckButtonConfirm = () => {
+      console.log('first', openDialogManual.type)
       if (openDialogManual.type === "withdraw") {
          let totalCredit = parseInt(userData.credit) - parseInt(rowData.amount)
          if (totalCredit <= 0) {
@@ -1043,9 +1051,21 @@ function memberTable() {
          }
 
       } else {
-         submitFormCredit("DEPOSIT")
+         if (!rowData?.amount) {
+            setOpenDialogManual(false)
+            Swal.fire({
+               position: "center",
+               icon: "warning",
+               title: "กรุณากรอกข้อมูลให้ครบถ้วน",
+               showConfirmButton: false,
+               timer: 2000,
+            });
+         } else {
+            submitFormCredit("DEPOSIT")
+         }
       }
    }
+
 
    return (
       <Layout>
