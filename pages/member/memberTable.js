@@ -242,25 +242,24 @@ function memberTable() {
       }
    };
 
+   const alert_warning = () => {
+      Swal.fire({
+         position: "center",
+         icon: "warning",
+         title: "กรุณากรอกข้อมูลให้ครบถ้วน",
+         showConfirmButton: false,
+         timer: 2000,
+      });
+   }
 
    const submitFormCredit = async (type) => {
-      console.log('rowData?.annotationWithdraw', rowData?.annotationWithdraw)
-      console.log('rowData?.annotation', rowData?.annotation)
-
-
       try {
          let time = moment(rowData.date).format('DD/MM') + '@' + hour + ':' + minute
          let amount = rowData.amount
-         let total = amount.replace(',', '')
-         if (!rowData?.annotationWithdraw || !rowData?.annotation) {
+         let total = parseInt(amount.replace(/,/g, ''), 10)
+         if (!rowData.annotationWithdraw) {
             setOpenDialogManual(false);
-            Swal.fire({
-               position: "center",
-               icon: "warning",
-               title: "กรุณากรอกข้อมูลให้ครบถ้วน",
-               showConfirmButton: false,
-               timer: 2000,
-            });
+            alert_warning()
          } else {
             let res = await axios({
                headers: {
@@ -1041,25 +1040,13 @@ function memberTable() {
 
          if (!rowData?.annotationWithdraw || !rowData?.amount || !rowData?.date) {
             setOpenDialogManual(false)
-            Swal.fire({
-               position: "center",
-               icon: "warning",
-               title: "กรุณากรอกข้อมูลให้ครบถ้วน",
-               showConfirmButton: false,
-               timer: 2000,
-            });
+            alert_warning()
          }
 
       } else {
          if (!rowData?.amount) {
             setOpenDialogManual(false)
-            Swal.fire({
-               position: "center",
-               icon: "warning",
-               title: "กรุณากรอกข้อมูลให้ครบถ้วน",
-               showConfirmButton: false,
-               timer: 2000,
-            });
+            alert_warning()
          } else {
             submitFormCredit("DEPOSIT")
          }
