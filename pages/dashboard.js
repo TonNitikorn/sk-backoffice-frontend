@@ -42,6 +42,7 @@ import { Table, Input, Space, } from 'antd';
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 import Image from "next/image";
+import { useCounterStore } from "./auth/login"
 
 ChartJS.register(
    CategoryScale,
@@ -56,6 +57,10 @@ ChartJS.register(
 function dashboard() {
    const router = useRouter();
    const dispatch = useAppDispatch();
+
+   const { profile , setProfile } = useCounterStore()
+   console.log('profile', profile)
+
    const [selectedDateRange, setSelectedDateRange] = useState({
       start: moment().format("YYYY-MM-DD 00:00"),
       end: moment().format("YYYY-MM-DD 23:59"),
@@ -1663,7 +1668,7 @@ function dashboard() {
                </Grid>
             </Grid>
 
-            
+
          </Paper>
 
          {/* <Grid container direction="row" sx={{ mt: 3 }}>
@@ -1860,7 +1865,7 @@ function dashboard() {
                            align: "center",
                            render: (item, data) => (
                               <Chip
-                              label={item === "SUCCESS" ? 'AUTO' : item === "MANUAL" ? 'MANUAL' : 'CANCEL'}
+                                 label={item === "SUCCESS" ? 'AUTO' : item === "MANUAL" ? 'MANUAL' : 'CANCEL'}
                                  size="small"
                                  style={{
                                     padding: 10,
@@ -1873,8 +1878,8 @@ function dashboard() {
                               { text: 'สำเร็จ', value: 'SUCCESS' },
                               { text: 'เติมมือ', value: 'MANUAL' },
                               { text: 'ยกเลิก', value: 'CANCEL' },
-                            ],
-                            onFilter: (value, record) => record.status_transction.indexOf(value) === 0 ,
+                           ],
+                           onFilter: (value, record) => record.status_transction.indexOf(value) === 0,
                         },
                         {
                            dataIndex: "content",

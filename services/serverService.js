@@ -26,8 +26,11 @@ export const signIn = async (user) => {
     });
     let resData = profile.data;
     localStorage.setItem("username", resData.username);
+    console.log('resData', resData)
 
-    return res.data;
+    // return res.data;
+    return resData;
+
 
 
   } catch (error) {

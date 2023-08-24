@@ -25,10 +25,33 @@ import withAuth from "../../routes/withAuth";
 import hostname from "../../utils/hostname";
 import { useAppDispatch } from "../../store/store";
 import logo_angpao from "../../assets/logo_ap.png"
+import create from "zustand"
+
+const useStore = (set) => ({
+   // username1: {
+   //    "menu": "member_table",
+   //    "view": true,
+   //    "sub_menu": {
+   //       "edit_member": true,
+   //       "manage_deposit_withdraw": true
+   //    }
+   // },
+   profile: [],
+   setProfile: set((state) => ({ profile: state }))
+
+})
+
+export const useCounterStore = create(useStore)
 
 function Login() {
    const router = useRouter();
    const dispatch = useAppDispatch();
+   const username1 = useStore(state => state.username)
+   const setUsername = useStore(state => state.setUsername)
+   let test = { "menu": "member_table" }
+
+
+
    const [rowData, setRowData] = useState({});
    const [values, setValues] = useState({
       amount: "",
@@ -39,6 +62,7 @@ function Login() {
    });
    const [first, setFirst] = useState('');
    const [last, setLast] = useState('');
+
 
    const handleChangeData = async (e) => {
       setRowData({ ...rowData, [e.target.name]: e.target.value });
@@ -65,10 +89,16 @@ function Login() {
       const response = await dispatch(
          signIn({ username: rowData.username, password: values.password })
       );
+
       if (response.meta.requestStatus === "rejected") {
          // alert("Login failed");
 
       } else {
+         console.log('response', response.payload.username)
+         // setUsername(response.payload.username)
+
+         setProfile(["test"])
+
          router.push("/dashboard");
       }
    };
@@ -157,7 +187,7 @@ function Login() {
                                  color: '#fff'
                               }}
                               type="submit"
-                              >
+                           >
                               เข้าสู่ระบบ
                            </Button>
                         </form>
@@ -171,3 +201,4 @@ function Login() {
 }
 
 export default withAuth(Login);
+

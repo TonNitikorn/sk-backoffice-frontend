@@ -650,7 +650,7 @@ function employee() {
 
       <Dialog
         open={openEditData.open}
-        // onClose={() => setOpenEditData(false)}
+        onClose={() => setOpenEditData(false)}
         fullWidth
         maxWidth="lg">
         <DialogTitle>แก้ไขข้อมูลพนักงาน</DialogTitle>

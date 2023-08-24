@@ -278,7 +278,7 @@ function memberInfo() {
       sorter: (record1, record2) => record1.credit - record2.credit,
       render: (item) => (
         <Typography sx={{ fontSize: '14px', }}>
-          {Intl.NumberFormat("TH").format(parseInt(item))}
+          {Intl.NumberFormat('th', { style: 'currency', currency: 'THB' }).format(item)}
         </Typography>
       ),
     },
@@ -288,7 +288,7 @@ function memberInfo() {
       align: "center",
       render: (item) => (
         <Typography sx={{ color: 'red', fontSize: '14px', }}>
-          {Intl.NumberFormat("TH").format(parseInt(item))}
+          {Intl.NumberFormat('th', { style: 'currency', currency: 'THB' }).format(item)}
         </Typography>
       ),
     },
@@ -298,7 +298,7 @@ function memberInfo() {
       align: "center",
       render: (item) => (
         <Typography sx={{ color: '#129A50', fontSize: '14px', }}>
-          {Intl.NumberFormat("TH").format(parseInt(item))}
+          {Intl.NumberFormat('th', { style: 'currency', currency: 'THB' }).format(item)}
         </Typography>
       ),
     },
@@ -434,7 +434,7 @@ function memberInfo() {
                 />
                 <Grid item direction="column" sx={{ mt: 2 }}>
                   <Typography variant="h6">เครดิตปัจจุบันของลูกค้า</Typography>
-                  <Typography sx={{ ml: 1 }}> {!!dataMember.credit || ""}</Typography>
+                  <Typography sx={{ ml: 1 }}>{Intl.NumberFormat('th', { style: 'currency', currency: 'THB' }).format(dataMember?.credit)}</Typography>
                 </Grid>
               </Grid>
             </Paper>
@@ -489,17 +489,17 @@ function memberInfo() {
                 <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold" }} > ยอดรวม </Typography> </Table.Summary.Cell>
 
                 <Table.Summary.Cell />
-                <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold" }} >{Intl.NumberFormat("TH").format(parseInt(totalCredit))}</Typography> </Table.Summary.Cell>
-                <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold", color: 'red' }} >{Intl.NumberFormat("TH").format(parseInt(totalBefore))}</Typography> </Table.Summary.Cell>
-                <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold", color: '#129A50' }} >{Intl.NumberFormat("TH").format(parseInt(totalAfter))}</Typography>  </Table.Summary.Cell>
+                <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold" }} >   {Intl.NumberFormat('th', { style: 'currency', currency: 'THB' }).format(totalCredit)}</Typography> </Table.Summary.Cell>
+                <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold", color: 'red' }} >   {Intl.NumberFormat('th', { style: 'currency', currency: 'THB' }).format(totalBefore)}</Typography> </Table.Summary.Cell>
+                <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold", color: '#129A50' }} >  {Intl.NumberFormat('th', { style: 'currency', currency: 'THB' }).format(totalAfter)}</Typography>  </Table.Summary.Cell>
 
               </Table.Summary.Row>
               <Table.Summary.Row>
                 <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold" }} > ยอดรวมทั้งหมด </Typography> </Table.Summary.Cell>
                 <Table.Summary.Cell />
-                <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold" }} >{!totalSumCredit ? 0 : Intl.NumberFormat("TH").format(parseInt(totalSumCredit))}</Typography> </Table.Summary.Cell>
-                <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold", color: 'red' }} >{!totalSumCreditBefore ? 0 : Intl.NumberFormat("TH").format(parseInt(totalSumCreditBefore))}</Typography> </Table.Summary.Cell>
-                <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold", color: '#129A50' }} >{!totalSumCreditAfter ? 0 : Intl.NumberFormat("TH").format(parseInt(totalSumCreditAfter))}</Typography>  </Table.Summary.Cell>
+                <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold" }} >{!totalSumCredit ? 0 : Intl.NumberFormat('th', { style: 'currency', currency: 'THB' }).format(parseInt(totalSumCredit))}</Typography> </Table.Summary.Cell>
+                <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold", color: 'red' }} >{!totalSumCreditBefore ? 0 : Intl.NumberFormat('th', { style: 'currency', currency: 'THB' }).format(parseInt(totalSumCreditBefore))}</Typography> </Table.Summary.Cell>
+                <Table.Summary.Cell > <Typography align="center" sx={{ fontWeight: "bold", color: '#129A50' }} >{!totalSumCreditAfter ? 0 : Intl.NumberFormat('th', { style: 'currency', currency: 'THB' }).format(parseInt(totalSumCreditAfter))}</Typography>  </Table.Summary.Cell>
 
               </Table.Summary.Row>
             </>

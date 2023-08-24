@@ -21,6 +21,7 @@ import Swal from "sweetalert2";
 import withAuth from "../../routes/withAuth";
 import { useRouter } from "next/router";
 import CloseIcon from '@mui/icons-material/Close';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 function addEmployee() {
   const router = useRouter()
@@ -56,8 +57,6 @@ function addEmployee() {
       [event.target.name]: event.target.checked,
     });
   };
-
-
 
   const handleChangeData = async (e) => {
     setRowData({ ...rowData, [e.target.name]: e.target.value });
@@ -119,9 +118,7 @@ function addEmployee() {
     <Layout>
       <Paper sx={{ p: 5 }}>
         <Grid container direction="row" spacing={10}>
-
-          <Grid item xs={7}>
-
+          <Grid item xs={5}>
             {" "}
             <Typography
               sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px", mb: 3 }}
@@ -220,8 +217,7 @@ function addEmployee() {
 
           {/* preference */}
 
-          <Grid item xs={5}>
-
+          <Grid item xs={7}>
             <Grid
               container
               direction="row"
@@ -230,7 +226,7 @@ function addEmployee() {
               <Typography
                 sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px", mb: 3 }}
               >
-                ตั้งค่าสิทธิ์การเข้าถึง
+                จัดการสิทธิ์การเข้าถึง
               </Typography>
 
               <IconButton onClick={() => router.push("/employee/employee")}>
@@ -240,7 +236,7 @@ function addEmployee() {
 
             <Box sx={{ display: "flex" }}>
               <Grid container direction="row">
-                <Grid item xs={6}>
+                <Grid item xs={4}>
                   <FormControl
                     sx={{ m: 2 }}
                     component="fieldset"
@@ -298,6 +294,7 @@ function addEmployee() {
                         }
                         label="ถอนเงิน"
                       />
+                      
                       <FormControlLabel
                         control={
                           <Checkbox
@@ -351,7 +348,7 @@ function addEmployee() {
                     </FormGroup>
                   </FormControl>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={4}>
                   <FormControl
                     sx={{ m: 2 }}
                     component="fieldset"
@@ -432,38 +429,127 @@ function addEmployee() {
                     </FormGroup>
                   </FormControl>
                 </Grid>
+                <Grid item xs={4}>
+                  <FormControl
+                    sx={{ m: 2 }}
+                    component="fieldset"
+                    variant="standard"
+
+                  >
+                    <FormGroup>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={prefix}
+                            onChange={handleChange}
+                            name="prefix"
+                          />
+                        }
+                        label="จัดการหน้าเว็บ"
+                      />
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={editError}
+                            onChange={handleChange}
+                            name="editError"
+                          />
+                        }
+                        label="แก้ไขข้อผิดพลาด"
+                      />
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={criminal_list}
+                            onChange={handleChange}
+                            name="criminal_list"
+                          />
+                        }
+                        label="รายชื่อมิจฉาชีพ"
+                      />
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={deposit}
+                            onChange={handleChange}
+                            name="deposit"
+                          />
+                        }
+                        label="ฝากติดต่อ 7 วัน"
+                      />
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={affiliate}
+                            onChange={handleChange}
+                            name="affiliate"
+                          />
+                        }
+                        label="AFFILIATE"
+                      />
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={activities_log}
+                            onChange={handleChange}
+                            name="activities_log"
+                          />
+                        }
+                        label="ACTIVITIES LOGS"
+                      />
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={report}
+                            onChange={handleChange}
+                            name="report"
+                          />
+                        }
+                        label="รายงานสรุป"
+                      />
+                    </FormGroup>
+                  </FormControl>
+                </Grid>
+
+                <Grid item xs={12} container direction="row">
+                  <Button onClick={() => { router.push('/employee/customPermission') }}>
+                    <SettingsIcon sx={{ mr: 1 }} />
+                    <Typography> ตั้งค่าสิทธ์การเข้าถึง</Typography>
+                  </Button>
+
+                </Grid>
               </Grid>
             </Box>
-            <Grid
-              container
-              direction="row"
-              justifyContent="flex-end"
-              alignItems="flex-end"
-              sx={{ mt: 5 }}
+
+          </Grid>
+          <Grid
+            container
+            direction="row"
+            justifyContent="flex-end"
+            alignItems="flex-end"
+            sx={{ mt: 5 }}
+          >
+            <Button
+              variant="outlined"
+              sx={{ mr: 2 }}
+              onClick={() => { setRowData({}) }}
             >
-              <Button
-                variant="outlined"
-                sx={{ mr: 2 }}
-                onClick={() => { setRowData({}) }}
-              >
-                รีเซ็ท
-              </Button>
+              รีเซ็ท
+            </Button>
 
-              <Button
-                variant="contained"
-                sx={{ bgcolor: "#41A3E3", color: "#ffff" }}
-                onClick={() => addEmployee()}
-              >
-                ยืนยัน
-              </Button>
-            </Grid>
-
+            <Button
+              variant="contained"
+              sx={{ bgcolor: "#41A3E3", color: "#ffff" }}
+              onClick={() => addEmployee()}
+            >
+              ยืนยัน
+            </Button>
           </Grid>
 
 
         </Grid>
-      </Paper>
-    </Layout>
+      </Paper >
+    </Layout >
   );
 }
 
