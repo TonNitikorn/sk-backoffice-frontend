@@ -25,32 +25,13 @@ import withAuth from "../../routes/withAuth";
 import hostname from "../../utils/hostname";
 import { useAppDispatch } from "../../store/store";
 import logo_angpao from "../../assets/logo_ap.png"
-import create from "zustand"
-
-const useStore = (set) => ({
-   // username1: {
-   //    "menu": "member_table",
-   //    "view": true,
-   //    "sub_menu": {
-   //       "edit_member": true,
-   //       "manage_deposit_withdraw": true
-   //    }
-   // },
-   profile: [],
-   setProfile: set((state) => ({ profile: state }))
-
-})
-
-export const useCounterStore = create(useStore)
+import { useCounterStore } from "../../zustand/permission"
 
 function Login() {
    const router = useRouter();
    const dispatch = useAppDispatch();
-   const username1 = useStore(state => state.username)
-   const setUsername = useStore(state => state.setUsername)
-   let test = { "menu": "member_table" }
 
-
+   const addPermission = useCounterStore((state) => state.addPermission)
 
    const [rowData, setRowData] = useState({});
    const [values, setValues] = useState({
@@ -94,10 +75,7 @@ function Login() {
          // alert("Login failed");
 
       } else {
-         console.log('response', response.payload.username)
-         // setUsername(response.payload.username)
-
-         setProfile(["test"])
+         addPermission(response.payload.preference)
 
          router.push("/dashboard");
       }
