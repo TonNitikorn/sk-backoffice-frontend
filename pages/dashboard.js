@@ -42,7 +42,7 @@ import { Table, Input, Space, } from 'antd';
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 import Image from "next/image";
-import { useCounterStore } from "./auth/login"
+import { useCounterStore } from "../zustand/permission"
 
 ChartJS.register(
    CategoryScale,
@@ -58,8 +58,9 @@ function dashboard() {
    const router = useRouter();
    const dispatch = useAppDispatch();
 
-   const { profile , setProfile } = useCounterStore()
-   console.log('profile', profile)
+   const permission = useCounterStore((state) => state.permission)
+
+   console.log('permission', permission)
 
    const [selectedDateRange, setSelectedDateRange] = useState({
       start: moment().format("YYYY-MM-DD 00:00"),
