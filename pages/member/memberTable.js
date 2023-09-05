@@ -1022,8 +1022,9 @@ function memberTable() {
 
    const handleCheckButtonConfirm = () => {
       if (openDialogManual.type === "withdraw") {
-         let totalCredit = parseInt(userData.credit) - parseInt(rowData.amount)
-         console.log('totalCredit', totalCredit)
+         let amount = rowData.amount
+         let money = parseInt(amount.replace(/,/g, ''), 10)
+         let totalCredit = userData.credit - money
          if (totalCredit <= 0) {
             setOpenDialogManual(false)
             setRowData({})
@@ -1047,6 +1048,7 @@ function memberTable() {
             alert_warning()
          } else {
             submitFormCredit("DEPOSIT")
+
          }
       }
    }
