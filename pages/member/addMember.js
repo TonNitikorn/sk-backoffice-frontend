@@ -68,7 +68,7 @@ function addMember() {
           showConfirmButton: false,
           timer: 2000,
         });
-        router.push('/member/memberTable')
+        router.push('/memberTable')
         setLoading(false);
       }
     } catch (error) {

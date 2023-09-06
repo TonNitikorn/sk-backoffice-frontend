@@ -60,7 +60,7 @@ function dashboard() {
 
    const role = useCounterStore((state) => state.role)
 
-   console.log('role', role)
+   // console.log('role', role)
 
    const [selectedDateRange, setSelectedDateRange] = useState({
       start: moment().format("YYYY-MM-DD 00:00"),

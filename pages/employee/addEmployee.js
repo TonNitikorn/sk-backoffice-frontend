@@ -143,7 +143,7 @@ function addEmployee() {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("access_token"),
         },
-        method: "get",
+        method: "post",
         url: `${hostname}/permission/role_list`,
       });
       let resData = res.data;

@@ -18,10 +18,10 @@ import {
    MenuItem,
    Switch,
 } from "@mui/material";
-import Layout from '../../theme/Layout'
+import Layout from '../theme/Layout'
 import axios from "axios";
-import hostname from "../../utils/hostname";
-import LoadingModal from "../../theme/LoadingModal";
+import hostname from "../utils/hostname";
+import LoadingModal from "../theme/LoadingModal";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import EditIcon from "@mui/icons-material/Edit";
 import Image from "next/image";
@@ -29,9 +29,9 @@ import moment from "moment/moment";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import Swal from "sweetalert2";
-import { signOut } from "../../store/slices/userSlice";
+import { signOut } from "../store/slices/userSlice";
 import { useRouter } from "next/router";
-import { useAppDispatch } from "../../store/store";
+import { useAppDispatch } from "../store/store";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import ManageSearchIcon from '@mui/icons-material/ManageSearch';

@@ -16,30 +16,35 @@ import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 export const menuSuperAdmin = [
   {
     name: "Dashboard",
+    id: "dashboard",
     link: "/dashboard",
     icon: <InsertChartIcon />,
   },
   {
     name: "รายการเดินบัญชี",
     link: "/home",
+    id: "home",
     icon: <HomeIcon />,
   },
   {
     name: "จัดการเครดิต/ข้อมูลลูกค้า",
-    link: "/member/memberTable",
+    link: "/memberTable",
+    id: "member_table",
     icon: <EditLocationAltIcon />,
   },
   {
     name: "จัดการข้อมูลการถอน",
     link: "/withdrawPending",
+    id: "withdraw_pending",
     icon: <FormatListBulletedIcon />,
   },
   {
     name: "สร้างรายการถอน",
     link: "/withdraw",
+    id: "withdraw",
     icon: <CurrencyExchangeIcon />,
   },
-  
+
   {
     name: "ลูกค้า",
     // link: "/DepositWithdrawalSystem/CreditManual",
@@ -50,11 +55,13 @@ export const menuSuperAdmin = [
       {
         name: "สมัครสมาชิกลูกค้า",
         link: "/member/addMember",
+        id: "add_member",
         icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
       },
       {
         name: "ตรวจสอบข้อมูลลูกค้า",
         link: "/member/memberInfo",
+        id: "member_info",
         icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
       },
       // {
@@ -74,21 +81,24 @@ export const menuSuperAdmin = [
       {
         name: "บัญชีทั้งหมด",
         link: "/bankAccount",
+        id: "bank_account",
         icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
       },
       {
         name: "บัญชีฝาก",
         link: "/bank/bankDeposit",
+        id: "bank_deposit",
         icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
       },
       {
         name: "บัญชีถอน",
         link: "/bank/bankWithdraw",
+        id: "bank_withdraw",
         icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
       },
     ]
   },
- 
+
   // {
   //   name: "โปรโมชัน",
   //   link: "/promotion",
@@ -171,6 +181,7 @@ export const menuSuperAdmin = [
   {
     name: "รายชื่อพนักงาน",
     link: "/employee/employee",
+    id: "employee",
     icon: <GroupIcon />,
   },
 
@@ -189,11 +200,13 @@ export const menuSuperAdmin = [
       {
         name: "รายงานการฝาก",
         link: "/report/reportDeposit",
+        id: "report_deposit",
         icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
       },
       {
         name: "รายงานการถอน",
         link: "/report/reportWithdraw",
+        id: "report_withdraw",
         icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
       },
       // {
@@ -214,11 +227,13 @@ export const menuSuperAdmin = [
       {
         name: "รายงานการตัดเครดิต",
         link: "/report/reportCutCredit",
+        id: "report_cutcredit",
         icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
       },
       {
         name: "รายงานการเติมเครดิต",
         link: "/report/reportAddCredit",
+        id: "report_addcredit",
         icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
       },
     ],

@@ -35,7 +35,10 @@ function Layout({ children, page }) {
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
   const [username, setUsername] = useState("");
-  const roleLocal = localStorage.getItem("role");
+  let roleLocal = 'test'
+  if (typeof window !== "undefined") {
+    roleLocal = localStorage.getItem("role");
+  }
 
   const handleClick = (id) => {
     if (id === "member") {
@@ -73,10 +76,21 @@ function Layout({ children, page }) {
   }
 
   const data = hexToString(roleLocal);
-  console.log("data", JSON.parse(data));
+
+  const jsonData = JSON.parse(data)
+
+  let menuActive = jsonData.filter(item => item.view === true)
+
+  // console.log('menuActive', menuActive)
+
+  let menuFilter = menuSuperAdmin.filter(item => menuActive.some(value => value.menu === item.id));
+
+  // console.log('menuFilter', menuFilter)
+
 
   useEffect(() => {
     if (typeof window !== "undefined") {
+
       setUsername(localStorage.getItem("username"));
       if (window.location.pathname.includes("/member")) {
         setOpen({ member: true });
@@ -89,6 +103,7 @@ function Layout({ children, page }) {
       }
     }
   }, []);
+
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -155,7 +170,7 @@ function Layout({ children, page }) {
         <Divider />
 
         <List>
-          {menuSuperAdmin.map((item) => (
+          {menuFilter.map((item) => (
             <>
               {item.type === "collapse" ? (
                 <>
