@@ -58,9 +58,9 @@ function dashboard() {
    const router = useRouter();
    const dispatch = useAppDispatch();
 
-   const permission = useCounterStore((state) => state.permission)
+   const role = useCounterStore((state) => state.role)
 
-   console.log('permission', permission)
+   console.log('role', role)
 
    const [selectedDateRange, setSelectedDateRange] = useState({
       start: moment().format("YYYY-MM-DD 00:00"),
@@ -1921,3 +1921,5 @@ function dashboard() {
 
 // export default (dashboard);
 export default withAuth(dashboard);
+
+

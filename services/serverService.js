@@ -1,10 +1,7 @@
 import axios from "axios";
 import hostname from "../utils/hostname";
 import Swal from "sweetalert2";
-// import Stack from '@mui/material/Stack';
-// import Button from '@mui/material/Button';
-// import Snackbar from '@mui/material/Snackbar';
-// import MuiAlert from '@mui/material/Alert';
+
 
 function stringToHex(input) {
   return Array.from(input, (char) => char.charCodeAt(0).toString(16)).join('');
@@ -31,8 +28,10 @@ export const signIn = async (user) => {
     });
     let resData = profile.data;
     localStorage.setItem("username", resData.username);
-    
-    const encodedText = stringToHex(resData.role);
+
+    const jsonData = JSON.stringify(resData.role_name.permission);
+
+    const encodedText = stringToHex(jsonData);
     localStorage.setItem("role", encodedText);
 
 

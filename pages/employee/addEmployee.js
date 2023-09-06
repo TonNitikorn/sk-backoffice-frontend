@@ -27,39 +27,19 @@ function addEmployee() {
   const router = useRouter()
 
   const [rowData, setRowData] = useState({});
-  const [state, setState] = useState({
-    grap: false,
-    home: false,
-    member: false,
-    whitdraw: false,
-    reportWhitdrawDeposit: false,
-    promotion: false,
-    checkDataMember: false,
-    bank: false,
-    prefix: false,
-    transfer_money: false,
-    editError: false,
-    criminal_list: false,
-    deposit: false,
-    affiliate: false,
-    activities_log: false,
-    report: false,
-    admin_list: false,
-  });
 
-  const { grap, home, member, whitdraw, reportWhitdrawDeposit,
-    promotion, checkDataMember, bank, prefix, transfer_money, editError,
-    criminal_list, deposit, affiliate, activities_log, report, admin_list } = state;
-
-  const handleChange = (event) => {
-    setState({
-      ...state,
-      [event.target.name]: event.target.checked,
-    });
-  };
+  const [checkedPermission, setCheckedPermission] = useState({})
+  const [permissionList, setPermissionList] = useState()
+  const [roleList, setRoleList] = useState()
+  const [selectRole, setSelectRole] = useState()
 
   const handleChangeData = async (e) => {
     setRowData({ ...rowData, [e.target.name]: e.target.value });
+    if (e.target.name === "role") {
+      let tempRole = roleList.filter(item => item.role_name === e.target.value)
+      setSelectRole(tempRole)
+    }
+
   };
 
   // console.log('state', state)
@@ -114,11 +94,130 @@ function addEmployee() {
     }
   };
 
+  const getPermission = async () => {
+    // setLoading(true);
+    try {
+      let res = await axios({
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("access_token"),
+        },
+        method: "post",
+        url: `${hostname}/permission/get_permission_list`,
+      });
+      let resData = res.data;
+
+      setPermissionList(resData)
+      // let lastData = resData.filter(item => item.type === "DEPOSIT")
+      // let no = 1;
+      // let data = lastData.filter(item => item.status === "ACTIVE")
+      // data.map((item) => {
+      //     item.no = no++;
+      //     item.birthdate = moment(item.birthdate).format("DD-MM-YYYY")
+      // });
+      // setBankData(data);
+    } catch (error) {
+      console.log(error);
+      if (
+        error.response.data.error.status_code === 401 &&
+        error.response.data.error.message === "Unauthorized"
+      ) {
+        dispatch(signOut());
+        localStorage.clear();
+        router.push("/auth/login");
+      }
+      if (
+        error.response.status === 401 &&
+        error.response.data.error.message === "Invalid Token"
+      ) {
+        dispatch(signOut());
+        localStorage.clear();
+        router.push("/auth/login");
+      }
+    }
+  };
+
+  const getRoleList = async () => {
+    // setLoading(true);
+    try {
+      let res = await axios({
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("access_token"),
+        },
+        method: "get",
+        url: `${hostname}/permission/role_list`,
+      });
+      let resData = res.data;
+
+      setRoleList(resData)
+      // let lastData = resData.filter(item => item.type === "DEPOSIT")
+      // let no = 1;
+      // let data = lastData.filter(item => item.status === "ACTIVE")
+      // data.map((item) => {
+      //     item.no = no++;
+      //     item.birthdate = moment(item.birthdate).format("DD-MM-YYYY")
+      // });
+      // setBankData(data);
+      // setLoading(false);
+
+    } catch (error) {
+      console.log(error);
+      if (
+        error.response.data.error.status_code === 401 &&
+        error.response.data.error.message === "Unauthorized"
+      ) {
+        dispatch(signOut());
+        localStorage.clear();
+        router.push("/auth/login");
+      }
+      if (
+        error.response.status === 401 &&
+        error.response.data.error.message === "Invalid Token"
+      ) {
+        dispatch(signOut());
+        localStorage.clear();
+        router.push("/auth/login");
+      }
+    }
+  };
+
+  useEffect(() => {
+    getPermission()
+    getRoleList()
+  }, [])
+
+
+  const handleChangeCheck = (event) => {
+    for (const item of permissionList) {
+      if (event.target.name === item.menu) {
+        item.view = event.target.checked
+        setCheckedPermission({
+          ...checkedPermission,
+          [event.target.name]: event.target.checked,
+        });
+      }
+
+      if (item.sub_menu !== null) {
+        for (const sub of item.sub_menu) {
+          if (event.target.name === sub.sub_menu_name) {
+            sub.sub_menu_active = event.target.checked
+            setCheckedPermission({
+              ...checkedPermission,
+              [event.target.name]: event.target.checked,
+            });
+          }
+
+        }
+      }
+
+    }
+  }
+
+
   return (
     <Layout>
       <Paper sx={{ p: 5 }}>
         <Grid container direction="row" spacing={10}>
-          <Grid item xs={5}>
+          <Grid item xs={6}>
             {" "}
             <Typography
               sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px", mb: 3 }}
@@ -185,11 +284,10 @@ function addEmployee() {
               <MenuItem selected disabled value>
                 เลือกตำแหน่ง
               </MenuItem>
-              <MenuItem value="SuperAdmin">Super Admin</MenuItem>
-              <MenuItem value="Admin">Admin</MenuItem>
-              <MenuItem value="Staff">Staff</MenuItem>
-              <MenuItem value="Owner">Owner</MenuItem>
-              <MenuItem value="Support">Support</MenuItem>
+              {roleList?.map((item) => (
+                <MenuItem value={item.role_name}>{item.role_name}</MenuItem>
+              ))}
+
             </TextField>
 
             <Typography>สถานะ</Typography>
@@ -217,7 +315,7 @@ function addEmployee() {
 
           {/* preference */}
 
-          <Grid item xs={7}>
+          <Grid item xs={6}>
             <Grid
               container
               direction="row"
@@ -236,7 +334,136 @@ function addEmployee() {
 
             <Box sx={{ display: "flex" }}>
               <Grid container direction="row">
-                <Grid item xs={4}>
+                <Grid item xs={12}>
+                  <FormControl
+                    sx={{ m: 2 }}
+                    component="fieldset"
+                    variant="standard"
+                  >
+                    <FormGroup column>
+                      {rowData.role ?
+                        selectRole[0]?.permission.map((item, index) => (
+                          <>
+                            <FormControlLabel
+                              key={index}
+                              control={
+                                <Checkbox
+                                  checked={checkedPermission[item.menu] || item.view}
+                                  onChange={handleChangeCheck}
+                                  name={item.menu}
+                                />
+                              }
+                              label={item.menu === "dashboard" ? "Dashboard"
+                                : item.menu === "home" ? "รายการเดินบัญชี"
+                                  : item.menu === "member_table" ? "จัดการเครดิต/ข้อมูลลูกค้า"
+                                    : item.menu === "withdraw_pending" ? "จัดการข้อมูลการถอน"
+                                      : item.menu === "withdraw" ? "สร้างรายการถอน"
+                                        : item.menu === "add_member" ? "สมัครสมาชิกลูกค้า"
+                                          : item.menu === "member_info" ? "ตรวจสอบข้อมูลลูกค้า"
+                                            : item.menu === "bank_account" ? "บัญชีธนาคาร"
+                                              : item.menu === "bank_deposit" ? "บัญชีธนาคารสําหรับฝาก"
+                                                : item.menu === "bank_withdraw" ? "บัญชีธนาคารสําหรับถอน"
+                                                  : item.menu === "employee" ? "รายชื่อพนักงาน"
+                                                    : item.menu === "report_deposit" ? "รายงานการฝาก"
+                                                      : item.menu === "report_withdraw" ? "รายงานการถอน"
+                                                        : item.menu === "report_cutcredit" ? "รายงานการตัดเครดิต"
+                                                          : item.menu === "report_addcredit" ? "รายงานการเติมเครดิต"
+                                                            : ''}
+                            />
+                            {item.sub_menu !== null ?
+                              <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3 }}>
+                                {item.sub_menu.map((subMenu) => (<>
+                                  <FormControlLabel
+                                    control={
+                                      <Checkbox
+                                        checked={checkedPermission[subMenu.sub_menu_name] || subMenu.sub_menu_active}
+                                        onChange={handleChangeCheck}
+                                        name={subMenu.sub_menu_name}
+                                      />}
+                                    label={subMenu.sub_menu_name === "approve_home" ? "อนุมัติการฝากผิดบัญชี"
+                                      : subMenu.sub_menu_name === "edit_member" ? "แก้ไขข้อมูลลูกค้า"
+                                        : subMenu.sub_menu_name === "manage_deposit_withdraw" ? "เติม/ถอน"
+                                          : subMenu.sub_menu_name === "manage_role_permission" ? "ตั้งค่าสิทธ์การเข้าถึง"
+                                            : subMenu.sub_menu_name === "edit_employee" ? "แก้ไข"
+                                              : subMenu.sub_menu_name === "edit_pass_employee" ? "เปลี่ยนรหัสพนักงาน"
+                                                : subMenu.sub_menu_name === "add_employee" ? "เพิ่มพนักงาน"
+                                                  : subMenu.sub_menu_name === "manage_bank" ? "จัดการบัญชีธนาคาร"
+                                                    : subMenu.sub_menu_name === "manage_bank_withdraw" ? "จัดการบัญชีธนาคารถอน"
+                                                      : subMenu.sub_menu_name === "manage_bank_deposit" ? "จัดการบัญชีธนาคารฝาก"
+                                                        : subMenu.sub_menu_name === "approve_withdraw" ? "อนุมัติการถอน"
+                                                          : ''}
+                                  />
+                                </>))}
+                              </Box>
+                              : ''}
+                          </>
+                        ))
+                        : permissionList?.map((item, index) => (
+                          <>
+                            <FormControlLabel
+                              key={index}
+                              control={
+                                <Checkbox
+                                  checked={checkedPermission[item.menu] || false}
+                                  onChange={handleChangeCheck}
+                                  name={item.menu}
+                                />
+                              }
+                              label={item.menu === "dashboard" ? "Dashboard"
+                                : item.menu === "home" ? "รายการเดินบัญชี"
+                                  : item.menu === "member_table" ? "จัดการเครดิต/ข้อมูลลูกค้า"
+                                    : item.menu === "withdraw_pending" ? "จัดการข้อมูลการถอน"
+                                      : item.menu === "withdraw" ? "สร้างรายการถอน"
+                                        : item.menu === "add_member" ? "สมัครสมาชิกลูกค้า"
+                                          : item.menu === "member_info" ? "ตรวจสอบข้อมูลลูกค้า"
+                                            : item.menu === "bank_account" ? "บัญชีธนาคาร"
+                                              : item.menu === "bank_deposit" ? "บัญชีธนาคารสําหรับฝาก"
+                                                : item.menu === "bank_withdraw" ? "บัญชีธนาคารสําหรับฝาก"
+                                                  : item.menu === "employee" ? "รายชื่อพนักงาน"
+
+                                                    : item.menu === "report_deposit" ? "รายงานการฝาก"
+                                                      : item.menu === "report_withdraw" ? "รายงานการถอน"
+                                                        : item.menu === "report_cutcredit" ? "รายงานการตัดเครดิต"
+                                                          : item.menu === "report_addcredit" ? "รายงานการเติมเครดิต"
+
+
+
+                                                            : ''}
+                            />
+                            {item.sub_menu !== null ?
+                              <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3 }}>
+                                {item.sub_menu.map((subMenu) => (<>
+                                  <FormControlLabel
+                                    control={
+                                      <Checkbox
+                                        checked={checkedPermission[subMenu.sub_menu_name] || false}
+                                        onChange={handleChangeCheck}
+                                        name={subMenu.sub_menu_name}
+                                      />}
+                                    label={subMenu.sub_menu_name === "dashboard" ? "Dashboard"
+                                      : subMenu.sub_menu_name === "approve_home" ? "อนุมัติการฝากผิดบัญชี"
+                                        : subMenu.sub_menu_name === "edit_member" ? "แก้ไขข้อมูลลูกค้า"
+                                          : subMenu.sub_menu_name === "manage_deposit_withdraw" ? "เติม/ถอน"
+                                            : subMenu.sub_menu_name === "manage_role_permission" ? "ตั้งค่าสิทธ์การเข้าถึง"
+                                              : subMenu.sub_menu_name === "edit_employee" ? "แก้ไข"
+                                                : subMenu.sub_menu_name === "edit_pass_employee" ? "เปลี่ยนรหัสพนักงาน"
+                                                  : subMenu.sub_menu_name === "add_employee" ? "เพิ่มพนักงาน"
+                                                    : subMenu.sub_menu_name === "manage_bank" ? "จัดการบัญชีธนาคาร"
+                                                      : subMenu.sub_menu_name === "manage_bank_withdraw" ? "จัดการบัญชีธนาคารถอน"
+                                                        : subMenu.sub_menu_name === "manage_bank_deposit" ? "จัดการบัญชีธนาคารฝาก"
+                                                          : subMenu.sub_menu_name === "approve_withdraw" ? "อนุมัติการถอน"
+                                                            : ''}
+                                  />
+                                </>))}
+                              </Box>
+                              : ''}
+                          </>
+                        ))}
+
+                    </FormGroup>
+                  </FormControl>
+                </Grid>
+                {/* <Grid item xs={4}>
                   <FormControl
                     sx={{ m: 2 }}
                     component="fieldset"
@@ -247,103 +474,72 @@ function addEmployee() {
                       <FormControlLabel
                         control={
                           <Checkbox
-                            checked={grap}
+                            checked={prefix}
                             onChange={handleChange}
-                            name="grap"
+                            name="prefix"
                           />
                         }
-                        label="กราฟ"
+                        label="จัดการหน้าเว็บ"
                       />
                       <FormControlLabel
                         control={
                           <Checkbox
-                            checked={home}
+                            checked={editError}
                             onChange={handleChange}
-                            name="home"
+                            name="editError"
                           />
                         }
-                        label="หน้าหลัก"
+                        label="แก้ไขข้อผิดพลาด"
                       />
                       <FormControlLabel
                         control={
                           <Checkbox
-                            checked={admin_list}
+                            checked={criminal_list}
                             onChange={handleChange}
-                            name="admin_list"
+                            name="criminal_list"
                           />
                         }
-                        label="รายชื่อพนักงาน"
+                        label="รายชื่อมิจฉาชีพ"
                       />
                       <FormControlLabel
                         control={
                           <Checkbox
-                            checked={member}
+                            checked={deposit}
                             onChange={handleChange}
-                            name="member"
+                            name="deposit"
                           />
                         }
-                        label="สมาชิก"
+                        label="ฝากติดต่อ 7 วัน"
                       />
                       <FormControlLabel
                         control={
                           <Checkbox
-                            checked={whitdraw}
+                            checked={affiliate}
                             onChange={handleChange}
-                            name="whitdraw"
+                            name="affiliate"
                           />
                         }
-                        label="ถอนเงิน"
-                      />
-                      
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={reportWhitdrawDeposit}
-                            onChange={handleChange}
-                            name="reportWhitdrawDeposit"
-                          />
-                        }
-                        label="รายงานฝาก-ถอน"
+                        label="AFFILIATE"
                       />
                       <FormControlLabel
                         control={
                           <Checkbox
-                            checked={promotion}
+                            checked={activities_log}
                             onChange={handleChange}
-                            name="promotion"
+                            name="activities_log"
                           />
                         }
-                        label="โปรโมชัน"
+                        label="ACTIVITIES LOGS"
                       />
                       <FormControlLabel
                         control={
                           <Checkbox
-                            checked={checkDataMember}
+                            checked={report}
                             onChange={handleChange}
-                            name="checkDataMember"
+                            name="report"
                           />
                         }
-                        label="เช็คข้อมูลลูกค้า"
-                      />
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={bank}
-                            onChange={handleChange}
-                            name="bank"
-                          />
-                        }
-                        label="Bank"
-                      />
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={transfer_money}
-                            onChange={handleChange}
-                            name="transfer_money"
-                          />
-                        }
-                        label="โอนเงินภายใน"
+                        label="รายงานสรุป"
                       />
                     </FormGroup>
                   </FormControl>
@@ -428,88 +624,7 @@ function addEmployee() {
                       />
                     </FormGroup>
                   </FormControl>
-                </Grid>
-                <Grid item xs={4}>
-                  <FormControl
-                    sx={{ m: 2 }}
-                    component="fieldset"
-                    variant="standard"
-
-                  >
-                    <FormGroup>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={prefix}
-                            onChange={handleChange}
-                            name="prefix"
-                          />
-                        }
-                        label="จัดการหน้าเว็บ"
-                      />
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={editError}
-                            onChange={handleChange}
-                            name="editError"
-                          />
-                        }
-                        label="แก้ไขข้อผิดพลาด"
-                      />
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={criminal_list}
-                            onChange={handleChange}
-                            name="criminal_list"
-                          />
-                        }
-                        label="รายชื่อมิจฉาชีพ"
-                      />
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={deposit}
-                            onChange={handleChange}
-                            name="deposit"
-                          />
-                        }
-                        label="ฝากติดต่อ 7 วัน"
-                      />
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={affiliate}
-                            onChange={handleChange}
-                            name="affiliate"
-                          />
-                        }
-                        label="AFFILIATE"
-                      />
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={activities_log}
-                            onChange={handleChange}
-                            name="activities_log"
-                          />
-                        }
-                        label="ACTIVITIES LOGS"
-                      />
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={report}
-                            onChange={handleChange}
-                            name="report"
-                          />
-                        }
-                        label="รายงานสรุป"
-                      />
-                    </FormGroup>
-                  </FormControl>
-                </Grid>
+                </Grid> */}
 
                 <Grid item xs={12} container direction="row">
                   <Button onClick={() => { router.push('/employee/customPermission') }}>

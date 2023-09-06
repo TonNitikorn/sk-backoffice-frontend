@@ -73,7 +73,7 @@ function Layout({ children, page }) {
   }
 
   const data = hexToString(roleLocal);
-  console.log("data", data);
+  console.log("data", JSON.parse(data));
 
   useEffect(() => {
     if (typeof window !== "undefined") {
