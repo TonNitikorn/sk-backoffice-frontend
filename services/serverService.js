@@ -5,6 +5,11 @@ import Swal from "sweetalert2";
 // import Button from '@mui/material/Button';
 // import Snackbar from '@mui/material/Snackbar';
 // import MuiAlert from '@mui/material/Alert';
+
+function stringToHex(input) {
+  return Array.from(input, (char) => char.charCodeAt(0).toString(16)).join('');
+}
+
 export const signIn = async (user) => {
   try {
     let res = await axios({
@@ -26,7 +31,10 @@ export const signIn = async (user) => {
     });
     let resData = profile.data;
     localStorage.setItem("username", resData.username);
-    // console.log('resData', resData)
+    
+    const encodedText = stringToHex(resData.role);
+    localStorage.setItem("role", encodedText);
+
 
     return res.data;
     // return resData;

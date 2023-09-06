@@ -9,7 +9,12 @@ import {
   ListItemIcon,
   ListItemText,
   Grid,
-  Button, AppBar, Drawer, Toolbar, Collapse, MenuIcon
+  Button,
+  AppBar,
+  Drawer,
+  Toolbar,
+  Collapse,
+  MenuIcon,
 } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
 import { menuSuperAdmin } from "../routes/menu";
@@ -21,7 +26,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 
-import LogoutIcon from '@mui/icons-material/Logout';
+import LogoutIcon from "@mui/icons-material/Logout";
 
 const drawerWidth = 260;
 
@@ -29,9 +34,8 @@ function Layout({ children, page }) {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
-  const [username, setUsername] = useState('')
-
-
+  const [username, setUsername] = useState("");
+  const roleLocal = localStorage.getItem("role");
 
   const handleClick = (id) => {
     if (id === "member") {
@@ -61,52 +65,70 @@ function Layout({ children, page }) {
     }
   };
 
+  function hexToString(input) {
+    return input
+      .match(/.{1,2}/g)
+      .map((byte) => String.fromCharCode(parseInt(byte, 16)))
+      .join("");
+  }
+
+  const data = hexToString(roleLocal);
+  console.log("data", data);
+
   useEffect(() => {
     if (typeof window !== "undefined") {
-      setUsername(localStorage.getItem('username'))
-      if (window.location.pathname.includes('/member')) {
-        setOpen({ 'member': true })
+      setUsername(localStorage.getItem("username"));
+      if (window.location.pathname.includes("/member")) {
+        setOpen({ member: true });
       }
-      if (window.location.pathname.includes('/bank')) {
-        setOpen({ 'bank': true })
+      if (window.location.pathname.includes("/bank")) {
+        setOpen({ bank: true });
       }
-      if (window.location.pathname.includes('/report')) {
-        setOpen({ 'report': true })
+      if (window.location.pathname.includes("/report")) {
+        setOpen({ report: true });
       }
     }
-  }, [])
-
-
+  }, []);
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar
         position="fixed"
-        sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px`, height: 73, background: "linear-gradient(#0072B1, #41A3E3)" }}
+        sx={{
+          width: `calc(100% - ${drawerWidth}px)`,
+          ml: `${drawerWidth}px`,
+          height: 73,
+          background: "linear-gradient(#0072B1, #41A3E3)",
+        }}
       >
         <Toolbar>
-          <Grid container justifyContent="flex-end" onClick={() => router.push('/profile')}>
-            <Button sx={{ bgcolor: '#0465a587', mt: 1 }}>
-              <AccountCircleIcon fontSize="large" sx={{ color: '#fff', mr: 1 }} />
-              <Typography sx={{ color: '#fff', fontSize: '16px', mt: 0.5, mr: 1 }}>
+          <Grid
+            container
+            justifyContent="flex-end"
+            onClick={() => router.push("/profile")}
+          >
+            <Button sx={{ bgcolor: "#0465a587", mt: 1 }}>
+              <AccountCircleIcon
+                fontSize="large"
+                sx={{ color: "#fff", mr: 1 }}
+              />
+              <Typography
+                sx={{ color: "#fff", fontSize: "16px", mt: 0.5, mr: 1 }}
+              >
                 {username}
               </Typography>
             </Button>
-
           </Grid>
-
-
-
         </Toolbar>
       </AppBar>
       <Drawer
         sx={{
           width: drawerWidth,
           flexShrink: 0,
-          '& .MuiDrawer-paper': {
+          "& .MuiDrawer-paper": {
             width: drawerWidth,
-            boxSizing: 'border-box',
+            boxSizing: "border-box",
             backgroundColor: "#eee",
           },
           "& .MuiListItemButton-root": {
@@ -121,11 +143,13 @@ function Layout({ children, page }) {
       >
         <Grid justifyContent="center" alignItems="center" sx={{ pl: 6, pt: 2 }}>
           <Image
-            src={"https://public-cdn-softkingdom.sgp1.cdn.digitaloceanspaces.com/1687251601762-2Long-Angpaogames.png"}
+            src={
+              "https://public-cdn-softkingdom.sgp1.cdn.digitaloceanspaces.com/1687251601762-2Long-Angpaogames.png"
+            }
             alt="scb"
             width={160}
             height={50}
-            onClick={() => router.push('/dashboard')}
+            onClick={() => router.push("/dashboard")}
           />
         </Grid>
         <Divider />
@@ -136,17 +160,42 @@ function Layout({ children, page }) {
               {item.type === "collapse" ? (
                 <>
                   <ListItemButton onClick={() => handleClick(item.id)}>
-                    <ListItemIcon>
-                      {item.icon}
-                    </ListItemIcon>
+                    <ListItemIcon>{item.icon}</ListItemIcon>
                     <ListItemText primary={item.name} />
 
-                    {item.id === "member" ? open.member ? <ExpandLess /> : <ExpandMore /> :
-                      item.id === "point" ? open.point ? <ExpandLess /> : <ExpandMore /> :
-                        item.id === "report" ? open.report ? <ExpandLess /> : <ExpandMore /> :
-                          item.id === "rank" ? open.rank ? <ExpandLess /> : <ExpandMore /> :
-                            item.id === "bank" ? open.bank ? <ExpandLess /> : <ExpandMore /> : ''}
-
+                    {item.id === "member" ? (
+                      open.member ? (
+                        <ExpandLess />
+                      ) : (
+                        <ExpandMore />
+                      )
+                    ) : item.id === "point" ? (
+                      open.point ? (
+                        <ExpandLess />
+                      ) : (
+                        <ExpandMore />
+                      )
+                    ) : item.id === "report" ? (
+                      open.report ? (
+                        <ExpandLess />
+                      ) : (
+                        <ExpandMore />
+                      )
+                    ) : item.id === "rank" ? (
+                      open.rank ? (
+                        <ExpandLess />
+                      ) : (
+                        <ExpandMore />
+                      )
+                    ) : item.id === "bank" ? (
+                      open.bank ? (
+                        <ExpandLess />
+                      ) : (
+                        <ExpandMore />
+                      )
+                    ) : (
+                      ""
+                    )}
                   </ListItemButton>
 
                   <Collapse in={open.member} timeout="auto" unmountOnExit>
@@ -156,13 +205,18 @@ function Layout({ children, page }) {
                           sx={{
                             pl: 4,
                             // borderRadius: "6px",
-                            backgroundColor: typeof window !== "undefined" ? window.location.pathname === `${e.link}` ? "#AED6F1" : '#eee' : ''
-                          }} onClick={() => {
-                            router.push(e.link)
-                          }}>
-                          <ListItemIcon>
-                            {e.icon}
-                          </ListItemIcon>
+                            backgroundColor:
+                              typeof window !== "undefined"
+                                ? window.location.pathname === `${e.link}`
+                                  ? "#AED6F1"
+                                  : "#eee"
+                                : "",
+                          }}
+                          onClick={() => {
+                            router.push(e.link);
+                          }}
+                        >
+                          <ListItemIcon>{e.icon}</ListItemIcon>
                           <ListItemText primary={e.name} />
                         </ListItemButton>
                       </List>
@@ -172,16 +226,22 @@ function Layout({ children, page }) {
                   <Collapse in={open.point} timeout="auto" unmountOnExit>
                     {item.point?.map((e) => (
                       <List component="div" disablePadding>
-                        <ListItemButton sx={{
-                          pl: 4,
-                          // borderRadius: "6px",
-                          backgroundColor: typeof window !== "undefined" ? window.location.pathname === `${e.link}` ? "#AED6F1" : '#eee' : ''
-                        }} onClick={() => {
-                          router.push(e.link)
-                        }}>
-                          <ListItemIcon >
-                            {e.icon}
-                          </ListItemIcon>
+                        <ListItemButton
+                          sx={{
+                            pl: 4,
+                            // borderRadius: "6px",
+                            backgroundColor:
+                              typeof window !== "undefined"
+                                ? window.location.pathname === `${e.link}`
+                                  ? "#AED6F1"
+                                  : "#eee"
+                                : "",
+                          }}
+                          onClick={() => {
+                            router.push(e.link);
+                          }}
+                        >
+                          <ListItemIcon>{e.icon}</ListItemIcon>
                           <ListItemText primary={e.name} />
                         </ListItemButton>
                       </List>
@@ -191,16 +251,22 @@ function Layout({ children, page }) {
                   <Collapse in={open.report} timeout="auto" unmountOnExit>
                     {item.report?.map((e) => (
                       <List component="div" disablePadding>
-                        <ListItemButton sx={{
-                          pl: 4,
-                          // borderRadius: "6px",
-                          backgroundColor: typeof window !== "undefined" ? window.location.pathname === `${e.link}` ? "#AED6F1" : '#eee' : ''
-                        }} onClick={() => {
-                          router.push(e.link)
-                        }}>
-                          <ListItemIcon>
-                            {e.icon}
-                          </ListItemIcon>
+                        <ListItemButton
+                          sx={{
+                            pl: 4,
+                            // borderRadius: "6px",
+                            backgroundColor:
+                              typeof window !== "undefined"
+                                ? window.location.pathname === `${e.link}`
+                                  ? "#AED6F1"
+                                  : "#eee"
+                                : "",
+                          }}
+                          onClick={() => {
+                            router.push(e.link);
+                          }}
+                        >
+                          <ListItemIcon>{e.icon}</ListItemIcon>
                           <ListItemText primary={e.name} />
                         </ListItemButton>
                       </List>
@@ -210,41 +276,48 @@ function Layout({ children, page }) {
                   <Collapse in={open.bank} timeout="auto" unmountOnExit>
                     {item.bank?.map((e) => (
                       <List component="div" disablePadding>
-                        <ListItemButton sx={{
-                          pl: 4,
-                          // borderRadius: "6px",
-                          backgroundColor: typeof window !== "undefined" ? window.location.pathname === `${e.link}` ? "#AED6F1" : '#eee' : ''
-                        }} onClick={() => {
-                          router.push(e.link)
-                        }}>
-                          <ListItemIcon>
-                            {e.icon}
-                          </ListItemIcon>
+                        <ListItemButton
+                          sx={{
+                            pl: 4,
+                            // borderRadius: "6px",
+                            backgroundColor:
+                              typeof window !== "undefined"
+                                ? window.location.pathname === `${e.link}`
+                                  ? "#AED6F1"
+                                  : "#eee"
+                                : "",
+                          }}
+                          onClick={() => {
+                            router.push(e.link);
+                          }}
+                        >
+                          <ListItemIcon>{e.icon}</ListItemIcon>
                           <ListItemText primary={e.name} />
                         </ListItemButton>
                       </List>
                     ))}
                   </Collapse>
-
                 </>
               ) : (
                 <ListItem key={item} disablePadding>
-                  <ListItemButton onClick={() => router.push(item.link)}
+                  <ListItemButton
+                    onClick={() => router.push(item.link)}
                     sx={{
                       // borderRadius: "6px",
-                      backgroundColor: typeof window !== "undefined" ? window.location.pathname === `${item.link}` ? "#AED6F1" : '#eee' : ''
+                      backgroundColor:
+                        typeof window !== "undefined"
+                          ? window.location.pathname === `${item.link}`
+                            ? "#AED6F1"
+                            : "#eee"
+                          : "",
                     }}
                   >
-                    <ListItemIcon >
-                      {item.icon}
-                    </ListItemIcon>
+                    <ListItemIcon>{item.icon}</ListItemIcon>
                     <ListItemText primary={item.name} />
                   </ListItemButton>
                 </ListItem>
               )}
             </>
-
-
           ))}
         </List>
 
@@ -268,7 +341,8 @@ function Layout({ children, page }) {
                 await dispatch(signOut());
                 localStorage.clear();
                 router.push("/auth/login");
-              }}>
+              }}
+            >
               <ListItemIcon>
                 <LogoutIcon />
               </ListItemIcon>
@@ -276,13 +350,11 @@ function Layout({ children, page }) {
             </ListItemButton>
           </ListItem>
         </List>
-
-
       </Drawer>
 
       <Box
         component="main"
-        sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3, mt: 2 }}
+        sx={{ flexGrow: 1, bgcolor: "background.default", p: 3, mt: 2 }}
       >
         <Toolbar />
         {children}
@@ -291,4 +363,4 @@ function Layout({ children, page }) {
   );
 }
 
-export default Layout
+export default Layout;
