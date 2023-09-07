@@ -32,7 +32,7 @@ export const signIn = async (user) => {
     const jsonData = JSON.stringify(resData.role_name.permission);
 
     const encodedText = stringToHex(jsonData);
-    localStorage.setItem("role", encodedText);
+    await localStorage.setItem("role", encodedText);
 
 
     return res.data;
