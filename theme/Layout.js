@@ -198,7 +198,7 @@ function Layout({ children, page }) {
         <Divider />
 
         <List>
-          {menuFilter.map((item) => (
+          {menuFilter?.map((item) => (
             <>
               {item.type === "collapse" ? (
                 <>
