@@ -190,7 +190,7 @@ function Layout({ children, page }) {
         <Divider />
 
         <List>
-          {menuFilter.map((item) => (
+          {menuSuperAdmin.map((item) => (
             <>
               {item.type === "collapse" ? (
                 <>
