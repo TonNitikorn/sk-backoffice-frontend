@@ -110,7 +110,7 @@ function Layout({ children, page }) {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      setPermission(jsonData)
+      // setPermission(jsonData)
       setUsername(localStorage.getItem("username"));
       if (window.location.pathname.includes("/member")) {
         setOpen({ member: true });
