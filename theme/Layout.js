@@ -40,9 +40,9 @@ function Layout({ children, page }) {
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
   const [username, setUsername] = useState("");
-  let roleLocal = 'test'
+  let permssionLocal = 'test'
   if (typeof window !== "undefined") {
-    roleLocal = localStorage.getItem("role");
+    permssionLocal = localStorage.getItem("role");
   }
 
   const handleClick = (id) => {
@@ -80,37 +80,46 @@ function Layout({ children, page }) {
       .join("");
   }
 
-  // const data = hexToString(roleLocal);
+  const permssionDecrypt = hexToString(permssionLocal);
 
-  // const jsonData = JSON.parse(data)
+  const getPermission = async () => {
+    try {
+      const jsonData = JSON.parse(permssionDecrypt)
 
-  // // setPermission(jsonData)
-  // // console.log('permission', permission)
+      console.log('jsonData', jsonData)
 
-  // let menuActive = jsonData.filter(item => item.view === true)
-  // // menuActive = jsonData.filter(item => item.menu.includes('report'))
+      setPermission(jsonData)
 
-  // // console.log('menuActive', menuActive)
-  // // console.log('menuSuperAdmin', menuSuperAdmin)
+      let menuActive = jsonData.filter(item => item.view === true)
+      // menuActive = jsonData.filter(item => item.menu.includes('report'))
 
-  // // let menuFilter = menuSuperAdmin.filter(item => menuActive.some(value => value.menu === item.id || value.menu.includes("report") === item.id));
-  // let menuFilter = menuSuperAdmin.filter(item => menuActive.some((value) => value.menu === item.id));
-  // // let menuFilter = menuActive.some(value => value.menu.includes('report'))
-  // let menuFilterLast = menuSuperAdmin.filter(item => item.name.includes('report'))
+      // console.log('menuActive', menuActive)
+      // console.log('menuSuperAdmin', menuSuperAdmin)
 
-  // // console.log('menuFilter', menuFilter)
-  // // console.log('menuFilterLast', menuFilterLast)
+      // let menuFilter = menuSuperAdmin.filter(item => menuActive.some(value => value.menu === item.id || value.menu.includes("report") === item.id));
+      let menuFilter = menuSuperAdmin.filter(item => menuActive.some((value) => value.menu === item.id));
+      // let menuFilter = menuActive.some(value => value.menu.includes('report'))
+      let menuFilterLast = menuSuperAdmin.filter(item => item.name.includes('report'))
+
+      // console.log('menuFilter', menuFilter)
+      // console.log('menuFilterLast', menuFilterLast)
 
 
-  // // let menuFilterLast = menuFilter.filter(item => item.name.includes('report'))
+      // let menuFilterLast = menuFilter.filter(item => item.name.includes('report'))
 
-  // // console.log('menuFilterLast', menuFilterLast)
+      // console.log('menuFilterLast', menuFilterLast)
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+
 
 
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      // setPermission(jsonData)
+      getPermission()
       setUsername(localStorage.getItem("username"));
       if (window.location.pathname.includes("/member")) {
         setOpen({ member: true });
