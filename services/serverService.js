@@ -34,7 +34,7 @@ export const signIn = async (user) => {
     const encodedText = stringToHex(jsonData);
 
     // const text = 'testSet'
-     localStorage.setItem("role", 'text');
+     localStorage.setItem("role", encodedText);
 
 
     return res.data;
