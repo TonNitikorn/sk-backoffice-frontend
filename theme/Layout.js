@@ -81,23 +81,22 @@ function Layout({ children, page }) {
   }
 
   const permssionDecrypt = hexToString(permssionLocal);
+  const [menuFilter, setMenuFilter] = useState()
 
   const getPermission = async () => {
     try {
-      const jsonData = JSON.parse(permssionDecrypt)
-
-      console.log('jsonData', jsonData)
+      const jsonData = await JSON.parse(permssionDecrypt)
 
       setPermission(jsonData)
 
       let menuActive = jsonData.filter(item => item.view === true)
       // menuActive = jsonData.filter(item => item.menu.includes('report'))
-
       // console.log('menuActive', menuActive)
       // console.log('menuSuperAdmin', menuSuperAdmin)
 
       // let menuFilter = menuSuperAdmin.filter(item => menuActive.some(value => value.menu === item.id || value.menu.includes("report") === item.id));
-      let menuFilter = menuSuperAdmin.filter(item => menuActive.some((value) => value.menu === item.id));
+      let tempmenFilter = menuSuperAdmin.filter(item => menuActive.some((value) => value.menu === item.id));
+      setMenuFilter(tempmenFilter)
       // let menuFilter = menuActive.some(value => value.menu.includes('report'))
       let menuFilterLast = menuSuperAdmin.filter(item => item.name.includes('report'))
 
@@ -113,7 +112,7 @@ function Layout({ children, page }) {
     }
   }
 
-
+  console.log('menuFilter', menuFilter)
 
 
 
@@ -199,7 +198,7 @@ function Layout({ children, page }) {
         <Divider />
 
         <List>
-          {menuSuperAdmin.map((item) => (
+          {menuFilter.map((item) => (
             <>
               {item.type === "collapse" ? (
                 <>
