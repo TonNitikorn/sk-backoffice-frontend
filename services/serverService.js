@@ -29,9 +29,9 @@ export const signIn = async (user) => {
     let resData = profile.data;
     localStorage.setItem("username", resData.username);
 
-    // const jsonData = JSON.stringify(resData.role_name.permission);
+    const jsonData = JSON.stringify(resData.role_name.permission);
 
-    // const encodedText = stringToHex(jsonData);
+    const encodedText = stringToHex(jsonData);
 
     // const text = 'testSet'
      localStorage.setItem("role", 'text');
