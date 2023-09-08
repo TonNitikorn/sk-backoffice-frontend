@@ -58,9 +58,9 @@ function dashboard() {
    const router = useRouter();
    const dispatch = useAppDispatch();
 
-   const role = useCounterStore((state) => state.role)
+   const permission = useCounterStore((state) => state.permission)
 
-   // console.log('role', role)
+   console.log('permissionZustand', permission)
 
    const [selectedDateRange, setSelectedDateRange] = useState({
       start: moment().format("YYYY-MM-DD 00:00"),
@@ -1121,8 +1121,11 @@ function dashboard() {
       getBank()
       getPlatform()
    }, []);
+
+   // const [permission1, setPermission] = useState()
+   // console.log('permission1', permission1)
    return (
-      <Layout>
+      <Layout >
          <Paper sx={{ p: 3, textAlign: 'start', mb: 2 }}>
             <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px" }}> Dashboard สรุปภาพรวม</Typography>
          </Paper>

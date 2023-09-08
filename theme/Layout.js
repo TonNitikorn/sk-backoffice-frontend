@@ -27,10 +27,15 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 
 import LogoutIcon from "@mui/icons-material/Logout";
+import { useCounterStore } from "../zustand/permission"
+
+
 
 const drawerWidth = 260;
 
 function Layout({ children, page }) {
+  const setPermission = useCounterStore((state) => state.setPermission)
+
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
@@ -79,18 +84,33 @@ function Layout({ children, page }) {
 
   const jsonData = JSON.parse(data)
 
+  // setPermission(jsonData)
+  // console.log('permission', permission)
+
   let menuActive = jsonData.filter(item => item.view === true)
+  // menuActive = jsonData.filter(item => item.menu.includes('report'))
 
   // console.log('menuActive', menuActive)
+  // console.log('menuSuperAdmin', menuSuperAdmin)
 
-  let menuFilter = menuSuperAdmin.filter(item => menuActive.some(value => value.menu === item.id));
+  // let menuFilter = menuSuperAdmin.filter(item => menuActive.some(value => value.menu === item.id || value.menu.includes("report") === item.id));
+  let menuFilter = menuSuperAdmin.filter(item => menuActive.some((value) => value.menu === item.id));
+  // let menuFilter = menuActive.some(value => value.menu.includes('report'))
+  let menuFilterLast = menuSuperAdmin.filter(item => item.name.includes('report'))
 
   // console.log('menuFilter', menuFilter)
+  // console.log('menuFilterLast', menuFilterLast)
+
+
+  // let menuFilterLast = menuFilter.filter(item => item.name.includes('report'))
+
+  // console.log('menuFilterLast', menuFilterLast)
+
 
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-
+      setPermission(jsonData)
       setUsername(localStorage.getItem("username"));
       if (window.location.pathname.includes("/member")) {
         setOpen({ member: true });

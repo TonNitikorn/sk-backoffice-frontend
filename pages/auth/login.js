@@ -25,13 +25,13 @@ import withAuth from "../../routes/withAuth";
 import hostname from "../../utils/hostname";
 import { useAppDispatch } from "../../store/store";
 import logo_angpao from "../../assets/logo_ap.png"
-import { useCounterStore } from "../../zustand/permission"
+// import { useCounterStore } from "../../zustand/permission"
 
 function Login() {
    const router = useRouter();
    const dispatch = useAppDispatch();
 
-   const addPermission = useCounterStore((state) => state.addPermission)
+   // const addPermission = useCounterStore((state) => state.addPermission)
 
    const [rowData, setRowData] = useState({});
    const [values, setValues] = useState({
@@ -75,7 +75,7 @@ function Login() {
          // alert("Login failed");
 
       } else {
-         addPermission(response.payload.preference)
+         // addPermission(response.payload.preference)
 
          router.push("/dashboard");
       }
