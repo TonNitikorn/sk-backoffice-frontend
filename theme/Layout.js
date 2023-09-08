@@ -80,31 +80,31 @@ function Layout({ children, page }) {
       .join("");
   }
 
-  const data = hexToString(roleLocal);
+  // const data = hexToString(roleLocal);
 
-  const jsonData = JSON.parse(data)
+  // const jsonData = JSON.parse(data)
 
-  // setPermission(jsonData)
-  // console.log('permission', permission)
+  // // setPermission(jsonData)
+  // // console.log('permission', permission)
 
-  let menuActive = jsonData.filter(item => item.view === true)
-  // menuActive = jsonData.filter(item => item.menu.includes('report'))
+  // let menuActive = jsonData.filter(item => item.view === true)
+  // // menuActive = jsonData.filter(item => item.menu.includes('report'))
 
-  // console.log('menuActive', menuActive)
-  // console.log('menuSuperAdmin', menuSuperAdmin)
+  // // console.log('menuActive', menuActive)
+  // // console.log('menuSuperAdmin', menuSuperAdmin)
 
-  // let menuFilter = menuSuperAdmin.filter(item => menuActive.some(value => value.menu === item.id || value.menu.includes("report") === item.id));
-  let menuFilter = menuSuperAdmin.filter(item => menuActive.some((value) => value.menu === item.id));
-  // let menuFilter = menuActive.some(value => value.menu.includes('report'))
-  let menuFilterLast = menuSuperAdmin.filter(item => item.name.includes('report'))
+  // // let menuFilter = menuSuperAdmin.filter(item => menuActive.some(value => value.menu === item.id || value.menu.includes("report") === item.id));
+  // let menuFilter = menuSuperAdmin.filter(item => menuActive.some((value) => value.menu === item.id));
+  // // let menuFilter = menuActive.some(value => value.menu.includes('report'))
+  // let menuFilterLast = menuSuperAdmin.filter(item => item.name.includes('report'))
 
-  // console.log('menuFilter', menuFilter)
-  // console.log('menuFilterLast', menuFilterLast)
+  // // console.log('menuFilter', menuFilter)
+  // // console.log('menuFilterLast', menuFilterLast)
 
 
-  // let menuFilterLast = menuFilter.filter(item => item.name.includes('report'))
+  // // let menuFilterLast = menuFilter.filter(item => item.name.includes('report'))
 
-  // console.log('menuFilterLast', menuFilterLast)
+  // // console.log('menuFilterLast', menuFilterLast)
 
 
 
