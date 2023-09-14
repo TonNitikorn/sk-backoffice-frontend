@@ -112,9 +112,6 @@ function Layout({ children, page }) {
     }
   }
 
-  console.log('menuFilter', menuFilter)
-
-
 
   useEffect(() => {
     if (typeof window !== "undefined") {

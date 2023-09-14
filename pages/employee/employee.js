@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react'
-import Layout from '../../theme/Layout'
+import React, { useState, useEffect, useRef } from "react";
+import Layout from "../../theme/Layout";
 import {
   Paper,
   Button,
@@ -20,7 +20,7 @@ import {
   Chip,
   Card,
   CardContent,
-  Snackbar
+  Snackbar,
 } from "@mui/material";
 import axios from "axios";
 import hostname from "../../utils/hostname";
@@ -31,28 +31,30 @@ import { signOut } from "../../store/slices/userSlice";
 import { useRouter } from "next/router";
 import { useAppDispatch } from "../../store/store";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
-import VpnKeyIcon from '@mui/icons-material/VpnKey';
-import { Table, Input, Space, } from 'antd';
-import SearchIcon from '@mui/icons-material/Search';
+import VpnKeyIcon from "@mui/icons-material/VpnKey";
+import { Table, Input, Space } from "antd";
+import SearchIcon from "@mui/icons-material/Search";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import MuiAlert from "@mui/material/Alert";
+import checkPermissionDisabled from "../../components/checkPermission";
+
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
 function employee() {
   const dispatch = useAppDispatch();
-  const router = useRouter()
-  const [rowData, setRowData] = useState({})
-  const [employee, setEmployee] = useState([])
+  const router = useRouter();
+  const [rowData, setRowData] = useState({});
+  const [employee, setEmployee] = useState([]);
   const [loading, setLoading] = useState(false);
   const [openEditData, setOpenEditData] = useState(false);
-  const [confirmEditPassword, setConfirmEditPassword] = useState(false)
-  const [newPassword, setNewPassword] = useState()
-  const [employeeTotal, setEmployeeTotal] = useState({})
+  const [confirmEditPassword, setConfirmEditPassword] = useState(false);
+  const [newPassword, setNewPassword] = useState();
+  const [employeeTotal, setEmployeeTotal] = useState({});
   const [open, setOpen] = useState(false);
-  const [page, setPage] = useState(1)
-  const [pageSize, setPageSize] = useState(10)
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [state, setState] = useState({
     grap: false,
     home: false,
@@ -82,7 +84,7 @@ function employee() {
   };
 
   const handleChange = (event) => {
-    setState({ ...state, [event.target.name]: event.target.checked, });
+    setState({ ...state, [event.target.name]: event.target.checked });
   };
   const handleChangeData = async (e) => {
     setRowData({ ...rowData, [e.target.name]: e.target.value });
@@ -90,17 +92,16 @@ function employee() {
 
   const handleEditData = (item) => {
     setRowData(item);
-    setState(item.preference)
+    setState(item.preference);
     setOpenEditData({
       open: true,
       type: "edit",
     });
-
-  }
+  };
 
   const handleChangePassword = () => {
-    editPassword()
-  }
+    editPassword();
+  };
 
   const getProfileAdmin = async () => {
     setLoading(true);
@@ -116,11 +117,13 @@ function employee() {
       let resData = res.data;
 
       let no = 1;
-      let active_total = resData.filter(item => item.status === 'ACTIVE')
-      let admin_total = resData.filter(item => item.role === 'ADMIN')
-      let owner_total = resData.filter(item => item.role === 'OWNER')
-      let support_total = resData.filter(item => item.role === 'SUPPORT')
-      let superAdmin_total = resData.filter(item => item.role === "SUPERADMIN")
+      let active_total = resData.filter((item) => item.status === "ACTIVE");
+      let admin_total = resData.filter((item) => item.role === "ADMIN");
+      let owner_total = resData.filter((item) => item.role === "OWNER");
+      let support_total = resData.filter((item) => item.role === "SUPPORT");
+      let superAdmin_total = resData.filter(
+        (item) => item.role === "SUPERADMIN"
+      );
 
       resData.map((item) => {
         item.no = no++;
@@ -131,8 +134,8 @@ function employee() {
         admin: admin_total.length,
         owner: owner_total.length,
         support: support_total.length,
-        superAdmin: superAdmin_total.length
-      })
+        superAdmin: superAdmin_total.length,
+      });
       setEmployee(resData);
       setLoading(false);
     } catch (error) {
@@ -157,7 +160,6 @@ function employee() {
   };
 
   const editEmployee = async () => {
-
     try {
       let res = await axios({
         headers: {
@@ -172,12 +174,12 @@ function employee() {
           name: rowData.name,
           status: rowData.status,
           preference: state,
-          tel: rowData.tel
+          tel: rowData.tel,
         },
       });
       setOpenEditData(false);
-      setNewPassword()
-      setRowData({})
+      setNewPassword();
+      setRowData({});
       if (res.data.message) {
         Swal.fire({
           position: "center",
@@ -187,7 +189,7 @@ function employee() {
           timer: 3000,
         });
       }
-      getProfileAdmin()
+      getProfileAdmin();
     } catch (error) {
       console.log(error);
       if (
@@ -218,12 +220,12 @@ function employee() {
         method: "post",
         url: `${hostname}/admin/update_password`,
         data: {
-          uuid: rowData.uuid
-        }
+          uuid: rowData.uuid,
+        },
       });
 
-      setNewPassword(res.data.new_password)
-      setConfirmEditPassword(false)
+      setNewPassword(res.data.new_password);
+      setConfirmEditPassword(false);
     } catch (error) {
       console.log(error);
       if (
@@ -256,7 +258,13 @@ function employee() {
   };
 
   const getColumnSearchProps = (dataIndex) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      close,
+    }) => (
       <div
         style={{
           padding: 8,
@@ -267,11 +275,13 @@ function employee() {
           ref={searchInput}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
           onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
           style={{
             marginBottom: 8,
-            display: 'block',
+            display: "block",
           }}
         />
         <Space>
@@ -323,7 +333,7 @@ function employee() {
     filterIcon: (filtered) => (
       <SearchIcon
         style={{
-          color: filtered ? '#1890ff' : undefined,
+          color: filtered ? "#1890ff" : undefined,
         }}
       />
     ),
@@ -337,21 +347,23 @@ function employee() {
   });
 
   const onChange = (pagination, filters, sorter, extra) => {
-    console.log('params', pagination, filters, sorter, extra);
+    console.log("params", pagination, filters, sorter, extra);
   };
 
   const columns = [
     {
-      title: 'ลำดับ',
-      dataIndex: 'no',
-      align: 'center',
+      title: "ลำดับ",
+      dataIndex: "no",
+      align: "center",
       sorter: (record1, record2) => record1.no - record2.no,
       render: (item, data) => (
-        <Typography sx={{ fontSize: '14px', textAlign: 'center' }} >{item}</Typography>
-      )
+        <Typography sx={{ fontSize: "14px", textAlign: "center" }}>
+          {item}
+        </Typography>
+      ),
     },
     {
-      dataIndex: 'status',
+      dataIndex: "status",
       title: "สถานะ",
       align: "center",
       render: (item) => (
@@ -366,25 +378,27 @@ function employee() {
         />
       ),
       filters: [
-        { text: 'สำเร็จ', value: 'SUCCESS' },
-        { text: 'ยกเลิก', value: 'CANCEL' },
+        { text: "สำเร็จ", value: "SUCCESS" },
+        { text: "ยกเลิก", value: "CANCEL" },
       ],
       onFilter: (value, record) => record.transfer_type.indexOf(value) === 0,
     },
     {
-      title: 'ชื่อผู้ใช้งาน',
-      dataIndex: 'username',
+      title: "ชื่อผู้ใช้งาน",
+      dataIndex: "username",
       render: (item, data) => (
         <CopyToClipboard text={item}>
-          <div style={{
-            "& .MuiButton-text": {
-              "&:hover": {
-                textDecoration: "underline blue 1px",
-              }
-            }
-          }} >
+          <div
+            style={{
+              "& .MuiButton-text": {
+                "&:hover": {
+                  textDecoration: "underline blue 1px",
+                },
+              },
+            }}
+          >
             <Button
-              sx={{ fontSize: "14px", p: 0, color: "blue", }}
+              sx={{ fontSize: "14px", p: 0, color: "blue" }}
               onClick={handleClickSnackbar}
             >
               {item}
@@ -392,8 +406,7 @@ function employee() {
           </div>
         </CopyToClipboard>
       ),
-      ...getColumnSearchProps('tel'),
-
+      ...getColumnSearchProps("tel"),
     },
     {
       dataIndex: "tel",
@@ -402,9 +415,11 @@ function employee() {
       render: (item) => (
         <Typography
           style={{
-            fontSize: '14px'
+            fontSize: "14px",
           }}
-        >{item}</Typography>
+        >
+          {item}
+        </Typography>
       ),
     },
     {
@@ -414,22 +429,26 @@ function employee() {
       render: (item) => (
         <Typography
           style={{
-            fontSize: '14px'
+            fontSize: "14px",
           }}
-        >{item}</Typography>
+        >
+          {item}
+        </Typography>
       ),
     },
     {
       title: "แก้ไข",
       align: "center",
-      maxWidth: '60px',
+      maxWidth: "60px",
       render: (item, data) => {
         return (
           <>
             <IconButton
+              disabled={() =>
+                checkPermissionDisabled("employee", "edit_employee")
+              }
               onClick={async () => {
-
-                handleEditData(item)
+                handleEditData(item);
               }}
             >
               <EditIcon />
@@ -438,30 +457,25 @@ function employee() {
         );
       },
     },
-  ]
-
- 
+  ];
 
   useEffect(() => {
-    getProfileAdmin()
-  }, [])
+    getProfileAdmin();
+  }, []);
 
   return (
     <Layout>
       <Paper sx={{ p: 3 }}>
-        <Grid
-          container
-          justifyContent="space-between"
-          sx={{ mb: 5 }}
-        >
-
-
-          <Card sx={{ bgcolor: "#101D35", maxWidth: 200, width: 180, }}>
+        <Grid container justifyContent="space-between" sx={{ mb: 5 }}>
+          <Card sx={{ bgcolor: "#101D35", maxWidth: 200, width: 180 }}>
             <CardContent>
               <Typography component="div" sx={{ color: "#eee" }}>
                 พนักงานทั้งหมด
               </Typography>
-              <Typography variant="h5" sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}>
+              <Typography
+                variant="h5"
+                sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}
+              >
                 {employeeTotal.total}
               </Typography>
               <Typography
@@ -473,7 +487,7 @@ function employee() {
             </CardContent>
           </Card>
 
-          <Card sx={{ width: 180, bgcolor: "#101D35",maxWidth: 200, }}>
+          <Card sx={{ width: 180, bgcolor: "#101D35", maxWidth: 200 }}>
             <CardContent>
               <Typography component="div" sx={{ color: "#eee" }}>
                 เปิดใช้งาน
@@ -482,8 +496,9 @@ function employee() {
               <Typography
                 variant="h5"
                 sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}
-              >                  {employeeTotal.active}
-
+              >
+                {" "}
+                {employeeTotal.active}
               </Typography>
               <Typography
                 component="div"
@@ -509,8 +524,9 @@ function employee() {
               <Typography
                 variant="h5"
                 sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}
-              >                  {employeeTotal.superAdmin}
-
+              >
+                {" "}
+                {employeeTotal.superAdmin}
                 {/* {Intl.NumberFormat("TH").format(parseInt(report.sumAmountAll))} */}
               </Typography>
               <Typography
@@ -537,8 +553,9 @@ function employee() {
               <Typography
                 variant="h5"
                 sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}
-              >                  {employeeTotal.admin}
-
+              >
+                {" "}
+                {employeeTotal.admin}
                 {/* {Intl.NumberFormat("TH").format(parseInt(report.sumAmountAll))} */}
               </Typography>
               <Typography
@@ -565,8 +582,9 @@ function employee() {
               <Typography
                 variant="h5"
                 sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}
-              >                  {employeeTotal.owner}
-
+              >
+                {" "}
+                {employeeTotal.owner}
                 {/* {Intl.NumberFormat("TH").format(parseInt(report.sumAmountAll))} */}
               </Typography>
               <Typography
@@ -593,8 +611,9 @@ function employee() {
               <Typography
                 variant="h5"
                 sx={{ textAlign: "center", color: "#41A3E3", mt: 2 }}
-              >                  {employeeTotal.support}
-
+              >
+                {" "}
+                {employeeTotal.support}
                 {/* {Intl.NumberFormat("TH").format(parseInt(report.sumAmountAll))} */}
               </Typography>
               <Typography
@@ -605,25 +624,30 @@ function employee() {
               </Typography>
             </CardContent>
           </Card>
-
         </Grid>
 
-        <Grid container
+        <Grid
+          container
           direction="row"
           justifyContent="space-between"
-          alignItems="start">
-          <Typography variant='h5'>รายชื่อพนักงาน</Typography>
+          alignItems="start"
+        >
+          <Typography variant="h5">รายชื่อพนักงาน</Typography>
           <Box>
             <Button
-              variant='contained'
+              variant="contained"
+              disabled={() =>
+                checkPermissionDisabled("employee", "add_employee")
+              }
               onClick={() => router.push("/employee/addEmployee")}
               sx={{
                 mr: "8px",
                 my: 2,
                 justifyContent: "flex-end",
                 boxShadow: 1,
-                background: "linear-gradient(#0072B1, #41A3E3)" 
-              }}>
+                background: "linear-gradient(#0072B1, #41A3E3)",
+              }}
+            >
               <PersonAddAltIcon sx={{ color: "white" }} />{" "}
               <Typography sx={{ color: "white", ml: 1 }}>
                 เพิ่มรายชื่อพนักงาน
@@ -640,11 +664,10 @@ function employee() {
             current: page,
             pageSize: pageSize,
             onChange: (page, pageSize) => {
-              setPage(page)
-              setPageSize(pageSize)
-            }
+              setPage(page);
+              setPageSize(pageSize);
+            },
           }}
-
         />
       </Paper>
 
@@ -652,7 +675,8 @@ function employee() {
         open={openEditData.open}
         onClose={() => setOpenEditData(false)}
         fullWidth
-        maxWidth="lg">
+        maxWidth="lg"
+      >
         <DialogTitle>แก้ไขข้อมูลพนักงาน</DialogTitle>
 
         <DialogContent>
@@ -665,7 +689,7 @@ function employee() {
                 value={rowData.username || ""}
                 label="Username"
                 type="text"
-                size='small'
+                size="small"
                 fullWidth
                 variant="outlined"
                 disabled
@@ -675,7 +699,7 @@ function employee() {
                 name="name"
                 margin="normal"
                 value={rowData.name || ""}
-                size='small'
+                size="small"
                 label="ชื่อ"
                 type="text"
                 fullWidth
@@ -687,7 +711,7 @@ function employee() {
                 name="tel"
                 margin="normal"
                 value={rowData.tel || ""}
-                size='small'
+                size="small"
                 label="เบอร์โทรศัพท์"
                 type="number"
                 fullWidth
@@ -757,7 +781,6 @@ function employee() {
                               <Checkbox
                                 // checked={grap}
                                 defaultChecked={state?.grap || ""}
-
                               />
                             }
                             value={rowData.preference?.grap}
@@ -766,22 +789,14 @@ function employee() {
                             name="grap"
                           />
                           <FormControlLabel
-                            control={
-                              <Checkbox
-                                defaultChecked={state?.home}
-
-                              />
-                            }
+                            control={<Checkbox defaultChecked={state?.home} />}
                             label="หน้าหลัก"
                             onChange={handleChange}
                             name="home"
                           />
                           <FormControlLabel
                             control={
-                              <Checkbox
-                                defaultChecked={state?.admin_list}
-
-                              />
+                              <Checkbox defaultChecked={state?.admin_list} />
                             }
                             label="รายชื่อพนักงาน"
                             onChange={handleChange}
@@ -789,10 +804,7 @@ function employee() {
                           />
                           <FormControlLabel
                             control={
-                              <Checkbox
-                                defaultChecked={state?.member}
-
-                              />
+                              <Checkbox defaultChecked={state?.member} />
                             }
                             label="สมาชิก"
                             onChange={handleChange}
@@ -800,10 +812,7 @@ function employee() {
                           />
                           <FormControlLabel
                             control={
-                              <Checkbox
-                                defaultChecked={state?.whitdraw}
-
-                              />
+                              <Checkbox defaultChecked={state?.whitdraw} />
                             }
                             onChange={handleChange}
                             name="whitdraw"
@@ -811,10 +820,7 @@ function employee() {
                           />
                           <FormControlLabel
                             control={
-                              <Checkbox
-                                defaultChecked={state?.report}
-
-                              />
+                              <Checkbox defaultChecked={state?.report} />
                             }
                             label="รายงานสรุป"
                             onChange={handleChange}
@@ -824,18 +830,11 @@ function employee() {
                       </FormControl>
                     </Grid>
                     <Grid item xs={4}>
-                      <FormControl
-                        component="fieldset"
-                        variant="standard"
-
-                      >
+                      <FormControl component="fieldset" variant="standard">
                         <FormGroup>
                           <FormControlLabel
                             control={
-                              <Checkbox
-                                defaultChecked={state?.prefix}
-
-                              />
+                              <Checkbox defaultChecked={state?.prefix} />
                             }
                             label="Prefix"
                             onChange={handleChange}
@@ -843,10 +842,7 @@ function employee() {
                           />
                           <FormControlLabel
                             control={
-                              <Checkbox
-                                defaultChecked={state?.editError}
-
-                              />
+                              <Checkbox defaultChecked={state?.editError} />
                             }
                             label="แก้ไขข้อผิดพลาด"
                             onChange={handleChange}
@@ -854,10 +850,7 @@ function employee() {
                           />
                           <FormControlLabel
                             control={
-                              <Checkbox
-                                defaultChecked={state?.criminal_list}
-
-                              />
+                              <Checkbox defaultChecked={state?.criminal_list} />
                             }
                             label="รายชื่อมิจฉาชีพ"
                             onChange={handleChange}
@@ -865,10 +858,7 @@ function employee() {
                           />
                           <FormControlLabel
                             control={
-                              <Checkbox
-                                defaultChecked={state?.deposit}
-
-                              />
+                              <Checkbox defaultChecked={state?.deposit} />
                             }
                             label="ฝากติดต่อ 7 วัน"
                             onChange={handleChange}
@@ -876,10 +866,7 @@ function employee() {
                           />
                           <FormControlLabel
                             control={
-                              <Checkbox
-                                defaultChecked={state?.affiliate}
-
-                              />
+                              <Checkbox defaultChecked={state?.affiliate} />
                             }
                             label="AFFILIATE"
                             onChange={handleChange}
@@ -889,14 +876,12 @@ function employee() {
                             control={
                               <Checkbox
                                 defaultChecked={state?.activities_log}
-
                               />
                             }
                             label="ACTIVITIES LOGS"
                             onChange={handleChange}
                             name="activities_log"
                           />
-
                         </FormGroup>
                       </FormControl>
                     </Grid>
@@ -907,7 +892,6 @@ function employee() {
                           control={
                             <Checkbox
                               defaultChecked={state?.reportWhitdrawDeposit}
-
                             />
                           }
                           label="รายงานฝาก-ถอน"
@@ -916,10 +900,7 @@ function employee() {
                         />
                         <FormControlLabel
                           control={
-                            <Checkbox
-                              defaultChecked={state?.promotion}
-
-                            />
+                            <Checkbox defaultChecked={state?.promotion} />
                           }
                           label="โปรโมชัน"
                           onChange={handleChange}
@@ -927,29 +908,21 @@ function employee() {
                         />
                         <FormControlLabel
                           control={
-                            <Checkbox
-                              defaultChecked={state?.checkDataMember}
-
-                            />
+                            <Checkbox defaultChecked={state?.checkDataMember} />
                           }
                           label="เช็คข้อมูลลูกค้า"
                           onChange={handleChange}
                           name="checkDataMember"
                         />
                         <FormControlLabel
-                          control={
-                            <Checkbox
-                              defaultChecked={state?.bank} />
-                          }
+                          control={<Checkbox defaultChecked={state?.bank} />}
                           label="Bank"
                           onChange={handleChange}
                           name="bank"
                         />
                         <FormControlLabel
                           control={
-                            <Checkbox
-                              defaultChecked={state?.transfer_money}
-                            />
+                            <Checkbox defaultChecked={state?.transfer_money} />
                           }
                           label="โอนเงินภายใน"
                           onChange={handleChange}
@@ -957,57 +930,61 @@ function employee() {
                         />
                       </FormGroup>
                     </Grid>
-
                   </Grid>
                 </Box>
               </Paper>
             </Grid>
           </Grid>
-          <Grid container
+          <Grid
+            container
             direction="row"
             justifyContent="flex-start"
             alignItems="center"
-            sx={{ mt: 3 }}>
+            sx={{ mt: 3 }}
+          >
             <Grid item xs={2}>
-
               <Button
+                disabled={() =>
+                  checkPermissionDisabled("employee", "edit_pass_employee")
+                }
                 onClick={() => setConfirmEditPassword(true)}
                 variant="contained"
                 fullWidth
-                sx={{ color: '#ffff', mt: 1 }}
+                sx={{ color: "#ffff", mt: 1 }}
               >
                 <VpnKeyIcon sx={{ mr: 2 }} />
                 เปลี่ยนรหัสผ่าน
               </Button>
             </Grid>
             <Grid item xs={5}>
-              {newPassword ?
+              {newPassword ? (
                 <TextField
                   name="tel"
                   margin="normal"
                   value={newPassword || ""}
-                  size='small'
+                  size="small"
                   label="รหัสผ่านใหม่"
                   type="text"
                   fullWidth
                   variant="outlined"
                   sx={{ ml: 2 }}
-                /> : ''}
-
-
-
+                />
+              ) : (
+                ""
+              )}
             </Grid>
-            <Grid item xs={5} container justifyContent="end" >
-              <Button onClick={() => setOpenEditData(false)} sx={{ mr: 4 }}>ยกเลิก</Button>
+            <Grid item xs={5} container justifyContent="end">
+              <Button onClick={() => setOpenEditData(false)} sx={{ mr: 4 }}>
+                ยกเลิก
+              </Button>
               <Button
                 onClick={() => editEmployee()}
                 variant="contained"
-                sx={{ color: '#ffff' }}
+                sx={{ color: "#ffff" }}
               >
                 ยืนยัน
               </Button>
             </Grid>
-
           </Grid>
         </DialogContent>
       </Dialog>
@@ -1018,18 +995,17 @@ function employee() {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle >
-          {"ท่านต้องการเปลี่ยนรหัสผ่าน?"}
-        </DialogTitle>
+        <DialogTitle>{"ท่านต้องการเปลี่ยนรหัสผ่าน?"}</DialogTitle>
         <DialogContent>
-          <Typography>คุณต้องการเปลี่ยนรหัสผ่าน Username : {rowData.username}</Typography>
-
+          <Typography>
+            คุณต้องการเปลี่ยนรหัสผ่าน Username : {rowData.username}
+          </Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setConfirmEditPassword(false)}>ยกเลิก</Button>
 
           <Button onClick={() => editPassword()} autoFocus variant="contained">
-            <Typography sx={{ color: '#ffff' }}>ยืนยัน</Typography>
+            <Typography sx={{ color: "#ffff" }}>ยืนยัน</Typography>
           </Button>
         </DialogActions>
       </Dialog>
@@ -1045,7 +1021,7 @@ function employee() {
         </Alert>
       </Snackbar>
     </Layout>
-  )
+  );
 }
 
-export default employee
+export default employee;
