@@ -105,8 +105,6 @@ function Layout({ children, page }) {
       console.log(error);
     }
   }
-  // console.log('menuFilter', menuFilter)
-
 
 
   useEffect(() => {

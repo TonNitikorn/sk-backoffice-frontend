@@ -29,6 +29,7 @@ import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
 import { Table, Input, Space, } from 'antd';
+import checkPermissionDisabled from "../components/checkPermission";
 
 
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -518,12 +519,13 @@ function withdrawpending() {
          render: (item, data) => (
             <>
                <IconButton
+                  disabled={() => checkPermissionDisabled("withdraw_pending","approve_withdraw")}
                   onClick={() => {
                      setRowData(data)
                      setOpenDialogApprove(true)
                   }}
                >
-                  <AssignmentTurnedInIcon color="primary" />
+                  <AssignmentTurnedInIcon  />
                </IconButton>
             </>
          )

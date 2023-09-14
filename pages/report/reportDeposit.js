@@ -25,10 +25,7 @@ import excel from '../../assets/excel.png'
 import { CSVLink } from "react-csv";
 
 function reportDeposit() {
-  const [selectedDateRange, setSelectedDateRange] = useState({
-    start: moment().format("YYYY-MM-DD 00:00"),
-    end: moment().format("YYYY-MM-DD 23:59"),
-  });
+  
   const [username, setUsername] = useState("");
   const [report, setReport] = useState([]);
   const [open, setOpen] = useState(false);
@@ -90,6 +87,7 @@ function reportDeposit() {
         item.sumCreditBefore = sumCreditBefore
         item.sumCreditAfter = sumCreditAfter
         item.create_at = moment(item.create_at).format('DD/MM/YYYY HH:mm')
+        item.name = item.members.name
         item.bank_name = item.members?.bank_name
         item.bank_number = item.members?.bank_number
         item.username = item.members?.username
@@ -308,7 +306,8 @@ function reportDeposit() {
       dataIndex: 'bank_name',
       width: '200px',
       ...getColumnSearchProps('bank_number'),
-      render: (item, data) => <Grid container>
+      render: (item, data) => 
+      <Grid container>
         <Grid item xs={3} sx={{ mt: 1 }}>
           {item === "kbnk" ? (
             <Image
@@ -684,11 +683,20 @@ function reportDeposit() {
     getReport();
   }, []);
 
+  const [selectedDateRange, setSelectedDateRange] = useState({
+    start: moment().format("YYYY-MM-DD 00:00"),
+    end: moment().format("YYYY-MM-DD 23:59"),
+  });
+
   return (
     <Layout>
       <Paper sx={{ p: 3 }}>
         <Typography sx={{ fontSize: "24px", textDecoration: "underline #41A3E3 3px", mb: 2, }}> รายการฝาก</Typography>
-
+        {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <DemoContainer components={['DatePicker']}>
+        <DatePicker value={value} onChange={(newValue) => setValue(newValue)} />
+      </DemoContainer>
+    </LocalizationProvider> */}
         <Grid container>
           <Grid item={true} xs={12} sx={{ mb: 3 }}>
             <TextField
@@ -723,7 +731,7 @@ function reportDeposit() {
               }}
               variant="outlined"
               size="small"
-              type="datetime-local"
+              type="date"
               name="end"
               value={selectedDateRange.end}
               onChange={(e) => {
