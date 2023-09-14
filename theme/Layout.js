@@ -90,29 +90,22 @@ function Layout({ children, page }) {
       setPermission(jsonData)
 
       let menuActive = jsonData.filter(item => item.view === true)
-      // menuActive = jsonData.filter(item => item.menu.includes('report'))
-      // console.log('menuActive', menuActive)
-      // console.log('menuSuperAdmin', menuSuperAdmin)
+      let reportActive = jsonData.filter(item => item.menu.includes('report'))
+      reportActive = reportActive.filter(item => item.view === true)
 
-      // let menuFilter = menuSuperAdmin.filter(item => menuActive.some(value => value.menu === item.id || value.menu.includes("report") === item.id));
       let tempmenFilter = menuSuperAdmin.filter(item => menuActive.some((value) => value.menu === item.id));
-      setMenuFilter(tempmenFilter)
-      // let menuFilter = menuActive.some(value => value.menu.includes('report'))
-      let menuFilterLast = menuSuperAdmin.filter(item => item.name.includes('report'))
+      let tempReportFilter = menuSuperAdmin.filter(item => reportActive.some((value) => value.menu.includes('report') === item.id.includes('report')));
+  
+      let reportsub = tempReportFilter[0].report.filter(item => reportActive.some((value) => value.menu === item.id));
 
-      // console.log('menuFilter', menuFilter)
-      // console.log('menuFilterLast', menuFilterLast)
+      tempReportFilter[0].report = reportsub
+      setMenuFilter([...tempmenFilter, ...tempReportFilter])
 
-
-      // let menuFilterLast = menuFilter.filter(item => item.name.includes('report'))
-
-      // console.log('menuFilterLast', menuFilterLast)
     } catch (error) {
       console.log(error);
     }
   }
-
-  console.log('menuFilter', menuFilter)
+  // console.log('menuFilter', menuFilter)
 
 
 

@@ -60,7 +60,7 @@ function dashboard() {
 
    const permission = useCounterStore((state) => state.permission)
 
-   console.log('permissionZustand', permission)
+   // console.log('permissionZustand', permission)
 
    const [selectedDateRange, setSelectedDateRange] = useState({
       start: moment().format("YYYY-MM-DD 00:00"),
