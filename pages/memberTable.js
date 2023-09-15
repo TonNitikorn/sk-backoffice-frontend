@@ -41,9 +41,9 @@ import SearchIcon from "@mui/icons-material/Search";
 import CurrencyInput from "md-react-currency-input";
 import { useCounterStore } from "../zustand/permission";
 import checkPermissionDisabled from "../components/checkPermission";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -161,7 +161,7 @@ function memberTable() {
   const [selectedDateRange, setSelectedDateRange] = useState({
     start: moment().format("YYYY-MM-DD 00:00"),
     end: moment().format("YYYY-MM-DD 23:59"),
- });
+  });
 
   const [search, setSearch] = useState({
     data: "",
@@ -586,23 +586,24 @@ function memberTable() {
   });
 
   ////////////////////// search table /////////////////////
+const [first, setFirst] = useState(false)
+  const checkPermissionDisabled2 = (page,value) => {
+    
+    const temp = permission.find((item) => page === item.menu);
+    const subMenu = temp.sub_menu;
+    const findDis = subMenu.find((item) => item.sub_menu_name === value);
 
-  // const checkPermissionDisabled = (value) => {
-  //   const page = "member_table";
-  //   const temp = permission.find((item) => page === item.menu);
-  //   const subMenu = temp.sub_menu;
-  //   const findDis = subMenu.find((item) => item.sub_menu_name === value);
-
-  //   if (findDis?.sub_menu_name === value) {
-  //     if (findDis.sub_menu_active === false) {
-  //       return true;
-  //     } else {
-  //       return false;
-  //     }
-  //   } else {
-  //     return false;
-  //   }
-  // };
+    if (findDis?.sub_menu_name === value) {
+      if (findDis.sub_menu_active === false) {
+        setFirst(true)
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  };
 
   const columns = [
     {
@@ -929,20 +930,29 @@ function memberTable() {
         <>
           <Grid container justifyContent="space-around">
             <IconButton
-              disabled={() =>
-                checkPermissionDisabled("member_table", "manage_deposit")
-              }
+              // disabled={() =>
+              //   checkPermissionDisabled2("member_table", "manage_deposit")
+              // }
+             
               onClick={() => {
                 setUserData(data);
                 setOpenDialogManual({ open: true, type: "deposit" });
               }}
             >
-              <AddCircleOutlineIcon color="success" />
+              <AddCircleOutlineIcon 
+              color="success"
+              // sx={{
+              //   "&.Mui-disabled": {
+              //     background: "#eaeaea",
+              //     color: first === true ? "#c0c0c0" : 'pink'
+              //   }
+              // }}
+              />
             </IconButton>
             <IconButton
-              disabled={() =>
-                checkPermissionDisabled("member_table", "manage_withdraw")
-              }
+              // disabled={() =>
+              //   checkPermissionDisabled("member_table", "manage_withdraw")
+              // }
               onClick={() => {
                 setUserData(data);
                 setOpenDialogManual({ open: true, type: "withdraw" });
@@ -1220,7 +1230,6 @@ function memberTable() {
     <Layout>
       <CssBaseline />
       <Grid container>
-      
         <Grid item={true} xs={12} sx={{ mb: 3 }}>
           <TextField
             label="เริ่ม"
