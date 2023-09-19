@@ -185,57 +185,51 @@ function memberTable() {
   };
 
   const getMemberList = async () => {
-    let data = {
-      create_at_start: selectedDateRange.start,
-      create_at_end: selectedDateRange.end,
-      type: search.type === "all" ? "" : search.type,
-      data_search: search.data,
-    };
-    console.log("data", data);
-    // setLoading(true);
-    // try {
-    //   let res = await axios({
-    //     headers: {
-    //       Authorization: "Bearer " + localStorage.getItem("access_token"),
-    //     },
-    //     method: "post",
-    //     url: `${hostname}/member/member_list`,
-    //     data: {
-    //       create_at_start: selectedDateRange.start,
-    //       create_at_end: selectedDateRange.end,
-    //       type: search.type === "all" ? "" : search.type,
-    //       data_search: search.data,
-    //     },
-    //   });
+    
+    setLoading(true);
+    try {
+      let res = await axios({
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("access_token"),
+        },
+        method: "post",
+        url: `${hostname}/member/member_list`,
+        data: {
+          create_at_start: selectedDateRange.start,
+          create_at_end: selectedDateRange.end,
+          type: search.type === "all" ? "" : search.type,
+          data_search: search.data,
+        },
+      });
 
-    //   let resData = res.data;
-    //   let no = 1;
-    //   resData.map((item) => {
-    //     item.no = no++;
-    //     item.create_at = moment(item.create_at).format("DD/MM/YYYY HH:mm");
-    //   });
+      let resData = res.data;
+      let no = 1;
+      resData.map((item) => {
+        item.no = no++;
+        item.create_at = moment(item.create_at).format("DD/MM/YYYY HH:mm");
+      });
 
-    //   setDataMember(resData);
-    //   setLoading(false);
-    // } catch (error) {
-    //   console.log(error);
-    //   if (
-    //     error.response.data.error.status_code === 401 &&
-    //     error.response.data.error.message === "Unauthorized"
-    //   ) {
-    //     dispatch(signOut());
-    //     localStorage.clear();
-    //     router.push("/auth/login");
-    //   }
-    //   if (
-    //     error.response.status === 401 &&
-    //     error.response.data.error.message === "Invalid Token"
-    //   ) {
-    //     dispatch(signOut());
-    //     localStorage.clear();
-    //     router.push("/auth/login");
-    //   }
-    // }
+      setDataMember(resData);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      if (
+        error.response.data.error.status_code === 401 &&
+        error.response.data.error.message === "Unauthorized"
+      ) {
+        dispatch(signOut());
+        localStorage.clear();
+        router.push("/auth/login");
+      }
+      if (
+        error.response.status === 401 &&
+        error.response.data.error.message === "Invalid Token"
+      ) {
+        dispatch(signOut());
+        localStorage.clear();
+        router.push("/auth/login");
+      }
+    }
   };
 
   const getMemberAll = async () => {

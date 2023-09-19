@@ -58,8 +58,6 @@ function addMember() {
         },
       });
 
-      console.log('res.data', res.data)
-
       if (res.data.message === "สร้างสมาชิกสำเร็จ") {
         Swal.fire({
           position: "center",
