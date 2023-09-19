@@ -61,7 +61,7 @@ export const menuSuperAdmin = [
       {
         name: "ตรวจสอบข้อมูลลูกค้า",
         link: "/member/memberInfo",
-        id: "member_info",
+        id: "info_member",
         icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
       },
       // {

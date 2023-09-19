@@ -929,9 +929,9 @@ function memberTable() {
         <>
           <Grid container justifyContent="space-around">
             <IconButton
-              disabled={() =>
-                checkPermissionDisabled("member_table", "manage_deposit")
-              }
+              // disabled={() =>
+              //   checkPermissionDisabled("member_table", "manage_deposit")
+              // }
               onClick={() => {
                 setUserData(data);
                 setOpenDialogManual({ open: true, type: "deposit" });
