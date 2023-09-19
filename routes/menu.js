@@ -209,21 +209,6 @@ export const menuSuperAdmin = [
         id: "report_withdraw",
         icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
       },
-      // {
-      //   name: "รายงานการฝากทศนิยม",
-      //   link: "/report/reportDepositDecimal",
-      //   icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
-      // },
-      // {
-      //   name: "รายงานการสร้างรายการฝาก",
-      //   link: "/report/reportMakeDeposit",
-      //   icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
-      // },
-      // {
-      //   name: "รายงานการเติมเครดิต(Admin)",
-      //   link: "/report/reportError",
-      //   icon: <Brightness1Icon sx={{ fontSize: "small" }} />,
-      // },
       {
         name: "รายงานการตัดเครดิต",
         link: "/report/reportCutCredit",
