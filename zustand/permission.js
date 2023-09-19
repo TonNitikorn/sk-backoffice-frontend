@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 
 const useStore = (set) => ({
-    permission: {},
+    permission: [],
     setPermission: (params) => {
         set(state => ({
             permission: params

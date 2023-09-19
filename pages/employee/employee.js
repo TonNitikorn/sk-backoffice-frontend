@@ -37,6 +37,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import MuiAlert from "@mui/material/Alert";
 import checkPermissionDisabled from "../../components/checkPermission";
+import { useCounterStore } from "../../zustand/permission";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -447,7 +448,7 @@ function employee() {
               disabled={() =>
                 checkPermissionDisabled("employee", "edit_employee")
               }
-              onClick={async () => {
+              onClick={() => {
                 handleEditData(item);
               }}
             >
@@ -636,9 +637,7 @@ function employee() {
           <Box>
             <Button
               variant="contained"
-              disabled={() =>
-                checkPermissionDisabled("employee", "add_employee")
-              }
+              disabled={checkPermissionDisabled("employee", "add_employee")}
               onClick={() => router.push("/employee/addEmployee")}
               sx={{
                 mr: "8px",
