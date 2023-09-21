@@ -42,6 +42,8 @@ function addEmployee() {
 
   };
 
+  // console.log('selectRole', selectRole)
+
   // console.log('state', state)
 
   const addEmployee = async () => {
@@ -359,7 +361,7 @@ function addEmployee() {
                                     : item.menu === "withdraw_pending" ? "จัดการข้อมูลการถอน"
                                       : item.menu === "withdraw" ? "สร้างรายการถอน"
                                         : item.menu === "add_member" ? "สมัครสมาชิกลูกค้า"
-                                          : item.menu === "member_info" ? "ตรวจสอบข้อมูลลูกค้า"
+                                          : item.menu === "info_member" ? "ตรวจสอบข้อมูลลูกค้า"
                                             : item.menu === "bank_account" ? "บัญชีธนาคาร"
                                               : item.menu === "bank_deposit" ? "บัญชีธนาคารสําหรับฝาก"
                                                 : item.menu === "bank_withdraw" ? "บัญชีธนาคารสําหรับถอน"
@@ -368,7 +370,7 @@ function addEmployee() {
                                                       : item.menu === "report_withdraw" ? "รายงานการถอน"
                                                         : item.menu === "report_cutcredit" ? "รายงานการตัดเครดิต"
                                                           : item.menu === "report_addcredit" ? "รายงานการเติมเครดิต"
-                                                            : ''}
+                                                            : 'test'}
                             />
                             {item.sub_menu !== null ?
                               <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3 }}>
@@ -382,16 +384,17 @@ function addEmployee() {
                                       />}
                                     label={subMenu.sub_menu_name === "approve_home" ? "อนุมัติการฝากผิดบัญชี"
                                       : subMenu.sub_menu_name === "edit_member" ? "แก้ไขข้อมูลลูกค้า"
-                                        : subMenu.sub_menu_name === "manage_deposit_withdraw" ? "เติม/ถอน"
-                                          : subMenu.sub_menu_name === "manage_role_permission" ? "ตั้งค่าสิทธ์การเข้าถึง"
-                                            : subMenu.sub_menu_name === "edit_employee" ? "แก้ไข"
-                                              : subMenu.sub_menu_name === "edit_pass_employee" ? "เปลี่ยนรหัสพนักงาน"
-                                                : subMenu.sub_menu_name === "add_employee" ? "เพิ่มพนักงาน"
-                                                  : subMenu.sub_menu_name === "manage_bank" ? "จัดการบัญชีธนาคาร"
-                                                    : subMenu.sub_menu_name === "manage_bank_withdraw" ? "จัดการบัญชีธนาคารถอน"
-                                                      : subMenu.sub_menu_name === "manage_bank_deposit" ? "จัดการบัญชีธนาคารฝาก"
-                                                        : subMenu.sub_menu_name === "approve_withdraw" ? "อนุมัติการถอน"
-                                                          : ''}
+                                        : subMenu.sub_menu_name === "manage_withdraw" ? "เติมเครดิต"
+                                          : subMenu.sub_menu_name === "manage_deposit" ? "ถอนเครดิต"
+                                            : subMenu.sub_menu_name === "manage_role_permission" ? "ตั้งค่าสิทธ์การเข้าถึง"
+                                              : subMenu.sub_menu_name === "edit_employee" ? "แก้ไข"
+                                                : subMenu.sub_menu_name === "edit_pass_employee" ? "เปลี่ยนรหัสพนักงาน"
+                                                  : subMenu.sub_menu_name === "add_employee" ? "เพิ่มพนักงาน"
+                                                    : subMenu.sub_menu_name === "manage_bank" ? "จัดการบัญชีธนาคาร"
+                                                      : subMenu.sub_menu_name === "manage_bank_withdraw" ? "จัดการบัญชีธนาคารถอน"
+                                                        : subMenu.sub_menu_name === "manage_bank_deposit" ? "จัดการบัญชีธนาคารฝาก"
+                                                          : subMenu.sub_menu_name === "approve_withdraw" ? "อนุมัติการถอน"
+                                                            : ''}
                                   />
                                 </>))}
                               </Box>
@@ -415,7 +418,7 @@ function addEmployee() {
                                     : item.menu === "withdraw_pending" ? "จัดการข้อมูลการถอน"
                                       : item.menu === "withdraw" ? "สร้างรายการถอน"
                                         : item.menu === "add_member" ? "สมัครสมาชิกลูกค้า"
-                                          : item.menu === "member_info" ? "ตรวจสอบข้อมูลลูกค้า"
+                                          : item.menu === "info_member" ? "ตรวจสอบข้อมูลลูกค้า"
                                             : item.menu === "bank_account" ? "บัญชีธนาคาร"
                                               : item.menu === "bank_deposit" ? "บัญชีธนาคารสําหรับฝาก"
                                                 : item.menu === "bank_withdraw" ? "บัญชีธนาคารสําหรับฝาก"
@@ -443,16 +446,17 @@ function addEmployee() {
                                     label={subMenu.sub_menu_name === "dashboard" ? "Dashboard"
                                       : subMenu.sub_menu_name === "approve_home" ? "อนุมัติการฝากผิดบัญชี"
                                         : subMenu.sub_menu_name === "edit_member" ? "แก้ไขข้อมูลลูกค้า"
-                                          : subMenu.sub_menu_name === "manage_deposit_withdraw" ? "เติม/ถอน"
-                                            : subMenu.sub_menu_name === "manage_role_permission" ? "ตั้งค่าสิทธ์การเข้าถึง"
-                                              : subMenu.sub_menu_name === "edit_employee" ? "แก้ไข"
-                                                : subMenu.sub_menu_name === "edit_pass_employee" ? "เปลี่ยนรหัสพนักงาน"
-                                                  : subMenu.sub_menu_name === "add_employee" ? "เพิ่มพนักงาน"
-                                                    : subMenu.sub_menu_name === "manage_bank" ? "จัดการบัญชีธนาคาร"
-                                                      : subMenu.sub_menu_name === "manage_bank_withdraw" ? "จัดการบัญชีธนาคารถอน"
-                                                        : subMenu.sub_menu_name === "manage_bank_deposit" ? "จัดการบัญชีธนาคารฝาก"
-                                                          : subMenu.sub_menu_name === "approve_withdraw" ? "อนุมัติการถอน"
-                                                            : ''}
+                                          : subMenu.sub_menu_name === "manage_withdraw" ? "เติมเครดิต"
+                                            : subMenu.sub_menu_name === "manage_deposit" ? "ถอนเครดิต"
+                                              : subMenu.sub_menu_name === "manage_role_permission" ? "ตั้งค่าสิทธ์การเข้าถึง"
+                                                : subMenu.sub_menu_name === "edit_employee" ? "แก้ไข"
+                                                  : subMenu.sub_menu_name === "edit_pass_employee" ? "เปลี่ยนรหัสพนักงาน"
+                                                    : subMenu.sub_menu_name === "add_employee" ? "เพิ่มพนักงาน"
+                                                      : subMenu.sub_menu_name === "manage_bank" ? "จัดการบัญชีธนาคาร"
+                                                        : subMenu.sub_menu_name === "manage_bank_withdraw" ? "จัดการบัญชีธนาคารถอน"
+                                                          : subMenu.sub_menu_name === "manage_bank_deposit" ? "จัดการบัญชีธนาคารฝาก"
+                                                            : subMenu.sub_menu_name === "approve_withdraw" ? "อนุมัติการถอน"
+                                                              : ''}
                                   />
                                 </>))}
                               </Box>

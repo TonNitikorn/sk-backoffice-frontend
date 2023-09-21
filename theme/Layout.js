@@ -97,8 +97,6 @@ function Layout({ children, page }) {
       let memberActive = jsonData.filter(item => item.menu.includes('_member'))
       memberActive = memberActive.filter(item => item.view === true)
 
-      console.log('memberActive', memberActive)
-
       let tempmenFilter = menuSuperAdmin.filter(item => menuActive.some((value) => value.menu === item.id));
       let tempReportFilter = menuSuperAdmin.filter(item => reportActive.some((value) => value.menu.includes('report') === item.id.includes('report')));
       let reportsub = tempReportFilter[0].report.filter(item => reportActive.some((value) => value.menu === item.id));
@@ -112,11 +110,6 @@ function Layout({ children, page }) {
       let tempMemberFilter = menuSuperAdmin.filter(item => memberActive.some((value) => value.menu.includes('_member') === item.id.includes('member')));
       let membersub = tempMemberFilter[1].member.filter(item => memberActive.some((value) => value.menu === item.id));
       tempMemberFilter[1].member = membersub
-
-      console.log('menuSuperAdmin', menuSuperAdmin)
-
-      console.log('tempMemberFilter', tempMemberFilter[1])
-
 
       setMenuFilter([...tempmenFilter, ...tempBankFilter, tempMemberFilter[1], ...tempReportFilter,])
 
