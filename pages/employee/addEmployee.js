@@ -45,6 +45,7 @@ function addEmployee() {
   // console.log('selectRole', selectRole)
 
   // console.log('state', state)
+  console.log('rowData', rowData)
 
   const addEmployee = async () => {
     try {
@@ -61,7 +62,9 @@ function addEmployee() {
           role: rowData.role,
           tel: rowData.tel,
           status: rowData.status,
-          preference: state
+
+          // websiteManage: "qweqwe",
+
         },
       });
       if (res.data.message === "เพิ่มข้อมูลเรียบร้อยแล้ว") {
@@ -350,6 +353,7 @@ function addEmployee() {
                               key={index}
                               control={
                                 <Checkbox
+                                  disabled
                                   checked={checkedPermission[item.menu] || item.view}
                                   onChange={handleChangeCheck}
                                   name={item.menu}
@@ -378,6 +382,7 @@ function addEmployee() {
                                   <FormControlLabel
                                     control={
                                       <Checkbox
+                                        disabled
                                         checked={checkedPermission[subMenu.sub_menu_name] || subMenu.sub_menu_active}
                                         onChange={handleChangeCheck}
                                         name={subMenu.sub_menu_name}
@@ -407,6 +412,7 @@ function addEmployee() {
                               key={index}
                               control={
                                 <Checkbox
+                                  disabled
                                   checked={checkedPermission[item.menu] || false}
                                   onChange={handleChangeCheck}
                                   name={item.menu}
@@ -439,6 +445,7 @@ function addEmployee() {
                                   <FormControlLabel
                                     control={
                                       <Checkbox
+                                        disabled
                                         checked={checkedPermission[subMenu.sub_menu_name] || false}
                                         onChange={handleChangeCheck}
                                         name={subMenu.sub_menu_name}
@@ -467,169 +474,6 @@ function addEmployee() {
                     </FormGroup>
                   </FormControl>
                 </Grid>
-                {/* <Grid item xs={4}>
-                  <FormControl
-                    sx={{ m: 2 }}
-                    component="fieldset"
-                    variant="standard"
-
-                  >
-                    <FormGroup>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={prefix}
-                            onChange={handleChange}
-                            name="prefix"
-                          />
-                        }
-                        label="จัดการหน้าเว็บ"
-                      />
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={editError}
-                            onChange={handleChange}
-                            name="editError"
-                          />
-                        }
-                        label="แก้ไขข้อผิดพลาด"
-                      />
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={criminal_list}
-                            onChange={handleChange}
-                            name="criminal_list"
-                          />
-                        }
-                        label="รายชื่อมิจฉาชีพ"
-                      />
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={deposit}
-                            onChange={handleChange}
-                            name="deposit"
-                          />
-                        }
-                        label="ฝากติดต่อ 7 วัน"
-                      />
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={affiliate}
-                            onChange={handleChange}
-                            name="affiliate"
-                          />
-                        }
-                        label="AFFILIATE"
-                      />
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={activities_log}
-                            onChange={handleChange}
-                            name="activities_log"
-                          />
-                        }
-                        label="ACTIVITIES LOGS"
-                      />
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={report}
-                            onChange={handleChange}
-                            name="report"
-                          />
-                        }
-                        label="รายงานสรุป"
-                      />
-                    </FormGroup>
-                  </FormControl>
-                </Grid>
-                <Grid item xs={4}>
-                  <FormControl
-                    sx={{ m: 2 }}
-                    component="fieldset"
-                    variant="standard"
-
-                  >
-                    <FormGroup>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={prefix}
-                            onChange={handleChange}
-                            name="prefix"
-                          />
-                        }
-                        label="จัดการหน้าเว็บ"
-                      />
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={editError}
-                            onChange={handleChange}
-                            name="editError"
-                          />
-                        }
-                        label="แก้ไขข้อผิดพลาด"
-                      />
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={criminal_list}
-                            onChange={handleChange}
-                            name="criminal_list"
-                          />
-                        }
-                        label="รายชื่อมิจฉาชีพ"
-                      />
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={deposit}
-                            onChange={handleChange}
-                            name="deposit"
-                          />
-                        }
-                        label="ฝากติดต่อ 7 วัน"
-                      />
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={affiliate}
-                            onChange={handleChange}
-                            name="affiliate"
-                          />
-                        }
-                        label="AFFILIATE"
-                      />
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={activities_log}
-                            onChange={handleChange}
-                            name="activities_log"
-                          />
-                        }
-                        label="ACTIVITIES LOGS"
-                      />
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={report}
-                            onChange={handleChange}
-                            name="report"
-                          />
-                        }
-                        label="รายงานสรุป"
-                      />
-                    </FormGroup>
-                  </FormControl>
-                </Grid> */}
-
                 <Grid item xs={12} container direction="row">
                   <Button onClick={() => { router.push('/employee/customPermission') }}>
                     <SettingsIcon sx={{ mr: 1 }} />
@@ -672,4 +516,4 @@ function addEmployee() {
   );
 }
 
-export default addEmployee;
+export default withAuth(addEmployee);
