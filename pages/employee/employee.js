@@ -92,14 +92,6 @@ function employee() {
     setState({ ...state, [event.target.name]: event.target.checked });
   };
 
-  const handleEditData = (item) => {
-    setRowData(item);
-    setState(item.preference);
-    setOpenEditData({
-      open: true,
-      type: "edit",
-    });
-  };
 
   const handleChangeData = async (e) => {
     setRowData({ ...rowData, [e.target.name]: e.target.value });
@@ -574,14 +566,23 @@ function employee() {
     },
   ];
 
+  const handleEditData = (item) => {
+    let tempRole = roleList.filter(event => event.role_name === item.role)
+    setSelectRole(tempRole)
+    setRowData(item);
+    setState(item.preference);
+    setOpenEditData({
+      open: true,
+      type: "edit",
+    });
+  };
+
+
   useEffect(() => {
     getProfileAdmin();
     getPermission()
     getRoleList()
   }, []);
-
-  console.log('rowData.role', rowData.role)
-  console.log('selectRole[0]', selectRole[0])
 
   return (
     <Layout>
@@ -900,6 +901,12 @@ function employee() {
                                 key={index}
                                 control={
                                   <Checkbox
+                                    disabled
+                                    sx={{
+                                      '&.Mui-disabled': {
+                                        color: '#41A3E3'
+                                      }
+                                    }}
                                     checked={checkedPermission[item.menu] || item.view}
                                     onChange={handleChangeCheck}
                                     name={item.menu}
@@ -928,6 +935,12 @@ function employee() {
                                     <FormControlLabel
                                       control={
                                         <Checkbox
+                                          disabled
+                                          sx={{
+                                            '&.Mui-disabled': {
+                                              color: '#41A3E3'
+                                            }
+                                          }}
                                           checked={checkedPermission[subMenu.sub_menu_name] || subMenu.sub_menu_active}
                                           onChange={handleChangeCheck}
                                           name={subMenu.sub_menu_name}
