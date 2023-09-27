@@ -36,7 +36,7 @@ import { Table, Input, Space } from "antd";
 import SearchIcon from "@mui/icons-material/Search";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import MuiAlert from "@mui/material/Alert";
-import checkPermissionDisabled from "../../components/checkPermission";
+// import checkPermissionDisabled from "../../components/checkPermission";
 import { useCounterStore } from "../../zustand/permission";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -351,6 +351,23 @@ function employee() {
     console.log("params", pagination, filters, sorter, extra);
   };
 
+  const checkPermissionDisabled = (page, action) => {
+    const permission = useCounterStore((state) => state.permission);
+    const temp = permission?.find((item) => page === item.menu);
+    const subMenu = temp?.sub_menu;
+    const findDis = subMenu?.find((item) => item.sub_menu_name === action);
+
+    if (findDis?.sub_menu_name === action) {
+      if (findDis?.sub_menu_active === false) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  };
+
   const columns = [
     {
       title: "ลำดับ",
@@ -445,9 +462,7 @@ function employee() {
         return (
           <>
             <IconButton
-              disabled={() =>
-                checkPermissionDisabled("employee", "edit_employee")
-              }
+              disabled={() =>checkPermissionDisabled("employee", "edit_employee")}
               onClick={() => {
                 handleEditData(item);
               }}
@@ -459,6 +474,8 @@ function employee() {
       },
     },
   ];
+
+
 
   useEffect(() => {
     getProfileAdmin();
@@ -943,9 +960,9 @@ function employee() {
           >
             <Grid item xs={2}>
               <Button
-                disabled={() =>
-                  checkPermissionDisabled("employee", "edit_pass_employee")
-                }
+                // disabled={() =>
+                //   checkPermissionDisabled("employee", "edit_pass_employee")
+                // }
                 onClick={() => setConfirmEditPassword(true)}
                 variant="contained"
                 fullWidth

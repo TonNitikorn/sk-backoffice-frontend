@@ -38,6 +38,7 @@ import { useRouter } from "next/router";
 import { useAppDispatch } from "../store/store";
 import { Table, Input, Space, } from 'antd';
 import SearchIcon from '@mui/icons-material/Search';
+import { useCounterStore } from "../zustand/permission";
 
 
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -343,7 +344,22 @@ function bankAccount() {
   };
 
   ////////////////////// search table /////////////////////
+  const permission = useCounterStore((state) => state.permission);
+  const checkPermissionDisabled = (page, action) => {
+    const temp = permission?.find((item) => page === item.menu);
+    const subMenu = temp?.sub_menu;
+    const findDis = subMenu?.find((item) => item.sub_menu_name === action);
 
+    if (findDis?.sub_menu_name === action) {
+      if (findDis?.sub_menu_active === false) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  };
 
   const columns = [
     {
@@ -673,6 +689,8 @@ function bankAccount() {
         return (
           <>
             <IconButton
+              disabled={checkPermissionDisabled('bank_account','manage_bank_account')}
+
               onClick={async () => {
                 setRowData(data);
                 setOpenDialogAdd({
@@ -694,6 +712,8 @@ function bankAccount() {
         return (
           <>
             <IconButton
+              disabled={checkPermissionDisabled('bank_account','manage_bank_account')}
+
               onClick={async () => {
                 Swal.fire({
                   title: "ยืนยันการลบข้อมูล",
@@ -784,7 +804,7 @@ function bankAccount() {
           <Box>
             <Button
               variant="contained"
-              // disabled={!preference.memberSystem && preference.memberView}
+              disabled={checkPermissionDisabled('bank_account','manage_bank')}
               sx={{
                 mr: "8px",
                 my: 2,

@@ -40,7 +40,7 @@ import { Table, Input, Space } from "antd";
 import SearchIcon from "@mui/icons-material/Search";
 import CurrencyInput from "md-react-currency-input";
 import { useCounterStore } from "../zustand/permission";
-import checkPermissionDisabled from "../components/checkPermission";
+// import checkPermissionDisabled from "../components/checkPermission";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -580,24 +580,22 @@ function memberTable() {
   });
 
   ////////////////////// search table /////////////////////
-const [first, setFirst] = useState(false)
-  const checkPermissionDisabled2 = (page,value) => {
-    
+  const checkPermissionDisabled = (page,value) => {
     const temp = permission.find((item) => page === item.menu);
     const subMenu = temp.sub_menu;
     const findDis = subMenu.find((item) => item.sub_menu_name === value);
 
     if (findDis?.sub_menu_name === value) {
       if (findDis.sub_menu_active === false) {
-        setFirst(true)
         return true;
       } else {
-        return false;
+        return  false;
       }
     } else {
-      return false;
+      return  false;
     }
   };
+
 
   const columns = [
     {
@@ -924,26 +922,23 @@ const [first, setFirst] = useState(false)
         <>
           <Grid container justifyContent="space-around">
             <IconButton
-              // disabled={() =>
-              //   checkPermissionDisabled("member_table", "manage_deposit")
+              disabled={
+                // test("member_table", "manage_deposit")
               // }
-              //   checkPermissionDisabled2("member_table", "manage_deposit")
-              // }
+                checkPermissionDisabled("member_table", "manage_deposit")
+              }
              
               onClick={() => {
                 setUserData(data);
                 setOpenDialogManual({ open: true, type: "deposit" });
               }}
             >
-              <AddCircleOutlineIcon 
-              color="success"
-              
-              />
+              <AddCircleOutlineIcon color="success"/>
             </IconButton>
             <IconButton
-              // disabled={() =>
-              //   checkPermissionDisabled("member_table", "manage_withdraw")
-              // }
+              disabled={
+                checkPermissionDisabled("member_table", "manage_withdraw")
+              }
               onClick={() => {
                 setUserData(data);
                 setOpenDialogManual({ open: true, type: "withdraw" });
@@ -1016,7 +1011,7 @@ const [first, setFirst] = useState(false)
         return (
           <>
             <IconButton
-              disabled={() =>
+              disabled={
                 checkPermissionDisabled("member_table", "edit_member")
               }
               onClick={async () => {
