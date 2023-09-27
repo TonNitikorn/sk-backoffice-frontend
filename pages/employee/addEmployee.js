@@ -42,11 +42,6 @@ function addEmployee() {
 
   };
 
-  // console.log('selectRole', selectRole)
-
-  // console.log('state', state)
-  console.log('rowData', rowData)
-
   const addEmployee = async () => {
     try {
       let res = await axios({
@@ -354,6 +349,11 @@ function addEmployee() {
                               control={
                                 <Checkbox
                                   disabled
+                                  sx={{
+                                    '&.Mui-disabled': {
+                                      color: '#41A3E3'
+                                    }
+                                  }}
                                   checked={checkedPermission[item.menu] || item.view}
                                   onChange={handleChangeCheck}
                                   name={item.menu}
@@ -383,6 +383,11 @@ function addEmployee() {
                                     control={
                                       <Checkbox
                                         disabled
+                                        sx={{
+                                          '&.Mui-disabled': {
+                                            color: '#41A3E3'
+                                          }
+                                        }}
                                         checked={checkedPermission[subMenu.sub_menu_name] || subMenu.sub_menu_active}
                                         onChange={handleChangeCheck}
                                         name={subMenu.sub_menu_name}
@@ -399,7 +404,8 @@ function addEmployee() {
                                                       : subMenu.sub_menu_name === "manage_bank_withdraw" ? "จัดการบัญชีธนาคารถอน"
                                                         : subMenu.sub_menu_name === "manage_bank_deposit" ? "จัดการบัญชีธนาคารฝาก"
                                                           : subMenu.sub_menu_name === "approve_withdraw" ? "อนุมัติการถอน"
-                                                            : ''}
+                                                            : subMenu.sub_menu_name === "approve_withdraw_manual" ? "อนุมัติสร้างรายการถอน"
+                                                              : ''}
                                   />
                                 </>))}
                               </Box>
@@ -463,7 +469,8 @@ function addEmployee() {
                                                         : subMenu.sub_menu_name === "manage_bank_withdraw" ? "จัดการบัญชีธนาคารถอน"
                                                           : subMenu.sub_menu_name === "manage_bank_deposit" ? "จัดการบัญชีธนาคารฝาก"
                                                             : subMenu.sub_menu_name === "approve_withdraw" ? "อนุมัติการถอน"
-                                                              : ''}
+                                                              : subMenu.sub_menu_name === "approve_withdraw_manual" ? "อนุมัติสร้างรายการถอน"
+                                                                : ''}
                                   />
                                 </>))}
                               </Box>
