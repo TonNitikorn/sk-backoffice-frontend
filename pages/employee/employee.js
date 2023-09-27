@@ -56,9 +56,9 @@ function employee() {
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const [permissionList, setPermissionList] = useState()
-  const [selectRole, setSelectRole] = useState([])
-  const [roleList, setRoleList] = useState()
+  const [permissionList, setPermissionList] = useState();
+  const [selectRole, setSelectRole] = useState([]);
+  const [roleList, setRoleList] = useState();
 
   const [state, setState] = useState({
     grap: false,
@@ -92,14 +92,14 @@ function employee() {
     setState({ ...state, [event.target.name]: event.target.checked });
   };
 
-
   const handleChangeData = async (e) => {
     setRowData({ ...rowData, [e.target.name]: e.target.value });
     if (e.target.name === "role") {
-      let tempRole = roleList.filter(item => item.role_name === e.target.value)
-      setSelectRole(tempRole)
+      let tempRole = roleList.filter(
+        (item) => item.role_name === e.target.value
+      );
+      setSelectRole(tempRole);
     }
-
   };
 
   const handleChangePassword = () => {
@@ -250,12 +250,12 @@ function employee() {
     }
   };
 
-  const [checkedPermission, setCheckedPermission] = useState({})
+  const [checkedPermission, setCheckedPermission] = useState({});
 
   const handleChangeCheck = (event) => {
     for (const item of selectRole[0]?.permission) {
       if (event.target.name === item.menu) {
-        item.view = event.target.checked
+        item.view = event.target.checked;
 
         setCheckedPermission({
           ...checkedPermission,
@@ -266,19 +266,17 @@ function employee() {
       if (item.sub_menu !== null) {
         for (const sub of item.sub_menu) {
           if (event.target.name === sub.sub_menu_name) {
-            sub.sub_menu_active = event.target.checked
+            sub.sub_menu_active = event.target.checked;
 
             setCheckedPermission({
               ...checkedPermission,
               [event.target.name]: event.target.checked,
             });
           }
-
         }
       }
-
     }
-  }
+  };
 
   const getPermission = async () => {
     // setLoading(true);
@@ -292,8 +290,7 @@ function employee() {
       });
       let resData = res.data;
 
-      setPermissionList(resData)
-
+      setPermissionList(resData);
     } catch (error) {
       console.log(error);
       if (
@@ -327,10 +324,9 @@ function employee() {
       });
       let resData = res.data;
 
-      setRoleList(resData)
+      setRoleList(resData);
 
       // setLoading(false);
-
     } catch (error) {
       console.log(error);
       if (
@@ -351,7 +347,6 @@ function employee() {
       }
     }
   };
-
 
   const searchInput = useRef(null);
 
@@ -455,9 +450,8 @@ function employee() {
   const onChange = (pagination, filters, sorter, extra) => {
     console.log("params", pagination, filters, sorter, extra);
   };
-
+  const permission = useCounterStore((state) => state.permission);
   const checkPermissionDisabled = (page, action) => {
-    const permission = useCounterStore((state) => state.permission);
     const temp = permission?.find((item) => page === item.menu);
     const subMenu = temp?.sub_menu;
     const findDis = subMenu?.find((item) => item.sub_menu_name === action);
@@ -581,8 +575,8 @@ function employee() {
   ];
 
   const handleEditData = (item) => {
-    let tempRole = roleList.filter(event => event.role_name === item.role)
-    setSelectRole(tempRole)
+    let tempRole = roleList.filter((event) => event.role_name === item.role);
+    setSelectRole(tempRole);
     setRowData(item);
     setState(item.preference);
     setOpenEditData({
@@ -591,11 +585,10 @@ function employee() {
     });
   };
 
-
   useEffect(() => {
     getProfileAdmin();
-    getPermission()
-    getRoleList()
+    getPermission();
+    getRoleList();
   }, []);
 
   return (
@@ -869,7 +862,6 @@ function employee() {
                 {roleList?.map((item) => (
                   <MenuItem value={item.role_name}>{item.role_name}</MenuItem>
                 ))}
-
               </TextField>
               <TextField
                 name="status"
@@ -908,143 +900,265 @@ function employee() {
                       variant="standard"
                     >
                       <FormGroup column>
-                        {rowData.role ?
-                          selectRole[0]?.permission.map((item, index) => (
-                            <>
-                              <FormControlLabel
-                                key={index}
-                                control={
-                                  <Checkbox
-                                    disabled
-                                    sx={{
-                                      '&.Mui-disabled': {
-                                        color: '#41A3E3'
+                        {rowData.role
+                          ? selectRole[0]?.permission.map((item, index) => (
+                              <>
+                                <FormControlLabel
+                                  key={index}
+                                  control={
+                                    <Checkbox
+                                      disabled
+                                      sx={{
+                                        "&.Mui-disabled": {
+                                          color: "#41A3E3",
+                                        },
+                                      }}
+                                      checked={
+                                        checkedPermission[item.menu] ||
+                                        item.view
                                       }
+                                      onChange={handleChangeCheck}
+                                      name={item.menu}
+                                    />
+                                  }
+                                  label={
+                                    item.menu === "dashboard"
+                                      ? "Dashboard"
+                                      : item.menu === "home"
+                                      ? "รายการเดินบัญชี"
+                                      : item.menu === "member_table"
+                                      ? "จัดการเครดิต/ข้อมูลลูกค้า"
+                                      : item.menu === "withdraw_pending"
+                                      ? "จัดการข้อมูลการถอน"
+                                      : item.menu === "withdraw"
+                                      ? "สร้างรายการถอน"
+                                      : item.menu === "add_member"
+                                      ? "สมัครสมาชิกลูกค้า"
+                                      : item.menu === "info_member"
+                                      ? "ตรวจสอบข้อมูลลูกค้า"
+                                      : item.menu === "bank_account"
+                                      ? "บัญชีธนาคาร"
+                                      : item.menu === "bank_deposit"
+                                      ? "บัญชีธนาคารสําหรับฝาก"
+                                      : item.menu === "bank_withdraw"
+                                      ? "บัญชีธนาคารสําหรับถอน"
+                                      : item.menu === "employee"
+                                      ? "รายชื่อพนักงาน"
+                                      : item.menu === "report_deposit"
+                                      ? "รายงานการฝาก"
+                                      : item.menu === "report_withdraw"
+                                      ? "รายงานการถอน"
+                                      : item.menu === "report_cutcredit"
+                                      ? "รายงานการตัดเครดิต"
+                                      : item.menu === "report_addcredit"
+                                      ? "รายงานการเติมเครดิต"
+                                      : "test"
+                                  }
+                                />
+                                {item.sub_menu !== null ? (
+                                  <Box
+                                    sx={{
+                                      display: "flex",
+                                      flexDirection: "column",
+                                      ml: 3,
                                     }}
-                                    checked={checkedPermission[item.menu] || item.view}
-                                    onChange={handleChangeCheck}
-                                    name={item.menu}
-                                  />
-                                }
-                                label={item.menu === "dashboard" ? "Dashboard"
-                                  : item.menu === "home" ? "รายการเดินบัญชี"
-                                    : item.menu === "member_table" ? "จัดการเครดิต/ข้อมูลลูกค้า"
-                                      : item.menu === "withdraw_pending" ? "จัดการข้อมูลการถอน"
-                                        : item.menu === "withdraw" ? "สร้างรายการถอน"
-                                          : item.menu === "add_member" ? "สมัครสมาชิกลูกค้า"
-                                            : item.menu === "info_member" ? "ตรวจสอบข้อมูลลูกค้า"
-                                              : item.menu === "bank_account" ? "บัญชีธนาคาร"
-                                                : item.menu === "bank_deposit" ? "บัญชีธนาคารสําหรับฝาก"
-                                                  : item.menu === "bank_withdraw" ? "บัญชีธนาคารสําหรับถอน"
-                                                    : item.menu === "employee" ? "รายชื่อพนักงาน"
-                                                      : item.menu === "report_deposit" ? "รายงานการฝาก"
-                                                        : item.menu === "report_withdraw" ? "รายงานการถอน"
-                                                          : item.menu === "report_cutcredit" ? "รายงานการตัดเครดิต"
-                                                            : item.menu === "report_addcredit" ? "รายงานการเติมเครดิต"
-                                                              : 'test'}
-                              />
-                              {item.sub_menu !== null ?
-                                <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3 }}>
-                                  {item.sub_menu.map((subMenu) => (<>
-                                    <FormControlLabel
-                                      control={
-                                        <Checkbox
-                                          disabled
-                                          sx={{
-                                            '&.Mui-disabled': {
-                                              color: '#41A3E3'
-                                            }
-                                          }}
-                                          checked={checkedPermission[subMenu.sub_menu_name] || subMenu.sub_menu_active}
-                                          onChange={handleChangeCheck}
-                                          name={subMenu.sub_menu_name}
-                                        />}
-                                      label={subMenu.sub_menu_name === "approve_home" ? "อนุมัติการฝากผิดบัญชี"
-                                        : subMenu.sub_menu_name === "edit_member" ? "แก้ไขข้อมูลลูกค้า"
-                                          : subMenu.sub_menu_name === "manage_withdraw" ? "เติมเครดิต"
-                                            : subMenu.sub_menu_name === "manage_deposit" ? "ถอนเครดิต"
-                                              : subMenu.sub_menu_name === "manage_role_permission" ? "ตั้งค่าสิทธ์การเข้าถึง"
-                                                : subMenu.sub_menu_name === "edit_employee" ? "แก้ไข"
-                                                  : subMenu.sub_menu_name === "edit_pass_employee" ? "เปลี่ยนรหัสพนักงาน"
-                                                    : subMenu.sub_menu_name === "add_employee" ? "เพิ่มพนักงาน"
-                                                      : subMenu.sub_menu_name === "manage_bank" ? "จัดการบัญชีธนาคาร"
-                                                        : subMenu.sub_menu_name === "manage_bank_withdraw" ? "จัดการบัญชีธนาคารถอน"
-                                                          : subMenu.sub_menu_name === "manage_bank_deposit" ? "จัดการบัญชีธนาคารฝาก"
-                                                            : subMenu.sub_menu_name === "approve_withdraw" ? "อนุมัติการถอน"
-                                                              : subMenu.sub_menu_name === "approve_withdraw_manual" ? "อนุมัติสร้างรายการถอน"
-                                                                : ''}
-                                    />
-                                  </>))}
-                                </Box>
-                                : ''}
-                            </>
-                          ))
+                                  >
+                                    {item.sub_menu.map((subMenu) => (
+                                      <>
+                                        <FormControlLabel
+                                          control={
+                                            <Checkbox
+                                              disabled
+                                              sx={{
+                                                "&.Mui-disabled": {
+                                                  color: "#41A3E3",
+                                                },
+                                              }}
+                                              checked={
+                                                checkedPermission[
+                                                  subMenu.sub_menu_name
+                                                ] || subMenu.sub_menu_active
+                                              }
+                                              onChange={handleChangeCheck}
+                                              name={subMenu.sub_menu_name}
+                                            />
+                                          }
+                                          label={
+                                            subMenu.sub_menu_name ===
+                                            "approve_home"
+                                              ? "อนุมัติการฝากผิดบัญชี"
+                                              : subMenu.sub_menu_name ===
+                                                "edit_member"
+                                              ? "แก้ไขข้อมูลลูกค้า"
+                                              : subMenu.sub_menu_name ===
+                                                "manage_withdraw"
+                                              ? "เติมเครดิต"
+                                              : subMenu.sub_menu_name ===
+                                                "manage_deposit"
+                                              ? "ถอนเครดิต"
+                                              : subMenu.sub_menu_name ===
+                                                "manage_role_permission"
+                                              ? "ตั้งค่าสิทธ์การเข้าถึง"
+                                              : subMenu.sub_menu_name ===
+                                                "edit_employee"
+                                              ? "แก้ไข"
+                                              : subMenu.sub_menu_name ===
+                                                "edit_pass_employee"
+                                              ? "เปลี่ยนรหัสพนักงาน"
+                                              : subMenu.sub_menu_name ===
+                                                "add_employee"
+                                              ? "เพิ่มพนักงาน"
+                                              : subMenu.sub_menu_name ===
+                                                "manage_bank"
+                                              ? "จัดการบัญชีธนาคาร"
+                                              : subMenu.sub_menu_name ===
+                                                "manage_bank_withdraw"
+                                              ? "จัดการบัญชีธนาคารถอน"
+                                              : subMenu.sub_menu_name ===
+                                                "manage_bank_deposit"
+                                              ? "จัดการบัญชีธนาคารฝาก"
+                                              : subMenu.sub_menu_name ===
+                                                "approve_withdraw"
+                                              ? "อนุมัติการถอน"
+                                              : subMenu.sub_menu_name ===
+                                                "approve_withdraw_manual"
+                                              ? "อนุมัติสร้างรายการถอน"
+                                              : ""
+                                          }
+                                        />
+                                      </>
+                                    ))}
+                                  </Box>
+                                ) : (
+                                  ""
+                                )}
+                              </>
+                            ))
                           : permissionList?.map((item, index) => (
-                            <>
-                              <FormControlLabel
-                                key={index}
-                                control={
-                                  <Checkbox
-                                    disabled
-                                    checked={checkedPermission[item.menu] || false}
-                                    onChange={handleChangeCheck}
-                                    name={item.menu}
-                                  />
-                                }
-                                label={item.menu === "dashboard" ? "Dashboard"
-                                  : item.menu === "home" ? "รายการเดินบัญชี"
-                                    : item.menu === "member_table" ? "จัดการเครดิต/ข้อมูลลูกค้า"
-                                      : item.menu === "withdraw_pending" ? "จัดการข้อมูลการถอน"
-                                        : item.menu === "withdraw" ? "สร้างรายการถอน"
-                                          : item.menu === "add_member" ? "สมัครสมาชิกลูกค้า"
-                                            : item.menu === "info_member" ? "ตรวจสอบข้อมูลลูกค้า"
-                                              : item.menu === "bank_account" ? "บัญชีธนาคาร"
-                                                : item.menu === "bank_deposit" ? "บัญชีธนาคารสําหรับฝาก"
-                                                  : item.menu === "bank_withdraw" ? "บัญชีธนาคารสําหรับฝาก"
-                                                    : item.menu === "employee" ? "รายชื่อพนักงาน"
-
-                                                      : item.menu === "report_deposit" ? "รายงานการฝาก"
-                                                        : item.menu === "report_withdraw" ? "รายงานการถอน"
-                                                          : item.menu === "report_cutcredit" ? "รายงานการตัดเครดิต"
-                                                            : item.menu === "report_addcredit" ? "รายงานการเติมเครดิต"
-
-
-
-                                                              : ''}
-                              />
-                              {item.sub_menu !== null ?
-                                <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3 }}>
-                                  {item.sub_menu.map((subMenu) => (<>
-                                    <FormControlLabel
-                                      control={
-                                        <Checkbox
-                                          disabled
-                                          checked={checkedPermission[subMenu.sub_menu_name] || false}
-                                          onChange={handleChangeCheck}
-                                          name={subMenu.sub_menu_name}
-                                        />}
-                                      label={subMenu.sub_menu_name === "dashboard" ? "Dashboard"
-                                        : subMenu.sub_menu_name === "approve_home" ? "อนุมัติการฝากผิดบัญชี"
-                                          : subMenu.sub_menu_name === "edit_member" ? "แก้ไขข้อมูลลูกค้า"
-                                            : subMenu.sub_menu_name === "manage_withdraw" ? "เติมเครดิต"
-                                              : subMenu.sub_menu_name === "manage_deposit" ? "ถอนเครดิต"
-                                                : subMenu.sub_menu_name === "manage_role_permission" ? "ตั้งค่าสิทธ์การเข้าถึง"
-                                                  : subMenu.sub_menu_name === "edit_employee" ? "แก้ไข"
-                                                    : subMenu.sub_menu_name === "edit_pass_employee" ? "เปลี่ยนรหัสพนักงาน"
-                                                      : subMenu.sub_menu_name === "add_employee" ? "เพิ่มพนักงาน"
-                                                        : subMenu.sub_menu_name === "manage_bank" ? "จัดการบัญชีธนาคาร"
-                                                          : subMenu.sub_menu_name === "manage_bank_withdraw" ? "จัดการบัญชีธนาคารถอน"
-                                                            : subMenu.sub_menu_name === "manage_bank_deposit" ? "จัดการบัญชีธนาคารฝาก"
-                                                              : subMenu.sub_menu_name === "approve_withdraw" ? "อนุมัติการถอน"
-                                                                : subMenu.sub_menu_name === "approve_withdraw_manual" ? "อนุมัติสร้างรายการถอน"
-                                                                  : ''}
+                              <>
+                                <FormControlLabel
+                                  key={index}
+                                  control={
+                                    <Checkbox
+                                      disabled
+                                      checked={
+                                        checkedPermission[item.menu] || false
+                                      }
+                                      onChange={handleChangeCheck}
+                                      name={item.menu}
                                     />
-                                  </>))}
-                                </Box>
-                                : ''}
-                            </>
-                          ))}
-
+                                  }
+                                  label={
+                                    item.menu === "dashboard"
+                                      ? "Dashboard"
+                                      : item.menu === "home"
+                                      ? "รายการเดินบัญชี"
+                                      : item.menu === "member_table"
+                                      ? "จัดการเครดิต/ข้อมูลลูกค้า"
+                                      : item.menu === "withdraw_pending"
+                                      ? "จัดการข้อมูลการถอน"
+                                      : item.menu === "withdraw"
+                                      ? "สร้างรายการถอน"
+                                      : item.menu === "add_member"
+                                      ? "สมัครสมาชิกลูกค้า"
+                                      : item.menu === "info_member"
+                                      ? "ตรวจสอบข้อมูลลูกค้า"
+                                      : item.menu === "bank_account"
+                                      ? "บัญชีธนาคาร"
+                                      : item.menu === "bank_deposit"
+                                      ? "บัญชีธนาคารสําหรับฝาก"
+                                      : item.menu === "bank_withdraw"
+                                      ? "บัญชีธนาคารสําหรับฝาก"
+                                      : item.menu === "employee"
+                                      ? "รายชื่อพนักงาน"
+                                      : item.menu === "report_deposit"
+                                      ? "รายงานการฝาก"
+                                      : item.menu === "report_withdraw"
+                                      ? "รายงานการถอน"
+                                      : item.menu === "report_cutcredit"
+                                      ? "รายงานการตัดเครดิต"
+                                      : item.menu === "report_addcredit"
+                                      ? "รายงานการเติมเครดิต"
+                                      : ""
+                                  }
+                                />
+                                {item.sub_menu !== null ? (
+                                  <Box
+                                    sx={{
+                                      display: "flex",
+                                      flexDirection: "column",
+                                      ml: 3,
+                                    }}
+                                  >
+                                    {item.sub_menu.map((subMenu) => (
+                                      <>
+                                        <FormControlLabel
+                                          control={
+                                            <Checkbox
+                                              disabled
+                                              checked={
+                                                checkedPermission[
+                                                  subMenu.sub_menu_name
+                                                ] || false
+                                              }
+                                              onChange={handleChangeCheck}
+                                              name={subMenu.sub_menu_name}
+                                            />
+                                          }
+                                          label={
+                                            subMenu.sub_menu_name ===
+                                            "dashboard"
+                                              ? "Dashboard"
+                                              : subMenu.sub_menu_name ===
+                                                "approve_home"
+                                              ? "อนุมัติการฝากผิดบัญชี"
+                                              : subMenu.sub_menu_name ===
+                                                "edit_member"
+                                              ? "แก้ไขข้อมูลลูกค้า"
+                                              : subMenu.sub_menu_name ===
+                                                "manage_withdraw"
+                                              ? "เติมเครดิต"
+                                              : subMenu.sub_menu_name ===
+                                                "manage_deposit"
+                                              ? "ถอนเครดิต"
+                                              : subMenu.sub_menu_name ===
+                                                "manage_role_permission"
+                                              ? "ตั้งค่าสิทธ์การเข้าถึง"
+                                              : subMenu.sub_menu_name ===
+                                                "edit_employee"
+                                              ? "แก้ไข"
+                                              : subMenu.sub_menu_name ===
+                                                "edit_pass_employee"
+                                              ? "เปลี่ยนรหัสพนักงาน"
+                                              : subMenu.sub_menu_name ===
+                                                "add_employee"
+                                              ? "เพิ่มพนักงาน"
+                                              : subMenu.sub_menu_name ===
+                                                "manage_bank"
+                                              ? "จัดการบัญชีธนาคาร"
+                                              : subMenu.sub_menu_name ===
+                                                "manage_bank_withdraw"
+                                              ? "จัดการบัญชีธนาคารถอน"
+                                              : subMenu.sub_menu_name ===
+                                                "manage_bank_deposit"
+                                              ? "จัดการบัญชีธนาคารฝาก"
+                                              : subMenu.sub_menu_name ===
+                                                "approve_withdraw"
+                                              ? "อนุมัติการถอน"
+                                              : subMenu.sub_menu_name ===
+                                                "approve_withdraw_manual"
+                                              ? "อนุมัติสร้างรายการถอน"
+                                              : ""
+                                          }
+                                        />
+                                      </>
+                                    ))}
+                                  </Box>
+                                ) : (
+                                  ""
+                                )}
+                              </>
+                            ))}
                       </FormGroup>
                     </FormControl>
                   </Grid>
@@ -1061,9 +1175,10 @@ function employee() {
           >
             <Grid item xs={2}>
               <Button
-                // disabled={() =>
-                //   checkPermissionDisabled("employee", "edit_pass_employee")
-                // }
+                disabled={checkPermissionDisabled(
+                  "employee",
+                  "edit_pass_employee"
+                )}
                 onClick={() => setConfirmEditPassword(true)}
                 variant="contained"
                 fullWidth
