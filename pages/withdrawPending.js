@@ -29,7 +29,9 @@ import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
 import { Table, Input, Space, } from 'antd';
-import checkPermissionDisabled from "../components/checkPermission";
+// import checkPermissionDisabled from "../components/checkPermission";
+import { useCounterStore } from "../zustand/permission";
+
 
 
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -511,6 +513,23 @@ function withdrawpending() {
       );
       audio.play();
    }
+   const permission = useCounterStore((state) => state.permission);
+
+   const checkPermissionDisabled = (page, action) => {
+      const temp = permission?.find((item) => page === item.menu);
+      const subMenu = temp?.sub_menu;
+      const findDis = subMenu?.find((item) => item.sub_menu_name === action);
+  
+      if (findDis?.sub_menu_name === action) {
+        if (findDis?.sub_menu_active === false) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    };
 
    const columns = [
       {
@@ -519,7 +538,7 @@ function withdrawpending() {
          render: (item, data) => (
             <>
                <IconButton
-                  disabled={() => checkPermissionDisabled("withdraw_pending","approve_withdraw")}
+                  disabled={checkPermissionDisabled("withdraw_pending","approve_withdraw")}
                   onClick={() => {
                      setRowData(data)
                      setOpenDialogApprove(true)

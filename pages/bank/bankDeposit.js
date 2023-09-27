@@ -33,7 +33,7 @@ import { useRouter } from "next/router";
 import { useAppDispatch } from "../../store/store";
 import { Table, Input, Space, } from 'antd';
 import SearchIcon from '@mui/icons-material/Search';
-
+import { useCounterStore } from "../zustand/permission";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -333,6 +333,23 @@ function bankDeposit() {
         localStorage.clear();
         router.push("/auth/login");
       }
+    }
+  };
+
+  const permission = useCounterStore((state) => state.permission);
+  const checkPermissionDisabled = (page, action) => {
+    const temp = permission?.find((item) => page === item.menu);
+    const subMenu = temp?.sub_menu;
+    const findDis = subMenu?.find((item) => item.sub_menu_name === action);
+
+    if (findDis?.sub_menu_name === action) {
+      if (findDis?.sub_menu_active === false) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
     }
   };
 
@@ -664,6 +681,7 @@ function bankDeposit() {
         return (
           <>
             <IconButton
+              disabled={checkPermissionDisabled('bank_deposit','manage_bank_deposit')}
               onClick={async () => {
                 setRowData(data);
                 setOpenDialogAdd({
@@ -685,6 +703,8 @@ function bankDeposit() {
         return (
           <>
             <IconButton
+              disabled={checkPermissionDisabled('bank_deposit','manage_bank_deposit')}
+
               onClick={async () => {
                 Swal.fire({
                   title: "ยืนยันการลบข้อมูล",
@@ -776,7 +796,7 @@ function bankDeposit() {
           <Box>
             <Button
               variant="contained"
-              // disabled={!preference.memberSystem && preference.memberView}
+              disabled={checkPermissionDisabled('bank_deposit','manage_bank_deposit')}
               sx={{
                 mr: "8px",
                 my: 2,

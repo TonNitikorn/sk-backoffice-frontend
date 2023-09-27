@@ -33,7 +33,7 @@ import { useRouter } from "next/router";
 import { CSVLink } from "react-csv";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-
+import { useCounterStore } from "../zustand/permission";
 import { Table, Input, Space, } from 'antd';
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -468,6 +468,25 @@ function home() {
     const onChange = (pagination, filters, sorter, extra) => {
         console.log('params', pagination, filters, sorter, extra);
     };
+
+    const permission = useCounterStore((state) => state.permission);
+
+    const checkPermissionDisabled = (page, action) => {
+        const permission = useCounterStore((state) => state.permission);
+        const temp = permission?.find((item) => page === item.menu);
+        const subMenu = temp?.sub_menu;
+        const findDis = subMenu?.find((item) => item.sub_menu_name === action);
+    
+        if (findDis?.sub_menu_name === action) {
+          if (findDis?.sub_menu_active === false) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          return false;
+        }
+      };
 
     const columns = [
         // {
@@ -1831,6 +1850,7 @@ function home() {
                                 variant="contained"
                                 size="large"
                                 fullWidth
+                                disabled={checkPermissionDisabled('bank_deposit','manage_bank_deposit')}
                                 onClick={() => approveTransaction()}
                                 sx={{ mt: 3, color: '#ffff' }}
                             >
