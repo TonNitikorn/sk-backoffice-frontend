@@ -89,29 +89,50 @@ function Layout({ children, page }) {
 
       setPermission(jsonData)
 
+
       let menuActive = jsonData.filter(item => item.view === true)
+
       let reportActive = jsonData.filter(item => item.menu.includes('report'))
       reportActive = reportActive.filter(item => item.view === true)
+
       let bankActive = jsonData.filter(item => item.menu.includes('bank'))
       bankActive = bankActive.filter(item => item.view === true)
+
       let memberActive = jsonData.filter(item => item.menu.includes('_member'))
       memberActive = memberActive.filter(item => item.view === true)
 
       let tempmenFilter = menuSuperAdmin.filter(item => menuActive.some((value) => value.menu === item.id));
-      let tempReportFilter = menuSuperAdmin.filter(item => reportActive.some((value) => value.menu.includes('report') === item.id.includes('report')));
-      let reportsub = tempReportFilter[0].report.filter(item => reportActive.some((value) => value.menu === item.id));
-      tempReportFilter[0].report = reportsub
 
+      let tempReportFilter = []
+      if (reportActive.length !== 0) {
+        tempReportFilter = menuSuperAdmin.filter(item => reportActive.some((value) => value.menu.includes('report') === item.id.includes('report')));
+        let reportsub = tempReportFilter[0].report.filter(item => reportActive.some((value) => value.menu === item.id));
+        tempReportFilter[0].report = reportsub
+      }
 
-      let tempBankFilter = menuSuperAdmin.filter(item => bankActive.some((value) => value.menu.includes('bank') === item.id.includes('bank')));
-      let banksub = tempBankFilter[0].bank.filter(item => bankActive.some((value) => value.menu === item.id));
-      tempBankFilter[0].bank = banksub
+      let tempBankFilter = []
+      if (bankActive.length !== 0) {
+        tempBankFilter = menuSuperAdmin.filter(item => bankActive.some((value) => value.menu.includes('bank') === item.id.includes('bank')));
+        let banksub = tempBankFilter[0].bank.filter(item => bankActive.some((value) => value.menu === item.id));
+        tempBankFilter[0].bank = banksub
+      }
 
-      let tempMemberFilter = menuSuperAdmin.filter(item => memberActive.some((value) => value.menu.includes('_member') === item.id.includes('member')));
-      let membersub = tempMemberFilter[1].member.filter(item => memberActive.some((value) => value.menu === item.id));
-      tempMemberFilter[1].member = membersub
+      let tempMemberFilter = []
+      if (memberActive.length !== 0) {
+        tempMemberFilter = menuSuperAdmin.filter(item => memberActive.some((value) => value.menu.includes('member') === item.id.includes('member')));
+        for (const temp of tempMemberFilter) {
+          if (temp.id === "member") {
+            tempMemberFilter = [temp]
+          }
 
-      setMenuFilter([...tempmenFilter, ...tempBankFilter, tempMemberFilter[1], ...tempReportFilter,])
+        }
+
+        let membersub = tempMemberFilter[0].member.filter(item => memberActive.some((value) => value.menu === item.id));
+        tempMemberFilter[0].member = membersub
+
+      }
+
+      setMenuFilter([...tempmenFilter, ...tempBankFilter, ...tempMemberFilter, ...tempReportFilter,])
 
     } catch (error) {
       console.log(error);
